@@ -670,6 +670,212 @@ export const SAMPLE_CONFLICT = {
   },
 }
 
+// ===========================================================
+// Pipeline Data Types (Pages 6–10)
+// ===========================================================
+
+export interface PipelineStep {
+  id: string
+  label: string
+  status: 'done' | 'active' | 'queued' | 'failed'
+  completedAt?: string
+  pages?: number
+  docs?: number
+  progress?: number
+}
+
+export interface PipelineRun {
+  id: string
+  name: string
+  jurisdiction: string
+  startedAt: string
+  status: 'active' | 'complete' | 'failed'
+  currentStep: string
+  steps: PipelineStep[]
+}
+
+export interface CrawlItem {
+  id: string
+  url: string
+  status: 'fetched' | 'skipped' | 'blocked'
+  type: string
+  size: string
+  confidence: number | null
+  ts: string
+  note?: string
+}
+
+export interface HarvestedDoc {
+  id: string
+  type: string
+  title: string
+  url: string
+  pages: number | null
+  size: string
+  lang: string
+  jurisdiction: string
+  confidence: number
+  flags: string[]
+  keep: boolean
+}
+
+export interface OcrCandidate {
+  model: string
+  text: string
+  confidence: number
+}
+
+export interface OcrRegion {
+  id: string
+  status: 'agree' | 'disagree'
+  lang: string
+  confidence: number
+  editDistance?: number
+  qwen: string
+  tesseract: string
+  resolved?: string
+  candidateA?: OcrCandidate
+  candidateB?: OcrCandidate
+}
+
+export interface OcrConsensus {
+  docId: string
+  docTitle: string
+  page: number
+  totalRegions: number
+  agreed: number
+  disagreed: number
+  regions: OcrRegion[]
+}
+
+export interface MappingClause {
+  id: string
+  ref: string
+  text: string
+  pillar: string
+  pillarLabel: string
+  gates: ('pass' | 'warn' | 'fail')[]
+  scores: string[]
+  status: 'verified' | 'rejected'
+  ts: string
+  model: string
+  escalated?: boolean
+  rejectedGate?: string
+}
+
+export interface TraceHighlight {
+  id: string
+  pillar: string
+  color: string
+  textLabel: string
+  ref: string
+  page: number
+  status: 'verified' | 'pending'
+  confidence: number
+  matchType: 'exact' | 'fuzzy' | 'approximate'
+  extractedText: string
+}
+
+// ===========================================================
+// Pipeline Data (Pages 6–10)
+// ===========================================================
+
+export const PIPELINE_RUNS: PipelineRun[] = [
+  {
+    id: 'run-BD-001',
+    name: 'Bangladesh · Full re-ingest',
+    jurisdiction: 'BD',
+    startedAt: '2026-05-23T09:12:00Z',
+    status: 'active',
+    currentStep: 'separate',
+    steps: [
+      { id: 'discover', label: 'Discover',  status: 'done',   completedAt: '2026-05-23T09:14:32Z', pages: 52 },
+      { id: 'harvest',  label: 'Harvest',   status: 'done',   completedAt: '2026-05-23T09:18:44Z', docs: 14  },
+      { id: 'separate', label: 'Separate',  status: 'active', progress: 67 },
+      { id: 'convert',  label: 'Convert',   status: 'queued' },
+      { id: 'ocr',      label: 'OCR',       status: 'queued' },
+      { id: 'embed',    label: 'Embed',     status: 'queued' },
+      { id: 'map',      label: 'Map',       status: 'queued' },
+      { id: 'verify',   label: 'Verify',    status: 'queued' },
+    ],
+  },
+]
+
+export const CRAWL_STREAM: CrawlItem[] = [
+  { id: 'cs-01', url: 'https://bdlaws.minlaw.gov.bd/act-1261.html',       status: 'fetched',  type: 'html',        size: '142 KB', confidence: 0.96, ts: '09:12:04' },
+  { id: 'cs-02', url: 'https://bdlaws.minlaw.gov.bd/act-1261.pdf',        status: 'fetched',  type: 'native-pdf',  size: '2.1 MB', confidence: 0.97, ts: '09:12:05' },
+  { id: 'cs-03', url: 'https://bdlaws.minlaw.gov.bd/act-950.html',        status: 'fetched',  type: 'html',        size: '218 KB', confidence: 0.88, ts: '09:12:07' },
+  { id: 'cs-04', url: 'https://btrc.gov.bd/robots.txt',                   status: 'skipped',  type: 'robots',      size: '—',      confidence: null, ts: '09:12:08' },
+  { id: 'cs-05', url: 'https://dpdt.portal.gov.bd/draft-pdpa-2023.pdf',   status: 'fetched',  type: 'native-pdf',  size: '1.4 MB', confidence: 0.94, ts: '09:12:11' },
+  { id: 'cs-06', url: 'https://moca.gov.bd/login.php',                    status: 'blocked',  type: 'login-wall',  size: '—',      confidence: null, ts: '09:12:14', note: 'Login-walled — needs manual retrieval' },
+  { id: 'cs-07', url: 'https://btrc.gov.bd/guidelines/data-storage-2024', status: 'fetched',  type: 'html',        size: '118 KB', confidence: 0.91, ts: '09:12:16' },
+  { id: 'cs-08', url: 'https://dpdt.portal.gov.bd/press/2024-03.html',    status: 'fetched',  type: 'html',        size: '42 KB',  confidence: 0.41, ts: '09:12:18' },
+  { id: 'cs-09', url: 'https://btrc.gov.bd/circulars/2019-data.pdf',      status: 'fetched',  type: 'scanned-pdf', size: '4.7 MB', confidence: 0.72, ts: '09:12:21' },
+  { id: 'cs-10', url: 'https://mopa.gov.bd/gazette/2022-amend.pdf',       status: 'fetched',  type: 'scanned-pdf', size: '6.1 MB', confidence: 0.61, ts: '09:12:24' },
+  { id: 'cs-11', url: 'https://bcc.gov.bd/captcha-gate/',                 status: 'blocked',  type: 'captcha',     size: '—',      confidence: null, ts: '09:12:28', note: 'CAPTCHA detected — cannot bypass' },
+  { id: 'cs-12', url: 'https://blc.gov.bd/data-policy.html',              status: 'fetched',  type: 'html',        size: '78 KB',  confidence: 0.68, ts: '09:12:31' },
+]
+
+export const HARVESTED_DOCS: HarvestedDoc[] = [
+  { id: 'hd-001', type: 'native-pdf',  title: 'Digital Security Act 2018',                url: 'https://bdlaws.minlaw.gov.bd/act-1261.pdf',          pages: 42,  size: '2.1 MB',  lang: 'English',           jurisdiction: 'BD', confidence: 0.97, flags: [],               keep: true  },
+  { id: 'hd-002', type: 'native-pdf',  title: 'Personal Data Protection Act 2023 (Draft)',url: 'https://dpdt.portal.gov.bd/draft-pdpa-2023.pdf',     pages: 28,  size: '1.4 MB',  lang: 'Bengali · English', jurisdiction: 'BD', confidence: 0.94, flags: ['draft'],         keep: true  },
+  { id: 'hd-003', type: 'native-pdf',  title: 'ICT Act 2006',                             url: 'https://bdlaws.minlaw.gov.bd/act-950.pdf',           pages: 58,  size: '3.2 MB',  lang: 'English · Bengali', jurisdiction: 'BD', confidence: 0.88, flags: [],               keep: true  },
+  { id: 'hd-004', type: 'scanned-pdf', title: 'BTRC Data Circular 2019 (scanned)',        url: 'https://btrc.gov.bd/circulars/2019-data.pdf',        pages: 8,   size: '4.7 MB',  lang: 'Bengali',           jurisdiction: 'BD', confidence: 0.72, flags: [],               keep: true  },
+  { id: 'hd-005', type: 'scanned-pdf', title: 'Ministry Gazette 2022 — Amendments',       url: 'https://mopa.gov.bd/gazette/2022-amend.pdf',         pages: 12,  size: '6.1 MB',  lang: 'Bengali',           jurisdiction: 'BD', confidence: 0.61, flags: [],               keep: false },
+  { id: 'hd-006', type: 'html',        title: 'BTRC Guidelines — Data Storage 2024',      url: 'https://btrc.gov.bd/guidelines/data-storage-2024',   pages: null, size: '118 KB', lang: 'English',           jurisdiction: 'BD', confidence: 0.91, flags: [],               keep: true  },
+  { id: 'hd-007', type: 'html',        title: 'DPDT Press Release (March 2024)',           url: 'https://dpdt.portal.gov.bd/press/2024-03.html',      pages: null, size: '42 KB',  lang: 'English',           jurisdiction: 'BD', confidence: 0.41, flags: ['press-release'], keep: false },
+  { id: 'hd-008', type: 'html',        title: 'Bangladesh Law Commission — Data Policy',  url: 'https://blc.gov.bd/data-policy.html',                pages: null, size: '78 KB',  lang: 'English',           jurisdiction: 'BD', confidence: 0.68, flags: [],               keep: true  },
+  { id: 'hd-009', type: 'docx',        title: 'DSA Implementation Guidelines (Word)',     url: 'https://moca.gov.bd/docs/dsa-impl.docx',             pages: 18,  size: '890 KB',  lang: 'English',           jurisdiction: 'BD', confidence: 0.85, flags: ['guideline'],     keep: true  },
+  { id: 'hd-010', type: 'markdown',    title: 'BTRC — Summary of Data Requirements',      url: 'https://btrc.gov.bd/summary.md',                     pages: null, size: '24 KB',  lang: 'English',           jurisdiction: 'BD', confidence: 0.76, flags: [],               keep: true  },
+  { id: 'hd-011', type: 'table',       title: 'RDTII Indicator Mapping Table (CSV)',       url: 'https://dpdt.portal.gov.bd/rdtii-bd.csv',            pages: null, size: '12 KB',  lang: 'English',           jurisdiction: 'BD', confidence: 0.93, flags: [],               keep: true  },
+  { id: 'hd-012', type: 'html',        title: 'Digital Literacy Manual 2023',             url: 'https://ictd.gov.bd/manual-2023.html',               pages: null, size: '312 KB', lang: 'Bengali · English', jurisdiction: 'BD', confidence: 0.34, flags: ['irrelevant'],    keep: false },
+  { id: 'hd-013', type: 'other',       title: 'BTRC Logo Pack (ZIP)',                     url: 'https://btrc.gov.bd/assets/logo.zip',                pages: null, size: '1.2 MB', lang: '—',                 jurisdiction: 'BD', confidence: 0.08, flags: ['irrelevant'],    keep: false },
+  { id: 'hd-014', type: 'native-pdf',  title: 'Bangladesh E-Commerce Policy 2024',       url: 'https://moca.gov.bd/ecom-policy-2024.pdf',           pages: 24,  size: '1.1 MB',  lang: 'English',           jurisdiction: 'BD', confidence: 0.79, flags: [],               keep: true  },
+]
+
+export const OCR_CONSENSUS: OcrConsensus = {
+  docId: 'BD-DSA-2018', docTitle: 'Digital Security Act 2018',
+  page: 14, totalRegions: 48, agreed: 44, disagreed: 4,
+  regions: [
+    { id: 'r1',  status: 'agree',    lang: 'en', confidence: 0.99, qwen: 'Any person who, intentionally or knowingly without lawful authority,', tesseract: 'Any person who, intentionally or knowingly without lawful authority,' },
+    { id: 'r2',  status: 'disagree', lang: 'en', confidence: 0.77, editDistance: 1, qwen: 'collects, sells, takes possession of, supplies or uses any', tesseract: 'col1ects, sells, takes possession of, supplies or uses any', resolved: 'collects, sells, takes possession of, supplies or uses any', candidateA: { model: 'Qwen2-VL', text: 'collects', confidence: 0.94 }, candidateB: { model: 'Tesseract', text: 'col1ects', confidence: 0.61 } },
+    { id: 'r3',  status: 'agree',    lang: 'en', confidence: 0.98, qwen: "person's identity-related information, shall not save such data,", tesseract: "person's identity-related information, shall not save such data," },
+    { id: 'r4',  status: 'disagree', lang: 'en', confidence: 0.77, editDistance: 2, qwen: 'including biometric information, photographs, financial records', tesseract: 'including biometric infomation, photographs, financial records', resolved: 'including biometric information, photographs, financial records', candidateA: { model: 'Qwen2-VL', text: 'information', confidence: 0.96 }, candidateB: { model: 'Tesseract', text: 'infomation', confidence: 0.58 } },
+    { id: 'r5',  status: 'agree',    lang: 'en', confidence: 0.97, qwen: 'or registry information, outside the geographic boundaries of Bangladesh.', tesseract: 'or registry information, outside the geographic boundaries of Bangladesh.' },
+    { id: 'r6',  status: 'agree',    lang: 'bn', confidence: 0.89, qwen: 'যে কোনো ব্যক্তি যিনি ইচ্ছাকৃতভাবে বা জেনেশুনে বৈধ কর্তৃত্ব ব্যতীত', tesseract: 'যে কোনো ব্যক্তি যিনি ইচ্ছাকৃতভাবে বা জেনেশুনে বৈধ কর্তৃত্ব ব্যতীত' },
+    { id: 'r7',  status: 'disagree', lang: 'bn', confidence: 0.79, editDistance: 1, qwen: 'সংগ্রহ করে, বিক্রয় করে, দখলে নেয়, সরবরাহ করে বা ব্যবহার করে', tesseract: 'সংগ্ৰহ করে, বিক্রয় করে, দখলে নেয়, সরবরাহ করে বা ব্যবহার করে', resolved: 'সংগ্রহ করে, বিক্রয় করে, দখলে নেয়, সরবরাহ করে বা ব্যবহার করে', candidateA: { model: 'Qwen2-VL', text: 'সংগ্রহ', confidence: 0.91 }, candidateB: { model: 'Tesseract', text: 'সংগ্ৰহ', confidence: 0.67 } },
+    { id: 'r8',  status: 'agree',    lang: 'bn', confidence: 0.93, qwen: 'কোনো ব্যক্তির পরিচয়-সংক্রান্ত তথ্য, বাংলাদেশের ভৌগোলিক সীমানার বাইরে সংরক্ষণ করবেন না।', tesseract: 'কোনো ব্যক্তির পরিচয়-সংক্রান্ত তথ্য, বাংলাদেশের ভৌগোলিক সীমানার বাইরে সংরক্ষণ করবেন না।' },
+    { id: 'r9',  status: 'disagree', lang: 'bn', confidence: 0.71, editDistance: 3, qwen: 'আইনগত কর্তৃপক্ষ ছাড়া বায়োমেট্রিক তথ্য সংগ্রহ করা নিষিদ্ধ।', tesseract: 'আইনগত কর্তৃপক্ষ ছাড়া বাযোমেট্রিক তথ্য সংগ্রহ করা নিষিদ্ধ।', resolved: 'আইনগত কর্তৃপক্ষ ছাড়া বায়োমেট্রিক তথ্য সংগ্রহ করা নিষিদ্ধ।', candidateA: { model: 'Qwen2-VL', text: 'বায়োমেট্রিক', confidence: 0.88 }, candidateB: { model: 'Tesseract', text: 'বাযোমেট্রিক', confidence: 0.54 } },
+    { id: 'r10', status: 'agree',    lang: 'en', confidence: 0.96, qwen: 'Punishment: imprisonment for a term not exceeding seven (7) years', tesseract: 'Punishment: imprisonment for a term not exceeding seven (7) years' },
+  ],
+}
+
+export const MAPPING_STREAM: MappingClause[] = [
+  { id: 'ms-001', ref: '§3(1)',  text: 'The Digital Security Agency shall be responsible for the protection of critical digital infrastructure and national security…', pillar: '8.1', pillarLabel: 'Critical infrastructure',    gates: ['pass','pass','pass'], scores: ['exact','0.89','pass'], status: 'verified', ts: '09:22:01', model: 'llama-3.1-8b' },
+  { id: 'ms-002', ref: '§5(2)',  text: 'Any person who, without permission, gains access to or attempts to gain access to any computer system or network…',            pillar: '8.2', pillarLabel: 'Incident reporting',          gates: ['pass','warn','pass'], scores: ['exact','0.71','pass'], status: 'verified', ts: '09:22:04', model: 'llama-3.1-8b' },
+  { id: 'ms-003', ref: '§8(1)',  text: 'The Director General may, for the purpose of this Act, require any person to produce any document or article…',                pillar: '7.1', pillarLabel: 'Lawful basis for processing', gates: ['pass','fail','fail'], scores: ['exact','0.15','0 pred'], status: 'rejected', ts: '09:22:08', model: 'llama-3.1-8b', rejectedGate: 'Gate 2' },
+  { id: 'ms-004', ref: '§12(3)', text: 'No person shall process personal data without the explicit consent of the data subject, except as provided under…',             pillar: '7.1', pillarLabel: 'Lawful basis for processing', gates: ['pass','pass','pass'], scores: ['exact','0.96','pass'], status: 'verified', ts: '09:22:11', model: 'llama-3.1-8b' },
+  { id: 'ms-005', ref: '§14(1)', text: 'Data collected for a specific purpose shall not be used for any other purpose without the express consent of the data subject…', pillar: '7.2', pillarLabel: 'Purpose limitation',           gates: ['pass','pass','pass'], scores: ['exact','0.92','pass'], status: 'verified', ts: '09:22:14', model: 'llama-3.1-8b' },
+  { id: 'ms-006', ref: '§18(2)', text: 'Every data controller shall maintain a record of all processing activities under its responsibility…',                          pillar: '7.5', pillarLabel: 'DPO / Accountability',          gates: ['pass','warn','pass'], scores: ['exact','0.73','pass'], status: 'verified', ts: '09:22:17', model: 'llama-3.1-8b' },
+  { id: 'ms-007', ref: '§21(1)', text: 'A data subject shall have the right to obtain confirmation of whether personal data concerning them is being processed…',         pillar: '7.3', pillarLabel: 'Data subject rights',          gates: ['pass','pass','pass'], scores: ['exact','0.94','pass'], status: 'verified', ts: '09:22:20', model: 'llama-3.1-8b' },
+  { id: 'ms-008', ref: '§26(1)', text: 'Any person who…shall not save such data, including biometric information, photographs, financial records…outside Bangladesh.',   pillar: '6.1', pillarLabel: 'Data localization',             gates: ['pass','pass','pass'], scores: ['exact','0.94','pass'], status: 'verified', ts: '09:22:24', model: 'llama-3.1-8b' },
+  { id: 'ms-009', ref: '§28(1)', text: 'Whoever publishes or broadcasts any propaganda…which hurts the religious value or sentiment shall be punished…',                 pillar: '12.1',pillarLabel: 'Content removal regime',       gates: ['pass','fail','fail'], scores: ['exact','0.15','0 pred'], status: 'rejected', ts: '09:22:27', model: 'llama-3.1-8b', rejectedGate: 'Gate 2' },
+  { id: 'ms-010', ref: '§33(2)', text: 'Any person who commits hacking or any illegal access to a computer system with intent to commit another offence…',               pillar: '8.2', pillarLabel: 'Incident reporting',            gates: ['warn','pass','pass'], scores: ['fuzzy·2','0.78','pass'], status: 'verified', ts: '09:22:31', model: 'llama-3.1-8b' },
+  { id: 'ms-011', ref: '§35(1)', text: 'The controller shall notify the supervisory authority of a personal data breach without undue delay and, where feasible…',        pillar: '7.4', pillarLabel: 'Breach notification',           gates: ['pass','pass','pass'], scores: ['exact','0.88','pass'], status: 'verified', ts: '09:22:35', model: 'llama-3.1-8b' },
+  { id: 'ms-012', ref: '§42(3)', text: 'The court shall have jurisdiction to try offences under this Act regardless of where the accused was located at the time…',      pillar: '9.1', pillarLabel: 'National e-ID framework',        gates: ['pass','fail','fail'], scores: ['exact','0.22','0 pred'], status: 'rejected', ts: '09:22:38', model: 'gpt-4o-cloud', escalated: true },
+]
+
+export const TRACE_HIGHLIGHTS: TraceHighlight[] = [
+  { id: 'th-001', pillar: '6.1', color: '#0FB5A7', textLabel: 'Data Localization',       ref: '§26(1)', page: 14, status: 'verified', confidence: 0.94, matchType: 'exact',       extractedText: "Any person who, intentionally or knowingly without lawful authority, collects, sells, takes possession of, supplies or uses any person's identity-related information, shall not save such data, including biometric information, photographs, financial records or registry information, outside the geographic boundaries of Bangladesh." },
+  { id: 'th-002', pillar: '7.1', color: '#2563EB', textLabel: 'Lawful Basis',            ref: '§12(3)', page: 8,  status: 'verified', confidence: 0.96, matchType: 'exact',       extractedText: 'No person shall process personal data without the explicit consent of the data subject, except as provided under sections 14, 15 and 18 of this Act.' },
+  { id: 'th-003', pillar: '7.2', color: '#7C3AED', textLabel: 'Purpose Limitation',      ref: '§14(1)', page: 9,  status: 'verified', confidence: 0.92, matchType: 'exact',       extractedText: 'Data collected for a specific purpose shall not be used for any other purpose without the express consent of the data subject, unless required by law.' },
+  { id: 'th-004', pillar: '7.3', color: '#DB2777', textLabel: 'Data Subject Rights',     ref: '§21(1)', page: 12, status: 'verified', confidence: 0.94, matchType: 'exact',       extractedText: 'A data subject shall have the right to obtain confirmation of whether personal data concerning them is being processed, and where that is the case, access to that data.' },
+  { id: 'th-005', pillar: '7.4', color: '#F59E0B', textLabel: 'Breach Notification',     ref: '§35(1)', page: 19, status: 'verified', confidence: 0.88, matchType: 'exact',       extractedText: 'The controller shall notify the supervisory authority of a personal data breach without undue delay and, where feasible, not later than seventy-two hours after having become aware of it.' },
+  { id: 'th-006', pillar: '8.1', color: '#10B981', textLabel: 'Critical Infrastructure', ref: '§3(1)',  page: 2,  status: 'verified', confidence: 0.89, matchType: 'exact',       extractedText: 'The Digital Security Agency shall be responsible for the protection of critical digital infrastructure and national security against digital threats and cyberattacks.' },
+  { id: 'th-007', pillar: '8.2', color: '#059669', textLabel: 'Incident Reporting',      ref: '§33(2)', page: 18, status: 'verified', confidence: 0.78, matchType: 'fuzzy',       extractedText: 'Any person who commits hacking or any illegal access to a computer system with intent to commit another offence under this Act shall be punished accordingly.' },
+  { id: 'th-008', pillar: '6.2', color: '#06B6D4', textLabel: 'Conditional Transfer',    ref: '§29(1)', page: 15, status: 'pending',  confidence: 0.67, matchType: 'approximate', extractedText: 'Cross-border transfer of personal data may be permitted subject to the prior approval of the competent authority and the existence of adequate safeguards.' },
+]
+
 export function makeMatrixData(): Record<string, Record<string, MatrixCell>> {
   return {
     BD: {

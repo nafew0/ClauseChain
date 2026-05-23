@@ -201,6 +201,23 @@ window.Sidebar = ({ current, onNavigate, jurisdictions }) => (
       <IconGlyph name="ledger" size={16} /> Pipeline & Ledger
     </button>
 
+    <div className="nav-section-label">Pipeline</div>
+    <button className={`nav-item ${current.page === "crawl" ? "active" : ""}`}
+            onClick={() => onNavigate({ page: "crawl", country: "BD" })}>
+      <IconGlyph name="spark" size={16} /> Crawl Console
+    </button>
+    <button className={`nav-item ${current.page === "harvest" ? "active" : ""}`}
+            onClick={() => onNavigate({ page: "harvest", runId: "run-BD-001" })}>
+      <IconGlyph name="layers" size={16} /> Harvest Review
+    </button>
+    <button className={`nav-item ${current.page === "extract" ? "active" : ""}`}
+            onClick={() => onNavigate({ page: "extract", runId: "run-BD-001", docId: "hd-001", tab: "split" })}>
+      <IconGlyph name="fileText" size={16} /> Extraction
+    </button>
+    <button className={`nav-item ${current.page === "map" ? "active" : ""}`}
+            onClick={() => onNavigate({ page: "map", runId: "run-BD-001" })}>
+      <IconGlyph name="cpu" size={16} /> Mapping Run
+    </button>
     <div className="nav-section-label">Jurisdictions</div>
     {jurisdictions.map(j => (
       <button key={j.code}
@@ -261,6 +278,51 @@ window.ToastHost = () => {
           {t.msg}
         </div>
       ))}
+    </div>
+  );
+};
+
+// ---------- Pipeline Stepper ----------
+window.PipelineStepper = function PipelineStepper({ activeId, onNavigate }) {
+  const STEPS = [
+    { id: "discover", label: "Discover", nav: { page: "crawl",   country: "BD" } },
+    { id: "harvest",  label: "Harvest",  nav: { page: "harvest", runId: "run-BD-001" } },
+    { id: "separate", label: "Separate", nav: null },
+    { id: "convert",  label: "Convert",  nav: { page: "extract", runId: "run-BD-001", docId: "hd-001", tab: "split" } },
+    { id: "ocr",      label: "OCR",      nav: { page: "extract", runId: "run-BD-001", docId: "hd-001", tab: "ocr" } },
+    { id: "embed",    label: "Embed",    nav: null },
+    { id: "map",      label: "Map",      nav: { page: "map",     runId: "run-BD-001" } },
+    { id: "verify",   label: "Verify",   nav: null },
+  ];
+  const activeIdx = STEPS.findIndex(s => s.id === activeId);
+  return (
+    <div className="pipeline-stepper">
+      <div className="stepper-run-badge">
+        <IconGlyph name="zap" size={11} />
+        run-BD-001
+      </div>
+      <div className="stepper-track">
+        {STEPS.map((step, i) => {
+          const status = i < activeIdx ? "done" : i === activeIdx ? "active" : "queued";
+          const clickable = status === "done" && step.nav;
+          return (
+            <React.Fragment key={step.id}>
+              <div className={`stepper-step ss-${status} ${clickable ? "ss-clickable" : ""}`}
+                   onClick={() => clickable && onNavigate(step.nav)}>
+                <div className="ss-circle">
+                  {status === "done"
+                    ? <IconGlyph name="check" size={11} />
+                    : <span>{i + 1}</span>}
+                </div>
+                <span className="ss-label">{step.label}</span>
+              </div>
+              {i < STEPS.length - 1 && (
+                <div className={`ss-connector ${status === "done" ? "ss-connector-done" : ""}`} />
+              )}
+            </React.Fragment>
+          );
+        })}
+      </div>
     </div>
   );
 };

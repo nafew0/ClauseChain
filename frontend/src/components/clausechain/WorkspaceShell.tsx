@@ -4,15 +4,24 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard, Table2, BookOpen, Globe, ChevronRight,
-  Search, Bell, Settings, LogOut, User, Command,
+  Search, Bell, Settings, LogOut, Command,
+  Wifi, Layers, FileText, Cpu, GitBranch,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 
 const NAV_ITEMS = [
-  { href: '/dashboard',       icon: LayoutDashboard, label: 'Dashboard',   count: null },
-  { href: '/matrix',          icon: Table2,          label: 'RDTII Matrix', count: null },
-  { href: '/ledger',          icon: BookOpen,        label: 'Ledger',       count: null },
-  { href: '/jurisdictions',   icon: Globe,           label: 'Jurisdictions', count: 3 },
+  { href: '/dashboard',     icon: LayoutDashboard, label: 'Dashboard',    count: null },
+  { href: '/matrix',        icon: Table2,          label: 'RDTII Matrix', count: null },
+  { href: '/ledger',        icon: BookOpen,        label: 'Ledger',       count: null },
+  { href: '/jurisdictions', icon: Globe,           label: 'Jurisdictions', count: 3 },
+]
+
+const PIPELINE_ITEMS = [
+  { href: '/pipeline/crawl',    icon: Wifi,       label: 'Crawl Console' },
+  { href: '/pipeline/harvest',  icon: Layers,     label: 'Harvest Review' },
+  { href: '/pipeline/extract',  icon: FileText,   label: 'Extraction' },
+  { href: '/pipeline/map',      icon: Cpu,        label: 'Mapping Run' },
+  { href: '/pipeline/trace',    icon: GitBranch,  label: 'Source Trace' },
 ]
 
 interface Crumb { label: string; href?: string }
@@ -77,6 +86,30 @@ export default function WorkspaceShell({ children, breadcrumbs = [] }: Workspace
                     {count}
                   </span>
                 )}
+              </Link>
+            )
+          })}
+        </nav>
+
+        {/* Pipeline section */}
+        <nav className="flex flex-col gap-1 px-3 mt-2">
+          <span className="px-2.5 pt-3 pb-1.5 text-[11px] font-medium tracking-widest uppercase text-cc-ink-500">
+            Pipeline
+          </span>
+          {PIPELINE_ITEMS.map(({ href, icon: Icon, label }) => {
+            const active = pathname.startsWith(href)
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-[10px] text-sm font-medium transition-colors ${
+                  active
+                    ? 'bg-cc-teal-50 text-cc-teal-600'
+                    : 'text-cc-ink-700 hover:bg-cc-ink-100 hover:text-cc-ink-900'
+                }`}
+              >
+                <Icon size={16} />
+                <span>{label}</span>
               </Link>
             )
           })}

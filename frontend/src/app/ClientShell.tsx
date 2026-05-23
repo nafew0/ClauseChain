@@ -12,6 +12,7 @@ const NO_NAVBAR_PATHS = [
   '/matrix',
   '/ledger',
   '/jurisdictions',
+  '/pipeline',
 ]
 
 export default function ClientShell({ children }: { children: React.ReactNode }) {
