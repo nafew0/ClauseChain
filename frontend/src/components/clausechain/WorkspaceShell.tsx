@@ -6,14 +6,18 @@ import {
   LayoutDashboard, Table2, BookOpen, Globe, ChevronRight,
   Search, Bell, Settings, LogOut, Command,
   Wifi, Layers, FileText, Cpu, GitBranch, PackageOpen,
+  ShieldCheck, Network, Gauge,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 
 const NAV_ITEMS = [
-  { href: '/dashboard',     icon: LayoutDashboard, label: 'Dashboard',    count: null },
-  { href: '/matrix',        icon: Table2,          label: 'RDTII Matrix', count: null },
-  { href: '/ledger',        icon: BookOpen,        label: 'Ledger',       count: null },
-  { href: '/jurisdictions', icon: Globe,           label: 'Jurisdictions', count: 3 },
+  { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', count: null },
+  { href: '/jurisdictions/sg/documents/SG-PDPA-2012', icon: ShieldCheck, label: 'Evidence Audit', count: null },
+  { href: '/source-status', icon: Network, label: 'Source Status', count: null },
+  { href: '/benchmark', icon: Gauge, label: 'Benchmark', count: null },
+  { href: '/matrix', icon: Table2, label: 'RDTII Matrix', count: null },
+  { href: '/ledger', icon: BookOpen, label: 'Ledger', count: null },
+  { href: '/jurisdictions', icon: Globe, label: 'Source Library', count: 3 },
 ]
 
 const PIPELINE_ITEMS = [
@@ -36,7 +40,6 @@ export default function WorkspaceShell({ children, breadcrumbs = [] }: Workspace
   const pathname = usePathname() ?? ''
   const { user, logout } = useAuth()
   const [cmdOpen, setCmdOpen] = useState(false)
-  const [userMenuOpen, setUserMenuOpen] = useState(false)
 
   const initials = user?.email?.slice(0, 2).toUpperCase() ?? 'CC'
 
@@ -69,7 +72,10 @@ export default function WorkspaceShell({ children, breadcrumbs = [] }: Workspace
             Workspace
           </span>
           {NAV_ITEMS.map(({ href, icon: Icon, label, count }) => {
-            const active = pathname === href || (href !== '/dashboard' && pathname.startsWith(href))
+            const active =
+              href === '/jurisdictions'
+                ? pathname === '/jurisdictions' || /^\/jurisdictions\/[^/]+$/.test(pathname)
+                : pathname === href || (href !== '/dashboard' && pathname.startsWith(`${href}/`))
             return (
               <Link
                 key={href}

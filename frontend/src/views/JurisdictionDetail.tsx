@@ -1,9 +1,9 @@
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
-import { Plus, RefreshCw, Check, X, AlertTriangle, ExternalLink } from 'lucide-react'
+import { Plus, RefreshCw, ExternalLink } from 'lucide-react'
 import WorkspaceShell from '@/components/clausechain/WorkspaceShell'
-import { PillarCoverageStack, StatusChip, HashBadge } from '@/components/clausechain/ui'
+import { PillarCoverageStack } from '@/components/clausechain/ui'
 import { AddDocumentModal } from '@/components/clausechain/modals'
 import { JURISDICTIONS, DOCUMENTS, SEED_REGISTRY, RDTII_PILLARS } from '@/lib/clausechain/data'
 
@@ -29,7 +29,11 @@ export default function JurisdictionDetail({ country }: Props) {
   const toggleSelect = (id: string) => {
     setSelected((s) => {
       const n = new Set(s)
-      n.has(id) ? n.delete(id) : n.add(id)
+      if (n.has(id)) {
+        n.delete(id)
+      } else {
+        n.add(id)
+      }
       return n
     })
   }

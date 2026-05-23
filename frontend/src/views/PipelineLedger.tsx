@@ -4,10 +4,10 @@ import { Check, X, Cloud, AlertTriangle, RefreshCw, Pause, Play, Download, Filte
 import WorkspaceShell from '@/components/clausechain/WorkspaceShell'
 import { HashBadge } from '@/components/clausechain/ui'
 import { LedgerEntryModal } from '@/components/clausechain/modals'
-import { ACTIVITY, PIPELINE_JOBS, LIVE_LOG, LEDGER_ENTRIES, REJECTIONS } from '@/lib/clausechain/data'
+import { ACTIVITY, PIPELINE_JOBS, LIVE_LOG, LEDGER_ENTRIES, REJECTIONS, SOURCE_STATUS_EDGES } from '@/lib/clausechain/data'
 import type { ActivityEvent, LedgerEntry } from '@/lib/clausechain/data'
 
-type Tab = 'live' | 'ledger' | 'rejections'
+type Tab = 'live' | 'ledger' | 'graph' | 'rejections'
 
 const FEED_ICON: Record<ActivityEvent['type'], { icon: React.ReactNode; bg: string; color: string }> = {
   verified: { icon: <Check size={16} />,        bg: 'var(--cc-success-bg)',  color: 'var(--cc-success)' },
@@ -58,7 +58,7 @@ export default function PipelineLedger({ initialTab = 'live' }: { initialTab?: T
 
         {/* Tabs */}
         <div className="flex gap-1 border-b border-cc-ink-200 mb-6">
-          {([['live', 'Live activity'], ['ledger', 'Provenance ledger'], ['rejections', 'CVR rejections']] as const).map(([k, label]) => (
+          {([['live', 'Live activity'], ['ledger', 'Provenance ledger'], ['graph', 'Evidence graph'], ['rejections', 'Verification catches']] as const).map(([k, label]) => (
             <button
               key={k}
               onClick={() => setTab(k)}
@@ -182,6 +182,55 @@ export default function PipelineLedger({ initialTab = 'live' }: { initialTab?: T
           </div>
         )}
 
+        {/* ─── Tab: Evidence graph ─── */}
+        {tab === 'graph' && (
+          <div className="grid gap-6" style={{ gridTemplateColumns: '1fr 360px' }}>
+            <div className="bg-white border border-cc-ink-200 rounded-2xl overflow-hidden">
+              <div className="grid grid-cols-[1fr_150px_1fr_110px_120px] gap-3 border-b border-cc-ink-200 bg-cc-ink-50 px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.06em] text-cc-ink-500">
+                <span>From</span>
+                <span>Relation</span>
+                <span>To</span>
+                <span>Status</span>
+                <span>Hash</span>
+              </div>
+              {SOURCE_STATUS_EDGES.map((edge) => (
+                <div key={edge.id} className="grid grid-cols-[1fr_150px_1fr_110px_120px] gap-3 border-b border-cc-ink-100 px-5 py-4 text-sm hover:bg-cc-ink-50">
+                  <span className="font-mono text-xs font-semibold text-cc-ink-900">{edge.from}</span>
+                  <span className="w-fit rounded bg-cc-teal-50 px-2 py-1 font-mono text-[10px] font-semibold text-cc-teal-600">{edge.relation}</span>
+                  <span className="font-mono text-xs font-semibold text-cc-ink-900">{edge.to}</span>
+                  <span className={`w-fit rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+                    edge.status === 'accepted' ? 'bg-[#ECFDF5] text-[#047857]' : edge.status === 'review' ? 'bg-[#FFFBEB] text-[#B45309]' : 'bg-[#FEF2F2] text-[#B91C1C]'
+                  }`}>
+                    {edge.status}
+                  </span>
+                  <HashBadge hash={edge.hash} />
+                  <p className="col-span-5 text-xs leading-relaxed text-cc-ink-500">{edge.detail}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <div className="rounded-2xl border border-cc-ink-200 bg-white p-5">
+                <h3 className="mb-3 text-[17px] font-semibold text-cc-ink-950">Graph semantics</h3>
+                <div className="flex flex-col gap-2 text-sm text-cc-ink-700">
+                  {['supports', 'qualifies', 'amends', 'supersedes', 'conflicts_with', 'non_binding_context_for', 'requires_review'].map((relation) => (
+                    <div key={relation} className="flex items-center gap-2">
+                      <span className="h-2 w-2 rounded-full bg-cc-teal-600" />
+                      <span className="font-mono text-xs">{relation}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="rounded-2xl border border-[#FDE68A] bg-[#FFFBEB] p-5">
+                <h3 className="mb-2 text-[17px] font-semibold text-cc-ink-950">Why this matters</h3>
+                <p className="text-sm leading-relaxed text-cc-ink-700">
+                  The ledger proves what happened. The graph proves why a source was treated as controlling, contextual, superseded, or blocked from export.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* ─── Tab: CVR rejections ─── */}
         {tab === 'rejections' && (
           <div className="grid gap-6" style={{ gridTemplateColumns: '1fr 1fr' }}>
@@ -210,44 +259,34 @@ export default function PipelineLedger({ initialTab = 'live' }: { initialTab?: T
 
             {/* Explanation */}
             <div className="bg-white border border-cc-ink-200 rounded-2xl p-6">
-              <h3 className="font-semibold text-[17px] text-cc-ink-950 mb-3">CVR loop explained</h3>
-              <div className="flex flex-col gap-4">
-                {[
-                  {
-                    step: '1',
-                    name: 'Span Match',
-                    desc: 'Verbatim text must appear in the source document with ≤ 2 character edits (OCR tolerance).',
-                    count: REJECTIONS.byGate[0]?.count ?? 0,
-                    color: 'var(--cc-danger)',
-                  },
-                  {
-                    step: '2',
-                    name: 'NLI Entailment',
-                    desc: 'DeBERTa-v3-large scores span ⊨ claim. Threshold: 0.70. Fails if claim is not entailed.',
-                    count: REJECTIONS.byGate[1]?.count ?? 0,
-                    color: 'var(--cc-warning)',
-                  },
-                  {
-                    step: '3',
-                    name: 'Structural Plausibility',
-                    desc: 'Section must exist in the instrument and contain operative predicates for the target pillar.',
-                    count: REJECTIONS.byGate[2]?.count ?? 0,
-                    color: 'var(--cc-info)',
-                  },
-                ].map(({ step, name, desc, count, color }) => (
-                  <div key={step} className="flex gap-3">
-                    <div className="cc-chain-step w-full">
-                      <span className="cc-chain-bullet shrink-0">{step}</span>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <p className="text-sm font-medium text-cc-ink-900">{name}</p>
-                          <span className="font-mono text-xs font-semibold" style={{ color }}>{count} caught here</span>
+              <h3 className="font-semibold text-[17px] text-cc-ink-950 mb-3">Eight-gate verifier</h3>
+              <div className="flex flex-col gap-3">
+                {REJECTIONS.byGate.map((gate, index) => {
+                  const descriptions = [
+                    'Official source must be authoritative for the jurisdiction.',
+                    'Historical, draft, and superseded sources cannot control the output.',
+                    'OCR/text integrity must preserve legally decisive terms.',
+                    'Section and exception boundaries must survive parsing.',
+                    'Retrieved evidence must support the claim in top-k context.',
+                    'Predicate tuple must contain the rule, condition, exception, and effect.',
+                    'RDTII classification must match the predicate.',
+                    'Counter-evidence and conflicts must be resolved or abstained.',
+                  ]
+                  return (
+                    <div key={gate.gate} className="flex gap-3">
+                      <div className="cc-chain-step w-full">
+                        <span className="cc-chain-bullet shrink-0">{index + 1}</span>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm font-medium text-cc-ink-900">{gate.gate}</p>
+                            <span className="font-mono text-xs font-semibold" style={{ color: gate.color }}>{gate.count} caught</span>
+                          </div>
+                          <p className="text-xs text-cc-ink-500 mt-1">{descriptions[index]}</p>
                         </div>
-                        <p className="text-xs text-cc-ink-500 mt-1">{desc}</p>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </div>
 

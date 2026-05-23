@@ -3,15 +3,16 @@ import Link from 'next/link'
 import { Check, Zap } from 'lucide-react'
 
 const STEPS = [
-  { id: 'discover', label: 'Discover', href: '/pipeline/crawl'   },
-  { id: 'harvest',  label: 'Harvest',  href: '/pipeline/harvest' },
-  { id: 'separate', label: 'Separate', href: null                 },
-  { id: 'convert',  label: 'Convert',  href: '/pipeline/extract' },
-  { id: 'ocr',      label: 'OCR',      href: '/pipeline/extract' },
-  { id: 'embed',    label: 'Embed',    href: null                 },
-  { id: 'map',      label: 'Map',      href: '/pipeline/map'     },
-  { id: 'verify',   label: 'Verify',   href: '/pipeline/trace'   },
-  { id: 'export',   label: 'Export',   href: '/pipeline/export'  },
+  { id: 'discover',  label: 'Discovery',    href: '/pipeline/crawl' },
+  { id: 'acquire',   label: 'Acquisition',  href: '/pipeline/harvest' },
+  { id: 'authority', label: 'Authority',    href: '/source-status' },
+  { id: 'extract',   label: 'Extraction',   href: '/pipeline/extract' },
+  { id: 'structure', label: 'Structure',    href: '/pipeline/extract' },
+  { id: 'retrieve',  label: 'Retrieval',    href: '/pipeline/map' },
+  { id: 'predicate', label: 'Predicate',    href: '/pipeline/map' },
+  { id: 'map',       label: 'Map',          href: '/pipeline/map' },
+  { id: 'verify',    label: 'Verify',       href: '/pipeline/trace' },
+  { id: 'audit',     label: 'Audit/Export', href: '/pipeline/export' },
 ]
 
 interface PipelineStepperProps {
@@ -19,13 +20,22 @@ interface PipelineStepperProps {
 }
 
 export default function PipelineStepper({ activeId }: PipelineStepperProps) {
-  const activeIdx = STEPS.findIndex(s => s.id === activeId)
+  const aliases: Record<string, string> = {
+    harvest: 'acquire',
+    separate: 'structure',
+    convert: 'extract',
+    ocr: 'extract',
+    embed: 'retrieve',
+    export: 'audit',
+  }
+  const normalizedActiveId = aliases[activeId] ?? activeId
+  const activeIdx = STEPS.findIndex(s => s.id === normalizedActiveId)
 
   return (
     <div className="pipeline-stepper">
       <div className="stepper-run-badge">
         <Zap size={11} />
-        run-BD-001
+        run-SG-PDPA-001
       </div>
       <div className="stepper-track">
         {STEPS.map((step, i) => {

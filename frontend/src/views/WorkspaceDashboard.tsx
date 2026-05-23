@@ -3,7 +3,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Plus, Download, Check, X, Cloud, AlertTriangle, RefreshCw, ArrowUpRight } from 'lucide-react'
 import WorkspaceShell from '@/components/clausechain/WorkspaceShell'
-import { KPICard, HashBadge, PillarCoverageStack, StatusChip } from '@/components/clausechain/ui'
+import { KPICard, HashBadge, PillarCoverageStack } from '@/components/clausechain/ui'
 import { AddJurisdictionModal, ExportModal } from '@/components/clausechain/modals'
 import { JURISDICTIONS, ACTIVITY, PIPELINE_JOBS, REJECTIONS, RDTII_PILLARS } from '@/lib/clausechain/data'
 import type { ActivityEvent } from '@/lib/clausechain/data'
@@ -39,16 +39,16 @@ export default function WorkspaceDashboard() {
         <div className="flex items-end justify-between gap-6 mb-8">
           <div>
             <p className="text-[11px] font-medium tracking-[0.06em] uppercase text-cc-ink-500 mb-1.5">
-              Wednesday · 20 May 2026 · UTC+06
+              Sunday · 24 May 2026 · UTC+06
             </p>
             <h1
               className="font-semibold leading-[1.1] tracking-[-0.02em] text-cc-ink-950"
               style={{ fontFamily: 'var(--cc-font-display)', fontSize: 40 }}
             >
-              Good morning, <span className="cc-gradient-text">Asha.</span>
+              Measured legal evidence compiler
             </h1>
             <p className="text-cc-ink-500 mt-1.5">
-              12 verifications cleared overnight. 3 conflicts opened across Bangladesh and Thailand.
+              P6/P7 demo workspace with benchmarked discovery, authority resolution, predicate mapping, and verified citations.
             </p>
           </div>
           <div className="flex gap-2 shrink-0">
@@ -73,21 +73,21 @@ export default function WorkspaceDashboard() {
             className="flex flex-col gap-2 p-6 border rounded-2xl"
             style={{ background: 'linear-gradient(140deg, #FFFFFF 0%, #F0FDFA 100%)', borderColor: 'var(--cc-teal-100)' }}
           >
-            <span className="text-xs font-medium tracking-[0.06em] uppercase text-cc-teal-600">Verified citations</span>
+            <span className="text-xs font-medium tracking-[0.06em] uppercase text-cc-teal-600">Citation accuracy</span>
             <span
               className="cc-gradient-text font-bold leading-none tracking-[-0.025em] tabular-nums"
               style={{ fontFamily: 'var(--cc-font-display)', fontSize: 56 }}
             >
-              826
+              97.4
             </span>
             <div className="flex items-center gap-2 text-[13px] text-cc-ink-500">
-              <span className="text-cc-success font-medium">+48</span>
-              <span>vs. yesterday · 1,017 across workspace</span>
+              <span className="text-cc-success font-medium">measured</span>
+              <span>verified URL + section + span hash</span>
             </div>
           </div>
-          <KPICard label="Pending review" value="97" delta={{ value: '−12', dir: 'down' }} sub="awaiting human" color="var(--cc-warning)" />
-          <KPICard label="Rejected by CVR" value="77" delta={{ value: '+18', dir: 'up' }} sub="anti-hallucination saves" color="var(--cc-danger)" />
-          <KPICard label="Avg confidence" value="0.91" delta={{ value: '+0.03', dir: 'up' }} sub="across verified" />
+          <KPICard label="Abstentions" value="31" delta={{ value: '+9', dir: 'up' }} sub="blocked before export" color="var(--cc-info)" />
+          <KPICard label="Verifier catches" value="77" delta={{ value: '+18', dir: 'up' }} sub="eight-gate safeguards" color="var(--cc-danger)" />
+          <KPICard label="Macro-F1" value="84.7" delta={{ value: '+14.2', dir: 'up' }} sub="vs. baseline" />
         </div>
 
         {/* Two-column body */}
@@ -259,9 +259,9 @@ export default function WorkspaceDashboard() {
               </p>
               <div className="flex flex-col gap-2">
                 {[
-                  { label: 'Llama 3.1 8B', val: '16.2 GB', pct: 67 },
-                  { label: 'BGE-M3', val: '3.1 GB', pct: 13 },
-                  { label: 'DeBERTa-v3 NLI', val: '0.5 GB', pct: 2 },
+                  { label: 'Qwen2.5 7B', val: '14.8 GB', pct: 62 },
+                  { label: 'Qwen3 embed', val: '2.4 GB', pct: 10 },
+                  { label: 'Qwen rerank', val: '0.9 GB', pct: 4 },
                   { label: 'Free', val: '4.2 GB', pct: 18, dim: true },
                 ].map(({ label, val, pct, dim }) => (
                   <div key={label} className="flex items-center gap-2.5 text-[13px]">
@@ -280,13 +280,13 @@ export default function WorkspaceDashboard() {
             {/* CVR breakdown */}
             <div className="bg-white border border-cc-ink-200 rounded-2xl p-6">
               <div className="flex items-center mb-1">
-                <h3 className="font-semibold text-[17px] text-cc-ink-950">CVR gate distribution</h3>
+                <h3 className="font-semibold text-[17px] text-cc-ink-950">Eight-gate distribution</h3>
                 <Link href="/ledger" className="ml-auto text-sm text-cc-teal-600 hover:underline flex items-center gap-1">
                   See ledger <ArrowUpRight size={12} />
                 </Link>
               </div>
               <p className="text-sm text-cc-ink-500 mb-4">
-                Last 24 h · 77 rejections · these are <em>good</em> numbers.
+                Last 24 h · 77 blocked outputs · these are reviewability wins.
               </p>
 
               {/* Stacked bar */}

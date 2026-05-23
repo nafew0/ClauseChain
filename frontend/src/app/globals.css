@@ -414,6 +414,15 @@
   border: 1px solid var(--cc-ink-200);
   border-radius: 10px;
 }
+.cc-vchain-v2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+.source-node {
+  animation: cc-fade-in 360ms ease-out;
+}
+
+.evidence-graph-edge {
+  animation: cc-fade-in 420ms ease-out;
+}
 
 /* Matrix */
 .cc-matrix-wrap { background: #fff; border: 1px solid var(--cc-ink-200); border-radius: 14px; overflow: hidden; }

@@ -1,9 +1,9 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import WorkspaceShell from '@/components/clausechain/WorkspaceShell'
 import PipelineStepper from '@/components/clausechain/PipelineStepper'
 import { OCR_CONSENSUS, OcrRegion } from '@/lib/clausechain/data'
-import { CheckCircle, AlertCircle, User } from 'lucide-react'
+import { AlertCircle, CheckCircle, Pause, Play } from 'lucide-react'
 
 type Tab = 'split' | 'ocr' | 'tree'
 
@@ -45,6 +45,14 @@ information infrastructure or cyber infrastructure with the intention of causing
 to cause death or injury to any person, or serious damage to or destruction of any
 critical information infrastructure or any cyber infrastructure…`
 
+const RISK_EVENTS = [
+  { token: 'shall not', risk: 'Negation preserved', score: 0.96, status: 'pass' },
+  { token: 'outside', risk: 'Cross-border location term', score: 0.91, status: 'pass' },
+  { token: 'বায়োমেট্রিক', risk: 'Bengali legal term repaired', score: 0.88, status: 'warn' },
+  { token: 'adequate safeguards', risk: 'Rule-exception connector', score: 0.84, status: 'pass' },
+  { token: 'shall transfer', risk: 'Conflicts with visual "shall not"', score: 0.58, status: 'fail' },
+]
+
 function OcrStatusIcon({ status }: { status: 'agree' | 'disagree' }) {
   return status === 'agree'
     ? <CheckCircle size={15} color="#10B981" />
@@ -79,7 +87,22 @@ function HumanPickButton({ region }: { region: OcrRegion }) {
 
 export default function ExtractionWorkspace() {
   const [tab, setTab] = useState<Tab>('split')
+  const [riskIdx, setRiskIdx] = useState(0)
+  const [riskRunning, setRiskRunning] = useState(false)
+  const [riskPaused, setRiskPaused] = useState(false)
   const ocr = OCR_CONSENSUS
+
+  useEffect(() => {
+    if (!riskRunning || riskPaused || riskIdx >= RISK_EVENTS.length) return
+    const timer = setTimeout(() => setRiskIdx((value) => value + 1), 780)
+    return () => clearTimeout(timer)
+  }, [riskIdx, riskPaused, riskRunning])
+
+  const startRiskScan = () => {
+    if (riskIdx >= RISK_EVENTS.length) setRiskIdx(0)
+    setRiskRunning(true)
+    setRiskPaused(false)
+  }
 
   return (
     <WorkspaceShell breadcrumbs={[{ label: 'Pipeline' }, { label: 'Extraction' }]}>
@@ -111,6 +134,51 @@ export default function ExtractionWorkspace() {
           <button className="flex items-center gap-2 px-4 h-9 rounded-[10px] text-sm font-medium bg-cc-teal-600 text-white hover:bg-[#0E9F92] transition-colors">
             Accept canonical →
           </button>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 280px', gap: 14, marginBottom: 20 }}>
+          <div style={{ background: 'white', border: '1px solid var(--cc-ink-200)', borderRadius: 14, overflow: 'hidden' }}>
+            <div style={{ padding: '11px 16px', borderBottom: '1px solid var(--cc-ink-200)', display: 'flex', alignItems: 'center', gap: 10 }}>
+              <h2 style={{ fontFamily: 'var(--cc-font-display)', fontWeight: 600, fontSize: 15, margin: 0 }}>Legal-term risk stream</h2>
+              <span style={{ marginLeft: 'auto', fontFamily: 'var(--cc-font-mono)', fontSize: 11, color: 'var(--cc-ink-500)' }}>{riskIdx} / {RISK_EVENTS.length}</span>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr 82px 78px', gap: 12, padding: '8px 16px', background: 'var(--cc-ink-50)', borderBottom: '1px solid var(--cc-ink-100)', fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--cc-ink-500)' }}>
+              <span>Token</span>
+              <span>Risk check</span>
+              <span>Score</span>
+              <span>Status</span>
+            </div>
+            {RISK_EVENTS.slice(0, riskIdx).map((event) => (
+              <div key={event.token} className="crawl-stream-row" style={{ display: 'grid', gridTemplateColumns: '150px 1fr 82px 78px', gap: 12, padding: '9px 16px', borderBottom: '1px solid var(--cc-ink-100)', alignItems: 'center' }}>
+                <span style={{ fontFamily: 'var(--cc-font-mono)', fontSize: 12, color: 'var(--cc-ink-900)' }}>{event.token}</span>
+                <span style={{ fontSize: 12, color: 'var(--cc-ink-700)' }}>{event.risk}</span>
+                <span style={{ fontFamily: 'var(--cc-font-mono)', fontSize: 12, fontWeight: 700, color: event.status === 'fail' ? '#B91C1C' : event.status === 'warn' ? '#B45309' : '#047857' }}>{event.score.toFixed(2)}</span>
+                <span style={{ display: 'inline-flex', justifyContent: 'center', borderRadius: 999, padding: '2px 7px', fontSize: 11, fontWeight: 700, background: event.status === 'fail' ? '#FEF2F2' : event.status === 'warn' ? '#FFFBEB' : '#ECFDF5', color: event.status === 'fail' ? '#B91C1C' : event.status === 'warn' ? '#B45309' : '#047857' }}>{event.status}</span>
+              </div>
+            ))}
+            {riskIdx === 0 && (
+              <div style={{ padding: '30px 0', textAlign: 'center', color: 'var(--cc-ink-400)', fontSize: 13 }}>
+                Run the risk scan to show confidence-aware OCR routing.
+              </div>
+            )}
+          </div>
+          <div style={{ background: riskIdx >= RISK_EVENTS.length ? '#ECFDF5' : '#FFFBEB', border: `1px solid ${riskIdx >= RISK_EVENTS.length ? '#A7F3D0' : '#FDE68A'}`, borderRadius: 14, padding: 16 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: riskIdx >= RISK_EVENTS.length ? '#047857' : '#B45309', marginBottom: 8 }}>
+              Confidence-aware routing
+            </div>
+            <p style={{ fontSize: 13, color: 'var(--cc-ink-700)', lineHeight: 1.5, marginBottom: 12 }}>
+              Only disagreement regions and legal-risk tokens get expensive VLM repair. Failed negation checks abstain before mapping.
+            </p>
+            {!riskRunning || riskIdx >= RISK_EVENTS.length ? (
+              <button onClick={startRiskScan} className="flex h-9 w-full items-center justify-center gap-2 rounded-[10px] bg-cc-teal-600 text-sm font-medium text-white transition-colors hover:bg-[#0E9F92]">
+                <Play size={14} fill="white" stroke="none" /> Run risk scan
+              </button>
+            ) : (
+              <button onClick={() => setRiskPaused((value) => !value)} className="flex h-9 w-full items-center justify-center gap-2 rounded-[10px] border border-cc-ink-300 bg-white text-sm font-medium text-cc-ink-900 transition-colors hover:bg-cc-ink-50">
+                {riskPaused ? <Play size={14} /> : <Pause size={14} />} {riskPaused ? 'Resume' : 'Pause'}
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Tabs */}
@@ -156,7 +224,7 @@ export default function ExtractionWorkspace() {
             <div style={{ background: 'white', border: '1px solid var(--cc-ink-200)', borderRadius: 14, overflow: 'hidden' }}>
               <div className="extract-pane-header">
                 <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#10B981' }} />
-                Canonical Markdown · Qwen2-VL consensus
+                Canonical Markdown · PaddleOCR + Qwen2-VL consensus
               </div>
               <div className="markdown-out">
                 {CANONICAL_MARKDOWN.split('\n').map((line, i) => {

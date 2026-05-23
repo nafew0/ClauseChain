@@ -7,12 +7,15 @@ import { useAuth } from '@/contexts/AuthContext'
 export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth()
   const router = useRouter()
+  const demoModeEnabled =
+    process.env.NEXT_PUBLIC_CLAUSECHAIN_DEMO_AUTH === 'true' ||
+    (process.env.NEXT_PUBLIC_CLAUSECHAIN_DEMO_AUTH !== 'false' && process.env.NODE_ENV === 'development')
 
   useEffect(() => {
-    if (!loading && !user) router.replace('/login')
-  }, [user, loading, router])
+    if (!demoModeEnabled && !loading && !user) router.replace('/login')
+  }, [user, loading, router, demoModeEnabled])
 
-  if (loading) {
+  if (loading && !demoModeEnabled) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-xl">Loading...</div>
@@ -20,7 +23,7 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
     )
   }
 
-  if (!user) return null
+  if (!user && !demoModeEnabled) return null
 
   return <>{children}</>
 }

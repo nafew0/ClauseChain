@@ -1,6 +1,6 @@
 'use client'
-import { Check, X, AlertTriangle, Clock, Minus } from 'lucide-react'
-import type { ClauseStatus, Gate } from '@/lib/clausechain/data'
+import { Check, X, AlertTriangle, Clock, Minus, ShieldCheck } from 'lucide-react'
+import type { ClauseStatus, Gate, VerificationGateV2 } from '@/lib/clausechain/data'
 
 // ─── Status chip ────────────────────────────────────────────
 const STATUS_STYLES: Record<ClauseStatus, string> = {
@@ -67,11 +67,13 @@ const GATE_ICON = {
   pass: <Check size={10} />,
   fail: <X size={10} />,
   warn: <AlertTriangle size={10} />,
+  abstain: <Clock size={10} />,
 }
 const GATE_COLOR = {
   pass: 'var(--cc-success)',
   fail: 'var(--cc-danger)',
   warn: 'var(--cc-warning)',
+  abstain: 'var(--cc-info)',
 }
 
 export function VerificationChain({ gates }: { gates: Gate[] }) {
@@ -98,6 +100,55 @@ export function VerificationChain({ gates }: { gates: Gate[] }) {
         </div>
       ))}
     </div>
+  )
+}
+
+export function VerificationChainV2({ gates }: { gates: VerificationGateV2[] }) {
+  return (
+    <div className="cc-vchain cc-vchain-v2">
+      {gates.map((gate) => (
+        <div
+          key={gate.id}
+          className={`flex flex-col gap-1 p-2.5 bg-white border rounded-md ${
+            gate.status === 'fail'
+              ? 'border-[#FECACA]'
+              : gate.status === 'warn' || gate.status === 'abstain'
+                ? 'border-[#FDE68A]'
+                : 'border-cc-ink-200'
+          }`}
+        >
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[10px] font-semibold tracking-[0.05em] uppercase text-cc-ink-500">
+              {gate.id} · {gate.label}
+            </span>
+            <span
+              className="w-[18px] h-[18px] rounded-full grid place-items-center text-white shrink-0"
+              style={{ background: GATE_COLOR[gate.status] }}
+            >
+              {GATE_ICON[gate.status]}
+            </span>
+          </div>
+          <span className="font-mono text-[12px] font-semibold text-cc-ink-900">{gate.score}</span>
+          <span className="text-[11px] leading-snug text-cc-ink-600">{gate.detail}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+const TRUST_TONE: Record<'pass' | 'warn' | 'fail' | 'info', string> = {
+  pass: 'bg-[#ECFDF5] text-[#047857] border-[#A7F3D0]',
+  warn: 'bg-[#FFFBEB] text-[#B45309] border-[#FDE68A]',
+  fail: 'bg-[#FEF2F2] text-[#B91C1C] border-[#FECACA]',
+  info: 'bg-[#EFF6FF] text-[#1D4ED8] border-[#BFDBFE]',
+}
+
+export function TrustBadge({ label, tone = 'pass' }: { label: string; tone?: 'pass' | 'warn' | 'fail' | 'info' }) {
+  return (
+    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium border ${TRUST_TONE[tone]}`}>
+      {tone === 'fail' ? <X size={11} /> : tone === 'warn' ? <AlertTriangle size={11} /> : <ShieldCheck size={11} />}
+      {label}
+    </span>
   )
 }
 

@@ -9,8 +9,10 @@ const NO_NAVBAR_PATHS = [
   '/auth/social/callback',
   // ClauseChain workspace — has its own sidebar + topbar
   '/dashboard',
+  '/benchmark',
   '/matrix',
   '/ledger',
+  '/source-status',
   '/jurisdictions',
   '/pipeline',
 ]

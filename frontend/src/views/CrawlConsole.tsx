@@ -1,8 +1,9 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import WorkspaceShell from '@/components/clausechain/WorkspaceShell'
 import PipelineStepper from '@/components/clausechain/PipelineStepper'
 import { CRAWL_STREAM, SEED_REGISTRY, CrawlItem } from '@/lib/clausechain/data'
+import { Pause, Play } from 'lucide-react'
 
 const AUTONOMY_LEVELS = [
   { id: 'L0', label: 'L0 — Review all',        desc: 'Every URL requires manual approval',      color: '#EF4444' },
@@ -32,12 +33,30 @@ function StatusDot({ status }: { status: string }) {
 export default function CrawlConsole() {
   const [autonomy, setAutonomy] = useState('L1')
   const [stream] = useState<CrawlItem[]>(CRAWL_STREAM)
-  const seedUrls = SEED_REGISTRY['BD'] ?? []
+  const [streamIdx, setStreamIdx] = useState(0)
+  const [running, setRunning] = useState(false)
+  const [paused, setPaused] = useState(false)
+  const seedUrls = SEED_REGISTRY['SG'] ?? []
+  const visible = stream.slice(0, streamIdx)
+  const done = streamIdx >= stream.length
 
-  const fetched = stream.filter(r => r.status === 'fetched').length
-  const blocked = stream.filter(r => r.status === 'blocked').length
-  const skipped = stream.filter(r => r.status === 'skipped').length
-  const totalBytes = '52.3 MB'
+  useEffect(() => {
+    if (!running || paused || done) return
+    const timer = setTimeout(() => setStreamIdx((value) => value + 1), 650)
+    return () => clearTimeout(timer)
+  }, [done, paused, running, streamIdx])
+
+  const fetched = visible.filter(r => r.status === 'fetched').length
+  const blocked = visible.filter(r => r.status === 'blocked').length
+  const official = visible.filter(r => r.authority === 'official').length
+  const contextOnly = visible.filter(r => r.authority === 'context').length
+  const totalBytes = done ? '18.9 MB' : `${(visible.length * 1.7).toFixed(1)} MB`
+
+  const start = () => {
+    if (done) setStreamIdx(0)
+    setRunning(true)
+    setPaused(false)
+  }
 
   return (
     <WorkspaceShell breadcrumbs={[{ label: 'Pipeline' }, { label: 'Crawl Console' }]}>
@@ -51,30 +70,35 @@ export default function CrawlConsole() {
               Discovery &amp; Crawl Console
             </h1>
             <p style={{ fontSize: 14, color: 'var(--cc-ink-500)', marginTop: 4 }}>
-              Bangladesh · run-BD-001 · 🇧🇩 bdlaws.minlaw.gov.bd seed registry
+              Singapore primary sources + Bangladesh/Thailand stress sources · run-SG-PDPA-001
             </p>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
-            <button
-              className="flex items-center gap-2 px-4 h-9 rounded-[10px] text-sm font-medium border border-cc-ink-300 bg-white text-cc-ink-900 hover:bg-cc-ink-50 transition-colors"
-              onClick={() => alert('Crawl paused')}
-            >
-              Pause
-            </button>
-            <button
-              className="flex items-center gap-2 px-4 h-9 rounded-[10px] text-sm font-medium bg-cc-teal-600 text-white hover:bg-[#0E9F92] transition-colors"
-            >
-              Re-crawl
-            </button>
+            {!running || done ? (
+              <button
+                onClick={start}
+                className="flex h-9 items-center gap-2 rounded-[10px] bg-cc-teal-600 px-4 text-sm font-medium text-white transition-colors hover:bg-[#0E9F92]"
+              >
+                <Play size={14} fill="white" stroke="none" /> Start crawl
+              </button>
+            ) : (
+              <button
+                className="flex h-9 items-center gap-2 rounded-[10px] border border-cc-ink-300 bg-white px-4 text-sm font-medium text-cc-ink-900 transition-colors hover:bg-cc-ink-50"
+                onClick={() => setPaused((value) => !value)}
+              >
+                {paused ? <Play size={14} /> : <Pause size={14} />} {paused ? 'Resume' : 'Pause'}
+              </button>
+            )}
           </div>
         </div>
 
         {/* KPI strip */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 28 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 12, marginBottom: 28 }}>
           {[
             { label: 'Fetched', value: fetched, color: '#10B981' },
+            { label: 'Official', value: official, color: '#047857' },
+            { label: 'Context only', value: contextOnly, color: '#B45309' },
             { label: 'Blocked', value: blocked, color: '#EF4444' },
-            { label: 'Skipped', value: skipped, color: '#71717A' },
             { label: 'Total size', value: totalBytes, color: 'var(--cc-ink-950)' },
           ].map(k => (
             <div key={k.label} style={{ background: 'white', border: '1px solid var(--cc-ink-200)', borderRadius: 14, padding: '16px 20px' }}>
@@ -90,7 +114,7 @@ export default function CrawlConsole() {
             {/* Seed URLs */}
             <div style={{ background: 'white', border: '1px solid var(--cc-ink-200)', borderRadius: 14, overflow: 'hidden' }}>
               <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--cc-ink-100)', fontSize: 12, fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--cc-ink-500)' }}>
-                Seed registry · BD
+                Seed registry · SG
               </div>
               {seedUrls.map(s => (
                 <div key={s.url} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderBottom: '1px solid var(--cc-ink-100)', fontSize: 12 }}>
@@ -130,22 +154,25 @@ export default function CrawlConsole() {
           <div style={{ background: 'white', border: '1px solid var(--cc-ink-200)', borderRadius: 14, overflow: 'hidden' }}>
             <div style={{ padding: '12px 16px 8px', borderBottom: '1px solid var(--cc-ink-100)', display: 'flex', alignItems: 'center', gap: 12 }}>
               <span style={{ fontSize: 12, fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--cc-ink-500)' }}>Live Crawl Stream</span>
-              <span style={{ marginLeft: 'auto', width: 8, height: 8, borderRadius: '50%', background: '#10B981', animation: 'pulse 2s infinite' }} />
-              <span style={{ fontSize: 12, color: '#10B981', fontWeight: 500 }}>Running</span>
+              <span style={{ marginLeft: 'auto', width: 8, height: 8, borderRadius: '50%', background: running && !paused && !done ? '#10B981' : '#A1A1AA', animation: running && !paused && !done ? 'pulse 2s infinite' : undefined }} />
+              <span style={{ fontSize: 12, color: running && !paused && !done ? '#10B981' : 'var(--cc-ink-500)', fontWeight: 500 }}>
+                {!running ? 'Ready' : paused ? 'Paused' : done ? 'Complete' : 'Running'}
+              </span>
             </div>
 
             {/* Column headers */}
-            <div style={{ display: 'grid', gridTemplateColumns: '56px 1fr 90px 90px 70px 80px', gap: 12, padding: '8px 16px', background: 'var(--cc-ink-50)', fontSize: 11, fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--cc-ink-500)', borderBottom: '1px solid var(--cc-ink-100)' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '56px 1fr 90px 90px 90px 140px 80px', gap: 12, padding: '8px 16px', background: 'var(--cc-ink-50)', fontSize: 11, fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--cc-ink-500)', borderBottom: '1px solid var(--cc-ink-100)' }}>
               <span>Time</span>
               <span>URL</span>
               <span>Type</span>
               <span>Status</span>
-              <span>Size</span>
+              <span>Authority</span>
+              <span>Resolver</span>
               <span>Conf.</span>
             </div>
 
-            {stream.map(item => (
-              <div key={item.id} className="crawl-stream-row" style={{ display: 'grid', gridTemplateColumns: '56px 1fr 90px 90px 70px 80px', gap: 12, padding: '10px 16px', borderBottom: '1px solid var(--cc-ink-100)', alignItems: 'center', opacity: item.status === 'skipped' ? 0.55 : 1 }}>
+            {visible.map(item => (
+              <div key={item.id} className="crawl-stream-row" style={{ display: 'grid', gridTemplateColumns: '56px 1fr 90px 90px 90px 140px 80px', gap: 12, padding: '10px 16px', borderBottom: '1px solid var(--cc-ink-100)', alignItems: 'center', opacity: item.status === 'skipped' ? 0.55 : 1 }}>
                 <span style={{ fontFamily: 'var(--cc-font-mono)', fontSize: 11, color: 'var(--cc-ink-400)' }}>{item.ts}</span>
                 <span style={{ fontFamily: 'var(--cc-font-mono)', fontSize: 12, color: 'var(--cc-ink-800)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={item.url}>
                   {item.url.replace('https://', '')}
@@ -153,7 +180,12 @@ export default function CrawlConsole() {
                 </span>
                 <span style={{ fontSize: 12, color: 'var(--cc-ink-600)', fontFamily: 'var(--cc-font-mono)' }}>{item.type}</span>
                 <span><StatusDot status={item.status} /></span>
-                <span style={{ fontSize: 12, color: 'var(--cc-ink-500)', fontFamily: 'var(--cc-font-mono)' }}>{item.size}</span>
+                <span style={{ fontSize: 11, color: item.authority === 'official' ? '#047857' : item.authority === 'blocked' ? '#B91C1C' : '#B45309', fontWeight: 700 }}>
+                  {item.authority ?? 'unknown'}
+                </span>
+                <span style={{ fontSize: 11, color: 'var(--cc-ink-600)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {item.resolver ?? item.size}
+                </span>
                 <span>
                   {item.confidence != null ? (
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -168,6 +200,11 @@ export default function CrawlConsole() {
                 </span>
               </div>
             ))}
+            {visible.length === 0 && (
+              <div style={{ padding: '56px 0', textAlign: 'center', color: 'var(--cc-ink-400)', fontSize: 13 }}>
+                Press <strong style={{ color: 'var(--cc-ink-600)' }}>Start crawl</strong> to stream source discovery.
+              </div>
+            )}
           </div>
         </div>
       </div>

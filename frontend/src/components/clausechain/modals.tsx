@@ -1,9 +1,9 @@
 'use client'
 import { useState } from 'react'
-import { X, Plus, Shield, Download, ExternalLink } from 'lucide-react'
+import { X, Plus, Shield, Download } from 'lucide-react'
 import { StatusChip, HashBadge, VerificationChain, ConfidenceBar } from './ui'
-import type { Classification, RejectedClassification, MatrixCell } from '@/lib/clausechain/data'
-import { RDTII_PILLARS, JURISDICTIONS } from '@/lib/clausechain/data'
+import type { Classification, MatrixCell } from '@/lib/clausechain/data'
+import { RDTII_PILLARS } from '@/lib/clausechain/data'
 
 // ─── Base Modal wrapper ───────────────────────────────────────
 function ModalBase({

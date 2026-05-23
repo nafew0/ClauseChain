@@ -1,6 +1,6 @@
 'use client'
 import { useState, useMemo } from 'react'
-import { Check, X, AlertTriangle, Clock, Minus, Download, Filter } from 'lucide-react'
+import { Check, X, AlertTriangle, Clock, Download, Filter } from 'lucide-react'
 import WorkspaceShell from '@/components/clausechain/WorkspaceShell'
 import { CellDrilldownModal, ExportModal } from '@/components/clausechain/modals'
 import { JURISDICTIONS, RDTII_PILLARS, makeMatrixData } from '@/lib/clausechain/data'
@@ -33,7 +33,7 @@ export default function RDTIIMatrix() {
   const matrix = useMemo(() => makeMatrixData(), [])
   const [mode, setMode] = useState<Mode>('status')
   const [jurFilter, setJurFilter] = useState(new Set(['BD', 'TH', 'SG']))
-  const [pillarFilter, setPillarFilter] = useState(new Set(['6', '7', '8']))
+  const [pillarFilter, setPillarFilter] = useState(new Set(['6', '7']))
   const [drilldown, setDrilldown] = useState<Parameters<typeof CellDrilldownModal>[0]['data']>(null)
   const [exportOpen, setExportOpen] = useState(false)
 
@@ -69,9 +69,25 @@ export default function RDTIIMatrix() {
   }, [matrix, visibleJurisdictions, columns])
 
   const toggleJur = (code: string) =>
-    setJurFilter((s) => { const n = new Set(s); n.has(code) ? n.delete(code) : n.add(code); return n })
+    setJurFilter((s) => {
+      const n = new Set(s)
+      if (n.has(code)) {
+        n.delete(code)
+      } else {
+        n.add(code)
+      }
+      return n
+    })
   const togglePillar = (pk: string) =>
-    setPillarFilter((s) => { const n = new Set(s); n.has(pk) ? n.delete(pk) : n.add(pk); return n })
+    setPillarFilter((s) => {
+      const n = new Set(s)
+      if (n.has(pk)) {
+        n.delete(pk)
+      } else {
+        n.add(pk)
+      }
+      return n
+    })
 
   // Group header spans
   const groups = useMemo(() => {
