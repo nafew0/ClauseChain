@@ -52,7 +52,7 @@ const Navbar = () => {
                 alt="ClauseChain logo"
                 loading="eager"
                 decoding="async"
-                className="block h-[1.45rem] w-[7.8rem] shrink-0 object-contain sm:h-[1.6rem] sm:w-[8.6rem]"
+                className="block h-[2rem] w-auto shrink-0 object-contain sm:h-[2.3rem]"
               />
             ) : (
               <BrandLogo compact />
