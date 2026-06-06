@@ -1,233 +1,179 @@
-/* =============================================================
-   Page 2 — Jurisdiction Detail (Bangladesh)
-   Per spec §"PAGE 2 — Jurisdiction Detail"
-   ============================================================= */
-const { Icon: JIcon, Flag: JFlag, FooterBuild: JFooter } = window.CC;
+// ===========================================================
+// Page 2 — Jurisdiction Detail
+// ===========================================================
+/* global React, JURISDICTIONS, DOCUMENTS, RDTII_PILLARS, SEED_REGISTRY,
+   PillarCoverageStack, IconGlyph, StatusChip, SourceUrlRow */
 
-const DOCUMENTS = [
-  {
-    id: 'BD-DSA-2018',
-    title: 'Digital Security Act 2018',
-    type: 'act', typeLabel: 'Act',
-    langs: ['EN'],
-    pages: 87, clauses: 64,
-    verified: 52, total: 64,
-    conflicts: 1,
-    updated: '2h ago',
-    status: 'active',
-  },
-  {
-    id: 'BD-PDPA-2023',
-    title: 'Draft Personal Data Protection Act 2023',
-    type: 'act', typeLabel: 'Draft act',
-    langs: ['EN', 'BD'],
-    pages: 42, clauses: 38,
-    verified: 21, total: 38,
-    conflicts: 0,
-    updated: '14m ago',
-    status: 'processing',
-    badge: 'Processing',
-  },
-  {
-    id: 'BD-ICT-2006',
-    title: 'Information & Communication Technology Act 2006',
-    type: 'act', typeLabel: 'Act',
-    langs: ['EN'],
-    pages: 56, clauses: 41,
-    verified: 38, total: 41,
-    conflicts: 0,
-    updated: '1d ago',
-    status: 'active',
-  },
-  {
-    id: 'BD-ICT-AMD-2013',
-    title: 'ICT (Amendment) Act 2013',
-    type: 'amendment', typeLabel: 'Amendment',
-    langs: ['EN', 'BD'],
-    pages: 12, clauses: 9,
-    verified: 8, total: 9,
-    conflicts: 1,
-    updated: '1d ago',
-    status: 'active',
-  },
-  {
-    id: 'BD-BTRA-2001',
-    title: 'Bangladesh Telecommunication Regulatory Act 2001',
-    type: 'act', typeLabel: 'Act',
-    langs: ['EN'],
-    pages: 64, clauses: 27,
-    verified: 9, total: 27,
-    conflicts: 0,
-    updated: '3d ago',
-    status: 'active',
-  },
-  {
-    id: 'BTRC-OTT-2021',
-    title: 'BTRC OTT Regulation Guidelines 2021',
-    type: 'guideline', typeLabel: 'Guideline',
-    langs: ['EN'],
-    pages: 18, clauses: 14,
-    verified: 0, total: 14,
-    conflicts: 0,
-    updated: '5d ago',
-    status: 'non-binding',
-    badge: 'Non-binding',
-  },
-];
+const { useState: useJurState } = React;
 
-const PILLARS = [
-  { id: '6', name: 'Cross-border data', pct: 78, mandatory: true },
-  { id: '7', name: 'Onward transfer',   pct: 64, mandatory: true },
-  { id: '8', name: 'Data subject rights', pct: 32, mandatory: false },
-  { id: '9', name: 'Enforcement',      pct: 18, mandatory: false },
-  { id: '10', name: 'Sectoral rules',  pct: 0,  mandatory: false },
-  { id: '11', name: 'Source code',     pct: 0,  mandatory: false },
-  { id: '12', name: 'Cybersecurity',   pct: 12, mandatory: false },
-  { id: '13', name: 'Interoperability', pct: 0, mandatory: false },
-];
+window.JurisdictionPage = function JurisdictionPage({ country, onNavigate, onOpenAddDocument, onOpenCrawlDrawer }) {
+  const j = JURISDICTIONS.find(x => x.code === country) || JURISDICTIONS[0];
+  const docs = DOCUMENTS[j.code] || [];
+  const seeds = SEED_REGISTRY[j.code] || [];
 
-const JurisdictionPage = ({ onOpenDocument, onBack, onToast }) => {
-  const [filterType, setFilterType] = React.useState('All');
-  const [filterStatus, setFilterStatus] = React.useState('All');
+  const [filter, setFilter] = useJurState("all");
+  const [q, setQ] = useJurState("");
+  const [selected, setSelected] = useJurState(new Set());
 
-  const totalClauses = DOCUMENTS.reduce((s, d) => s + d.clauses, 0);
-  const totalVerified = DOCUMENTS.reduce((s, d) => s + d.verified, 0);
+  const filtered = docs.filter(d => {
+    if (filter !== "all" && d.type !== filter) return false;
+    if (q && !(d.title + " " + d.id).toLowerCase().includes(q.toLowerCase())) return false;
+    return true;
+  });
+
+  const toggleSelect = (id) => {
+    setSelected(s => { const n = new Set(s); n.has(id) ? n.delete(id) : n.add(id); return n; });
+  };
 
   return (
-    <div className="page">
-      {/* Breadcrumb */}
-      <div className="breadcrumb">
-        <span className="crumb" onClick={onBack}>Dashboard</span>
-        <span className="sep">/</span>
-        <span className="current">Bangladesh</span>
-      </div>
-
-      {/* Header */}
-      <header className="page-header">
-        <div className="row gap-md">
-          <JFlag code="BD" size={36}/>
-          <div>
-            <h1 className="h1">Bangladesh</h1>
-            <div className="subtitle">
-              {DOCUMENTS.length} instruments · {totalClauses} clauses · last sync 2h ago · <span className="mono" style={{ color: 'var(--ink-700)' }}>BD · region South Asia</span>
+    <div className="page" data-screen-label="02 Jurisdiction">
+      <div className="page-header" style={{ alignItems: "flex-start" }}>
+        <div>
+          <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 8 }}>
+            <div style={{ fontSize: 44, lineHeight: 1 }}>{j.flag}</div>
+            <div>
+              <div className="h1" style={{ fontSize: 36 }}>{j.name}</div>
+              <div className="subtitle" style={{ marginTop: 4 }}>
+                {j.languages.join(" · ")} · last synced {j.lastSyncRel} · {j.instruments} instruments · {j.clauses} clauses
+              </div>
             </div>
           </div>
         </div>
-        <div className="row gap-sm">
-          <button className="btn btn-secondary" onClick={() => onToast('Re-crawl drawer would open')}>
-            <JIcon name="refresh"/> Trigger re-crawl
+        <div style={{ display: "flex", gap: 8 }}>
+          <button className="btn btn-secondary" onClick={onOpenCrawlDrawer}>
+            <IconGlyph name="refresh" size={14} /> Re-crawl seeds
           </button>
-          <button className="btn btn-primary" onClick={() => onToast('Add Document modal would open')}>
-            <JIcon name="plus"/> Add document
+          <button className="btn btn-primary" onClick={onOpenAddDocument}>
+            <IconGlyph name="plus" size={14} /> Add document
           </button>
         </div>
-      </header>
+      </div>
 
-      {/* Coverage strip */}
-      <div className="coverage-strip">
-        {PILLARS.map(p => (
-          <div key={p.id} className={`cov-pill ${p.mandatory ? 'mandatory' : 'bonus'}`} title={`Pillar ${p.id} · ${p.name}`}>
-            <div className="pill-label">Pillar {p.id}{p.mandatory && ' ·  required'}</div>
-            <div className="pill-name">{p.name}</div>
-            <div className="pill-bar"><span style={{ width: Math.max(p.pct, 2) + '%' }}></span></div>
-            <div className="pill-pct">{p.pct}%</div>
+      {/* Top row — Coverage + Stats + Source health */}
+      <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr", gap: 16, marginBottom: 32 }}>
+        <div className="card">
+          <div className="row" style={{ marginBottom: 14 }}>
+            <h3 className="h3">RDTII coverage</h3>
+            <div className="spacer"></div>
+            <span className="meta">Pillar 6 & 7 mandatory</span>
           </div>
-        ))}
+          <PillarCoverageStack coverage={j.coverage} />
+        </div>
+
+        <div className="card" style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          <h3 className="h3">Status</h3>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            <SmallStat label="Verified" value={j.verified} color="var(--success)" />
+            <SmallStat label="Pending" value={j.pending} color="var(--warning)" />
+            <SmallStat label="Rejected" value={j.rejected} color="var(--danger)" />
+            <SmallStat label="Conflicts" value={j.conflicts} color={j.conflicts > 0 ? "var(--danger)" : "var(--ink-400)"} />
+          </div>
+        </div>
+
+        <div className="card">
+          <div className="row" style={{ marginBottom: 12 }}>
+            <h3 className="h3">Source health</h3>
+            <div className="spacer"></div>
+            <span className="meta">{seeds.length} seeds</span>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {seeds.map(s => <SourceUrlRow key={s.url} url={s.url} status={s.status} />)}
+          </div>
+        </div>
       </div>
 
-      {/* Filter bar */}
-      <div className="filter-bar">
-        <div className="filter-search">
-          <JIcon name="search" size={14}/>
-          <input placeholder="Search within Bangladesh…"/>
-        </div>
-        <div className="chip-group">
-          {['All', 'Acts', 'Amendments', 'Regulations', 'Guidelines'].map(t => (
-            <button key={t} className={`fchip ${filterType === t ? 'active' : ''}`} onClick={() => setFilterType(t)}>{t}</button>
-          ))}
-        </div>
-        <span style={{ width: 1, height: 22, background: 'var(--ink-200)' }}></span>
-        <div className="chip-group">
-          {['All', 'Verified', 'Pending', 'Conflicts'].map(t => (
-            <button key={t} className={`fchip ${filterStatus === t ? 'active' : ''}`} onClick={() => setFilterStatus(t)}>{t}</button>
-          ))}
-        </div>
-        <div className="view-toggle">
-          <button className="active" title="List view"><JIcon name="list" size={14}/></button>
-          <button title="Grid view"><JIcon name="layoutGrid" size={14}/></button>
-        </div>
+      {/* Documents */}
+      <div style={{ marginBottom: 16, display: "flex", alignItems: "center", gap: 12 }}>
+        <h2 className="h2">Documents</h2>
+        <div className="spacer"></div>
+        {selected.size > 0 && (
+          <div className="row" style={{ background: "var(--teal-50)", padding: "4px 8px 4px 12px", borderRadius: 999, color: "var(--teal-600)", fontSize: 13 }}>
+            <span>{selected.size} selected</span>
+            <button className="btn btn-tertiary compact" style={{ height: 28 }}>Re-process</button>
+            <button className="btn btn-tertiary compact" style={{ height: 28 }}>Export</button>
+            <button className="btn btn-tertiary compact" style={{ height: 28, color: "var(--danger)" }}>Remove</button>
+          </div>
+        )}
+        <input className="input" placeholder="Search documents…" value={q} onChange={(e) => setQ(e.target.value)}
+               style={{ width: 240, height: 32, fontSize: 13 }} />
+        <select className="select" value={filter} onChange={(e) => setFilter(e.target.value)}
+                style={{ width: 160, height: 32, fontSize: 13 }}>
+          <option value="all">All types</option>
+          <option value="Act">Act</option>
+          <option value="Amendment">Amendment</option>
+          <option value="Regulation">Regulation</option>
+          <option value="Guideline">Guideline</option>
+        </select>
       </div>
 
-      {/* Document table */}
-      <div className="doc-table">
-        <table>
+      <div className="card flush">
+        <table className="tbl">
           <thead>
             <tr>
-              <th style={{ width: 36 }}>
-                <input type="checkbox" style={{ accentColor: '#0FB5A7' }}/>
-              </th>
-              <th>Instrument</th>
-              <th>Type</th>
-              <th>Lang</th>
-              <th style={{ textAlign: 'right' }}>Pages</th>
-              <th style={{ textAlign: 'right' }}>Clauses</th>
-              <th style={{ textAlign: 'right' }}>Verified</th>
-              <th style={{ textAlign: 'right' }}>Conflicts</th>
-              <th>Updated</th>
+              <th style={{ width: 36 }}></th>
+              <th>Document</th>
+              <th style={{ width: 130 }}>Type</th>
+              <th style={{ width: 130 }}>Language</th>
+              <th style={{ width: 110, textAlign: "right" }}>Clauses</th>
+              <th style={{ width: 110, textAlign: "right" }}>Verified</th>
+              <th style={{ width: 110, textAlign: "right" }}>Conflicts</th>
+              <th style={{ width: 120 }}>Updated</th>
               <th style={{ width: 40 }}></th>
             </tr>
           </thead>
           <tbody>
-            {DOCUMENTS.map(d => (
-              <tr key={d.id} onClick={() => onOpenDocument(d.id)}>
-                <td onClick={e => e.stopPropagation()}>
-                  <input type="checkbox" style={{ accentColor: '#0FB5A7' }}/>
+            {filtered.map(d => (
+              <tr key={d.id} className={selected.has(d.id) ? "selected" : ""}
+                  onClick={() => onNavigate({ page: "doc", country: j.code, doc: d.id })}>
+                <td onClick={(e) => { e.stopPropagation(); toggleSelect(d.id); }}>
+                  <input type="checkbox" checked={selected.has(d.id)} readOnly
+                         style={{ accentColor: "var(--teal-600)" }} />
                 </td>
                 <td>
-                  <div className="doc-title">{d.title}</div>
-                  <div className="doc-id">{d.id}</div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 4, opacity: d.binding === false ? 0.6 : 1 }}>
+                    <span className="doc-title-link">{d.title}</span>
+                    <span className="mono" style={{ fontSize: 11, color: "var(--ink-500)" }}>{d.id} · {d.pages} pp · {d.authority}</span>
+                  </div>
                 </td>
                 <td>
-                  <span className={`type-pill ${d.type}`}>{d.typeLabel}</span>
-                  {d.badge && <span className="chip chip-info" style={{ marginLeft: 6 }}><span className="dot"></span>{d.badge}</span>}
-                </td>
-                <td>
-                  <span className="lang-flag-row">
-                    {d.langs.map(l => <JFlag key={l} code={l === 'BD' ? 'BD' : 'EN'} size={14}/>)}
+                  <span className="chip-pillar" style={{ background: d.type === "Guideline" ? "var(--ink-100)" : "var(--teal-50)", color: d.type === "Guideline" ? "var(--ink-500)" : "var(--teal-600)" }}>
+                    {d.type}
                   </span>
                 </td>
-                <td className="num" style={{ textAlign: 'right' }}>{d.pages}</td>
-                <td className="num" style={{ textAlign: 'right' }}>{d.clauses}</td>
-                <td style={{ textAlign: 'right' }}>
-                  <span className={`num ${d.verified === d.total ? 'success' : d.verified > 0 ? 'success' : 'zero'}`}>
-                    {d.verified}<span className="total"> / {d.total}</span>
-                  </span>
-                </td>
-                <td style={{ textAlign: 'right' }}>
-                  <span className={`num ${d.conflicts > 0 ? 'danger' : 'zero'}`}>{d.conflicts}</span>
-                </td>
-                <td className="meta">{d.updated}</td>
-                <td onClick={e => e.stopPropagation()}>
-                  <button className="icon-btn" style={{ width: 28, height: 28 }}><JIcon name="moreH" size={14}/></button>
+                <td className="small">{d.languages.join(", ")}</td>
+                <td className="mono" style={{ textAlign: "right", color: "var(--ink-900)", fontWeight: 500 }}>{d.clauses}</td>
+                <td className="mono" style={{ textAlign: "right", color: "var(--success)", fontWeight: 600 }}>{d.verified}</td>
+                <td className="mono" style={{ textAlign: "right", color: d.conflicts > 0 ? "var(--danger)" : "var(--ink-400)", fontWeight: 600 }}>{d.conflicts}</td>
+                <td className="small muted">{d.updatedRel}</td>
+                <td onClick={(e) => e.stopPropagation()}>
+                  <button className="btn-icon"><IconGlyph name="more" size={16} /></button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-      </div>
 
-      {/* Source health */}
-      <div className="source-health">
-        <span className="dot"></span>
-        <div style={{ flex: 1 }}>
-          <strong>All 4 seed URLs reachable.</strong> Last verified 2h ago · bdlaws.minlaw.gov.bd, dpdt.portal.gov.bd, btrc.gov.bd, bcc.gov.bd
-        </div>
-        <button className="btn btn-ghost btn-sm">Re-verify sources</button>
+        {filtered.length === 0 && (
+          <div className="empty">
+            <IconGlyph name="document" size={48} />
+            <div className="head">No documents yet for {j.name}</div>
+            <div className="sub">Start discovery from the {seeds.length} pre-curated seed URLs, or upload a PDF, HTML, or DOCX file manually.</div>
+            <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+              <button className="btn btn-secondary" onClick={onOpenCrawlDrawer}>Run discovery</button>
+              <button className="btn btn-primary" onClick={onOpenAddDocument}>Upload document</button>
+            </div>
+          </div>
+        )}
       </div>
-
-      <JFooter/>
     </div>
   );
 };
 
-window.CC.JurisdictionPage = JurisdictionPage;
+function SmallStat({ label, value, color }) {
+  return (
+    <div style={{ padding: "10px 12px", background: "var(--ink-50)", borderRadius: 8 }}>
+      <div style={{ fontFamily: "var(--font-display)", fontSize: 22, fontWeight: 600, color: color, fontVariantNumeric: "tabular-nums" }}>{value}</div>
+      <div className="caption">{label}</div>
+    </div>
+  );
+}

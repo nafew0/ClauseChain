@@ -1,349 +1,467 @@
-/* =============================================================
-   Page 3 — Document Workspace (Audit View)
-   Per spec §"PAGE 3 — Document Workspace (The Audit View)"
-   The most important page in the product.
-   ============================================================= */
-const { Icon: DIcon } = window.CC;
+// ===========================================================
+// Page 3 — Document Workspace (the audit view)
+// ===========================================================
+/* global React, DOC_DETAIL_BDDSA, VerificationChain, VerbatimBlock,
+   ConfidenceBar, StatusChip, HashBadge, IconGlyph, RDTII_PILLARS */
 
-/* Outline data */
-const OUTLINE = [
-  { lvl: 1, label: 'Part I — Preliminary', children: [
-    { lvl: 2, label: 'Chapter 1 — Definitions & application', children: [
-      { lvl: 3, label: '§1  Short title, extent and commencement', status: 'verified', pillar: '—' },
-      { lvl: 3, label: '§2  Definitions',                          status: 'verified', pillar: '—' },
-      { lvl: 3, label: '§3  Application',                          status: 'verified', pillar: '—' },
-    ]},
-  ]},
-  { lvl: 1, label: 'Part II — Digital Security Agency', children: [
-    { lvl: 3, label: '§5  Establishment of the Agency', status: 'verified', pillar: '9.1' },
-    { lvl: 3, label: '§7  Powers and duties',           status: 'verified', pillar: '9.2' },
-  ]},
-  { lvl: 1, label: 'Part III — Offences and penalties', children: [
-    { lvl: 3, label: '§17  Illegal entrance to critical information infrastructure', status: 'verified', pillar: '12.1' },
-    { lvl: 3, label: '§19  Damage to computer or computer system',                   status: 'verified', pillar: '12.2' },
-    { lvl: 3, label: '§24  Publication of offensive information',                   status: 'rejected', pillar: '—'    },
-    { lvl: 3, label: '§25  Publication of attacking or intimidating information',   status: 'pending',  pillar: '—'    },
-    { lvl: 3, label: '§26  Publication of false data — including data localization', status: 'active',  pillar: '6.1', subs: [
-      { lvl: 4, label: '§26(1)  Storage prohibition outside Bangladesh', status: 'verified', pillar: '6.1', active: true },
-      { lvl: 4, label: '§26(2)  Penalty provisions',                     status: 'verified', pillar: '6.1' },
-      { lvl: 4, label: '§26(3)  Exemptions for consented transfer',      status: 'pending',  pillar: '7.2' },
-    ]},
-    { lvl: 3, label: '§27  Cyber-terrorism', status: 'verified', pillar: '12.3' },
-    { lvl: 3, label: '§28  Religious sentiments', status: 'pending',  pillar: '—' },
-  ]},
-  { lvl: 1, label: 'Part IV — Investigation & trial', children: [
-    { lvl: 3, label: '§40  Search, seizure, arrest', status: 'verified', pillar: '9.4' },
-    { lvl: 3, label: '§43  Tribunal',                status: 'verified', pillar: '9.5' },
-  ]},
-];
+const { useState, useMemo } = React;
 
-const OutlineNode = ({ n, onSelect }) => (
-  <React.Fragment>
-    <div
-      className={`outline-node lvl-${n.lvl} ${n.active ? 'active' : ''}`}
-      onClick={() => n.lvl >= 3 && onSelect && onSelect(n)}
-    >
-      {n.status && <span className={`status-dot ${n.status === 'active' ? 'verified' : n.status}`}></span>}
-      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{n.label}</span>
-      {n.pillar && n.pillar !== '—' && <span className="pillar-tag">{n.pillar}</span>}
-    </div>
-    {n.children && n.children.map((c, i) => <OutlineNode key={i} n={c} onSelect={onSelect}/>)}
-    {n.subs    && n.subs.map((c, i)    => <OutlineNode key={i} n={c} onSelect={onSelect}/>)}
-  </React.Fragment>
-);
+window.DocumentWorkspacePage = function DocumentWorkspacePage({ onNavigate, onOpenCitationDetail, onOpenConflict, onOpenEdit, onOpenReject }) {
+  const doc = DOC_DETAIL_BDDSA;
+  const [activeId, setActiveId] = useState(doc.classification.clauseId);
 
-/* PDF page mock — Digital Security Act 2018, page 14 */
-const PdfPage = () => (
-  <div className="pdf-page">
-    <div className="pg-header">
-      <span>Digital Security Act, 2018  ·  bdlaws.minlaw.gov.bd</span>
-      <span>14</span>
-    </div>
+  // Find clause meta in outline
+  const flatClauses = useMemo(() => {
+    const out = [];
+    doc.outline.forEach(part => {
+      part.children.forEach(c => out.push({ ...c, partTitle: part.title, partNumber: part.number }));
+    });
+    return out;
+  }, [doc.outline]);
 
-    <h2 className="sect">25. Publication of attacking or intimidating information</h2>
-    <p>(1) If any person, through any website or any electronic format, intentionally or knowingly publishes or transmits or causes to publish or transmit any information which is intimidating or threatening, he shall be punished with imprisonment for a term not exceeding three years…</p>
+  const activeClause = flatClauses.find(c => c.id === activeId) || flatClauses[0];
+  const isRejected = activeClause.status === "rejected";
+  const isPending  = activeClause.status === "pending";
+  const cls = doc.classification;
+  const rej = doc.rejected;
+  const showingHero = activeId === cls.clauseId;
+  const showingRejected = activeId === rej.clauseId;
 
-    <h2 className="sect">26. Punishment for publishing false data, etc.</h2>
+  // Document outline filter
+  const [outlineSearch, setOutlineSearch] = useState("");
+  const filteredOutline = useMemo(() => {
+    if (!outlineSearch.trim()) return doc.outline;
+    const q = outlineSearch.toLowerCase();
+    return doc.outline.map(p => ({
+      ...p,
+      children: p.children.filter(c =>
+        c.number.toLowerCase().includes(q) ||
+        c.title.toLowerCase().includes(q) ||
+        (c.pillar && c.pillar.toLowerCase().includes(q))
+      ),
+    })).filter(p => p.children.length > 0);
+  }, [outlineSearch, doc.outline]);
 
-    <div className="sub">
-      <span className="num-tag">(1)</span>
-      <span className="pdf-bbox">
-        <span className="pin" title="Open citation a3f5…b9c2">📌</span>
-        Any person whose duty is to keep, secure or process or use any data-information or
-        data-information sub-system shall not save such data-information outside the territory of
-        Bangladesh, and any data-information of a critical information infrastructure shall not
-        be transferred outside the territory of the People's Republic of Bangladesh except in
-        accordance with the directions issued by the Government from time to time.
-      </span>
-    </div>
-
-    <div className="sub">
-      <span className="num-tag">(2)</span>
-      If any person, in contravention of sub-section (1), saves or transfers any
-      data-information outside the territory of Bangladesh, he shall be punished with
-      imprisonment for a term not exceeding 5 (five) years, or with fine not exceeding
-      Taka 10 (ten) lakh, or with both.
-    </div>
-
-    <div className="sub">
-      <span className="num-tag">(3)</span>
-      <span className="pdf-bbox warn">
-        <span className="pin">📌</span>
-        Notwithstanding anything contained in sub-section (1), data-information may be transferred
-        outside Bangladesh with the express written consent of the data subject and prior approval
-        of the Director-General, subject to such terms and conditions as may be prescribed.
-      </span>
-    </div>
-
-    <h2 className="sect">27. Cyber-terrorism</h2>
-    <p>(1) If any person commits any of the following acts with intent to threaten the integrity, security or sovereignty of the State, or to create fear or panic among the people or any section of the people, namely…</p>
-
-    <div className="pg-footer">Section 26 begins on page 14 · char offset 12453–12527 · SHA-256 a3f5…b9c2</div>
-  </div>
-);
-
-/* Right pane: classification card */
-const ClassificationPane = ({ onToast }) => (
-  <div className="class-pane">
-    {/* Pillar header */}
-    <div className="pillar-bar">
-      <div className="pillar-id">Pillar 6.1 · Cross-border data</div>
-      <div className="pillar-name">Data localization requirement</div>
-    </div>
-
-    {/* Verification + hash */}
-    <div className="verif-row">
-      <span className="chip chip-verified"><span className="dot"></span>Verified · all gates passed</span>
-      <span className="hash-badge mono-sm" onClick={() => onToast('Hash copied: a3f5b91c2d0e8e7c1f0b2c4d5a6f7b8c…')}>
-        <DIcon name="copy" size={10}/>a3f5…b9c2
-      </span>
-      <span className="meta mono" style={{ marginLeft: 'auto' }}>§26(1)</span>
-    </div>
-
-    {/* Confidence */}
-    <div className="confidence-block">
-      <div className="row1">
-        <span className="label">Confidence</span>
-        <span className="val">0.94</span>
-      </div>
-      <div className="confbar"><span style={{ width: '94%' }}></span></div>
-      <div className="meta" style={{ marginTop: 6 }}>
-        Above 0.7 threshold · top-1 of 3 candidate pillars
-      </div>
-    </div>
-
-    {/* Verbatim span */}
-    <div>
-      <div className="pane-section-label">Verbatim supporting span</div>
-      <div className="verbatim">
-        Any person…shall not save such data-information outside the territory of Bangladesh,
-        and any data-information of a critical information infrastructure shall not be
-        transferred outside the territory of the People's Republic of Bangladesh except in
-        accordance with the directions issued by the Government from time to time.
-      </div>
-    </div>
-
-    {/* Principal rule */}
-    <div className="kv-section">
-      <div className="kv-label">Principal rule</div>
-      <div className="kv-value">
-        Personal data and data of critical information infrastructure must be stored within
-        the territory of Bangladesh; cross-border transfer is prohibited by default.
-      </div>
-    </div>
-
-    {/* Exceptions */}
-    <div className="kv-section">
-      <div className="collapsible-header">
-        <div className="kv-label" style={{ marginBottom: 0 }}>Exceptions</div>
-        <span className="count">1 ·  §26(3)</span>
-      </div>
-      <ul style={{ marginTop: 8 }}>
-        <li>Transfer permitted with express written consent of the data subject and prior approval of the Director-General.</li>
-      </ul>
-    </div>
-
-    {/* Conditions */}
-    <div className="kv-section">
-      <div className="collapsible-header">
-        <div className="kv-label" style={{ marginBottom: 0 }}>Conditions</div>
-        <span className="count">1</span>
-      </div>
-      <ul style={{ marginTop: 8 }}>
-        <li>Subject to such terms and conditions as may be prescribed by the Government.</li>
-      </ul>
-    </div>
-
-    {/* Verification chain */}
-    <div>
-      <div className="pane-section-label">Verification chain</div>
-      <div className="chain">
-        <div className="chain-step">
-          <div className="step-icon"><DIcon name="check" size={12}/></div>
-          <div className="step-name">Gate 1<br/>Span match</div>
-          <div className="step-meta">exact</div>
-        </div>
-        <span className="chain-arrow">→</span>
-        <div className="chain-step">
-          <div className="step-icon"><DIcon name="check" size={12}/></div>
-          <div className="step-name">Gate 2<br/>NLI entailment</div>
-          <div className="step-meta">0.94</div>
-        </div>
-        <span className="chain-arrow">→</span>
-        <div className="chain-step">
-          <div className="step-icon"><DIcon name="check" size={12}/></div>
-          <div className="step-name">Gate 3<br/>Structural</div>
-          <div className="step-meta">3/3 predicates</div>
-        </div>
-      </div>
-    </div>
-
-    {/* Source ribbon */}
-    <div className="source-ribbon">
-      Section 26(1)<span className="sep">·</span>
-      Page 14<span className="sep">·</span>
-      char 12453–12527<span className="sep">·</span>
-      SHA-256 a3f5…b9c2<br/>
-      <span style={{ color: 'var(--ink-500)' }}>Retrieved 2026-05-17 08:14:22 UTC+06 · Llama 3.1 8B · BGE-M3</span>
-    </div>
-
-    {/* Actions */}
-    <div className="action-row">
-      <button className="btn btn-primary" onClick={() => onToast('Approval recorded · ledger entry #3848')}>
-        <DIcon name="check"/> Approve
-      </button>
-      <button className="btn btn-secondary" onClick={() => onToast('Edit modal would open')}>
-        <DIcon name="edit"/> Edit
-      </button>
-      <button className="btn btn-ghost-danger" onClick={() => onToast('Reject reason modal would open')}>
-        <DIcon name="xCircle"/> Reject
-      </button>
-    </div>
-
-    {/* Related */}
-    <div>
-      <div className="pane-section-label">Related clauses in this instrument</div>
-      <div className="related-list">
-        <div className="related-row">
-          <span className="sect">§26(2)</span>
-          <span className="summary">Penalty: 5 years' imprisonment or Tk 10 lakh fine</span>
-          <span className="chip chip-verified" style={{ height: 18 }}><span className="dot"></span>6.1</span>
-        </div>
-        <div className="related-row">
-          <span className="sect">§26(3)</span>
-          <span className="summary">Cross-border transfer permitted with consent</span>
-          <span className="chip chip-pending" style={{ height: 18 }}><span className="dot"></span>7.2</span>
-        </div>
-        <div className="related-row">
-          <span className="sect">§28</span>
-          <span className="summary">Religious sentiments — adjacent provision</span>
-          <span className="chip chip-pending" style={{ height: 18 }}><span className="dot"></span>—</span>
-        </div>
-      </div>
-    </div>
-
-    <div className="meta" style={{ textAlign: 'center', padding: '8px 0 24px' }}>
-      End of classification · <span className="mono" style={{ color: 'var(--ink-500)' }}>entry #3847</span>
-    </div>
-  </div>
-);
-
-const DocumentPage = ({ onBack, onBackToDashboard, onToast }) => {
-  const [selectedLabel, setSelectedLabel] = React.useState('§26(1)');
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 56px)' }}>
-      {/* Doc top bar with breadcrumb + actions */}
-      <div className="doc-topbar">
-        <div>
-          <div className="breadcrumb" style={{ marginBottom: 4 }}>
-            <span className="crumb" onClick={onBackToDashboard}>Dashboard</span>
-            <span className="sep">/</span>
-            <span className="crumb" onClick={onBack}>Bangladesh</span>
-            <span className="sep">/</span>
-            <span className="current">Digital Security Act 2018</span>
-          </div>
-          <div className="title">
-            Digital Security Act 2018
-            <span className="hash-badge mono-sm" style={{ marginLeft: 12, transform: 'translateY(-3px)' }} onClick={() => onToast('Hash copied')}>
-              <DIcon name="copy" size={10}/>BD-DSA-2018 · a3f5…b9c2
-            </span>
-          </div>
+    <div style={{ display: "grid", gridTemplateColumns: "280px 1fr 460px", gap: 16, padding: 16, minHeight: "calc(100vh - 56px)" }} data-screen-label="03 Document Workspace">
+      {/* ---------- Outline pane ---------- */}
+      <div className="card" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+        <div style={{ padding: "16px 16px 12px" }}>
+          <div className="caption" style={{ marginBottom: 6 }}>Document outline</div>
+          <input className="input" placeholder="Filter sections…" value={outlineSearch}
+                 onChange={(e) => setOutlineSearch(e.target.value)}
+                 style={{ height: 32, padding: "6px 10px", fontSize: 13 }} />
         </div>
-        <div className="actions">
-          <button className="btn btn-ghost-ink" onClick={() => onToast('Re-process started')}>
-            <DIcon name="refresh"/> Re-process
-          </button>
-          <button className="btn btn-secondary" onClick={() => onToast('Export started')}>
-            <DIcon name="download"/> Export document
-          </button>
-          <button className="btn btn-primary" onClick={() => onToast('Approved all 52 verified citations')}>
-            <DIcon name="check"/> Approve all verified (52)
-          </button>
+        <div style={{ flex: 1, overflowY: "auto", padding: "0 8px 16px" }}>
+          {filteredOutline.map(part => (
+            <div key={part.number} style={{ marginBottom: 12 }}>
+              <div style={{ padding: "8px 12px 4px", fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--ink-500)" }}>
+                Part {part.number} · {part.title}
+              </div>
+              {part.children.map(c => (
+                <div key={c.id}
+                     className={`outline-node ${activeId === c.id ? "active" : ""}`}
+                     onClick={() => setActiveId(c.id)}>
+                  <span className="num">§{c.number}</span>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                      <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.title}</span>
+                      {c.conflict && <span title="Conflict" style={{ color: "var(--warning)" }}><IconGlyph name="alert" size={12} /></span>}
+                    </div>
+                    <div style={{ display: "flex", gap: 6, marginTop: 4, alignItems: "center" }}>
+                      {c.pillar && <span className="chip-pillar">P{c.pillar}</span>}
+                      <StatusDot status={c.status} />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* 3-pane shell */}
-      <div className="doc-shell">
-        {/* LEFT pane: outline */}
-        <div className="doc-pane pane-left">
-          <div className="pane-header">
-            <DIcon name="list" size={14}/>
-            <span style={{ fontWeight: 600, color: 'var(--ink-900)' }}>Outline</span>
-            <span className="meta" style={{ marginLeft: 'auto' }}>64 clauses</span>
-          </div>
-          <div className="outline-search">
-            <DIcon name="search" size={13}/>
-            <input placeholder="Filter outline…"/>
-          </div>
-          <div className="pane-body">
-            <div className="outline-list">
-              {OUTLINE.map((n, i) => <OutlineNode key={i} n={n} onSelect={x => setSelectedLabel(x.label)}/>)}
+      {/* ---------- Source pane ---------- */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 12, minWidth: 0 }}>
+        {/* Doc header */}
+        <div className="card" style={{ padding: "16px 20px" }}>
+          <div className="row" style={{ alignItems: "flex-start" }}>
+            <div className="grow">
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                <span className="chip-pillar">{doc.id}</span>
+                <span className="chip chip-info"><span className="dot"></span>Primary legislation</span>
+                <span className="meta">{doc.language}</span>
+              </div>
+              <div className="h2">{doc.title}</div>
+              <div className="meta" style={{ marginTop: 6, display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+                <span>{doc.jurisdiction} · {doc.pages} pages</span>
+                <span>·</span>
+                <span>Last processed {doc.lastProcessedRel}</span>
+                <span>·</span>
+                <HashBadge hash={doc.sourceHash} />
+                <a href={doc.sourceUrl} target="_blank" rel="noreferrer" className="row"
+                   onClick={(e) => e.preventDefault()}
+                   style={{ color: "var(--ink-600)", textDecoration: "none", gap: 4 }}>
+                  <IconGlyph name="external" size={12} />
+                  <span className="mono" style={{ fontSize: 12 }}>{doc.sourceUrl}</span>
+                </a>
+              </div>
+            </div>
+            <div className="row">
+              <button className="btn btn-secondary compact"><IconGlyph name="refresh" size={14} /> Re-process</button>
+              <button className="btn btn-secondary compact"><IconGlyph name="download" size={14} /> Export</button>
+              <button className="btn btn-primary compact"><IconGlyph name="check" size={14} /> Approve all verified</button>
             </div>
           </div>
         </div>
 
-        {/* CENTER pane: PDF */}
-        <div className="doc-pane pane-center">
-          <div className="pdf-toolbar">
-            <div className="pdf-pages">
-              <button className="icon-btn" style={{ width: 28, height: 28 }}><DIcon name="chevronLeft" size={14}/></button>
-              <span className="mono" style={{ fontSize: 12 }}>
-                Page <input className="page-input" defaultValue="14"/> of 87
-              </span>
-              <button className="icon-btn" style={{ width: 28, height: 28 }}><DIcon name="chevronRight" size={14}/></button>
-            </div>
-            <div className="row gap-sm">
-              <span className="chip chip-verified"><span className="dot"></span>Verified citation on this page</span>
-              <button className="btn btn-ghost btn-sm">
-                <DIcon name="arrowUpRight" size={12}/> View original source
-              </button>
-            </div>
-          </div>
-          <div className="pdf-scroll" style={{ position: 'relative' }}>
-            <PdfPage/>
-            <div className="zoom-fab">
-              <button>−</button>
-              <span className="val">100%</span>
-              <button>+</button>
-            </div>
-          </div>
-        </div>
+        {/* Conflict banner when applicable */}
+        {activeClause.conflict && (
+          <ConflictBanner clauseRef={`§${activeClause.number}`} onOpen={onOpenConflict} />
+        )}
 
-        {/* RIGHT pane: classification */}
-        <div className="doc-pane pane-right">
-          <div className="pane-header">
-            <span className="status-dot verified"></span>
-            <span style={{ fontWeight: 600, color: 'var(--ink-900)' }}>{selectedLabel}</span>
-            <span className="meta" style={{ marginLeft: 'auto' }}>Classification</span>
-            <button className="icon-btn" style={{ width: 28, height: 28 }} title="Open in drawer"><DIcon name="panel" size={14}/></button>
-          </div>
-          <div className="pane-body">
-            <ClassificationPane onToast={onToast}/>
-          </div>
+        {/* Source paper rendering */}
+        <div style={{ flex: 1, minHeight: 0, overflowY: "auto" }}>
+          <PaperView activeClause={activeClause} isRejected={isRejected} isPending={isPending}
+                     verbatimSpan={showingHero ? cls.verbatimSpan : showingRejected ? rej.verbatimSpan : null} />
         </div>
+      </div>
+
+      {/* ---------- Classification pane ---------- */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 12, minWidth: 0, maxHeight: "calc(100vh - 56px - 32px)", overflowY: "auto" }}>
+        {showingHero && <VerifiedClassificationCard cls={cls} onOpenCitationDetail={onOpenCitationDetail} onOpenEdit={onOpenEdit} onOpenReject={onOpenReject} />}
+        {showingRejected && <RejectedClassificationCard rej={rej} onOpenEdit={onOpenEdit} />}
+        {!showingHero && !showingRejected && (
+          <PendingOrUnclassifiedCard clause={activeClause} />
+        )}
+
+        <RelatedClausesCard flatClauses={flatClauses} activeId={activeId} onSelect={setActiveId} />
       </div>
     </div>
   );
 };
 
-window.CC.DocumentPage = DocumentPage;
+// ---------- helpers ----------
+
+function StatusDot({ status }) {
+  const map = { verified: "var(--success)", pending: "var(--warning)", rejected: "var(--danger)", none: "var(--ink-300)" };
+  const labels = { verified: "Verified", pending: "Pending", rejected: "Rejected" };
+  if (!status) return null;
+  return (
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 11, color: "var(--ink-500)" }}>
+      <span style={{ width: 6, height: 6, borderRadius: "50%", background: map[status] || "var(--ink-300)" }}></span>
+      {labels[status]}
+    </span>
+  );
+}
+
+function ConflictBanner({ clauseRef, onOpen }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 16px", background: "var(--warning-bg)", border: "1px solid #FCD34D", borderRadius: 10 }}>
+      <span style={{ width: 28, height: 28, borderRadius: 8, background: "var(--warning)", color: "#fff", display: "grid", placeItems: "center" }}>
+        <IconGlyph name="alert" size={16} />
+      </span>
+      <div style={{ flex: 1 }}>
+        <div style={{ fontWeight: 600, color: "var(--ink-900)", fontSize: 14 }}>Conflict on {clauseRef}</div>
+        <div style={{ fontSize: 13, color: "var(--ink-700)" }}>Two authoritative sources disagree. Resolution required before final classification.</div>
+      </div>
+      <button className="btn btn-secondary compact" onClick={onOpen}>Resolve conflict <IconGlyph name="arrowR" size={12} /></button>
+    </div>
+  );
+}
+
+function PaperView({ activeClause, verbatimSpan, isRejected }) {
+  // Render a representative document page with the active clause highlighted
+  return (
+    <div className="paper">
+      <div style={{ textAlign: "center", marginBottom: 24 }}>
+        <div style={{ fontSize: 12, letterSpacing: "0.12em", color: "#71717A", textTransform: "uppercase" }}>
+          The People's Republic of Bangladesh
+        </div>
+        <div style={{ fontSize: 22, fontWeight: 700, marginTop: 8 }}>The Digital Security Act, 2018</div>
+        <div style={{ fontSize: 13, color: "#71717A", marginTop: 4 }}>Act No. 46 of 2018 · Published in Bangladesh Gazette · 8 October 2018</div>
+      </div>
+
+      <div style={{ borderTop: "1px solid #E4E4E7", paddingTop: 18 }}>
+        <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 12, color: "#3F3F46" }}>
+          Chapter V — Crimes and Punishments
+        </div>
+
+        <PaperClause num="24" title="Identity fraud"
+          active={activeClause.number === "24"}
+          status={activeClause.status}
+          body={'(1) If a person, with the intention of committing a fraudulent act, dishonestly uses any identity information of another person, he shall be punished with imprisonment for a term not exceeding five (5) years.'} />
+
+        <PaperClause num="25" title="Publishing offensive information"
+          active={activeClause.number === "25"}
+          status={activeClause.status}
+          body={'(1) Whoever knowingly publishes, transmits or causes to be published or transmitted on a website any information which is offensive…'} />
+
+        <PaperClause num="26" title="Punishment for publishing identity-related information"
+          active={activeClause.number === "26"}
+          status={activeClause.status}
+          highlight={activeClause.number === "26" ? verbatimSpan : null}
+          isRejected={isRejected}
+          body={[
+            "(1) Any person who, intentionally or knowingly without lawful authority, collects, sells, takes possession of, supplies or uses any person's identity-related information, shall not save such data, including biometric information, photographs, financial records or registry information, outside the geographic boundaries of Bangladesh.",
+            "(2) Storage of such data within the territory of Bangladesh shall be subject to the regulations issued by the Digital Security Agency from time to time.",
+            "(3) The provisions of this section shall apply notwithstanding anything contrary contained in any other law for the time being in force, save with the express written consent of the data subject for a specified purpose."
+          ]} />
+
+        <PaperClause num="27" title="Cyber-terrorism"
+          active={activeClause.number === "27"}
+          status={activeClause.status}
+          body={'(1) If a person, with an intention to threaten national integrity, security or sovereignty, commits or attempts to commit a cyber-related offence…'} />
+
+        <PaperClause num="28" title="Hurting religious values"
+          active={activeClause.number === "28"}
+          status={activeClause.status}
+          highlight={activeClause.number === "28" ? verbatimSpan : null}
+          isRejected={activeClause.number === "28"}
+          body={'(1) Whoever publishes or broadcasts any propaganda or campaign against any religion through any website or any electronic form which hurts the religious value or sentiment, shall be punished with imprisonment for a term not exceeding ten (10) years…'} />
+      </div>
+
+      <div className="page-num">Page 14 of 42</div>
+    </div>
+  );
+}
+
+function PaperClause({ num, title, body, active, status, highlight, isRejected }) {
+  const bodyArr = Array.isArray(body) ? body : [body];
+  const renderBody = (text, key) => {
+    if (highlight && text.includes(highlight)) {
+      const i = text.indexOf(highlight);
+      const before = text.slice(0, i);
+      const after = text.slice(i + highlight.length);
+      return (
+        <span key={key}>
+          {before}
+          <span className={`clause-highlight ${isRejected ? "rejected" : ""}`} ref={(el) => { if (el && active) setTimeout(() => el.scrollIntoView ? null : null, 0); }}>{highlight}</span>
+          {after}
+        </span>
+      );
+    }
+    return <span key={key}>{text}</span>;
+  };
+  return (
+    <div className={`clause ${active ? "active" : ""}`} style={active ? { background: "rgba(15, 181, 167, 0.04)", padding: "6px 10px", borderRadius: 4, marginLeft: -10, marginRight: -10 } : null}>
+      <div style={{ fontWeight: 700, marginBottom: 4, fontSize: 14.5 }}><span className="section-num">{num}.</span>{title}</div>
+      {bodyArr.map((b, i) => (
+        <p key={i} style={{ margin: "8px 0", textAlign: "justify" }}>{renderBody(b, i)}</p>
+      ))}
+    </div>
+  );
+}
+
+// ---------- Verified classification card ----------
+function VerifiedClassificationCard({ cls, onOpenCitationDetail, onOpenEdit, onOpenReject }) {
+  return (
+    <div className="card" style={{ padding: 0 }}>
+      {/* Header */}
+      <div style={{ padding: "20px 24px 16px", borderBottom: "1px solid var(--ink-100)" }}>
+        <div className="row" style={{ marginBottom: 8 }}>
+          <span className="chip chip-verified"><IconGlyph name="shieldCheck" size={12} /> Verified</span>
+          <span className="chip-pillar">§{cls.sectionNumber}</span>
+          <div className="spacer"></div>
+          <HashBadge hash={cls.hash} />
+        </div>
+        <div style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 700, letterSpacing: "-0.015em", color: "var(--ink-950)", marginTop: 4 }}>
+          {cls.pillarLabel}
+        </div>
+        <div className="meta" style={{ marginTop: 6 }}>{cls.title}</div>
+      </div>
+
+      <div style={{ padding: "20px 24px", display: "flex", flexDirection: "column", gap: 18 }}>
+        {/* Confidence */}
+        <div>
+          <div className="caption" style={{ marginBottom: 8 }}>Classification confidence</div>
+          <ConfidenceBar value={cls.confidence} />
+        </div>
+
+        {/* Verification chain — the visual anchor */}
+        <div>
+          <div className="row" style={{ marginBottom: 8 }}>
+            <div className="caption">CVR verification chain</div>
+            <div className="spacer"></div>
+            <span className="small" style={{ color: "var(--success)" }}>
+              <IconGlyph name="check" size={12} /> All gates passed
+            </span>
+          </div>
+          <VerificationChain gates={cls.gates} />
+        </div>
+
+        {/* Verbatim quote */}
+        <VerbatimBlock text={cls.verbatimSpan} />
+
+        {/* Principal rule */}
+        <div>
+          <div className="caption" style={{ marginBottom: 6 }}>Principal rule</div>
+          <div className="body" style={{ color: "var(--ink-900)" }}>{cls.principalRule}</div>
+        </div>
+
+        {/* Exceptions */}
+        {cls.exceptions?.length > 0 && (
+          <div>
+            <div className="caption" style={{ marginBottom: 6 }}>Exceptions</div>
+            <ul style={{ margin: 0, paddingLeft: 18, color: "var(--ink-700)", fontSize: 14 }}>
+              {cls.exceptions.map((x, i) => <li key={i} style={{ marginBottom: 4 }}>{x}</li>)}
+            </ul>
+          </div>
+        )}
+
+        {/* Conditions */}
+        {cls.conditions?.length > 0 && (
+          <div>
+            <div className="caption" style={{ marginBottom: 6 }}>Conditions</div>
+            <ul style={{ margin: 0, paddingLeft: 18, color: "var(--ink-700)", fontSize: 14 }}>
+              {cls.conditions.map((x, i) => <li key={i} style={{ marginBottom: 4 }}>{x}</li>)}
+            </ul>
+          </div>
+        )}
+
+        {/* Provenance ribbon */}
+        <div>
+          <div className="row" style={{ marginBottom: 8 }}>
+            <div className="caption">Source provenance</div>
+            <div className="spacer"></div>
+            <button className="btn-tertiary btn compact" onClick={onOpenCitationDetail}
+                    style={{ height: 24, padding: "0 8px", fontSize: 12 }}>
+              View full chain <IconGlyph name="arrowR" size={11} />
+            </button>
+          </div>
+          <ProvenanceRibbon provenance={cls.provenance} />
+        </div>
+      </div>
+
+      {/* Action row */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, padding: "12px 16px", background: "var(--ink-50)", borderTop: "1px solid var(--ink-200)", borderRadius: "0 0 14px 14px" }}>
+        <button className="btn btn-primary"><IconGlyph name="check" size={14} /> Approve</button>
+        <button className="btn btn-secondary" onClick={onOpenEdit}><IconGlyph name="edit" size={14} /> Edit</button>
+        <button className="btn btn-destructive" onClick={onOpenReject}><IconGlyph name="x" size={14} /> Reject</button>
+      </div>
+    </div>
+  );
+}
+
+// ---------- Rejected classification card ----------
+function RejectedClassificationCard({ rej, onOpenEdit }) {
+  return (
+    <div className="card" style={{ padding: 0, borderColor: "#FECACA" }}>
+      <div style={{ padding: "20px 24px 16px", background: "linear-gradient(180deg, #FEF2F2 0%, #FFFFFF 100%)", borderBottom: "1px solid #FECACA", borderRadius: "14px 14px 0 0" }}>
+        <div className="row" style={{ marginBottom: 8 }}>
+          <span className="chip chip-rejected"><IconGlyph name="x" size={12} /> Rejected by CVR loop</span>
+          <span className="chip-pillar">§{rej.sectionNumber}</span>
+          <div className="spacer"></div>
+        </div>
+        <div style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 700, letterSpacing: "-0.015em", color: "var(--ink-950)", marginTop: 4 }}>
+          Proposed: {rej.proposedPillarLabel}
+        </div>
+        <div className="meta" style={{ marginTop: 6 }}>{rej.title}</div>
+
+        <div style={{ marginTop: 14, padding: "10px 12px", background: "#fff", border: "1px solid #FECACA", borderRadius: 8, display: "flex", alignItems: "center", gap: 10 }}>
+          <span style={{ width: 28, height: 28, borderRadius: 8, background: "var(--danger)", color: "#fff", display: "grid", placeItems: "center" }}>
+            <IconGlyph name="shield" size={14} />
+          </span>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: "var(--ink-900)" }}>Caught by {rej.failedGate}</div>
+            <div style={{ fontSize: 12, color: "var(--ink-600)", marginTop: 2 }}>This output never reached the export pipeline — the system caught its own mistake.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ padding: "20px 24px", display: "flex", flexDirection: "column", gap: 18 }}>
+        {/* Verification chain showing failure */}
+        <div>
+          <div className="caption" style={{ marginBottom: 8 }}>CVR verification chain</div>
+          <VerificationChain gates={rej.gates} />
+        </div>
+
+        <div>
+          <div className="caption" style={{ marginBottom: 6 }}>What the model proposed</div>
+          <VerbatimBlock text={rej.verbatimSpan} />
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <div style={{ padding: 12, border: "1px solid var(--ink-200)", borderRadius: 8, background: "var(--ink-50)" }}>
+            <div className="caption" style={{ marginBottom: 4 }}>NLI score</div>
+            <div className="mono" style={{ fontSize: 18, fontWeight: 600, color: "var(--danger)" }}>0.15 / 0.70</div>
+            <div className="small muted" style={{ marginTop: 4 }}>span ⊨ claim entailment</div>
+          </div>
+          <div style={{ padding: 12, border: "1px solid var(--ink-200)", borderRadius: 8, background: "var(--ink-50)" }}>
+            <div className="caption" style={{ marginBottom: 4 }}>Predicates found</div>
+            <div className="mono" style={{ fontSize: 18, fontWeight: 600, color: "var(--danger)" }}>0 / 2</div>
+            <div className="small muted" style={{ marginTop: 4 }}>for Pillar 12.1</div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, padding: "12px 16px", background: "var(--ink-50)", borderTop: "1px solid var(--ink-200)", borderRadius: "0 0 14px 14px" }}>
+        <button className="btn btn-secondary"><IconGlyph name="refresh" size={14} /> Send back for re-classification</button>
+        <button className="btn btn-secondary" onClick={onOpenEdit}>Mark as truly N/A</button>
+      </div>
+    </div>
+  );
+}
+
+function PendingOrUnclassifiedCard({ clause }) {
+  return (
+    <div className="card">
+      <div className="row" style={{ marginBottom: 10 }}>
+        <StatusChip status={clause.status} />
+        <span className="chip-pillar">§{clause.number}</span>
+        {clause.pillar && <span className="chip-pillar">P{clause.pillar}</span>}
+      </div>
+      <div className="h3">{clause.title}</div>
+      <div className="meta" style={{ marginTop: 6 }}>
+        {clause.status === "pending"
+          ? "This clause is in the human review queue. The CVR loop flagged it for confirmation before publication."
+          : "No classification has been produced for this clause yet. Run the classifier to attempt mapping."}
+      </div>
+      <div className="row" style={{ marginTop: 16 }}>
+        <button className="btn btn-primary compact">Open in review queue</button>
+        <button className="btn btn-secondary compact">Run classifier</button>
+      </div>
+    </div>
+  );
+}
+
+function ProvenanceRibbon({ provenance }) {
+  const rows = [
+    ["Section", provenance.section],
+    ["Page", String(provenance.page)],
+    ["Char offset", provenance.charOffset],
+    ["Bounding box", provenance.bbox],
+    ["Retrieved at", provenance.retrievedAt],
+    ["SHA-256", provenance.sha256.slice(0, 16) + "…"],
+  ];
+  return (
+    <div className="provenance">
+      {rows.map(([k, v]) => (
+        <div key={k} className="row-item">
+          <dt style={{ minWidth: 84 }}>{k}</dt>
+          <dd style={{ fontSize: 11.5 }}>{v}</dd>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function RelatedClausesCard({ flatClauses, activeId, onSelect }) {
+  const others = flatClauses.filter(c => c.id !== activeId && c.status !== "none").slice(0, 5);
+  return (
+    <div className="card">
+      <div className="caption" style={{ marginBottom: 10 }}>Related clauses · same instrument</div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+        {others.map(c => (
+          <div key={c.id} onClick={() => onSelect(c.id)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", borderRadius: 6, cursor: "pointer", transition: "var(--t-default)" }}
+               onMouseEnter={(e) => e.currentTarget.style.background = "var(--ink-50)"}
+               onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}>
+            <span className="mono" style={{ fontSize: 12, color: "var(--ink-500)", minWidth: 36 }}>§{c.number}</span>
+            <span style={{ flex: 1, fontSize: 13.5, color: "var(--ink-900)" }}>{c.title}</span>
+            {c.pillar && <span className="chip-pillar">P{c.pillar}</span>}
+            <StatusDot status={c.status} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

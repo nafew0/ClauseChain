@@ -1,282 +1,262 @@
-/* =============================================================
-   Page 1 — Workspace Dashboard
-   Per spec §"PAGE 1 — Workspace Dashboard"
-   ============================================================= */
-const { Icon, Sparkline, Flag, FooterBuild } = window.CC;
+// ===========================================================
+// Page 1 — Workspace Dashboard
+// ===========================================================
+/* global React, JURISDICTIONS, ACTIVITY, PIPELINE_JOBS, REJECTIONS,
+   KPI, PillarCoverageStack, HashBadge, IconGlyph */
 
-const KPI_DATA = [
-  { label: 'Verified citations', value: '412', gradient: true,
-    trend: { text: '+23 today', kind: 'up' },
-    spark: [44, 48, 51, 49, 58, 63, 72] },
-  { label: 'Pending review', value: '28', gradient: false,
-    trend: { text: '−4 today', kind: 'flat' },
-    spark: [32, 30, 36, 34, 32, 31, 28] },
-  { label: 'Rejected by CVR', value: '47', gradient: false,
-    trend: { text: '+6 caught', kind: 'down' },
-    spark: [38, 39, 40, 42, 44, 45, 47] },
-  { label: 'Avg confidence', value: '0.91', gradient: false,
-    trend: { text: '+0.02', kind: 'up' },
-    spark: [0.82, 0.84, 0.85, 0.87, 0.88, 0.90, 0.91] },
-];
+const { useState: useDashState } = React;
 
-const JURISDICTIONS = [
-  {
-    code: 'BD', name: 'Bangladesh', instruments: 4, clauses: 162,
-    p6: 78, p7: 64,
-    stats: { verified: 128, pending: 14, rejected: 18, conflicts: 2 },
-  },
-  {
-    code: 'TH', name: 'Thailand', instruments: 4, clauses: 178,
-    p6: 92, p7: 88,
-    stats: { verified: 156, pending: 9, rejected: 12, conflicts: 1 },
-  },
-  {
-    code: 'SG', name: 'Singapore', instruments: 4, clauses: 147,
-    p6: 100, p7: 96,
-    stats: { verified: 128, pending: 5, rejected: 17, conflicts: 0 },
-  },
-];
-
-const ACTIVITY = [
-  { kind: 'verified', time: '2m ago', desc: <>Section <strong>26(1)</strong> of <strong>Digital Security Act 2018</strong> verified as <strong>Pillar 6.1</strong> Data Localization</>, hash: 'a3f5…b9c2' },
-  { kind: 'rejected', time: '8m ago', desc: <>Section <strong>24</strong> of <strong>TH-CCA-2007</strong> rejected by <em>Gate 2 · NLI 0.15</em></>, hash: '7c2e…01ab' },
-  { kind: 'ingested', time: '14m ago', desc: <>Ingested <strong>BD draft PDPA 2023</strong> · 42 pages · OCR consensus 98.4%</>, hash: '4d91…2e0f' },
-  { kind: 'conflict', time: '32m ago', desc: <>Conflict on <strong>§28(2) TH-PDPA</strong> · two sources disagree on adequacy clause</>, hash: 'b108…f5da' },
-  { kind: 'verified', time: '1h ago', desc: <>Section <strong>13(c)</strong> of <strong>SG-PDPA-2012</strong> verified as <strong>Pillar 7.3</strong> Onward Transfer</>, hash: '2fa9…7d44' },
-  { kind: 'crawl', time: '2h ago', desc: <>Crawl completed on <strong>bdlaws.minlaw.gov.bd</strong> · 52 of 52 pages</>, hash: 'e7b0…91c3' },
-];
-
-const RUNNING_JOBS = [
-  { name: 'bdlaws.minlaw.gov.bd', stage: 'Crawler · BD', pct: 65, progress: '34 / 52 pages' },
-  { name: 'Bangladesh ICT Act 2006 (amendments)', stage: 'OCR · Qwen2-VL + Tesseract', pct: 42, progress: 'page 17 / 41' },
-  { name: 'Thai PDPC guidelines', stage: 'Classifier · Llama 3.1 8B', pct: 88, progress: '189 / 215 clauses' },
-];
-
-const KpiCard = ({ k }) => (
-  <div className="kpi-card">
-    <div className="caption">{k.label}</div>
-    <div className={`kpi-num ${k.gradient ? 'gradient-text' : ''}`}>{k.value}</div>
-    <div className="row between">
-      <span className={`kpi-trend ${k.trend.kind}`}>
-        {k.trend.kind === 'up' && <Icon name="arrowUpRight" size={12}/>}
-        {k.trend.text}
-      </span>
-      <div style={{ width: 90 }}>
-        <Sparkline data={k.spark} color={k.trend.kind === 'down' ? '#EF4444' : '#0FB5A7'}/>
-      </div>
-    </div>
-  </div>
-);
-
-const JurCard = ({ j, onClick }) => (
-  <div className="jur-card" onClick={onClick}>
-    <div className="head">
-      <Flag code={j.code} size={22}/>
-      <h3 className="h3">{j.name}</h3>
-      <span className="chip chip-neutral" style={{ marginLeft: 'auto' }}>
-        <span className="dot"></span>{j.instruments} instruments
-      </span>
-    </div>
-    <div className="meta" style={{ marginTop: -6 }}>{j.clauses} clauses analyzed</div>
-    <div className="coverage-bars">
-      <div className="cov-row">
-        <span className="label">Pillar 6</span>
-        <span className="bar"><span style={{ width: `${j.p6}%` }}></span></span>
-        <span className="pct">{j.p6}%</span>
-      </div>
-      <div className="cov-row">
-        <span className="label">Pillar 7</span>
-        <span className="bar"><span style={{ width: `${j.p7}%` }}></span></span>
-        <span className="pct">{j.p7}%</span>
-      </div>
-    </div>
-    <div className="jur-stats">
-      <div className="jur-stat success">
-        <div className="label">Verified</div>
-        <div className="val">{j.stats.verified}</div>
-      </div>
-      <div className="jur-stat warn">
-        <div className="label">Pending</div>
-        <div className="val">{j.stats.pending}</div>
-      </div>
-      <div className="jur-stat danger">
-        <div className="label">Rejected</div>
-        <div className="val">{j.stats.rejected}</div>
-      </div>
-      <div className="jur-stat">
-        <div className="label">Conflicts</div>
-        <div className="val">{j.stats.conflicts}</div>
-      </div>
-    </div>
-  </div>
-);
-
-const ActivityRow = ({ a, onClick }) => (
-  <div className="act-row" onClick={onClick}>
-    <div className={`act-icon ${a.kind}`}>
-      {a.kind === 'verified' && <Icon name="check" size={14}/>}
-      {a.kind === 'rejected' && <Icon name="x" size={14}/>}
-      {a.kind === 'ingested' && <Icon name="filePlus" size={14}/>}
-      {a.kind === 'conflict' && <Icon name="warn" size={14}/>}
-      {a.kind === 'crawl'    && <Icon name="crawl" size={14}/>}
-    </div>
-    <div className="act-time">{a.time}</div>
-    <div className="act-desc">{a.desc}</div>
-    <div className="hash-badge mono-sm">{a.hash}</div>
-    <Icon name="chevronRight" size={14} style={{ color: 'var(--ink-400)' }}/>
-  </div>
-);
-
-/* Donut chart — CVR gate outcomes */
-const Donut = ({ data, size = 110, thickness = 14 }) => {
-  const total = data.reduce((s, d) => s + d.value, 0);
-  const r = (size - thickness) / 2;
-  const c = 2 * Math.PI * r;
-  let acc = 0;
+window.DashboardPage = function DashboardPage({ onNavigate, onOpenAddJurisdiction }) {
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="#F4F4F5" strokeWidth={thickness}/>
-      {data.map((d, i) => {
-        const len = (d.value / total) * c;
-        const dash = `${len} ${c - len}`;
-        const offset = c * 0.25 - acc;
-        acc += len;
-        return (
-          <circle key={i}
-            cx={size/2} cy={size/2} r={r}
-            fill="none"
-            stroke={d.color}
-            strokeWidth={thickness}
-            strokeDasharray={dash}
-            strokeDashoffset={offset}
-            strokeLinecap="butt"
-          />
-        );
-      })}
-      <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle"
-            fontFamily="var(--font-display)" fontWeight="600" fontSize="18" fill="#0A0A0B">
-        {total}
-      </text>
-      <text x="50%" y="65%" textAnchor="middle" dominantBaseline="middle"
-            fontFamily="var(--font-text)" fontSize="9" fill="#71717A" letterSpacing="0.5">
-        OUTCOMES
-      </text>
-    </svg>
+    <div className="page" data-screen-label="01 Dashboard">
+      {/* Hero greeting */}
+      <div className="page-header">
+        <div>
+          <div className="caption" style={{ marginBottom: 6 }}>Wednesday · 20 May 2026 · UTC+06</div>
+          <h1 className="h1" style={{ fontSize: 40, lineHeight: 1.1 }}>
+            Good morning, <span className="gradient-text">Asha.</span>
+          </h1>
+          <div className="subtitle">
+            12 verifications cleared overnight. 3 conflicts opened across Bangladesh and Thailand.
+          </div>
+        </div>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button className="btn btn-secondary"><IconGlyph name="download" size={14} /> Export workspace</button>
+          <button className="btn btn-primary" onClick={onOpenAddJurisdiction}>
+            <IconGlyph name="plus" size={14} /> Add jurisdiction
+          </button>
+        </div>
+      </div>
+
+      {/* KPI strip */}
+      <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr 1fr", gap: 16, marginBottom: 32 }}>
+        <div className="kpi" style={{ background: "linear-gradient(140deg, #FFFFFF 0%, #F0FDFA 100%)", borderColor: "var(--teal-100)" }}>
+          <div className="kpi-label" style={{ color: "var(--teal-600)" }}>Verified citations</div>
+          <div className="kpi-value gradient-text" style={{ fontSize: 56 }}>826</div>
+          <div className="kpi-meta">
+            <span className="delta up"><IconGlyph name="arrowUp" size={12} /> +48</span>
+            <span>vs. yesterday · 1,017 across workspace</span>
+          </div>
+        </div>
+        <KPI label="Pending review" value="97" delta="−12" deltaDir="down" sub="awaiting human" accent="var(--warning)" />
+        <KPI label="Rejected by CVR" value="77" delta="+18" deltaDir="up" sub="anti-hallucination saves" accent="var(--danger)" />
+        <KPI label="Avg confidence" value="0.91" delta="+0.03" deltaDir="up" sub="across verified" />
+      </div>
+
+      {/* Two-column body */}
+      <div style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr", gap: 24 }}>
+        {/* Left: jurisdictions */}
+        <div>
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 16 }}>
+            <h2 className="h2">Jurisdictions</h2>
+            <span className="meta">3 active · 28 pillars in scope</span>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
+            {JURISDICTIONS.map(j => (
+              <JurisdictionCard key={j.code} j={j} onClick={() => onNavigate({ page: "jurisdiction", country: j.code })} />
+            ))}
+            {/* Add-card */}
+            <button onClick={onOpenAddJurisdiction} style={{
+              border: "1.5px dashed var(--ink-300)", borderRadius: 14, padding: 24, background: "transparent",
+              display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+              gap: 8, minHeight: 240, cursor: "pointer", color: "var(--ink-500)", transition: "var(--t-default)",
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.borderColor = "var(--teal-500)"; e.currentTarget.style.color = "var(--teal-600)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--ink-300)"; e.currentTarget.style.color = "var(--ink-500)"; }}>
+              <span style={{ width: 44, height: 44, borderRadius: "50%", background: "var(--ink-100)", display: "grid", placeItems: "center" }}>
+                <IconGlyph name="plus" size={20} />
+              </span>
+              <div style={{ fontSize: 15, fontWeight: 500 }}>Add jurisdiction</div>
+              <div style={{ fontSize: 12 }}>Vietnam · Indonesia · Sri Lanka …</div>
+            </button>
+          </div>
+
+          <RecentActivityCard onNavigate={onNavigate} />
+        </div>
+
+        {/* Right: pipeline + rejections */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <PipelineHealthCard />
+          <CVRBreakdownCard onNavigate={onNavigate} />
+        </div>
+      </div>
+    </div>
   );
 };
 
-const DashboardPage = ({ onOpenJurisdiction, onToast }) => {
-  const donutData = [
-    { label: 'Passed',  value: 412, color: '#10B981' },
-    { label: 'Flagged', value: 28,  color: '#F59E0B' },
-    { label: 'Rejected',value: 47,  color: '#EF4444' },
-  ];
-
+// ---------- Jurisdiction summary card ----------
+function JurisdictionCard({ j, onClick }) {
   return (
-    <div className="page">
-      {/* Header */}
-      <header className="page-header">
-        <div>
-          <h1 className="h1"><span className="gradient-text" style={{ fontSize: 'inherit' }}>Welcome back, Nafew</span></h1>
-          <div className="subtitle">
-            3 jurisdictions · 12 instruments · 487 clauses analyzed · last sync <span className="mono" style={{ color: 'var(--ink-700)' }}>2026-05-19 08:14:22 UTC+06</span>
-          </div>
+    <div className="card" onClick={onClick} style={{ cursor: "pointer", transition: "var(--t-default)" }}
+         onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "var(--shadow-md)"; e.currentTarget.style.borderColor = "var(--ink-300)"; }}
+         onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "none"; e.currentTarget.style.borderColor = "var(--ink-200)"; }}>
+      <div className="row" style={{ marginBottom: 16, alignItems: "flex-start" }}>
+        <div style={{ fontSize: 28, lineHeight: 1 }}>{j.flag}</div>
+        <div style={{ flex: 1 }}>
+          <div className="h3">{j.name}</div>
+          <div className="meta">{j.languages.join(" · ")} · synced {j.lastSyncRel}</div>
         </div>
-        <div className="row gap-sm">
-          <button className="btn btn-secondary">
-            <Icon name="download"/> Export ledger
-          </button>
-          <button className="btn btn-primary" onClick={() => onToast('Add Jurisdiction modal would open')}>
-            <Icon name="plus"/> Add jurisdiction
-          </button>
-        </div>
-      </header>
-
-      {/* KPI strip */}
-      <div className="kpi-strip">
-        {KPI_DATA.map((k, i) => <KpiCard key={i} k={k}/>)}
+        {j.conflicts > 0 && (
+          <span className="chip chip-conflict" title={`${j.conflicts} conflicts`}>
+            <IconGlyph name="alert" size={11} /> {j.conflicts}
+          </span>
+        )}
       </div>
 
-      {/* Jurisdictions */}
-      <div className="section-head">
-        <h2 className="h2">Your jurisdictions</h2>
-        <button className="btn btn-ghost btn-sm">View all <Icon name="arrowRight" size={12}/></button>
-      </div>
-      <div className="jur-grid">
-        {JURISDICTIONS.map(j => (
-          <JurCard key={j.code} j={j} onClick={() => onOpenJurisdiction(j.code)}/>
-        ))}
-        <div className="jur-card add" onClick={() => onToast('Add Jurisdiction modal would open')}>
-          <div style={{ width: 36, height: 36, borderRadius: 999, background: 'var(--ink-100)', display: 'grid', placeItems: 'center' }}>
-            <Icon name="plus" size={18}/>
-          </div>
-          <div style={{ fontSize: 14, fontWeight: 500 }}>Add jurisdiction</div>
-          <div className="meta" style={{ textAlign: 'center', maxWidth: 180 }}>
-            Seed it with official sources and begin discovery
-          </div>
-        </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 4, marginBottom: 14 }}>
+        <Stat val={j.instruments} label="Instruments" />
+        <Stat val={j.clauses} label="Clauses" />
+        <Stat val={j.verified} label="Verified" color="var(--success)" />
+        <Stat val={j.rejected} label="Rejected" color="var(--danger)" />
       </div>
 
-      {/* Recent activity */}
-      <div className="section-head">
-        <h2 className="h2">Recent activity</h2>
-        <div className="row gap-sm">
-          <button className="fchip active">All</button>
-          <button className="fchip">Verified</button>
-          <button className="fchip">Rejected</button>
-          <button className="fchip">Conflicts</button>
-        </div>
-      </div>
-      <div className="activity-list">
-        {ACTIVITY.map((a, i) => (
-          <ActivityRow key={i} a={a} onClick={() => onToast('Open citation ' + a.hash)}/>
-        ))}
-      </div>
+      <PillarCoverageStack coverage={j.coverage} />
+    </div>
+  );
+}
 
-      {/* Pipeline health */}
-      <div className="section-head">
-        <h2 className="h2">Pipeline health</h2>
-        <button className="btn btn-ghost btn-sm">Open ledger <Icon name="arrowRight" size={12}/></button>
+function Stat({ val, label, color }) {
+  return (
+    <div>
+      <div style={{ fontFamily: "var(--font-display)", fontSize: 18, fontWeight: 600, color: color || "var(--ink-950)", fontVariantNumeric: "tabular-nums" }}>
+        {val}
       </div>
-      <div className="split-2">
-        <div className="card" style={{ padding: 20 }}>
-          <div className="caption" style={{ marginBottom: 14 }}>CVR gate outcomes · last 24h</div>
-          <div className="donut-wrap">
-            <Donut data={donutData}/>
-            <div className="donut-legend" style={{ flex: 1 }}>
-              {donutData.map((d, i) => (
-                <div key={i} className="lg-row">
-                  <span className="sw" style={{ background: d.color }}></span>
-                  <span>{d.label}</span>
-                  <span className="v">{d.value}</span>
-                </div>
-              ))}
-              <div style={{ marginTop: 10, fontSize: 12, color: 'var(--ink-500)' }}>
-                CVR caught <strong style={{ color: 'var(--ink-900)' }}>15.4%</strong> of model outputs before display.
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="card" style={{ padding: 20 }}>
-          <div className="row between" style={{ marginBottom: 8 }}>
-            <div className="caption">Currently running</div>
-            <span className="chip chip-teal"><span className="dot"></span>3 active</span>
-          </div>
-          {RUNNING_JOBS.map((j, i) => (
-            <div key={i} className="pipeline-job">
-              <div className="label">{j.name}</div>
-              <div className="progress">{j.progress}</div>
-              <div className="stage">{j.stage}</div>
-              <div></div>
-              <div className="bar"><span style={{ width: j.pct + '%' }}></span></div>
-            </div>
+      <div style={{ fontSize: 11, color: "var(--ink-500)", letterSpacing: "0.04em", textTransform: "uppercase" }}>{label}</div>
+    </div>
+  );
+}
+
+// ---------- Recent activity ----------
+function RecentActivityCard({ onNavigate }) {
+  const [filter, setFilter] = useDashState("all");
+  const filtered = filter === "all" ? ACTIVITY : ACTIVITY.filter(a => a.type === filter);
+  return (
+    <div className="card flush">
+      <div style={{ padding: "16px 20px 12px", borderBottom: "1px solid var(--ink-200)", display: "flex", alignItems: "center", gap: 16 }}>
+        <h3 className="h3">Recent activity</h3>
+        <div style={{ marginLeft: "auto", display: "flex", gap: 4 }}>
+          {[
+            ["all", "All"],
+            ["verified", "Verified"],
+            ["rejected", "Rejected"],
+            ["conflict", "Conflicts"],
+            ["ingested", "Ingestion"],
+          ].map(([k, label]) => (
+            <button key={k} onClick={() => setFilter(k)}
+                    className={`btn ${filter === k ? "btn-tertiary" : ""} compact`}
+                    style={{ height: 28, fontSize: 12, padding: "0 10px", color: filter === k ? "var(--teal-600)" : "var(--ink-600)", background: filter === k ? "var(--teal-50)" : "transparent" }}>
+              {label}
+            </button>
           ))}
         </div>
       </div>
-
-      <FooterBuild/>
+      <div style={{ padding: 8 }}>
+        {filtered.map(a => (
+          <div key={a.id} className="feed-item" onClick={() => a.href && onNavigate(a.href)}>
+            <div className={`feed-icon ${a.type}`}>
+              {a.type === "verified" && <IconGlyph name="check" size={16} />}
+              {a.type === "rejected" && <IconGlyph name="x" size={16} />}
+              {a.type === "ingested" && <IconGlyph name="cloud" size={16} />}
+              {a.type === "conflict" && <IconGlyph name="alert" size={16} />}
+              {a.type === "crawl" && <IconGlyph name="refresh" size={16} />}
+            </div>
+            <div className="feed-body">
+              <div className="feed-headline">{a.desc}</div>
+              <div className="feed-meta">
+                <span>{a.ts}</span>
+                <span>·</span>
+                <HashBadge hash={a.hash} />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
-};
+}
 
-window.CC.DashboardPage = DashboardPage;
+// ---------- Pipeline health ----------
+function PipelineHealthCard() {
+  return (
+    <div className="card">
+      <div className="row" style={{ marginBottom: 16 }}>
+        <h3 className="h3">Pipeline health</h3>
+        <div className="spacer"></div>
+        <span className="chip chip-verified"><span className="dot" style={{ animation: "pulse 2s infinite" }}></span> Healthy</span>
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        {PIPELINE_JOBS.map(j => (
+          <div key={j.id}>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, marginBottom: 5 }}>
+              <span style={{ color: "var(--ink-700)" }}>
+                <span className="mono" style={{ color: "var(--ink-500)", marginRight: 8 }}>{j.stage}</span>
+                {j.name}
+              </span>
+              <span className="mono" style={{ color: "var(--ink-900)", fontWeight: 600 }}>{j.progress}%</span>
+            </div>
+            <div className="progress"><div style={{ width: `${j.progress}%` }}></div></div>
+          </div>
+        ))}
+      </div>
+
+      <div className="card-divider"></div>
+
+      <div className="caption" style={{ marginBottom: 10 }}>L40S workload (24GB)</div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 6, fontSize: 13 }}>
+        <ResourceRow label="Llama 3.1 8B" val="16.2 GB" pct={67} />
+        <ResourceRow label="BGE-M3" val="3.1 GB" pct={13} />
+        <ResourceRow label="DeBERTa-v3 NLI" val="0.5 GB" pct={2} />
+        <ResourceRow label="Free" val="4.2 GB" pct={18} dim />
+      </div>
+    </div>
+  );
+}
+
+function ResourceRow({ label, val, pct, dim }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+      <span style={{ width: 110, color: dim ? "var(--ink-500)" : "var(--ink-700)" }}>{label}</span>
+      <div className="progress" style={{ flex: 1 }}>
+        <div style={{ width: `${pct}%`, background: dim ? "var(--ink-300)" : "var(--teal-600)" }}></div>
+      </div>
+      <span className="mono" style={{ color: "var(--ink-900)", fontSize: 12, minWidth: 56, textAlign: "right" }}>{val}</span>
+    </div>
+  );
+}
+
+// ---------- CVR rejection breakdown ----------
+function CVRBreakdownCard({ onNavigate }) {
+  return (
+    <div className="card">
+      <div className="row" style={{ marginBottom: 4 }}>
+        <h3 className="h3">CVR gate distribution</h3>
+        <div className="spacer"></div>
+        <a className="small" style={{ color: "var(--teal-600)", cursor: "pointer" }}
+           onClick={() => onNavigate({ page: "ledger", tab: "rejections" })}>
+          See ledger <IconGlyph name="arrowR" size={11} />
+        </a>
+      </div>
+      <div className="small muted" style={{ marginBottom: 16 }}>Last 24 hours · 77 rejections · these are <em>good</em> numbers — the system catching its own mistakes.</div>
+
+      {/* Stacked bar visual */}
+      <div style={{ height: 12, display: "flex", borderRadius: 999, overflow: "hidden", marginBottom: 14 }}>
+        {REJECTIONS.byGate.map((g, i) => (
+          <div key={i} style={{ flex: g.pct, background: g.color }} title={`${g.gate}: ${g.count}`}></div>
+        ))}
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {REJECTIONS.byGate.map((g, i) => (
+          <div key={i} className="row" style={{ fontSize: 13 }}>
+            <span style={{ width: 8, height: 8, borderRadius: 2, background: g.color }}></span>
+            <span style={{ flex: 1, color: "var(--ink-700)" }}>{g.gate}</span>
+            <span className="mono" style={{ color: "var(--ink-900)", fontWeight: 600 }}>{g.count}</span>
+            <span className="meta" style={{ minWidth: 40, textAlign: "right" }}>{g.pct}%</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

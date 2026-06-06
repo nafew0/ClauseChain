@@ -1,0 +1,1035 @@
+UN Global Hackathon on Using AI for Digital Trade Regulatory Analysis
+Cleaned transcript: Hands-on Workshop, 5 June 2026
+
+Context used for cleanup:
+- Hands-on workshop and assignment feedback by Nikita Shahu
+- RDTII extraction methods and hands-on practice by Juntong Hou
+
+Note: This transcript has been cleaned from the SRT caption file by removing timestamps and caption numbering, joining broken caption fragments, and correcting obvious transcription errors where the workshop context made the intended wording clear.
+
+Okay, welcome everybody and good evening. Welcome to this hands-on workshop for the Global Hackathon
+on using AI for Digital Trade Regulatory Analysis. It is so nice to see you all back here today.
+This is the third workshop of this series. The first workshop was orientation where you understood
+the scope and the requirements of the hackathon and the RDTII framework. And we also saw how the
+manual research pipeline goes.
+
+You also had some take-home assignments and thank you for all your submissions. We have received at
+least 30 teams who submitted their take-home assignments. So this is a very long session today and a
+very interesting one. We have Juntong here today to start her presentation. But before we start, I
+would like to make some housekeeping announcements. First of all, if you have any questions during
+the workshops, please put them in, please put your questions in the Q&A box.
+
+We do have a Q&A session at the end of the workshop, but we will also try to answer your questions
+as we go along. If you happen to drop off at any point, please rejoin using the same link. And
+finally, please put your team's name and your first name as your Zoom ID so that we can get
+acquainted with each other.
+
+So now to start the session, I would like to welcome Juntong. You met her last week when she
+explained you what RDTII is. And the RDTII framework. Today, she will dive deeper into the data
+collection methodology and the legal concepts you must know. Juntong, you have the floor. Okay.
+
+Thank you, Nikita. Let me share my screen. Hmm. Okay. So you can see my slides, right? So hello
+everyone.
+
+Good morning, good afternoon, and good evening. My name is Juntong, and I was your, one of your
+speakers from the first session, and I accidentally wrongly put my name as MUTRAIT if you remember,
+but I am not her and I am Juntong. So I am a legal researcher in UN ESCAP on digital trade, and I am
+also a data collector of RDTII. So today I will walk you through about the RDTII, the data
+extraction methods, and also the hands-on practice if we have time.
+
+So firstly for today, let me begin with this roadmap. So I will begin with the current manual
+process for data collection, and then move to the most important two parts of this whole process,
+Zone 1, which is the source identification. And in source identification, I will explain how, what's
+the legal system and what's the legal hierarchy, and what is the enforced measures. And then we will
+move to Zone 2, which is the text extraction and the legal analysis. And then I will, we will focus
+specifically on Pillar 6 and seven, and I will introduce indicators one by one to you. And then we
+will end up with hands-on practice if we have enough time.
+
+So now if you remember this, this, if you remember this chart, so RDTII, the data collection process
+is just, is a research chain. So it's not a single research query. For, and this is the whole chain,
+but we will, I will only walk you through about Zone 1, source identification and the Zone 2,
+structure extraction, because that's the most relevant with your AI solutions. So
+
+Zone 1 is about, it's the blue part here. So the elements are in, the blue elements, the economy's
+legal system, the source hierarchy, enforced laws, and also the official publication channels, they
+are all related with Zone 1. It's about to, for you to tell, to find the right official sources.
+
+And the orange part, legal text to extract the legal text and the interpretation, they are the
+elements for Zone 2. It is to like, it's checked the operative legal text and explaining why, why it
+matters for the indicator. And of course, final step, you will enter, enter those information you
+collected into the database in a standard form. So now, this is the standard form. This is what the
+database entry, one single entry looks like. So the RDTII database is, is Excel sheet.
+
+It's, it, they consist by several columns. You can see the, the call, so you can see, it requires,
+it's not like, just like law, title, or legal summary. So it requires a, a score, column D, the
+title of the act or practice, column E, the scope or the coverage of the law, column F, and the, the
+relevant legal text and the interpretation, column G, and timeframe, column H, and the official
+references, I, columns I and J. So in practice, a good database should allow the other researchers
+and other people to understand what the rule is and why the matters for indicators and how the score
+was reached. So among those columns, you can see the blue frames, the output of those frames, of
+those columns, largely depend on the Zone 1 research and the orange frames, they are more connected
+to Zone 2.
+
+Now, let's start by a quick quiz. So imagine, suppose, imagine someone, someone asks, does
+Singapore, someone just asked this question, does Singapore impose legally binding rules that ban or
+prohibits the cross-border transfer of data? And now just by your instinct, by your background, how
+would you, how would you start it during the research and just imagine without AI tools? So I see
+two, (silence) please tap the ABC choices. I can totally understand like, if you're not, if you know
+nothing about law, you're not a legal researcher, you are not a law student, you'll probably just
+copy and paste this question into, into, into Google engine and search. Or if you know something
+about law, and you probably will search for the Singapore cross-border data transfer law.
+
+And if you are familiar with the data protection laws, you probably will search like the source
+families, like Singapore data protection law, and you're familiar with that, and the
+telecommunication law, or all those related sector, sector regulations. But if you have other
+points, please specify. Okay. So, if, let's say, if you know nothing about law, you just, you're
+just facing this question, and you just search randomly in the, in the, in the search engine. And
+this one, in the, on the left side of the slides, this is probably what you will find. But you can
+see those, all those links, they give you all those sources.
+
+And which one you should choose for RDTII, like, like, so, so like the real challenge for RDTII
+source funding is, is to decide which, which search results are actually usable and the recordable
+in the, in the database. And the, the key issue is not simply whether the information sounds
+relevant. And, but whether it falls within the RDTII scope, source, source framework. And you may
+remember last time I mentioned the RDTII, RDTII has its boundaries. And, and this is why the source
+identification is a critical step, research step, because it turns the general research activity
+into the structured, structured legal evidence. Now, in RDTII, we have different sources.
+
+So in general, we call them as the primary sources and the secondary sources. So the primary sources
+are the official legal instruments that have the legal effects in the domestic legal system. For
+example, the statutes, the regulations, decrease, regulator decisions, and also in some systems, the
+bonding case law. And the secondary source included the new, news articles, legal, commentary, like
+academic publication, law firm, law firm reviews, and also maybe some market reports. But in, in
+RDTII, in general, in principle, the secondary sources are often useful, but they will only
+generally function as a lead. They will lead the researchers to the primary sources.
+
+So for the primary sources, we will record them in the, in the database and we will score
+accordingly based on the legal text extracted. But the, the secondary sources can only be recorded
+and scored for specific indicators. The indicators 3.4, 5.3 and 9.1. And for, because for this
+indicators, not only the indicators, not only you need to look for the primary sources like the, the
+legal text, the legal files, you also need to look for the, the legal enforcement practices. In that
+case, you probably need to look for the, the social media press release and maybe the government
+press release. And so for the database, so one of the entry of the database regarding the, the
+sources, they should normally cite the official instrument itself.
+
+For example, you can see an example here. This is the one of the entries from our RTTI database. So
+actually, so this country regarding to this indicator actually has a, official source, official URL,
+like you can find this, this law, but instead the researcher cited this, this is a, a dialogue
+review from official commercial website. So in this case, this, the first citation is wrong. And
+then we change into the official, the official source, which is the law. So for secondary sources,
+because in the paper, in the mandatory pillars, Pillar 6 and seven, they are mostly, they are the
+mandatory pillars.
+
+And for the secondary sources, the only, the only three indicators that will include the secondary
+sources are those three indicators that, but they are not the mandatory and they are the extra,
+extra bonus. So I will leave this, I'll skip this slide here, but you can find the information if
+you intend to do the extra. So to understand what counts as the primary sources, and this is the,
+one of the key points for us today, the researchers first need to, need a basic understanding of
+the, the, the economy's legal system. So the broadly speaking, the legal systems are often grouped
+into the civil law system, common law system and the mixed law system. So the civil law system is,
+please greater emphasize on written code and the, and the statutes, but the common law system gives
+greater, like it gives great importance to case law and the president. So in the common law system,
+not only they, they, they admit to the status law, they also have the case law as the legal sources.
+
+So the mixed system combines the multiple traditions. This matters because it affects whether the,
+the relevant legal rules is likely to be found. And for example, let me give you some example. In
+some economies, the case law can be part of the relevant legal source. Well, in other like, for
+example, in, in Micronesia, the case law may matter for the certain company related to issues while
+in the, in the economy, like, like China, the researchers usually focus much more on the, the former
+written law, because China doesn't count the, the case as the legally binding source. Now you can
+see for the, for the legal hierarchy, at the top of the hierarchy, it is the constitutional law.
+
+So, in most of the time, constitutional is the highest source of law in, in many, in many systems.
+And you can see the one example on, on the left side, this is the constitution of Republic of Fiji.
+And this is one of the sources we recorded in RTI database. And the law, and any lower level law
+should be consistent with it. The next level is the primary, is the primary legislation. So in other
+words, may like acts, statutes, and codes adopted by the, the legislator.
+
+And these are usually the main legal instruments that establish the rights, duty of duties,
+offenses, and the institutional mandates. And the, my example here, cybersecurity act, is the
+primary legislation, and we record this in RTI database. And below this is the, a dedicated or
+subsidiary legislation, such as rules, or regulations. They are made under authority granted by the
+primary legislation and often provides more operational details. And I gave you example as a
+regulation, personal data protection code of practice for licensing, and they are all recorded in
+RTI database. And at the basis are the administrative and the regulatory or local instruments, whose
+authority depends on the enabling law.
+
+They may include the code of practice, bylaws, or sector specific directives. Now, I need to, I want
+to make some clarification for the most, maybe the most confusing files, like for example, the
+government notification guidelines, framework or national strategy, you may ask, are they the
+primary source for RTI? Well, for the government notification, it really depends. I mean, most of
+the government notifications, they are, we think we count them as the primary source, as long as
+they are authorized by the, by the primary law, and also its enforce. For example, you can see the,
+the example on the right side, it is the, it is the notification by the Ministry of Commerce, and
+the Ministry of Post and the Telecommunications. So basically this law was issued by those, by the,
+by those two authorities.
+
+So they are legally binding to us. And for the guideline and code of practices, and I would say like
+most of the time, they are the sources, and, only if they are binding and mandated by law. So for
+example, you can see the guideline on data privacy and data protection 2024 by the, the Royal
+Monetary Authority of time. And firstly, it is issued by a government authority, Royal Monetary
+Authority of time. And if you look deep into the law, in the preliminary part, the law says
+preservice to the section, 210 of the Financial Service Act of P shall be responsible and
+accountable for data privacy and data protection. So the, by the wording here, you can tell this is
+also the binding wording.
+
+But most of the time, the framework and the national strategies, they are not legally binding to us,
+because like most of them, they are not issued by the legal, by the authorities, by the government
+authorities, or they are not mandated by the law. Now, so I have to highlight here, the legal
+hierarchy is not the same as coverage. Like coverage, like the horizontal, courage is to distinguish
+between the horizontal law or sexual law, or well, like horizontal law doesn't mean, doesn't mean
+this law is higher in the hierarchy. And a sexual law does not mean it's lower in the hierarchy.
+Coverage and the hierarchy are the separate concepts. So sexual law and horizontal law may at the
+same level in a domestic legal hierarchy, because both of them are acts.
+
+I give you example here from the database, regarding indicator 7.3 of Nauru, we cited the
+communication broadcasting act, and also several crime act, and they are all acts, and they are in
+the same legal hierarchy in the system. So, and also we give them the same score. So, when we
+classify a measure as a horizontal or sexual, we are usually talking about the coverage, or not the
+rank. And also there are some cases where not, like horizontal law is not always cited in one
+specific indicator. And the example here, the Batai indicator 7.1, you can see 7.1 is asking if the
+country has, if the economy has the comprehensive data protection legal framework. And after the
+research, we found that there is no horizontal law that applied to other sectors.
+
+And we only find that the data production provisions scattered in the sector laws. And we record
+them here, and we treat them as the same legal hierarchy, and we score them separately. So, in this
+case, there are some of the most practical questions the researcher should ask in the legal
+hierarchy, like which the instruments actually impose, imposes the operative rule. Is it an act? Is
+it a degree? Is it an implementing rule?
+
+Or is it a regulatory decision? Or is it a project or a precedent? And also, is the instrument
+legally binding in the domestic legal system? And is it a primary source or a only secondary source
+that points out, that points out the researchers to the law? And for some of the indicators, such as
+3.4, 5.3 and 9.1, the factual materials, what we call secondary sources, may also be needed to
+document. So, the hierarchy questions are not actually abstracted.
+
+They actually affect the source selection and the research quality. Now, another crucial step in
+Zoom 1 is to determine whether the rule is actually enforced or not. So, IOTI research will exclude
+the drafts and the repeal the rules. So, the researchers need to check the legal nature of the
+document, the issue in authority, whether it was formally promulgated, whether the effective date
+has arrived, and whether it is still current or has been amendment, repealed or replaced. One of the
+examples from our database is the personal data protection amendment bill. So, a bill means after
+the bill passed, it will become an act.
+
+But in this stage, there is not an enforced measure yet. So, in this case, we will not record in our
+database. So, for this example, this is like the opposite example. You should not record this in our
+ITI database. So, how to determine whether a law is enforced or not? You may simplify the resource
+question into three core checks.
+
+The first check is to check the formal adoption and publication, like was the rule adopted or signed
+or issued and officially published? The drafts, the consultation papers and what papers are usually
+not enforced. And you also need to check the effective date, and you should look for the wording in
+the law, such as enter into force on which day or effective from which time. Well, because the
+publication does not always mean the immediate legal effect. And then you need to check whether it
+is still current. And you had to ask, has it been repealed, amendment or replaced or superseded by a
+new rule?
+
+And well, an old rule is no longer enforced. Now, after those legal hierarchy and the legal system
+check, and let's do another quiz test. So, this is regarding the indicator 6.1, the bans or it's
+about the bans or prohibitions of data transfer. So, basically, you need to tap which of the sources
+you think are the IDI, sources which are not. So, the first one is Thailand's Personal Data
+Protection Act, enter into force since June 2022. And the second one is the directive from the
+European Commission, and it was repealed by the GDPR since 2018.
+
+And the third one is Indian Drafted Digital Personal Data Protection Rules. And the fourth one is a
+Metas, is company updated privacy policy announcement. And the fifth one is Wikipedia page on the
+general data protection regulation. And the sixth one is the India Digital Personal Data Protection
+Act, which was enforced since August 2023. And the last one is a law firm article about Thailand
+Personal Data Protection Law. So, you may make the choices.
+
+Okay. So, you can see here, the first one and the sixth one are the IDT, what we call IDTI sources.
+We will record them in our database. So, because like the first one, the Thailand Personal Data
+Protection Act, this is the act, this is in the legal hierarchy and it's still in force. And the
+sixth one, the same, this is the India Digital Personal Data Protection Act, is also act in the
+legal hierarchy. And it acts since August 2023 and it's not reviewed and it's not invited yet.
+
+And the second one, it's not what we call the IDTI source because it was already repealed. And the
+third one is not because it's still a draft, it's not enforced yet. And the third one, it's one of
+the company's report announcement. And because we're looking at indicator 6.1 and 6.1 is only
+looking at the legal sources, we will not look at the secondary sources. So, this one is a company
+announcement, we will not include it either. And the fifth one, the same, this is the second source,
+we will not record this.
+
+And the last one, this is also a secondary source, we will not record this either. And let's do
+another quiz. So, for those five sources, which of them are the IDTI sources and which are not? So,
+this one, this first thing to check which indicator it is about, this indicator is 9.1. It's about
+the blocking or filtering commercial website content. So, you need to check whether you need to only
+look for the primary sources or you also need to check for the secondary sources.
+
+The first one is about a government announcement of blocking certain commercial websites. And the
+second one, third one, their laws. And the fourth one is an organization report. And the fifth one
+is also a legally binding rule. Okay, see, you have already made the choices. So, in this case,
+there are all the sources, because in indicator 9.1, not only we are looking at the legal sources,
+we also look at the secondary sources.
+
+And for the primary sources, what we called the second one, third one, and the fifth one, there are
+the primary sources, while the first one and the fourth one, what we call the secondary sources, but
+we also need to consider them regarding the indicator 9.1. So, after the legal system introduction,
+the legal hierarchy, and also what's the enforced measures, can you match the common, can you match
+the common mistakes like pit force, A, B, C, to the common research dimensions in Zone 1? The first
+one, legal system, second, legal hierarchy, and the third, enforced measures. So, basically, you
+need to identify, you think, which of the mistakes, A, B, C, here, will result from the rolling
+identification of the dimension in Zone 1? Okay, so I hope you did right. So, the legal systems, the
+first dimension legal systems, it help explain why the judicial opinions are not equally binding
+across all jurisdictions, and the legal hierarchy reminds us not to overlook the administrative
+guidance, the regulatory instruments, or the executive policy in systems, and also the enforced
+measures required us to check if it's still enforced or is being amended or repealed.
+
+So, the point is, the source identification errors often come from the mixing up of legal
+traditions, like legal systems, the legal hierarchy, and also the validity of the legal sources. And
+now, since we're done with, since we know how to identify the legal sources, the RBTI sources, we
+move to Zone 2. So, once the sources has been found, then the researchers must extract the legal
+operative text and explain why it matters. And the good database languages is neutral and, of
+course, and also legal. So, it should quote or summarize the operative clause accurately. So, you
+need to basically identify the specific section or article, and then explain the why this indicator
+is relevant to this section or this article.
+
+So, after the reading part, comes to interpretation, and the researchers basically should ask who is
+regulated by this article, by this section, and what is required or prohibited, and what data or
+services is covered, and also under what condition with what exception. And the purpose is not to
+produce a loan, is to produce a loan doctoral essay, but to extract the legal function of the
+provision so that it can be matched to the right indicator. And I believe Professor Gao has
+introduced the structural flaw, and let's see if you still remember them. So, basically, the
+question is about what are the components of a law, and you can make the choices. So, in the
+beginning of a legal document, it starts from an introduction of objective, basically says the
+objective of this law, and then the first three, basically three or five articles or sections, it's
+the definition of the specific key terms. And then the substantive obligations, it's probably one of
+the most important part in a law, because it basically tells you what you should do according to
+this law.
+
+And also institutional provisions ask who is the authority to implement the law. And then the
+enforcement and the penalty provisions are about if you don't do what the law asks you to do, what
+are the punishments. And also, judicial review basically asks what are the the appealing decisions
+made by the administrative agency. And the last but not least, you also need to look for the
+appendices in the law, and like the schedules, and they are also one of the most important parts.
+Yeah, I think most of you have the right answer. So, all of the provisions above, they are all the
+components of a law.
+
+And they also consist of the typical structure of the law as a legal text. So, basically how to read
+the legal test, you should start with the title and objective, but you should not stop there. Then
+look at the structure, as I said, the the typical structure like the read the chapters, the articles
+or sections, subsections or annexes. And then pay close attention to the definitions, because they
+often determine whether the rule covers the personal data, the communication data, the financial
+data or some or the other category. And also always watch for the exceptions, conditions and the
+negative wording. So, in law, the words like "unless" provided that, like "subject to", so this can
+be more important than the heading term itself.
+
+So, now you have already read the law, and you need to interpret the law to check if if it is
+relevant to certain indicator. So, in order to do this, you need to know more about the Pillars 6
+and 7. So, now I'll give you more details about Pillars 6 and 7. So Pillars 6 and 7 in RGI database,
+pillar 6 is about the cross-body data policies, and pillar 7 is about the domestic data protection
+and privacy policies. And sometimes people get confused because that many laws contain both types of
+provisions. Like a single personal data law might include the outbound transfer rules, which is
+related to pillar 6, domestic retention principles relevant to pillar 7, and also the exceptions for
+status access.
+
+So, the challenge is to separate the provisions by function and not simply just by the title of the
+law. So, now let's look at the simplest and the most useful distinction, pillar 6. Pillar 6
+generally asks whether the data can move across borders and on the words restrictions and at what
+compliance costs. And pillar 7 asks how data is governed domestically, including the privacy, the
+cybersecurity retention, accountability, and government access. So, the practical rule is that if
+the provision regulates transfer abroad or localization, you need to think about the pillar 6 first.
+And if it regulates domestic management and the protection of data, then you should think about
+pillar 7 first.
+
+Now, let's look deep deeper into the indicators. So, as I said, pillar 6 captures the different
+forms of restrictions or conditions affecting the movement of data from one jurisdiction to another.
+And pillar 6 has five indicators. But as we mentioned, pillar 5 is about the non-regulator, is one
+of the non-regulator indicators. You may skip this one, but you need to focus on pillar 6.1 to
+pillar 6.4. Now, pillar 6.1.
+
+So, the bans and the local processing requirements. This indicator captures two kinds of highly
+restrictive measures. The ban on cross-border data transfer and the local processing requirements.
+So, a transfer ban means the relevant data cannot be sent abroad. And local processing requirements
+means that the relevant data must be processed domestically, which may force firms to build or rely
+on the local processing capacity. So, I mean, even if the law does not explicitly say the
+transferred ban, a strong local processing requirements can still create a major digital trade
+burden.
+
+And the example being a Republic of Korea, this economy requires the financial service providers to
+use cloud services to locally process credit and the unique identification information of their
+users. And this indicator is indicator 6.2. This is about local storage requirements. So, this
+indicator is narrower than 6.1, because it focuses on the rules requiring that a copy of the
+relevant data will start domestically. The key distinction is that the local storage does not
+automatically prohibit the cross-border transfer. The data may still move abroad as long as a local
+copy remains in the domestic economy.
+
+And this is why the local storage should not be confused with either a ban or local processing
+obligation. For example, here, Turkey requires both domestic and foreign social network providers
+with over 1 million daily users in Turkey to store their user data within the economy. And the
+indicator 6.3 is infrastructure requirements. It captures the requirements that firms use or
+establish local infrastructure, such as the local servers or local data centers. It is a condition
+for providing services. So, this is different from the local storage, because the issue is not just
+whether a copy of the data sits, but whether a local physical or operational facility must exist.
+
+For example, here, Vietnam requires the providers of websites, social networks, mobile networks, and
+online games to maintain at least one local server. And now, this indicator 6.4, conditional data
+regimes. So, this indicator captures transfer rules that allow the data to move abroad, but only if
+several conditions are met, conditions like the consent from the government authority or the
+adequacy of data protection policy, and if you can provide a construction safeguards. The main logic
+is that the transfer is still legally possible. So, the measure should not automatically be treated
+as a ban. And that is why the conditional transfer should generally be mapped to 6.4 rather than
+6.1.
+
+And the example being here, Palau requires the agencies to notify the Ministry of State and obtain
+individual consent before transferring personal information abroad. Here, we see this as a
+conditional data transfer. Now, since we already introduced the indicators of Palau 6, I would like
+you to do a self-request to see if you get the picture of the indicators. And please read this
+provision and tell if it's most directly corresponding to which indicator of Palau 6. Let's have two
+minutes. The right answer should be, it's directly corresponding to indicator 6.4, the condition of
+data flow regimes.
+
+You can tell by the wording here, and personal data may be transferred, the key points transferred
+may by the condition being the data subject's consent, and also the paragraph 2, also like it's
+about to transfer to other states, and maybe transfer to other states, as long as the given state
+ensures an adequate level of protection of personal data. So basically this provision does not bind
+the data transfer, but you can basically transfer the data, but with several conditions.
+
+Now, let's do another test. So those provisions are from the DIN code of practice for information
+security, cybersecurity, and the privacy protection for ICT providers. So those provisions, do you
+think they are the local infrastructure requirements, and why? Okay, time is up. So the answer here
+is like, they are not, even though you can't tell by the keywords, like the licensee must establish,
+and also, so you may probably think this is about the local infrastructure requirements, and also
+like the network access control policies, and the network architecture. So probably think these
+keywords are about the infrastructure, but actually they are not, because it basically requires the
+providers to have a strict formalized rulebook, the policy, to govern who and what can connect to
+their network.
+
+So there is nothing about the licensee should establish the local infrastructure, the local server
+or local data center. So the key lesson here is like, please do not rely solely on a literature,
+like piecemeal analysis of statutory keywords. Instead, you should consider both the semantic
+context and the underlying ego functions. And now, let's look at another provision. This is a
+provision from the Kasakistani law on personal data protection, law on personal data protection,
+article 12, and paragraph 2. So which indicator do you think this provision most directly
+corresponds to, and why?
+
+Since the text is relatively short, so basically this provision is about indicator 6.2, because you
+can tell by the words here, the personal data shall be stored and located in the territory of
+Republic of Kazakhstan. So because this provision, this is pretty straightforward, because this
+requires the personal data to be stored in a domestic database, and this is a typical local storage
+obligation. So this is another provision. And the question is, which indicator does this provision
+mostly directly correspond to, and why? So the hint here is to look at the highlight, to look at the
+both words. Okay, so the answer is, it is about indicator 6.3, and the key points is here.
+
+So the locate its server within the territory of mainland China. So this basically tells you, it not
+only requires the data to be kept locally, but also, most importantly, it requires the service
+providers to have a domestic server. And this is the typical local infrastructure requirements. Now
+we have to wrap up. We shifted from the cross-border movement to domestic governance. So pillar 7 is
+about the domestic governments of personal data.
+
+So basically pillar 7 examines the domestic legal framework for privacy, for data protection, for
+cybersecurity and data retention, accountability and the government access. So this pillar reflects
+the idea that the domestic data governance can support digital trust, but it can also increase the
+compliance costs. So one more reminder here is like the sectoral law matters here, and the economy
+may have both comprehensive framework and also sectoral specific data roles. And they both will be
+recorded in the IDTI database.
+
+Now let's look into the indicators. So indicator 7.1, whether the economy has comprehensive data
+protection legal framework. The key point is that the comprehensive framework governs the personal
+data generally across the sectors. And the sectoral frameworks do matter and should also be
+recorded, but they are not seen as the general personal data protection law. So if the horizontal or
+sectoral, it will affect the score, but they will all be included in the IDTI database. And the next
+indicator 7.2 is about the dedicated cybersecurity framework.
+
+It asks whether the economy has a dedicated legal framework for cybersecurity. And like a few
+scattered security clauses in the privacy law or sectoral do not automatically amount to a dedicated
+framework. And the researchers in this case need to distinguish the cybersecurity governance from
+the automated security obligations. And the real question about this is whether the system has built
+a framework specifically designed to regulate the cybersecurity issues, such as network security,
+incident response, critical infrastructure protection, or cyber risk management. Now this indicator
+7.3 is about the minimum period of data retention requirements. So this indicator captures the rules
+requiring data to be kept for at least a specific period of time.
+
+For example, in Bangladesh, data related to business transaction on e-commerce must be retained for
+six years from the transaction. And the common mistake that happens is to confuse with this with the
+retention limitation. A rule that says data must not be kept longer than necessary is not a minimum
+retention rule. So let's say if the logic says you should not keep the data longer than necessary.
+So this is not what we consider as 7.3. Instead, we need a minimum of the specific data periods.
+
+For example, the law says you should keep the data at least five years. Then this is the data
+retention requirements we will consider. And the indicator 7.4 is about the accountability
+obligations, such as appointing a data protection officer or conducting a data protection impact
+assessment. So those obligations are important because they affect the internal governance and the
+compliance burden. But they are typically built on top of a broader legal framework. So this
+indicator is not asking whether the economy has privacy law in general.
+
+It is asking whether the law imposes specific accountability mechanisms like the data production
+officer and data production impact assessment. And now, last but not least, indicator 7.5. This
+indicator concerns whether the legal framework enables or requires government access to present data
+without any judicial intervention. And the key research lesson is that this may not be found only in
+the data protection law. And the researchers may need to look at the criminal procedure, the law for
+access rules, the surveillance law, telecommunication law, and the national security law. In many
+legal systems, the privacy status itself contains exceptions, while the real access power are
+defined as well.
+
+So, for example, in Sri Lanka, Sri Lanka requires that all digital cellular mobile service operators
+are obligated to provide access to their database or networks upon request by the Telecommunications
+Regulatory Commission for the purpose of obtaining some secure subscriber information and data. Now,
+after going through the indicators of pillar 7, let's do some quiz tests. So please read this
+provision from Singapore Criminal Procedure Code and tell which indicator you think this section
+related to. So, the answer is, it's about indicator 7.5. You should look at those highlighted words
+like a policy officer. Basically, it's the representative of the government institution and
+authorizes the person as well.
+
+The words like access, impact, and check the operation, and also use the computer to search any data
+content. So, it gives the police or authorizes the power to access, to search, and to copy data for
+law enforcement purposes. Now, these rules, do you think which specific indicator it related to?
+Okay. So, the answer is this is about indicator 7.2 regarding the cybersecurity, and then you should
+look at those highlighted words like the ICT service providers, cryptographic controls, mitigate the
+cybersecurity risks. But these are considered as the sector law.
+
+We will not consider this as a dedicated cybersecurity legal system because you can see the coverage
+here is about ICV or telecommunication service providers. Okay. So, this one, this provision,
+section 10, is related to indicator 7.4. And the words highlighted here is about the data production
+officer, data production impact assessment, and while 7.4 is relatively easy to identify. Okay. So,
+the final internal checklist before you insert those information you collected.
+
+So, you should ask yourself, have I identified the correct indicator and its scope under the guide?
+And is my source official, current, and enforce? Did I capture the exact provision, not only the
+title, cite the exact text? Did I separate the main rules from its exception approvals or
+thresholds? And also, if there is no capture restrictions, did I still cite the general governing
+law as the reference basis? So, this is basically the zone 1 and zone 2, source identification and
+legal instruction procedures you need to basically focus, basically like, pay attention in your RTI
+data collection.
+
+And now, we have no time for the hands-on practice, but I would like you to take those as homework
+assignments. So, I give you three indicators, indicator 6.1 in Singapore, indicator 7.3 Malaysia,
+and indicator 5.3 India. So, for the homework, you should try, this will be one of the legal
+interests you will see, and this is the total empathy RTI database. So, you should basically, you
+should try to collect the data for this specific indicator, and the steps here give you some hints.
+So, for those three indicators, at least, please, at least conduct the research on indicator 6.1 and
+indicator 7.3 because they are the mandatory pillars. And if you intend to do the extra indicators,
+you can do this indicator 5.3.
+
+And the detailed assignments and the empty database will be sent to you by email later. And yeah,
+that's my present today, and thank you for listening. So, Nikita.
+
+Thank you, Juntong, for your presentation. You provided us a lot of clarity about the various legal
+systems of different countries, and thank you for going through every single indicator in Pillars 6
+and 7. I can see there's a lot of clapping emojis going on for you, so clearly, the audience
+appreciated it. There might be some questions for you in the Q&A box. If any of the audience members
+have more questions for Juntong, please put them in the Q&A box. She'll be monitoring it.
+
+Or we can pick them up later during the Q&A portion of this workshop. So, we have about one hour
+left for this workshop, and for the next presentation, I will be conducting a hands-on workshop as
+well, as well as providing you with feedback for all of the assignments you have suggested. I hope
+my screen is seen. Please confirm if it's not. Okay. So, okay.
+
+I will start my presentation. Okay. So, in this session, the first thing we will do is we will
+bridge everything that Juntong said into what that looks like on your Canvas tool design. Then, we
+will do a review of assignment 1 and assignment 2. I will point out some common patterns I have
+noticed in all of your submissions, which I very much appreciate. You guys submitted the assignments
+for the take-home assignment.
+
+And for assignment 2, which was a Canvas design, I will not reveal any of the designs, but I will
+mention some things that should be considered when you do your Canvas. Then, we will do three hands-
+on exercises. Two of these hands-on exercises will be the same as what you took home for your take-
+home assignment, which is why is this output incorrect. But these will be a little bit harder and a
+little bit challenging because these are not just technical errors that were made by the automation
+tool that we are going to look at, but more so theoretical errors that need a little bit more
+thinking. And the final hands-on exercise we will do, which we will compare to outputs and see which
+one you would record in your RTTI database and whether you can identify which one was generated by
+an automated tool. So, to start with, let's bridge what Juntong said in her presentation into what
+it would look like on your Canvas.
+
+So, she mentioned the economics legal systems, the source hierarchies, the source validity, which
+means enforced law, like only the laws that are enforced and active currently are the ones that are
+used as valid sources, and how extracting and interpreting legal text works. So, in this way, on
+your Canvas, your input is affected by the economics legal system and the source hierarchy as well,
+because this will affect what sources you will give to your tool and the seed URLs and where they
+come from. The output of your tools will depend on the economics legal system, source hierarchy,
+basically all four of them, source validity and extracting and interpreting legal text. Because in
+this case, your output will be affected by which source is recorded, which sources the controlling
+evidence, and we will talk about controlling evidence later, and which source is currently active
+and active in the economic basic pain. Your evaluation is also affected by source hierarchy, source
+validity, and the way you interpret and extract legal text, because then you can check whether the
+tool found the right output. And finally, your risk is affected by how to interpret legal text,
+because now you understand what legal language can fool an automated tool.
+
+So, take into account everything or the theory she has taught, even though it doesn't really
+directly apply to your tool, because it will help you in evaluating your tool and understanding the
+risks associated with it. Now, coming to your first assignment, the why was this output incorrect?
+If you remember, I gave you this particular question, and we were looking at the mass notice on
+cyber hygiene from Singapore. And the correct answer really over here is that the URL is incorrect.
+If you put this URL in your browser, it will give you an error, and that this notice is an outdated
+log. If you manually look it up, you will see that the notice was canceled on 1st July 2022.
+
+But a new notice replaced it, which is the FSMN16 cyber hygiene notice, and that would be recorded
+by that would be recorded by a legal researcher. And I'll tell you why. So, the one thing I noticed
+in all of your outputs, let's categorize them as what everybody got right and then what everybody
+got wrong. One thing everybody did very well is understanding that the law, the notice that we had,
+that I had given you is not controlling evidence. In the sense, we will not score the indicator
+based on the sexual evidence, especially because a horizontal law, that is the Cybersecurity Act of
+2018 is present and active. So, everybody got that very correctly.
+
+Everybody seems to have understood the legal question asked by the indicator and the scoring
+criteria. And a lot of teams also pointed out that notices are also legal instruments and should be
+recorded in RTTII. I saw some comments about inversion of polarity, but when it comes to the RTTII
+scoring, so it goes from 0 to 1, right? I think I should clarify why that is the case. It is
+counterintuitive, the higher the score, the worse it is. But please keep in mind that these
+indicators are designed to capture regulatory measures that can affect the ease of doing business
+for firms engaged in digital trade.
+
+So, as a general rule of thumb, you can remember that the higher the RTTII score, the regulatory
+environment is more complex, which can translate into a more costly business environment and also
+vice versa. The lower the score reflects a less layered or complex regulatory environment and a more
+enabling environment for digital trade. And in all of this language, you would realize that we are
+not trying to judge because this particular topic is kind of sensitive in the way that not all laws
+are bad in the sense that some laws do create complexity and compliance costs for businesses, but
+they are necessary for maintaining public trust, market access and maintaining competition. So, we
+will know RTI is not meant to judge any country based on what laws they imply, but more to
+understand how it affects businesses. So, I hope that clarifies why some of the polarity looks like
+it is inversion. Now, the common gaps.
+
+Surprisingly, I was quite surprised. None of the teams actually got the right answer. Not everybody
+was able to point out that the URL was wrong and that the regulation was outdated. I suspect that is
+because a lot of the responses I got was from using AI. And it was interesting to see because I
+think now it should be very clear where the gaps in using AI comes from. Basically, a lot of teams
+used AI to review output from AI and it could not really point out where the output was wrong.
+
+So, that was very interesting. Then some of the assumptions that sectoral regulations are not
+relevant. This is also something Juntong mentioned that hierarchy doesn't come from whether it is
+sectoral or horizontal or cross cutting, but from who is issuing it and where the country is
+basically. So, sectoral regulations are relevant and they should be recorded if the indicator calls
+for it. And also, similar to this, assuming that all regulations are not priority, not really, we
+record any legal text that applies to that indicator and scoring criteria as long as a government
+body issues it. But the final controlling evidence regulation, that is what I mean, is the one that
+is used to score the indicator.
+
+So, in our example over here, the controlling evidence was cybersecurity law correctly,
+Cybersecurity Act of 2018, but the mass notice would have also been recorded by a researcher. Now,
+moving on to your canvas tool design. This was very interesting to see. I got to see some really,
+all of you, like very detailed canvas designs and very well thought out and it was a very good job.
+Let me go through every aspect of it. And these are my comments on generally what I saw and I have
+tried to give comments to whoever submitted earlier, but eventually I couldn't comment on all four
+assignments.
+
+So this is my best attempt at giving you all the comments. So in inputs, I think you all need to
+consider what would happen if you were to include a non surveyed country, for example, Timor-Leste,
+which we have never surveyed before. What input would you provide to your tool if the country is
+completely new? And if some of you attended yesterday's sessions, one of the researchers did mention
+about semantic and keyword matching. How would your inputs change if you were to adjust to different
+jurisdictions and languages? What, how would your input change?
+
+I think that is something you need to consider. And then also at the end of the day, which something
+I have said before is consider what format of the input you would give to your tool. Now in terms of
+output, I saw some very good output plans, but I would say that instead of only extracting the
+relevant sentence, we would prefer if you extract the entire section. Because sometimes the
+sentences or paragraphs before and after the relevant sentence can give you important context to
+interpret what that relevant sentence would mean for the indicator. So at least for the start of
+your tool design and like your early process, I would recommend that you extract the entire element
+section. And there's one scenario you need to consider is like what if multiple sections in the same
+document are relevant and how would you extract those and how would output look in that case?
+
+And this is a scenario that happens often because then you can connect the dots across multiple
+sections and give a holistic answer. In terms of evaluation, one thing I did, I did not see and I
+would like to see is what about new discovery? A lot of canvas designs did mention that new
+discovery can happen. But you need to see how does the tool outperform humans? How has the tool
+extracted a relevant text that human researchers missed? And that can happen because also the
+databases from 2025 to early 2026.
+
+So you will discover new updates and regulations and you need to be able to evaluate whether those
+are relevant or not. And this is where all the training that Juntong just gave you comes into use. I
+saw a lot of people using top N or ranking method to evaluate the output. This is not wrong, but I
+would say be cautious because what happens is when you are doing ranking or only evaluating your top
+10 results in the early stages of development of your tool, there is a risk of overlooking
+relevantly good instruments. So at this stage, maybe it would be best if you just review a broader
+set of results instead of the top N results. And now we come to risks and this looks quite long, but
+basically, I think only one to two teams said that a cost is a potential risk.
+
+And I'm surprised that not many teams said that because if your tool gets deployed in our RDTII
+workflow, cost has become a potential limitation if the cost of using the tool is quite high,
+especially if you're using LLM models to process documents, you have to take into account how much
+it will cost us to do this survey every year. I already mentioned semantic differences in inputs,
+but that is also a risk in your entire model. Then sectoral level versus horizontal level. Many
+teams said that extracting sectoral level notices are a risk. They are not a risk, but it really
+depends on your indicator. So I guess this will apply on a case by case basis as well.
+
+What about scalability? If you build a tool for three countries, is your tool able to be scaled up
+to more countries, more coverage, more jurisdiction? I think that's a risk as well. There was a lot
+of discussion about PDFs not being available on government side. I think that's a very fair risk to
+have, but sometimes they are available on third party websites, which are not government websites.
+And would you consider those?
+
+Or you can also look at web archive, which archives everything on the internet, right? Some people
+also said third party review, like with the RITI database can be compared against a third party
+database. But what happens if the RITI database is the most broadest and up to date database for
+Asia Pacific? Then how does this evaluation or risk method work, basically? What about accuracy for
+OCR for reading scanned images for non-English documents? A lot of the scanned images are of old
+laws, which are not in English.
+
+So do your OCR tools work well for that? There was also mentions of wrong indicator mapping or
+misinterpretation. That is correct. But one comment I'll make over here is a lot of times the same
+legal text can apply to multiple indicators. Because some countries have an underdeveloped legal
+system, or sometimes there's just one law that applies to all indicators. So if you put too many
+cards around this, then you will miss out on this particular scenario as well.
+
+And then this is a pretty niche scenario, but it has happened before where every single media outlet
+or press release talks about a new law, but you cannot find the document online. You cannot find it
+anywhere. It's not on any government website, but you know it exists. What do you do in such a case?
+And how do you control? How does your tool react in such a case, basically?
+
+So those would be my general comments about your tool canvas designs. And I hope after these series
+of workshops, you can tinker with your tool canvas designs more and improve them.
+
+Now let's move on to actual hands on exercises. Let's make things a little more interesting. So like
+I said before, this is a very similar exercise to what you took home. What is wrong with this
+output? Because I said like it's going to take a little more time. I'm going to give you up to five
+minutes.
+
+If everybody responds to the poll before that, I'll close it. But let's go through it together. This
+is related to indicator 11.1, which talks about lack of transparent technical standards in India.
+And this particular tool recognize the Information Technology Act of 2000 and section 70B as the
+relevant legal text, basically. It gave the citation. It has given title type, issuing authority.
+
+It said the section is 70B, effective date, all of that. Let's go through the finding together. It
+said that section 70B1 and 70B4 are relevant to this indicator. Because it says it provides that the
+central government shall appoint an agency of the government to be called the Indian Computer
+Emergency Response Team with the central government having appointed blah, blah, blah. It's so long.
+And then 70B4 is even longer.
+
+Now I want you to tell me, this is a short answer. This is not a poll. Why this particular output is
+not correct. And the hint is I actually look up the act and look at its contents and look for those
+sections and then type out your answer. I'll give you five minutes. But if you finish answering
+before that, we can close the poll early.
+
+I can see that one person has answered already. Oh, three people have answered already. Okay. We are
+about halfway through five minutes now. I'm going to repeat the hint again. Google the act and look
+for section 70B.
+
+Okay. We have last one minute left if anybody wants to put in their answer. Okay. So I'm going to
+give the answer. The reason this act is incorrect is because seven section 70B1 and B4 do not
+actually appear in this act. They do not exist.
+
+And this wasn't that in this output. The two clearly had a hallucinated or did some sort of wrong
+retrieval from a different act. And while it looks very convincing as an output, we only found this
+when we like obviously looked into the act and saw what was happening. So that's one example of
+hallucination.
+
+Now let's go to the next example. In this one, we are looking at the action of the act. We are
+looking at indicator 9.1 for. And then this one in indicator 9.1 looks at blocking of filtering
+commercial web in exception to illegal activity. So that could be pornography or anything that is
+deemed illegal by the government. It has three parts in a scoring criteria, whether there are any
+blocking measures, which gets a score of one.
+
+Any filtering measures gets a score of 0.5 and no cases of any such blocking of filtering in
+exception to cases of illegal content will get a score of zero. Again, the output has all the stuff
+in your URL, title, type, score, and it has given an expert excerpt of the location where it found
+what it thought was relevant to this one, basically. In this case, the Relevance Note says that the
+official regulator side confirms that unauthorized remote gambling websites are blocked by the
+government under certain acts. Now, please type your answer out as to why this output is wrong. In
+this case, your hint would be is online gambling legal in Singapore. And I'll again give you give
+you like four minutes this time just to get things going a little bit faster.
+
+So to elaborate on the hint, if Singapore has banned online gambling in its country, then which of
+the three scoring criteria does it fall in? If it's already illegal and banned, does it matter to an
+indicator 9.1? Okay, so I see eight people have answered and I'm going to give like the last 10
+seconds just so that the last few people can get their answers in. Okay, so in this case, the answer
+is that it's a wrong output because online gambling is already illegal in Singapore. And because it
+is already illegal, this will not be recorded as first of all, it is not considered commercial web
+content. And it doesn't create any substantive costs for businesses engaged in digital trade.
+
+And this is a good example of a case where country specific context needs to be understood and is
+necessary to be understood. However, in terms of the output itself, it is not totally wrong because
+it very correctly captured that the fact that it is a government blocked service provider. So in
+that case, the tool understood what it was talking about, but it was just not the answer that was
+relevant to the indicator in question.
+
+Now let's move on to a bigger hands on exercises. The goal of this exercise is to help you evaluate
+whether a new discovery you make is valid. Any discovery your tool makes, you can compare against
+the RTTI database and you can understand whether it's relevant or not. But as is the case because
+the database is also up until 2025 to 2026, you will see that you will find new things and you need
+to think like a lawyer in that case, think about everything junthong.you and understand whether it's
+relevant or not. So let's test that. To set up the context, let's look at indicator 2.1 for
+Malaysia.
+
+Indicator 2.1 talks about foreign exclusions from public procurement projects related to ICT goods
+and digital services. There are three categories to this scoring criteria as well. One is for if
+there is any legislative measure that excludes foreign firms. The score is 0.5 if there are any
+legislative measures that excludes a specific foreign firm or a group of foreign firms and the score
+is zero if there's no such measures. In this exercise, I am going to show you two output tables to
+compare and I will ask you two separate questions. The poll will go up and it's probably already
+gone up.
+
+So let's move to that. So first option A, you can scan the QR code which will take you to the Google
+Sheet with both these tables so you can take a closer look at it. So in option A, this output gives
+you five regulations. It gives you the name of the regulation. It gives you the coverage and the
+analysis of why they thought that the regulation was relevant and maybe the sections that were even
+more relevant. And the suggested score for every single of these regulations based on the IDTI
+scoring criteria.
+
+Just to give you guys a little bit context, this word Bumiputera means "suns of soil". So basically
+in this context, the quotations are restricted to registered Bumiputera suppliers for procurements,
+which means they're restricted to domestic suppliers, but specifically domestic suppliers which are
+indigenous Malay in Malaysia. The second output option gives you three laws or acts basically. It
+gives you the coverage and the analysis. It also gives you the suggested score associated with every
+single of these laws based on the scoring criteria that I showed you before. Same as option A as
+well.
+
+Again, the relevant text and the explanation is given to you in the analysis column. I will give you
+five minutes to review, maybe less to be honest. And I will also put the link to the Google Sheet so
+that you can take a closer look at it basically. I'll just put a link in the chat box now. Yeah. So
+think along this evaluation checklist.
+
+Are all the recorded documents domestic laws and regulations? Does the law truly show preference
+against foreign suppliers? Are the scores that are assigned to each entry correct and do they match
+the explanation that has been given in the analysis column? And should a document that has no
+regulatory power but has directive power be recorded? I'm going to give you five minutes to go
+through these tables and vote for your answer. I can already see five people, three people have
+voted.
+
+But yeah. If you have finished reviewing the databases, you can already cast your vote because the
+polling has opened. You have one last minute. Please cast your votes before I tell you the answer.
+Okay. So I can see that most of you, about 61% have voted that you would record B in your RDTII
+database.
+
+26% voted for A and 13% voted for none of them. And interestingly, the answer is output A. Output B
+is from a human researcher, basically, and output A is from an LLM. And in this case, the correct
+answer would also be output B, because there are certain things within this output A which are
+correct and which are also not correct. So in this case, output A correctly identifies financial
+procedure act and the government contracts act, but missed the Treasury directive. So it was
+partially the right answer, but there were certain other things that were also wrong.
+
+Another thing is recognized is the preference for Bumiputera suppliers. And this is not actually a
+preference slowly against foreign suppliers. It also applies equally to other domestic suppliers. So
+it doesn't just show a preference against foreign suppliers, but it is also saying that non
+Bumiputera suppliers would also not be allowed to enter this public procurement. The second thing is
+that the CPTPP Annex 15A Section G, it's not a domestic law. It shouldn't have been recorded in the
+first place and it just shouldn't be included in the RDTII database.
+
+The other thing it did wrong was that the Financial Procedure Act of 1957 was scored at zero. When
+in reality, it should be scored at one because it does state that the international tenders for
+words may only be called for when local contractors do not have expertise or capability and a joint
+venture is not possible. So it clearly states that an international tender is a last resort. You
+cannot do it unless you literally don't find anybody else domestically to do it for you. The extra
+point over here about Treasury directive, why do they matter? Even if it is not scored, like it
+doesn't affect the overall score in the sense it doesn't raise it more than zero, it must be
+recorded.
+
+And in this case, the economic legal system comes into play. In government procurement for Malaysia,
+it is not governed by a single law. It is governed by a bunch of instructions and circulars issued
+by the Ministry of Finance. And under these circulars, there is the Financial Procedure Act and the
+Government Contracts Act. So even if the Treasury instructions doesn't have any regulatory force or
+force in the regulatory law, it does have directive force. So we would record that just to keep it
+in the database and understand how the different laws interact with each other.
+
+I actually want to do one more poll, but I skipped that slide. I wanted to ask you which output you
+thought was AI. I hope all of you realize that output A is from LLM model, which I just ran this
+morning, chat UBT. And it got so close to the right answer, right? Like it got so close. It did
+point out the Financial Procedure Act and it did point out the Government Contracts Act, but then it
+also got a lot of the stuff wrong.
+
+And if you look deeper into those outputs and really read the analysis, it will really reveal to you
+how many gaps or like what can be improved and how much it got right as well. And this exercise was
+not to say that the LLM output is better or worse than the human researcher output, but it is to
+show you that the human researcher can have minute attention to detail that maybe LLM cannot have.
+And there must be ways to prevent these errors, right? Maybe improving a prompt design is one of the
+ways to do it. Maybe mixing LLM and machine learning methods is one way to do it. Maybe I didn't
+give it a comprehensive knowledge base.
+
+If you give everything you know implicit, explicit, all the knowledge, maybe these errors can be
+prevented. And I'm sure there are more methods that you might know better because you have a better
+technical background than me when I was using chat UBT. So I hope this gives you understanding that
+we are not competing against AI in human versus AI, but in the sense we are trying to understand how
+we can improve the output. So this is where I'll end this presentation. Thank you for your
+enthusiastic participation and I'm very much looking forward to seeing your tools. If you have any
+questions for any of us, I will open up the Q&A if anybody wants to ask any questions for the team.
+
+Yeah. So if you have any questions, you can put them in the Q&A box as well, or I can allow you to
+turn on your mic and actually speak yourself. Yes, Mohammed, you can go ahead and ask your question.
+Hello, Nikita. Can I ask a question about the previous presentation, but I think also on the
+hackathon in general? So I get the answer from Juntong about the 7.1 on the comprehensiveness.
+
+So I was just wondering if it's something that you would incentivize as our submission to provide
+like the checklist to see what law is considered comprehensive or not. Are we just check just
+whether it's a horizontal or is it just sector one? Thank you so much, by the way. This session has
+been very informative. Thank you, Mohammed. Juntong, do you want to answer for the benefit of
+everybody or?
+
+Yes, thank you, Mohammed. This is a very good question. Actually, I already answered you in the chat
+box in the Q&A session by Taipin. But I mean, to be honest, we don't have a complete checklist at
+this moment. So because initially the objective of this indicator is to check if this legal system
+exists or not. So if we will consider if it's applied horizontally, like the name is the Personal
+Data Protection Act, and it applies horizontally, we will think that it is comprehensive.
+
+So firstly, I will suggest you to check if it applies horizontally. And also, of course, when you
+cited from the RDTII guide, I think you cited from RDTII guide. This is something I would say this
+is the substantial check. Does it provide sufficient provisions to protect the personal data? And so
+that's what I call a substantive check review. So I would say first you check the horizontal, and
+then you go through deep into the provisions and then see if it protects the sufficient protection
+for personal data, and then you scored it.
+
+But in your case, you said you asked the law on data protection does govern data subject to subject
+rights, but it missing right to rectification. In this case, I mean, it works horizontally, of
+course, but in your case, I would say we can score this as 0.5 as we don't treat this comprehensive
+enough. I hope this answer your question. I think we don't want to compliment. Yeah, thank you,
+Juntong for the legal answer. Yes, but please go ahead.
+
+Thank you very much, Amalette. I would like to give some thoughts that the framework of
+comprehensive as per the RDTII criteria is simplify one, like what Juntong has mentioned. There are
+ways to go beyond and make it more need in this competition. And that is what actually look as
+innovations in this sense. And we are in a hackathon. So what we are looking for is innovative
+innovations in both the technical and if possible, the criteria, the mathematics, the algorithm that
+you can make to make it to make your tool is working well and effective.
+
+So I would encourage if the team can come up with innovative ideas within the framework, I would
+encourage them to do so. Thank you for your comment, Gunnuttara. I agree that I think there is scope
+for expanding the understanding of comprehensive and sexual means and I hope our teams can come up
+with something more innovative. Does anybody have any questions? Please go ahead, raise your hands.
+Okay, Mohammed, I see you have another question.
+
+Please go ahead. Thank you so much for the previous answer. I close the question. It's very nice.
+And the next question, I think it's more from Nikita. You mentioned risks regarding the cost before.
+
+Maybe you can put it as an email or something, but we want to know what are the approximate costs of
+each pillar or subpillar that UNESCO usually do, whether the costs that this usually comes up. Maybe
+we can do comparison if you're going to use our AI, like how much our AI can reduce the cost by X
+percent or something like that if we have the approximate numbers. Right, I think I would pass this
+question to Gunnuttara because she's the one who manages the project as well. So Gunnuttara, if
+you're comfortable answering, please go ahead. And you repeat the question again, sorry. Yes, of
+course.
+
+So what are the approximate costs of assessing one pillar, for example, or like one subpillar?
+Assessing cost of one pillar? Yeah, the cost, yeah. How much money does UNESCO spend, for example,
+to produce a report for certain pillars or like for certain jurisdictions? I think different pillars
+would have kind of different costs because it also depends on countries. But you would need to
+estimate based on number of documents that you have to read and how much conditions you impose it
+when you create your, for example, if you use prom, then how long is your prom, for example.
+
+So it's quite depends. Okay, thank you so much. I see a question for Jotog. I think they're asking
+about what is the deadline for submitting your assignment. I actually was gonna say something about
+my assignment. So let me share my screen here.
+
+Yeah, please go ahead. So you can see my screen right now, right? Yeah. Okay, so for the assignment,
+as I said, you can do at least two in Keter 6.1 and in Keter 7.3. And if you want, you can send this
+to 5.3. So what I need to do is like this is the AMPAD database you will receive.
+
+And so what I want you to do is to do the to conduct the legal research manually without using AI.
+Just imagine you are a totally new RDTII data collector, and this is the assignment you got without
+AI. Imagine you are the legal researcher, and then you please collect data to fill in those entries.
+So if I will give feedback when you submit your assignment, but if I capture, if I detect this is
+clearly AI, I will not review and give the feedback. So please just try to leave AI aside for five
+minutes and then just do this research manually by herself. And for the assignment, I would give
+because this is also our new RDTII data collector did for the RDTII data collection practice.
+
+So this is what our new researchers also did. And the deadline, I would give you next Wednesday, if
+you could, Tuesday, next Tuesday, if you could submit all your work and then I will give you
+feedback like, batch, batch, batch. Okay, so they need to submit by Tuesday. Yes, next Tuesday.
+Yeah. Okay.
+
+Yeah, this is, I know it is a pretty hard and it's not easy even for the for the lawyers. But please
+just try to leave AI and then try to use what you heard from this session, and then apply this,
+these methods and apply this like what you got from here, and then try to collect data. And all
+those materials I will send by the email, right? Yeah, we will also make them available on the
+knowledge portal. So you can check both those resources. Okay, so we have another question from very
+trade team.
+
+The question is essentially asking that there are two tags, right, whether new discovery or known
+discovery when the tool gives output. So they're asking two questions. Is a law level, is a law
+level tag of known versus new acceptable? And if they find a genuinely new provision inside a law
+that we have already recorded, should it be tagged as new or known? So either I can answer the
+question or Jeon Tong or Gunmita Dha, anybody who wants to jump in. Yeah.
+
+So for the second question, I would say whether the provision, if you found a new provision inside a
+law that we have already recorded, I think it can be tagged as new because it was not recorded by us
+before. So I do think it can be tagged as a new law. If you agree with that or disagree, let me
+know. The very trade team, could you clarify what do you mean by your first question? Is a law level
+known slash new acceptable? I don't think they're here.
+
+Sorry, I didn't listen to the questions. What is the question again, Nikita? So the question they're
+asking is twofold. The first one they asked is if we genuinely find a new provision inside a law
+that is already in the list, is that provision a new, should it get a new tag or a known tag? So
+they found a new provision in a law that we have already recorded, but we didn't find the provision
+ourselves. So would it be a new discovery or a known discovery?
+
+They find new law in the existing? Yeah, so they found a new text that is relevant in a law that we
+have recorded, but we didn't record that text itself. That's actually another new text. Because in
+one law there might be many articles, right? In this case, they're referring to new articles that we
+never cite before. Or it is still in the same articles, but different horographs.
+
+It is basically the same law document. So for example, the Personal Data Protection Act, but then
+they found a new provision within that that they found to be relevant to the indicator in question.
+The generic question would be if it is the same law, it is already known evidence. Yeah, but then
+it's a different quote. Yeah, but the provision itself, we never recorded. So I would say it can be
+new evidence because we never found the provision.
+
+And maybe the provision that they found can affect scoring or the way we understand the legal text.
+It doesn't... when we recorded it, right, when we did it manually, we did not record every
+provision. Although we may have seen it, but we picked up important or the first scene relevant
+provisions because of the space limit or the time limit. But as long as it is still in the same law,
+same articles, same context, it is non-evident. Okay. And Veritrade also says that when they looked
+at the template from RTTII, everything was just the name of the law and they couldn't find any
+guidance on referencing to the specific law.
+
+Juntong, do you want to cover this question? Maybe they are confused about the way we record our
+laws, basically. Just the name of the law, and I mean, like I said, it's like for a complete impact
+column for the complete legal analysis, will be used by the law with specific sector, with specific
+article, and then you analyze, you also add your explanation, like why you think this is relevant.
+So this is what we expected. But from our previous experience, sometimes it's just like for this
+specific indicator, probably because this economy or this country does not have that kind of legal
+provision yet. And we choose the most relevant one to give the general reference, because we don't
+want to make this the entry empathy.
+
+So we give the most relevant one and to give the general reference, but we cannot specify which
+section or which article, because it's indeed actually not directly relevant with this indicator.
+But just to fill in the blank and give the reference, we put that there. So, this answer your
+question? I hope that answers their question. But if you're still confused, please email us. Maybe
+we can clarify it further if you want further clarification.
+
+Okay, we have one last minute maybe to take any more questions if anybody has them. Okay, I can see
+one more question from Colin. With all of this, may I know if there are any detailed resources or
+references that contains all of the timeline and deliverables for this hackathon aside from the
+website itself? I think the website itself has all the references and timelines. But if you want
+anything else, or if you are confused by any, please email us and maybe we can clarify it further.
+But as for the timelines right now, the next important submission is Juntong's assignment, and then
+the submission in July for your first round of shortlisting.
+
+I also see a technical, I also see a question about hackathon submissions technical requirements.
+Koonvitana, do you think you can answer this question or should I take this to an email? Can you
+read the question, please? Yeah, so the question, the first question is for the first round
+submission, does the tool need to be run from the command line or is the GUI allowed? For this, for
+the 2020 July, right? Yeah.
+
+It should run from the command line. Okay, so the answer to that question, Denzil, is that it should
+run from the command line. And then the second question is, the slides state that for judging
+evaluation, if both loops close in seconds, you score. If they don't, you don't. And the readme
+template states that everything must be able to be a quick start in 10 minutes. Does this include
+installation and setup?
+
+It doesn't include installation and setup. Yes. Okay. Okay, so once it has been installed and set
+up, then it should take 10 minutes to do this readme. Okay. Denzil, I hope that answers your
+questions.
+
+And also for the previous question, if you have any comments about if there are any detailed
+resources and references about the hackathon deliverables, aside from the website itself. The retail
+resources brings timeline. Yeah. Apart from the hackathon website. Apart from the hackathon website.
+In ours, I mean, hackathon website is the most official source.
+
+So when we announce any updates, for example, if happens that we will change the submission
+deadline, we will announce on the hackathon website. I would say you should check the hackathon
+website as your official source of information and primary. Denzil is following up with the
+requirement is 10 minutes and not 10 seconds. I cannot remember exactly what it was written in the
+requirements. Can you bring that up again, please? Let me just pull up your previous slides.
+
+Okay. I think it is best if I can come back to you on this, Denzil. Hackathon overview is July 17th.
+Oh, yeah. Okay. I just thought that.
+
+Okay. 10 minutes, I think. Yeah. It says 10 minutes on the slide. Okay. The answer is 10 minutes.
+
+Okay. I hope that is all the questions. Okay. I don't see anybody else has any more questions. Thank
+you all for your very enthusiastic. I would like to remind everyone that we do have Q&A sessions on
+15th June.
+
+And it would be a good idea for you to ask about anything you want clarification. And it will be
+even more effective if you send us the question at once. So the session is on 15th. So please send
+us the questions by Friday, the 12th of June, so that we can see which questions that will be
+selected to answer. Because if there are a lot of questions, probably we cannot cover all. But we
+will try our best to to comply and consolidate the questions that everyone will be benefit from.
+
+Thank you. Thank you, Kondita, for reminding us. Yes, please send us your questions by the 12th so
+that we can address them on the 15th. Thank you all for your enthusiastic participation. And we're
+really looking forward to seeing you on 11th and 12th for our public workshops and then on the 15th
+for a final wrap up session before you go off to design your tools. Have a good weekend and we will
+see you soon.
+
+Thank you so much.
