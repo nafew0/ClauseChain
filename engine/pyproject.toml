@@ -1,0 +1,19 @@
+[project]
+name = "clausechain-engine"
+version = "0.1.0"
+description = "ClauseChain Round 1 legal evidence engine skeleton"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.7,<3",
+    "pyyaml>=6.0,<7",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0,<9",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+

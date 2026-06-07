@@ -1,0 +1,37 @@
+profiles:
+  cheap_default:
+    bulk:
+      primary: openai:gpt-5.4-nano
+      fallback: google:${GEMINI_BULK_MODEL:-gemini-3-flash-preview}
+    high_reasoning:
+      primary: openai:gpt-5.4-mini
+      fallback: google:${GEMINI_HIGH_REASONING_MODEL:-gemini-3-flash-preview}
+    embedding:
+      provider: openai
+      model: text-embedding-3-small
+      dimensions: 1536
+    ocr:
+      provider: local
+      model: ${LOCAL_OCR_MODEL:-local-ocr-placeholder}
+    graph:
+      provider: neo4j
+      mode: local_env
+
+  final_quality:
+    bulk:
+      primary: openai:gpt-5.4-nano
+      fallback: google:${GEMINI_BULK_MODEL:-gemini-3-flash-preview}
+    high_reasoning:
+      primary: openai:gpt-5.4-mini
+      fallback: google:${GEMINI_HIGH_REASONING_MODEL:-gemini-3-flash-preview}
+    embedding:
+      provider: openai
+      model: text-embedding-3-large
+      dimensions: 3072
+    ocr:
+      provider: local
+      model: ${LOCAL_OCR_MODEL:-local-ocr-placeholder}
+    graph:
+      provider: neo4j
+      mode: local_env
+

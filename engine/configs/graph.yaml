@@ -1,0 +1,17 @@
+neo4j:
+  uri_env: NEO4J_URI
+  user_env: NEO4J_USER
+  password_env: NEO4J_PASSWORD
+  required_for_dummy_run: false
+
+canonical_nodes:
+  - Economy
+  - Instrument
+  - InstrumentVersion
+  - Section
+  - Provision
+  - SourceSpan
+  - Indicator
+  - CandidateFinding
+  - VerifiedFinding
+
