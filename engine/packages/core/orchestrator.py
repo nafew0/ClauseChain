@@ -8,12 +8,14 @@ ECONOMY_NAMES = {
     "MY": "Malaysia",
     "AU": "Australia",
 }
+CODE_BY_NAME = {name.upper(): code for code, name in ECONOMY_NAMES.items()}
 
 
-def run(country: str, pillar: int, provider_profile: str = "cheap_default") -> RunEnvelope:
+def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") -> RunEnvelope:
     """Return a deterministic dummy envelope that proves the P0 contracts."""
-    normalized_country = country.strip().upper()
-    economy = ECONOMY_NAMES.get(normalized_country, normalized_country)
+    raw = country.strip().upper()
+    normalized_country = CODE_BY_NAME.get(raw, raw)  # accepts "SG" and "Singapore"
+    economy = ECONOMY_NAMES.get(normalized_country, country.strip())
 
     finding = MappedFinding(
         economy=economy,
@@ -35,6 +37,9 @@ def run(country: str, pillar: int, provider_profile: str = "cheap_default") -> R
         source_url="https://sso.agc.gov.sg/Act/PDPA2012",
         confidence=0.99,
         notes="P0 dummy data; replace with verified live extraction in P1.",
+        coverage="Horizontal",
+        status="in_force",
+        model_version="p0-dummy",
         graph_path=[
             "Economy:Singapore",
             "Instrument:Personal Data Protection Act 2012",

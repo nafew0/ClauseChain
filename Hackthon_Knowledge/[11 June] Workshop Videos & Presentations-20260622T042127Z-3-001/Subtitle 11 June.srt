@@ -1,0 +1,5964 @@
+1
+01:00:00,199 --> 01:00:06,559
+<b>Okay, good evening everyone. Welcome to today's seminar</b>
+
+2
+01:00:06,559 --> 01:00:09,519
+<b>session. My name is Latapum Palichatwisha</b>
+
+3
+01:00:09,679 --> 01:00:13,320
+<b>from Kimmukud Institute of Technology, Latkabang, the</b>
+
+4
+01:00:13,320 --> 01:00:16,639
+<b>co-host of this hackathon. And I will be your</b>
+
+5
+01:00:16,639 --> 01:00:21,599
+<b>moderator today. Before we begin, a quick look at our</b>
+
+6
+01:00:21,599 --> 01:00:25,840
+<b>schedule. Our speakers represent for 45 minutes,</b>
+
+7
+01:00:26,639 --> 01:00:32,440
+<b>which will be followed by 15 Q&A session. If you have</b>
+
+8
+01:00:32,440 --> 01:00:35,440
+<b>questions during the presentation, please feel</b>
+
+9
+01:00:35,440 --> 01:00:38,639
+<b>free to drop them in the chat box. We will</b>
+
+10
+01:00:38,639 --> 01:00:42,719
+<b>address them at the end of the conversation.</b>
+
+11
+01:00:43,559 --> 01:00:46,880
+<b>Or you can raise your hand and I will start. We will tell</b>
+
+12
+01:00:46,880 --> 01:00:49,719
+<b>you. We will let you ask the question,</b>
+
+13
+01:00:49,760 --> 01:00:54,400
+<b>the short question to the lecture speaker. Tonight, we have</b>
+
+14
+01:00:54,400 --> 01:00:57,199
+<b>two experts in the corporate AI</b>
+
+15
+01:00:58,559 --> 01:01:03,639
+<b>visionary and AI strategies with proven the tech records.</b>
+
+16
+01:01:04,920 --> 01:01:07,920
+<b>It is now my absolute pressure</b>
+
+17
+01:01:08,480 --> 01:01:14,320
+<b>to introduce today's first speaker, Dr. Wuran-yoo Su-ji,</b>
+
+18
+01:01:14,800 --> 01:01:18,239
+<b>Wala Panpong. Dr. Wuran-yoo or Dr. Yoo</b>
+
+19
+01:01:19,199 --> 01:01:26,400
+<b>is a founder and CEO of the limited ICT, a leading Google</b>
+
+20
+01:01:26,400 --> 01:01:28,360
+<b>Cloud premier partner in Thailand.</b>
+
+21
+01:01:29,480 --> 01:01:34,320
+<b>Sub-specializing in cloud transformation, AI solutions and</b>
+
+22
+01:01:34,320 --> 01:01:36,760
+<b>expertise in technology implementation.</b>
+
+23
+01:01:38,280 --> 01:01:41,599
+<b>He has extensive experience in expertise</b>
+
+24
+01:01:41,599 --> 01:01:44,760
+<b>in IT strategy, digital transformation,</b>
+
+25
+01:01:45,440 --> 01:01:49,519
+<b>helping number us scale up and</b>
+
+26
+01:01:49,519 --> 01:01:52,760
+<b>implementation projects across Thailand.</b>
+
+27
+01:01:54,519 --> 01:01:57,719
+<b>His expertise includes AI adoption, cloud technology,</b>
+
+28
+01:01:59,239 --> 01:02:02,280
+<b>enterprise systems and technology drive and business</b>
+
+29
+01:02:02,280 --> 01:02:06,239
+<b>innovation. Today, he will be presenting</b>
+
+30
+01:02:06,800 --> 01:02:11,280
+<b>on the topic, engineering AI across the border, building AI</b>
+
+31
+01:02:11,280 --> 01:02:13,280
+<b>for real world global challenge.</b>
+
+32
+01:02:14,800 --> 01:02:19,599
+<b>Please join me in giving a warm welcome to Dr. Wuran-yoo</b>
+
+33
+01:02:19,599 --> 01:02:23,519
+<b>and Dr. Wuran-yoo, the floor is yours.</b>
+
+34
+01:02:23,960 --> 01:02:27,880
+<b>Okay. Yeah. Yeah. Good evening and thanks Professor</b>
+
+35
+01:02:27,880 --> 01:02:33,039
+<b>Panpong. And okay. So yeah. Yeah.</b>
+
+36
+01:02:33,039 --> 01:02:37,199
+<b>I'm yeah. Let me have a look at the kind of chat. Yeah.</b>
+
+37
+01:02:37,199 --> 01:02:38,519
+<b>This is because I'm not quite</b>
+
+38
+01:02:39,119 --> 01:02:42,519
+<b>your family with soon because we have been working with</b>
+
+39
+01:02:42,519 --> 01:02:44,719
+<b>Google for many years. So I'm</b>
+
+40
+01:02:45,119 --> 01:02:49,880
+<b>yeah. Yeah. Yeah. Okay. I found the, okay. Yeah. Okay. The,</b>
+
+41
+01:02:50,559 --> 01:02:52,679
+<b>yeah, what I'm going to talk in the next</b>
+
+42
+01:02:52,719 --> 01:02:56,880
+<b>45 minutes is about engineering AI. Yeah. Across the</b>
+
+43
+01:02:56,880 --> 01:02:59,599
+<b>borders, because I know that most of you</b>
+
+44
+01:03:00,559 --> 01:03:05,320
+<b>attending are participating in the UN Global hackathon. So</b>
+
+45
+01:03:05,320 --> 01:03:07,000
+<b>yeah, today I would like to share</b>
+
+46
+01:03:07,039 --> 01:03:13,360
+<b>the experience about, you know, yeah, what we should</b>
+
+47
+01:03:13,360 --> 01:03:15,519
+<b>prepare, you know, if you would like to</b>
+
+48
+01:03:16,079 --> 01:03:22,679
+<b>expand your AI solutions or AI project. Yeah. Across the</b>
+
+49
+01:03:22,679 --> 01:03:25,880
+<b>borders. Yeah. Yeah. And then, and then</b>
+
+50
+01:03:26,239 --> 01:03:31,199
+<b>the key question today is, it's not how we build the AI,</b>
+
+51
+01:03:31,599 --> 01:03:33,880
+<b>but the question is, how do we build AI</b>
+
+52
+01:03:33,960 --> 01:03:36,960
+<b>system that create the real world</b>
+
+53
+01:03:36,960 --> 01:03:40,440
+<b>impact across different countries, cultures,</b>
+
+54
+01:03:40,800 --> 01:03:43,599
+<b>regulations, and communities? Yeah. Yeah.</b>
+
+55
+01:03:43,599 --> 01:03:46,000
+<b>That is what we will explore together today.</b>
+
+56
+01:03:46,719 --> 01:03:50,199
+<b>And first of all, I would like to introduce about, about</b>
+
+57
+01:03:50,199 --> 01:03:54,119
+<b>myself. Yeah. As, as, as, yeah, professor</b>
+
+58
+01:03:54,960 --> 01:03:58,000
+<b>at the boom, you have mentioned, yeah, I'm from the middle</b>
+
+59
+01:03:58,000 --> 01:04:00,760
+<b>ICT. I'm, I'm the father and CEO of</b>
+
+60
+01:04:00,800 --> 01:04:07,079
+<b>the company. We have been working with Google for, for 10</b>
+
+61
+01:04:07,079 --> 01:04:09,880
+<b>years. We are the partner of, of</b>
+
+62
+01:04:09,880 --> 01:04:14,320
+<b>Google cloud solutions in Asia Pacific. And not only</b>
+
+63
+01:04:14,320 --> 01:04:18,760
+<b>Google, we also yeah, collaborating with</b>
+
+64
+01:04:18,880 --> 01:04:22,960
+<b>other solutions as well. And then most of the solutions</b>
+
+65
+01:04:22,960 --> 01:04:26,960
+<b>we'll, yeah, react with the AI. And</b>
+
+66
+01:04:27,039 --> 01:04:30,840
+<b>at the moment, we are serving more than 4,600 business</b>
+
+67
+01:04:30,840 --> 01:04:34,199
+<b>customers in 14 countries. Our headquarters</b>
+
+68
+01:04:34,400 --> 01:04:39,280
+<b>is in Bangkok. We are, we have the, the subsidiaries in</b>
+
+69
+01:04:39,280 --> 01:04:42,960
+<b>Singapore and in, and in China as well. Okay.</b>
+
+70
+01:04:43,639 --> 01:04:46,760
+<b>Okay. Yeah. This is a brief introduction and, and the topic</b>
+
+71
+01:04:46,760 --> 01:04:49,079
+<b>today, okay. That, that I, I know that</b>
+
+72
+01:04:49,079 --> 01:04:52,679
+<b>most of you are interested in the hackathon. And then I</b>
+
+73
+01:04:52,679 --> 01:04:56,320
+<b>believe all of you will be really keen to,</b>
+
+74
+01:04:56,679 --> 01:05:00,440
+<b>to think about, you know, think about AI. But today I am</b>
+
+75
+01:05:00,440 --> 01:05:02,960
+<b>going to share you some, some aspects,</b>
+
+76
+01:05:03,760 --> 01:05:07,599
+<b>about the AI project that if you like to do, yeah, across</b>
+
+77
+01:05:07,599 --> 01:05:10,440
+<b>the borders and you then can prepare your,</b>
+
+78
+01:05:10,440 --> 01:05:16,880
+<b>your project to win the mic of, of the judges for this</b>
+
+79
+01:05:16,880 --> 01:05:20,159
+<b>project. Okay. And, and, and first of all,</b>
+
+80
+01:05:20,159 --> 01:05:22,960
+<b>I would like to, to, yeah, I think that you know that,</b>
+
+81
+01:05:22,960 --> 01:05:24,519
+<b>yeah, we are living through one of the</b>
+
+82
+01:05:24,559 --> 01:05:28,679
+<b>fastest technology adoption cycles in the human history.</b>
+
+83
+01:05:30,119 --> 01:05:32,239
+<b>Yeah. Millions of, of AI projects are</b>
+
+84
+01:05:32,239 --> 01:05:37,280
+<b>being developed. Thousands of AI startups are being funded.</b>
+
+85
+01:05:38,679 --> 01:05:41,679
+<b>Billions of dollars are being invested</b>
+
+86
+01:05:42,480 --> 01:05:46,719
+<b>every week. You know, we have a new model, a new favorite,</b>
+
+87
+01:05:47,119 --> 01:05:49,320
+<b>a new AI company, a new breakthrough.</b>
+
+88
+01:05:50,239 --> 01:05:54,960
+<b>The amount of innovation happening right now is incredible.</b>
+
+89
+01:05:56,239 --> 01:05:58,079
+<b>And yet, yeah, something interesting</b>
+
+90
+01:05:58,400 --> 01:06:02,639
+<b>is happening. Yeah. Despite all, all these activities, most</b>
+
+91
+01:06:02,639 --> 01:06:04,599
+<b>AI projects never create meaningful</b>
+
+92
+01:06:04,719 --> 01:06:09,519
+<b>impact. The technology is advancing rapidly, but the real</b>
+
+93
+01:06:09,519 --> 01:06:12,840
+<b>world, your adoption and measurable value</b>
+
+94
+01:06:13,199 --> 01:06:16,679
+<b>are not going at the same rate. Yeah. Why is that? That is</b>
+
+95
+01:06:16,679 --> 01:06:18,400
+<b>the question that we would like to start</b>
+
+96
+01:06:18,880 --> 01:06:24,559
+<b>discussion today. Okay. Yeah. First of all, I would like, I</b>
+
+97
+01:06:24,559 --> 01:06:29,000
+<b>have a really simple question. Yeah. To ask</b>
+
+98
+01:06:29,000 --> 01:06:34,480
+<b>you. Okay. Actually I have the, I have the poll. Yeah.</b>
+
+99
+01:06:34,679 --> 01:06:37,039
+<b>Yeah. That, that I, I, that I would like to,</b>
+
+100
+01:06:38,119 --> 01:06:42,159
+<b>to know that I read to hear from, hear from you guys as</b>
+
+101
+01:06:42,159 --> 01:06:44,840
+<b>well. Okay. And first of all,</b>
+
+102
+01:06:45,519 --> 01:06:49,960
+<b>this is a QR code. Okay. If you have your mobile phone with</b>
+
+103
+01:06:49,960 --> 01:06:52,679
+<b>you, you can pick your mobile phone and</b>
+
+104
+01:06:52,679 --> 01:06:56,519
+<b>then scan this QR code. And then the first</b>
+
+105
+01:06:56,519 --> 01:06:59,800
+<b>question I would like to, to, to learn from</b>
+
+106
+01:07:00,480 --> 01:07:04,840
+<b>you also, how many AI prototype have you built before?</b>
+
+107
+01:07:06,599 --> 01:07:09,239
+<b>Yeah. Never. Yeah. One, two, three, four,</b>
+
+108
+01:07:09,280 --> 01:07:13,559
+<b>two, 10 or more than 10. Okay. Yeah. Okay.</b>
+
+109
+01:07:13,719 --> 01:07:17,079
+<b>Yeah. Okay. That is, it sounds, oh, some,</b>
+
+110
+01:07:18,239 --> 01:07:23,920
+<b>some participants are really expert. Yeah. More than, more</b>
+
+111
+01:07:23,920 --> 01:07:26,840
+<b>than 10 prototypes. Okay. Okay. Yeah.</b>
+
+112
+01:07:26,840 --> 01:07:29,199
+<b>Yeah. Okay. Okay. Yeah. Yeah. Yeah. For example. Yeah.</b>
+
+113
+01:07:29,199 --> 01:07:34,639
+<b>Okay. Yeah. Yeah. Okay. Yeah. Okay. How, how,</b>
+
+114
+01:07:34,719 --> 01:07:38,599
+<b>how many participants do we have? Okay. Yeah. Okay. Yeah.</b>
+
+115
+01:07:39,159 --> 01:07:41,679
+<b>This is a very simple question. So,</b>
+
+116
+01:07:42,480 --> 01:07:49,599
+<b>yeah, let's assume that we have it, it, it guys response to</b>
+
+117
+01:07:49,599 --> 01:07:51,119
+<b>these first questions. It means</b>
+
+118
+01:07:52,000 --> 01:07:57,519
+<b>about 50% of the participants here have experiences in</b>
+
+119
+01:07:57,519 --> 01:08:02,159
+<b>doing AI prototype. Yeah. This is the first one.</b>
+
+120
+01:08:02,320 --> 01:08:08,760
+<b>And then the second questions before I move forward is how</b>
+
+121
+01:08:08,760 --> 01:08:11,079
+<b>many are currently used by the</b>
+
+122
+01:08:11,440 --> 01:08:17,520
+<b>real users? By the real users? Not, not your, not yourself,</b>
+
+123
+01:08:17,840 --> 01:08:20,920
+<b>but just by others, your parents,</b>
+
+124
+01:08:21,279 --> 01:08:25,600
+<b>your friends, or whoever. Oh yeah. Yeah. Yeah. Some, some</b>
+
+125
+01:08:25,600 --> 01:08:27,119
+<b>participants, okay, have experiences</b>
+
+126
+01:08:27,800 --> 01:08:32,960
+<b>using with a, yeah, deploy in the real development with the</b>
+
+127
+01:08:32,960 --> 01:08:35,199
+<b>real users. Yeah. Yeah. But of course,</b>
+
+128
+01:08:35,199 --> 01:08:40,119
+<b>you know, yeah. Yeah. Some of you may, may be newbie in</b>
+
+129
+01:08:40,119 --> 01:08:44,840
+<b>the, yeah. Yeah. In this area, but, but you,</b>
+
+130
+01:08:45,039 --> 01:08:50,439
+<b>at least you, you know how to build the AI prototype</b>
+
+131
+01:08:50,439 --> 01:08:52,760
+<b>before, but, but, but just lack of the</b>
+
+132
+01:08:52,800 --> 01:08:58,079
+<b>experience to, to deploy for, for, for, for the real users.</b>
+
+133
+01:08:58,399 --> 01:09:02,199
+<b>Okay. Yeah. That's why I, I, I, I, I,</b>
+
+134
+01:09:02,199 --> 01:09:07,720
+<b>I would like to, to, to talk about this today. So yeah.</b>
+
+135
+01:09:08,600 --> 01:09:14,119
+<b>Okay. This, yeah. What you answer me,</b>
+
+136
+01:09:14,159 --> 01:09:17,279
+<b>yeah. This happens everywhere, you know, in the university,</b>
+
+137
+01:09:17,600 --> 01:09:19,479
+<b>startups, government, the large,</b>
+
+138
+01:09:20,239 --> 01:09:24,800
+<b>enterprise. Yeah. Yeah. We build a prototype in, in common,</b>
+
+139
+01:09:25,000 --> 01:09:27,840
+<b>you know, creating, but however, you know,</b>
+
+140
+01:09:27,840 --> 01:09:31,079
+<b>we, but when we come to talk about the impact, yeah, that</b>
+
+141
+01:09:31,079 --> 01:09:33,319
+<b>is the big questions that how can we,</b>
+
+142
+01:09:35,439 --> 01:09:39,079
+<b>how can they build the prototype that create the impact</b>
+
+143
+01:09:39,079 --> 01:09:43,720
+<b>that other users can use? Okay. And this is,</b>
+
+144
+01:09:43,840 --> 01:09:47,279
+<b>and another fact that is a thousand of ideas become</b>
+
+145
+01:09:47,279 --> 01:09:50,680
+<b>prototypes, but from the statistic,</b>
+
+146
+01:09:51,279 --> 01:09:54,720
+<b>some, some prototypes, yeah, becomes</b>
+
+147
+01:09:54,720 --> 01:09:58,520
+<b>pilot. However, much smaller number reach the</b>
+
+148
+01:09:58,560 --> 01:10:03,399
+<b>applications and only probably, you know, one or 2%, a</b>
+
+149
+01:10:03,399 --> 01:10:05,800
+<b>handful created the meaningful impact.</b>
+
+150
+01:10:06,199 --> 01:10:08,920
+<b>The challenges, the challenge is not building something</b>
+
+151
+01:10:08,920 --> 01:10:11,600
+<b>that works once, but the challenge,</b>
+
+152
+01:10:12,119 --> 01:10:15,640
+<b>but the challenge for everyone participating in this</b>
+
+153
+01:10:15,640 --> 01:10:18,319
+<b>program is how to build something that</b>
+
+154
+01:10:18,720 --> 01:10:22,720
+<b>survive the really, you have to, how to get the users, how</b>
+
+155
+01:10:22,720 --> 01:10:23,960
+<b>to get the real organizations,</b>
+
+156
+01:10:24,560 --> 01:10:28,960
+<b>the real, the real constraints, the real regulations, the</b>
+
+157
+01:10:28,960 --> 01:10:32,039
+<b>real expectations. This is why I often</b>
+
+158
+01:10:32,560 --> 01:10:36,359
+<b>always say that reading a demo is easy, you know, but the</b>
+
+159
+01:10:36,359 --> 01:10:38,359
+<b>most difficult part is to create</b>
+
+160
+01:10:38,840 --> 01:10:43,039
+<b>the impact is quite hard. Okay. And</b>
+
+161
+01:10:43,039 --> 01:10:47,159
+<b>let's take this idea one step further. Okay.</b>
+
+162
+01:10:48,399 --> 01:10:52,600
+<b>Most teams start at the prototype stage. They prove that</b>
+
+163
+01:10:52,600 --> 01:10:55,319
+<b>the technology works and then the project</b>
+
+164
+01:10:55,359 --> 01:11:00,720
+<b>ends, but a prototype is not a destination. It is only the</b>
+
+165
+01:11:00,720 --> 01:11:03,159
+<b>beginning, yeah. To create the value,</b>
+
+166
+01:11:03,279 --> 01:11:08,000
+<b>a prototype must have and must become an application and</b>
+
+167
+01:11:08,000 --> 01:11:09,840
+<b>the application must become a</b>
+
+168
+01:11:10,239 --> 01:11:14,840
+<b>production system. And only then it creates the real world</b>
+
+169
+01:11:14,840 --> 01:11:17,479
+<b>impact. Many people think success</b>
+
+170
+01:11:17,920 --> 01:11:22,760
+<b>happens when the models work, but the fact is the success</b>
+
+171
+01:11:22,760 --> 01:11:24,560
+<b>happens when the people use it</b>
+
+172
+01:11:24,960 --> 01:11:30,079
+<b>consistently and benefit from it. So this is one of the</b>
+
+173
+01:11:30,079 --> 01:11:32,600
+<b>biggest misconceptions in AI that</b>
+
+174
+01:11:32,960 --> 01:11:38,439
+<b>the success comes from having a better model. Yeah. Of</b>
+
+175
+01:11:38,439 --> 01:11:41,960
+<b>course, you know, yeah, models matter,</b>
+
+176
+01:11:42,560 --> 01:11:47,159
+<b>but let me ask a few questions. What happens if the model</b>
+
+177
+01:11:47,159 --> 01:11:50,720
+<b>is excellent, but the data is poor?</b>
+
+178
+01:11:51,520 --> 01:11:55,960
+<b>What happens if the users do not touch it? What happens if</b>
+
+179
+01:11:55,960 --> 01:11:58,760
+<b>it doesn't fit into their workflow?</b>
+
+180
+01:11:59,039 --> 01:12:03,199
+<b>What happens if nobody adopts it? A</b>
+
+181
+01:12:03,199 --> 01:12:08,159
+<b>great model alone doesn't create the value.</b>
+
+182
+01:12:09,199 --> 01:12:14,399
+<b>AI success is the combination of many factors. The problem</b>
+
+183
+01:12:14,399 --> 01:12:18,439
+<b>being solved, the quality of the data,</b>
+
+184
+01:12:19,439 --> 01:12:26,319
+<b>the workflow, the people, the governance. The technology is</b>
+
+185
+01:12:26,319 --> 01:12:28,600
+<b>only one piece of a much larger</b>
+
+186
+01:12:28,640 --> 01:12:34,960
+<b>system. And after working in technology projects for many</b>
+
+187
+01:12:34,960 --> 01:12:37,159
+<b>years, I have noticed the same patterns</b>
+
+188
+01:12:37,279 --> 01:12:41,960
+<b>repeatedly. The project fails because they solve problems</b>
+
+189
+01:12:41,960 --> 01:12:45,960
+<b>nobody actually has. Yeah. So it means no</b>
+
+190
+01:12:45,960 --> 01:12:49,119
+<b>real problems. And project fails because the data is poor.</b>
+
+191
+01:12:49,760 --> 01:12:51,760
+<b>The project fails because they do not fit</b>
+
+192
+01:12:51,840 --> 01:12:57,279
+<b>into existing workforce. The project fails because users do</b>
+
+193
+01:12:57,279 --> 01:13:00,840
+<b>not touch them. And the project</b>
+
+194
+01:13:00,840 --> 01:13:07,279
+<b>fails because nobody owns them after the deployment. Yeah.</b>
+
+195
+01:13:07,279 --> 01:13:11,239
+<b>Notice something important. Very few projects</b>
+
+196
+01:13:11,239 --> 01:13:15,600
+<b>fail because the model is not smart enough. Most failures</b>
+
+197
+01:13:15,600 --> 01:13:18,960
+<b>are the human failures, organizational</b>
+
+198
+01:13:19,279 --> 01:13:24,359
+<b>failures, operational failures, not the AI failures. And</b>
+
+199
+01:13:24,359 --> 01:13:29,199
+<b>that is why how to engineering it.</b>
+
+200
+01:13:31,600 --> 01:13:35,119
+<b>It is a matter of how can you make the AI project success.</b>
+
+201
+01:13:36,560 --> 01:13:39,079
+<b>And this is one of the most important</b>
+
+202
+01:13:39,199 --> 01:13:44,279
+<b>slides in the M-type presentations. When people talk about</b>
+
+203
+01:13:44,279 --> 01:13:45,960
+<b>the AI, they often think about the</b>
+
+204
+01:13:46,000 --> 01:13:51,720
+<b>technologies, models, tools, infrastructures. But that is a</b>
+
+205
+01:13:51,720 --> 01:13:53,640
+<b>missing layer between technologies</b>
+
+206
+01:13:54,000 --> 01:13:57,399
+<b>and impact, which is people. Yeah.</b>
+
+207
+01:13:58,239 --> 01:14:02,079
+<b>People decide whether they trust the system.</b>
+
+208
+01:14:02,640 --> 01:14:06,399
+<b>People decide whether they adopt it. People decide whether</b>
+
+209
+01:14:06,399 --> 01:14:09,880
+<b>it changes the behavior. People decide</b>
+
+210
+01:14:10,079 --> 01:14:14,960
+<b>whether it creates value. Technology by itself doesn't</b>
+
+211
+01:14:14,960 --> 01:14:17,720
+<b>change the world. People change the world</b>
+
+212
+01:14:17,840 --> 01:14:24,000
+<b>using the technologies. And that</b>
+
+213
+01:14:24,000 --> 01:14:31,159
+<b>is why understanding human adoption</b>
+
+214
+01:14:33,439 --> 01:14:37,520
+<b>is just as important as understanding the AI.</b>
+
+215
+01:14:41,920 --> 01:14:46,600
+<b>Okay. And so far, we have learned</b>
+
+216
+01:14:46,600 --> 01:14:50,439
+<b>several important lessons. Most AI projects</b>
+
+217
+01:14:51,920 --> 01:14:56,560
+<b>doesn't reach impact. Most teams stop at prototype. Most</b>
+
+218
+01:14:56,560 --> 01:14:58,600
+<b>failures are not technical failures.</b>
+
+219
+01:14:59,279 --> 01:15:02,720
+<b>And successful AI requires much more than models, which</b>
+
+220
+01:15:02,720 --> 01:15:05,000
+<b>leads us to the next questions.</b>
+
+221
+01:15:06,000 --> 01:15:12,039
+<b>Okay. If building AI is not enough, what does it actually</b>
+
+222
+01:15:12,039 --> 01:15:15,159
+<b>take to build AI across the borders?</b>
+
+223
+01:15:15,720 --> 01:15:21,760
+<b>Because once we move beyond a single organization, a single</b>
+
+224
+01:15:21,760 --> 01:15:23,560
+<b>language, or a single country,</b>
+
+225
+01:15:24,000 --> 01:15:28,279
+<b>the complexity increases dramatically. Let's explore the</b>
+
+226
+01:15:28,279 --> 01:15:30,720
+<b>next. So far, we have discussed</b>
+
+227
+01:15:31,039 --> 01:15:33,920
+<b>why many AI projects fail. And now let's</b>
+
+228
+01:15:33,920 --> 01:15:38,319
+<b>talk about what happens when we implement AI</b>
+
+229
+01:15:38,640 --> 01:15:44,680
+<b>across the borders. When organizations first expand</b>
+
+230
+01:15:44,680 --> 01:15:47,840
+<b>internationally, the language is usually</b>
+
+231
+01:15:47,840 --> 01:15:52,880
+<b>the first challenge they notice. But</b>
+
+232
+01:15:52,880 --> 01:15:57,720
+<b>language is often the easiest problem to solve.</b>
+
+233
+01:15:58,720 --> 01:16:05,439
+<b>Modern AI models are already remarkably good at</b>
+
+234
+01:16:05,439 --> 01:16:09,279
+<b>translation. Yet, many AI projects still fail</b>
+
+235
+01:16:09,279 --> 01:16:16,199
+<b>internationally. Why? This is because translation doesn't</b>
+
+236
+01:16:16,199 --> 01:16:21,840
+<b>solve cultural differences. It doesn't</b>
+
+237
+01:16:22,560 --> 01:16:28,399
+<b>solve regulatory differences. And it certainly doesn't</b>
+
+238
+01:16:28,399 --> 01:16:30,960
+<b>solve organization capacities.</b>
+
+239
+01:16:32,720 --> 01:16:36,960
+<b>So when I think about the cross-border AI, I do not think</b>
+
+240
+01:16:36,960 --> 01:16:40,520
+<b>about one border. I think about</b>
+
+241
+01:16:40,640 --> 01:16:45,880
+<b>multiple borders. Language, cultures, regulations,</b>
+
+242
+01:16:46,960 --> 01:16:48,960
+<b>infrastructure, organizations,</b>
+
+243
+01:16:49,760 --> 01:16:57,520
+<b>and most AI discussions focus on language. But in</b>
+
+244
+01:16:57,520 --> 01:17:00,880
+<b>real-world departments, the other borders are</b>
+
+245
+01:17:00,880 --> 01:17:05,279
+<b>often more difficult. Let's explore them one by one. The</b>
+
+246
+01:17:05,279 --> 01:17:07,920
+<b>first one is the language. Language is</b>
+
+247
+01:17:08,159 --> 01:17:13,520
+<b>more than words. Language carries meaning, context, intent,</b>
+
+248
+01:17:14,520 --> 01:17:17,279
+<b>emotion, industry-specific terminology,</b>
+
+249
+01:17:17,920 --> 01:17:22,520
+<b>legal terminology. Even the simple phrases can have very</b>
+
+250
+01:17:22,520 --> 01:17:26,920
+<b>different interpretations in different</b>
+
+251
+01:17:27,279 --> 01:17:31,520
+<b>countries. Translation is important, but understanding</b>
+
+252
+01:17:31,520 --> 01:17:33,720
+<b>context is far more important.</b>
+
+253
+01:17:33,800 --> 01:17:42,479
+<b>The second one is culture. Culture influences expectations.</b>
+
+254
+01:17:43,880 --> 01:17:49,680
+<b>Imagine the same customers service</b>
+
+255
+01:17:49,760 --> 01:17:55,800
+<b>AI deploy globally, and American customers may prioritize</b>
+
+256
+01:17:55,800 --> 01:17:59,319
+<b>the speed. The Japanese customers may</b>
+
+257
+01:17:59,800 --> 01:18:07,800
+<b>prioritize politeness. The German customers may prioritize</b>
+
+258
+01:18:07,800 --> 01:18:11,159
+<b>transparency. The Thai customers may</b>
+
+259
+01:18:11,159 --> 01:18:17,840
+<b>prefer human assistance when situations become complex. The</b>
+
+260
+01:18:17,840 --> 01:18:21,159
+<b>model may be identical, but the</b>
+
+261
+01:18:22,159 --> 01:18:24,960
+<b>expectations are not. And the expectations</b>
+
+262
+01:18:24,960 --> 01:18:31,399
+<b>determine user adoptions. The next one is</b>
+
+263
+01:18:31,399 --> 01:18:38,520
+<b>regulations. Regulations are very significant across the</b>
+
+264
+01:18:38,520 --> 01:18:42,920
+<b>countries. We have different rules,</b>
+
+265
+01:18:43,520 --> 01:18:46,600
+<b>we have different compliance requirements, we have</b>
+
+266
+01:18:46,600 --> 01:18:51,039
+<b>different privacy standards, different approaches</b>
+
+267
+01:18:51,119 --> 01:18:58,520
+<b>to data governance. A system that works perfectly in one</b>
+
+268
+01:18:58,520 --> 01:19:02,039
+<b>country may require a major redesign in</b>
+
+269
+01:19:02,039 --> 01:19:07,439
+<b>another. This is why compliance cannot be an afterthought.</b>
+
+270
+01:19:07,800 --> 01:19:09,960
+<b>It must be a part of the architecture</b>
+
+271
+01:19:10,319 --> 01:19:15,800
+<b>from the beginning. Not every region has the same</b>
+
+272
+01:19:15,800 --> 01:19:19,159
+<b>infrastructure, not every organization also has</b>
+
+273
+01:19:19,239 --> 01:19:23,840
+<b>the same resources. They may have different cloud</b>
+
+274
+01:19:23,840 --> 01:19:28,079
+<b>environments, different connectivity, different</b>
+
+275
+01:19:28,560 --> 01:19:31,279
+<b>devices, different operational</b>
+
+276
+01:19:31,279 --> 01:19:37,520
+<b>constraints. Engineering AI for the global deployment</b>
+
+277
+01:19:38,159 --> 01:19:43,960
+<b>requires adapting to the reality. Technology must work in</b>
+
+278
+01:19:43,960 --> 01:19:47,279
+<b>the environment where people actually</b>
+
+279
+01:19:48,239 --> 01:19:52,640
+<b>live and work. When we talk about</b>
+
+280
+01:19:52,640 --> 01:19:55,680
+<b>the organizations, this is the border</b>
+
+281
+01:19:56,479 --> 01:19:59,560
+<b>many technical teams underestimate.</b>
+
+282
+01:20:00,920 --> 01:20:04,920
+<b>Different stakeholders often have different goals.</b>
+
+283
+01:20:05,520 --> 01:20:08,159
+<b>Engineering wants innovations,</b>
+
+284
+01:20:08,640 --> 01:20:11,640
+<b>for example. Operations wants</b>
+
+285
+01:20:13,199 --> 01:20:18,359
+<b>real-life abilities. The legal team may want to risk their</b>
+
+286
+01:20:18,359 --> 01:20:20,640
+<b>reductions. The business wants</b>
+
+287
+01:20:20,960 --> 01:20:27,279
+<b>growth. Everyone has their own value priorities, but</b>
+
+288
+01:20:27,279 --> 01:20:31,800
+<b>alignment becomes difficult. So many AI projects</b>
+
+289
+01:20:32,279 --> 01:20:34,800
+<b>fail because organizations are not</b>
+
+290
+01:20:34,800 --> 01:20:38,119
+<b>aligned, but because the technology is inadequate.</b>
+
+291
+01:20:40,039 --> 01:20:45,720
+<b>So let's pause for a moment. We have discussed five</b>
+
+292
+01:20:45,720 --> 01:20:49,159
+<b>different borders, the language, the cultures,</b>
+
+293
+01:20:49,800 --> 01:20:55,039
+<b>the languages, infrastructure, and organizations. Now</b>
+
+294
+01:20:55,039 --> 01:21:01,680
+<b>imagine something simple. Imagine deploying</b>
+
+295
+01:21:02,079 --> 01:21:07,039
+<b>exactly the same AI system in four different countries, the</b>
+
+296
+01:21:07,039 --> 01:21:08,359
+<b>same model, the same architecture,</b>
+
+297
+01:21:08,560 --> 01:21:13,000
+<b>the same code. Everything is identical. Yet the results may</b>
+
+298
+01:21:13,000 --> 01:21:17,640
+<b>be completely different. Why? Because</b>
+
+299
+01:21:17,640 --> 01:21:21,079
+<b>the users are different. Everything is different.</b>
+
+300
+01:21:21,640 --> 01:21:25,199
+<b>Organization, regulations, expectations are</b>
+
+301
+01:21:25,399 --> 01:21:30,000
+<b>different. Technology stays the same. The context changes.</b>
+
+302
+01:21:30,720 --> 01:21:33,840
+<b>That changes when we would like to</b>
+
+303
+01:21:34,000 --> 01:21:38,279
+<b>deploy the same technology, the same model to another</b>
+
+304
+01:21:38,279 --> 01:21:44,319
+<b>places. So this is the second one.</b>
+
+305
+01:21:45,560 --> 01:21:48,520
+<b>Okay. This is the second part. Most</b>
+
+306
+01:21:48,520 --> 01:21:53,960
+<b>people may not think about it. The second is,</b>
+
+307
+01:21:54,640 --> 01:21:59,399
+<b>what do you think? Okay. Let me try. What do you think is</b>
+
+308
+01:21:59,399 --> 01:22:01,399
+<b>the biggest challenge in the cross-border</b>
+
+309
+01:22:01,399 --> 01:22:08,079
+<b>AI? Yeah. Let you, yeah. Just like to hear from you also,</b>
+
+310
+01:22:08,079 --> 01:22:10,920
+<b>you know, language, cultures,</b>
+
+311
+01:22:11,359 --> 01:22:15,800
+<b>equations, infrastructures, or organizations. Okay. Yeah.</b>
+
+312
+01:22:17,079 --> 01:22:18,640
+<b>Your language, yeah. Your language is,</b>
+
+313
+01:22:19,960 --> 01:22:22,039
+<b>okay. Okay. This is great organizations.</b>
+
+314
+01:22:28,680 --> 01:22:29,720
+<b>Yeah. Yeah. Okay.</b>
+
+315
+01:22:34,399 --> 01:22:40,600
+<b>That is the, okay. Let's wait for another two. Okay. Yeah.</b>
+
+316
+01:22:40,600 --> 01:22:42,800
+<b>Yeah. I think, okay. Yeah. Yeah.</b>
+
+317
+01:22:42,800 --> 01:22:48,159
+<b>Let's wait for another one. Okay. Yeah. Actually, I asked</b>
+
+318
+01:22:48,159 --> 01:22:53,520
+<b>these questions in many events also.</b>
+
+319
+01:22:54,880 --> 01:22:59,159
+<b>Yeah. Yeah. Some events, they think that, oh, language is</b>
+
+320
+01:22:59,159 --> 01:23:01,520
+<b>probably the biggest challenge.</b>
+
+321
+01:23:02,520 --> 01:23:07,319
+<b>But it depends, you know. But the fact is, yeah,</b>
+
+322
+01:23:07,920 --> 01:23:10,800
+<b>declaration is definitely one of the biggest</b>
+
+323
+01:23:10,800 --> 01:23:16,079
+<b>challenges. But actually, this question has no right or</b>
+
+324
+01:23:16,079 --> 01:23:18,800
+<b>wrong answers. It depends on the situations.</b>
+
+325
+01:23:18,920 --> 01:23:22,159
+<b>But I just would like to remind you that, you know, not</b>
+
+326
+01:23:22,159 --> 01:23:25,039
+<b>only, you know, doing the cross-border AI,</b>
+
+327
+01:23:25,039 --> 01:23:29,520
+<b>you know, not, not, not the language is, is only one of the</b>
+
+328
+01:23:29,520 --> 01:23:31,640
+<b>factors. But yeah, for example,</b>
+
+329
+01:23:31,640 --> 01:23:34,319
+<b>yeah. Yeah. Yeah. We have experiences in implementing the</b>
+
+330
+01:23:34,319 --> 01:23:37,520
+<b>system in, yeah, in, in China,</b>
+
+331
+01:23:38,279 --> 01:23:42,399
+<b>in fast factors, and the creation is, is one of the, is two</b>
+
+332
+01:23:42,399 --> 01:23:44,680
+<b>of the most headaches things. Yeah. Yeah.</b>
+
+333
+01:23:44,800 --> 01:23:48,960
+<b>Because for example, how we keep the data or about the,</b>
+
+334
+01:23:48,960 --> 01:23:51,399
+<b>that infrastructure also. Yeah. Yeah. Because</b>
+
+335
+01:23:51,760 --> 01:23:55,399
+<b>when we implement the project, the project in China, yeah,</b>
+
+336
+01:23:55,399 --> 01:23:58,520
+<b>that is a kind of the, yeah, great, great.</b>
+
+337
+01:24:00,119 --> 01:24:03,399
+<b>We call it as, yeah, great firewall that, that, that, that</b>
+
+338
+01:24:03,399 --> 01:24:06,600
+<b>it is difficult for, for the users in</b>
+
+339
+01:24:06,600 --> 01:24:10,800
+<b>China to, to access the system outside China. Yeah. Yeah.</b>
+
+340
+01:24:10,800 --> 01:24:13,000
+<b>This is, this is one of the key things.</b>
+
+341
+01:24:13,279 --> 01:24:15,760
+<b>Okay. Thanks for the second, for the</b>
+
+342
+01:24:15,760 --> 01:24:19,640
+<b>second post. And I want to, to move next is,</b>
+
+343
+01:24:21,039 --> 01:24:24,960
+<b>okay. The real examples, let's, let, let me give you the</b>
+
+344
+01:24:24,960 --> 01:24:28,319
+<b>practical examples. Imagine that we build</b>
+
+345
+01:24:28,319 --> 01:24:32,680
+<b>the customers, support AI assistant. The AI is successfully</b>
+
+346
+01:24:32,680 --> 01:24:34,760
+<b>in one country, customer like it,</b>
+
+347
+01:24:35,520 --> 01:24:42,159
+<b>the business like it, if everything works well. Now we</b>
+
+348
+01:24:42,159 --> 01:24:44,520
+<b>decide to deploy exactly the same solutions</b>
+
+349
+01:24:44,520 --> 01:24:50,680
+<b>globally. Yeah. At first glance, it seems that easy</b>
+
+350
+01:24:50,680 --> 01:24:54,680
+<b>technology, everything's, yeah, that go well.</b>
+
+351
+01:24:54,880 --> 01:25:04,279
+<b>Yeah. First. Okay. So what, so the, the question is what</b>
+
+352
+01:25:04,279 --> 01:25:06,560
+<b>could go wrong? Okay. First the, the language</b>
+
+353
+01:25:06,560 --> 01:25:09,159
+<b>changes. Yeah. Yeah. This is, I understand that. Do you</b>
+
+354
+01:25:09,159 --> 01:25:10,560
+<b>understand that when the language change,</b>
+
+355
+01:25:11,199 --> 01:25:16,319
+<b>the translation must be accurate, the terminology differs.</b>
+
+356
+01:25:16,920 --> 01:25:18,399
+<b>So you have to be careful on this.</b>
+
+357
+01:25:19,000 --> 01:25:22,720
+<b>And then the second is the language change. Different</b>
+
+358
+01:25:22,720 --> 01:25:25,079
+<b>countries have different privacy law,</b>
+
+359
+01:25:25,680 --> 01:25:27,880
+<b>different compliance requirements, different rules</b>
+
+360
+01:25:27,880 --> 01:25:30,640
+<b>regarding the data storage and usage.</b>
+
+361
+01:25:31,840 --> 01:25:35,800
+<b>And the expectation also changed. Yeah. Yeah. From the</b>
+
+362
+01:25:35,800 --> 01:25:38,399
+<b>cultures. Yeah. As I mentioned, some</b>
+
+363
+01:25:38,399 --> 01:25:41,039
+<b>prioritize the speed, some prioritize the</b>
+
+364
+01:25:41,039 --> 01:25:44,199
+<b>politeness, some prefer the self-service,</b>
+
+365
+01:25:44,800 --> 01:25:47,760
+<b>some prefer the speaking to the human and</b>
+
+366
+01:25:47,760 --> 01:25:51,159
+<b>eventually all of these factors affect the</b>
+
+367
+01:25:51,159 --> 01:25:54,800
+<b>outcomes. The technology is identical, but the basics</b>
+
+368
+01:25:54,800 --> 01:25:58,159
+<b>result are not. Yeah. This is why the</b>
+
+369
+01:25:58,159 --> 01:26:01,840
+<b>scaling AI is not simple copying the technologies, but we</b>
+
+370
+01:26:01,840 --> 01:26:03,840
+<b>have to consider all of these factors as</b>
+
+371
+01:26:03,840 --> 01:26:09,600
+<b>well. Okay. Yeah. Let me give you one, one example that I</b>
+
+372
+01:26:09,600 --> 01:26:12,439
+<b>always talk with my students. Yeah. Let's,</b>
+
+373
+01:26:12,560 --> 01:26:15,760
+<b>let me give you a practical examples. This is considered</b>
+
+374
+01:26:15,760 --> 01:26:19,640
+<b>the Netflix, right? Netflix uses AI</b>
+
+375
+01:26:19,640 --> 01:26:23,680
+<b>globally, but the recommendations are not identical</b>
+
+376
+01:26:23,680 --> 01:26:28,159
+<b>everywhere. The users preference differ, viewing</b>
+
+377
+01:26:28,319 --> 01:26:33,279
+<b>viewing behavior differs, languages differ, local</b>
+
+378
+01:26:33,279 --> 01:26:37,479
+<b>regulations differ, the same AI platform</b>
+
+379
+01:26:38,319 --> 01:26:42,880
+<b>operates across many markets, but the implementation adapts</b>
+
+380
+01:26:42,880 --> 01:26:46,720
+<b>to the local context. This is an important</b>
+
+381
+01:26:47,199 --> 01:26:50,600
+<b>lessons. The step technology can produce very different</b>
+
+382
+01:26:50,600 --> 01:26:53,199
+<b>outcomes depending on where it is</b>
+
+383
+01:26:53,279 --> 01:26:57,079
+<b>deployed. Yeah. This is the examples of Netflix. Okay.</b>
+
+384
+01:26:57,800 --> 01:27:00,399
+<b>Yeah. Because Netflix, if you have an</b>
+
+385
+01:27:00,399 --> 01:27:03,920
+<b>opportunity to see the content or the</b>
+
+386
+01:27:03,920 --> 01:27:07,520
+<b>recommendation, it varies. Okay. And then</b>
+
+387
+01:27:07,920 --> 01:27:13,039
+<b>most people, or at least say the models, this is the</b>
+
+388
+01:27:13,039 --> 01:27:16,439
+<b>visible part, but beneath the surface,</b>
+
+389
+01:27:16,720 --> 01:27:20,239
+<b>like everything else, you know, data, the governance,</b>
+
+390
+01:27:21,319 --> 01:27:23,279
+<b>operations, compliance, localizations,</b>
+
+391
+01:27:23,680 --> 01:27:30,159
+<b>people's. Yeah. These are often the factors that determine</b>
+
+392
+01:27:30,159 --> 01:27:33,720
+<b>success or failures. The model</b>
+
+393
+01:27:34,399 --> 01:27:39,359
+<b>receive the attentions, the invisible layers create the</b>
+
+394
+01:27:39,359 --> 01:27:43,319
+<b>impact. Yeah. That's why let's bring</b>
+
+395
+01:27:43,439 --> 01:27:48,199
+<b>everything together. So far we have discussed five</b>
+
+396
+01:27:48,199 --> 01:27:52,039
+<b>different models, as I mentioned, but if you</b>
+
+397
+01:27:52,079 --> 01:27:55,279
+<b>remember only one framework from this section, I would like</b>
+
+398
+01:27:55,279 --> 01:27:58,079
+<b>to be this one. The engineering AI</b>
+
+399
+01:27:58,079 --> 01:28:01,319
+<b>across the borders is not just about the building a model.</b>
+
+400
+01:28:01,840 --> 01:28:04,520
+<b>It requires us to think about five</b>
+
+401
+01:28:04,720 --> 01:28:10,079
+<b>dimensions. The first one, the first one is a problem. Are</b>
+
+402
+01:28:10,079 --> 01:28:11,640
+<b>we solving a real problem that</b>
+
+403
+01:28:11,680 --> 01:28:17,479
+<b>people actually care about? A great model, solving the</b>
+
+404
+01:28:17,479 --> 01:28:20,920
+<b>wrong problem creates no value. This is the</b>
+
+405
+01:28:20,960 --> 01:28:25,520
+<b>first one. The second is the people. View user has it. View</b>
+
+406
+01:28:25,520 --> 01:28:27,600
+<b>they adopt it. View they change behavior</b>
+
+407
+01:28:28,000 --> 01:28:31,960
+<b>without adoption. There is no impact. The third is a</b>
+
+408
+01:28:31,960 --> 01:28:35,079
+<b>process. How does AI fit into the existing</b>
+
+409
+01:28:35,079 --> 01:28:40,199
+<b>workflow? Does it reduce frictions or does it create</b>
+
+410
+01:28:40,199 --> 01:28:44,159
+<b>additional works? And the platform,</b>
+
+411
+01:28:44,760 --> 01:28:47,279
+<b>definitely do we have the right data, the right</b>
+
+412
+01:28:47,279 --> 01:28:49,800
+<b>architectures, the right infrastructures. Yeah,</b>
+
+413
+01:28:49,840 --> 01:28:52,760
+<b>technology matters, but the technology alone is not enough.</b>
+
+414
+01:28:53,600 --> 01:28:56,800
+<b>And the last one is a policy. Can the</b>
+
+415
+01:28:56,800 --> 01:29:04,119
+<b>solutions comply with the regulations? Can it be govern or</b>
+
+416
+01:29:04,119 --> 01:29:08,960
+<b>task at scale? And when all five dimensions</b>
+
+417
+01:29:08,960 --> 01:29:15,079
+<b>work together, AI creates the values. When one dimension is</b>
+
+418
+01:29:15,079 --> 01:29:18,880
+<b>missing, the project will be stuck.</b>
+
+419
+01:29:21,359 --> 01:29:24,720
+<b>So before we move into the architectures and the system</b>
+
+420
+01:29:24,720 --> 01:29:27,840
+<b>design, I would like to leave you with a</b>
+
+421
+01:29:28,000 --> 01:29:34,279
+<b>simple checklist. We think you evaluate an idea, start up a</b>
+
+422
+01:29:34,279 --> 01:29:37,319
+<b>project or even a hackathon concept</b>
+
+423
+01:29:37,680 --> 01:29:43,439
+<b>ask these five questions. Can a user task it? Yeah, because</b>
+
+424
+01:29:43,439 --> 01:29:45,319
+<b>if people do not task a system,</b>
+
+425
+01:29:45,680 --> 01:29:50,520
+<b>they will not use it. Can it scale? Because solving a</b>
+
+426
+01:29:50,520 --> 01:29:52,880
+<b>problem for 10 users is very different</b>
+
+427
+01:29:52,960 --> 01:29:56,920
+<b>from solving it for 10 million users. Can it comply?</b>
+
+428
+01:29:58,359 --> 01:30:02,039
+<b>Because every department operates within</b>
+
+429
+01:30:02,039 --> 01:30:07,119
+<b>regulatory and organizational constraints. Can people adopt</b>
+
+430
+01:30:07,119 --> 01:30:09,199
+<b>it? Because a technical billion</b>
+
+431
+01:30:09,680 --> 01:30:15,760
+<b>solutions that nobody uses create no values. And finally,</b>
+
+432
+01:30:16,560 --> 01:30:21,039
+<b>can it survive? Yeah, can it survive</b>
+
+433
+01:30:22,560 --> 01:30:24,399
+<b>the bad data and expected</b>
+
+434
+01:30:24,399 --> 01:30:29,439
+<b>behavior, organizational policy? Yeah. And</b>
+
+435
+01:30:32,359 --> 01:30:34,239
+<b>so far, we have explored why AI</b>
+
+436
+01:30:34,239 --> 01:30:37,239
+<b>project fails because they may not consider</b>
+
+437
+01:30:37,399 --> 01:30:41,079
+<b>all things that I just mentioned. The next question is,</b>
+
+438
+01:30:41,520 --> 01:30:44,439
+<b>what does a successful AI system actually look</b>
+
+439
+01:30:44,439 --> 01:30:54,199
+<b>like? Okay. So now that we understand why it caused water</b>
+
+440
+01:30:54,199 --> 01:30:57,439
+<b>AI is difficult, the next question becomes,</b>
+
+441
+01:30:58,399 --> 01:31:01,239
+<b>what does AI system actually look</b>
+
+442
+01:31:01,239 --> 01:31:06,439
+<b>like? Okay. Now that we understand the</b>
+
+443
+01:31:06,560 --> 01:31:09,720
+<b>complexity of the cost of the AI, let's talk about the</b>
+
+444
+01:31:09,720 --> 01:31:12,600
+<b>architectures. Okay. One of the biggest</b>
+
+445
+01:31:12,640 --> 01:31:17,279
+<b>mistakes I see is that people confuse a model with a</b>
+
+446
+01:31:17,279 --> 01:31:21,439
+<b>system. When someone says they are building</b>
+
+447
+01:31:21,439 --> 01:31:25,760
+<b>AI solutions, they often mean that they have the selected</b>
+
+448
+01:31:25,760 --> 01:31:30,640
+<b>model. GBT, Gemini, Core, but a model is</b>
+
+449
+01:31:31,079 --> 01:31:34,079
+<b>only one component. A successful AI</b>
+
+450
+01:31:34,079 --> 01:31:36,840
+<b>solution is required much more than that.</b>
+
+451
+01:31:37,680 --> 01:31:43,800
+<b>And that distinction is incredibly important. Okay. Today,</b>
+
+452
+01:31:43,800 --> 01:31:47,279
+<b>we have access to many powerful AI</b>
+
+453
+01:31:47,279 --> 01:31:52,920
+<b>products. To think a model is easier than ever. The</b>
+
+454
+01:31:52,920 --> 01:31:56,920
+<b>difficult part is designing everything around it,</b>
+
+455
+01:31:57,840 --> 01:32:03,920
+<b>where does the knowledge come from? How does the workflow</b>
+
+456
+01:32:03,920 --> 01:32:09,520
+<b>operate? Who is responsible for</b>
+
+457
+01:32:09,680 --> 01:32:16,439
+<b>decisions? How is quality monitor? How is trust maintained?</b>
+
+458
+01:32:17,359 --> 01:32:19,079
+<b>These questions determine whether a</b>
+
+459
+01:32:19,199 --> 01:32:22,800
+<b>project succeeds, not a model which marks.</b>
+
+460
+01:32:24,079 --> 01:32:27,079
+<b>Okay. Let's look at simplified architectures.</b>
+
+461
+01:32:28,600 --> 01:32:34,479
+<b>Notice something different. The model sits in the middle,</b>
+
+462
+01:32:35,039 --> 01:32:37,319
+<b>not on the top. Not the problem,</b>
+
+463
+01:32:37,760 --> 01:32:42,079
+<b>but in the middle. Yeah. So this is the five pages that I</b>
+
+464
+01:32:42,079 --> 01:32:44,840
+<b>showed earlier. So normally, we have to</b>
+
+465
+01:32:44,880 --> 01:32:50,920
+<b>consider about the users. Without the users, nothing else</b>
+
+466
+01:32:50,920 --> 01:32:52,960
+<b>matters. Users do not care about</b>
+
+467
+01:32:53,520 --> 01:32:59,439
+<b>what model you use. But users never compare the benchmark</b>
+
+468
+01:32:59,439 --> 01:33:02,159
+<b>scores, but they care about the outcome.</b>
+
+469
+01:33:02,840 --> 01:33:09,439
+<b>Can it solve my problem? Can I test it? Does it make my</b>
+
+470
+01:33:09,439 --> 01:33:12,039
+<b>work easier? Not the technologies.</b>
+
+471
+01:33:12,640 --> 01:33:14,640
+<b>They care about the outcome. So</b>
+
+472
+01:33:14,640 --> 01:33:16,000
+<b>you have to consider about this.</b>
+
+473
+01:33:17,520 --> 01:33:21,800
+<b>And the application, the next layer is applications. This</b>
+
+474
+01:33:21,800 --> 01:33:24,960
+<b>is where AI meet the workflow. Imagine that</b>
+
+475
+01:33:24,960 --> 01:33:29,359
+<b>an employee receives a recommendation from AI. If using</b>
+
+476
+01:33:29,359 --> 01:33:31,399
+<b>that recommendation requires switching</b>
+
+477
+01:33:31,399 --> 01:33:37,199
+<b>system, copying data, performing, so complicated. Yeah. The</b>
+
+478
+01:33:37,199 --> 01:33:39,520
+<b>best AI system will fit naturally into</b>
+
+479
+01:33:39,520 --> 01:33:48,520
+<b>the existing workflow. And now this is the AI layer. That</b>
+
+480
+01:33:48,520 --> 01:33:50,800
+<b>off-do are familiar with that.</b>
+
+481
+01:33:51,960 --> 01:33:56,159
+<b>The LAA provider reasoning, IG provides the knowledge</b>
+
+482
+01:33:56,159 --> 01:33:58,680
+<b>access, the agents coordinate the</b>
+
+483
+01:33:58,680 --> 01:34:02,640
+<b>actions, the tools interact with external system. The</b>
+
+484
+01:34:02,640 --> 01:34:05,359
+<b>broader AI system are becoming ecosystem</b>
+
+485
+01:34:05,600 --> 01:34:13,800
+<b>rather than the standalone models. Okay. And then this is</b>
+
+486
+01:34:13,800 --> 01:34:15,920
+<b>another layer. The knowledge is one of the</b>
+
+487
+01:34:15,920 --> 01:34:19,079
+<b>most underrated components of the AI</b>
+
+488
+01:34:19,079 --> 01:34:22,399
+<b>system without the knowledge. The knowledge is</b>
+
+489
+01:34:22,399 --> 01:34:30,159
+<b>outdated or incorrect. The performance will suffer. And the</b>
+
+490
+01:34:30,159 --> 01:34:32,840
+<b>enterprise system, this is one</b>
+
+491
+01:34:32,880 --> 01:34:36,600
+<b>of the key thing as well. This is where the AI start</b>
+
+492
+01:34:36,600 --> 01:34:38,319
+<b>generating the measurable values.</b>
+
+493
+01:34:38,840 --> 01:34:42,920
+<b>The real organizations operate through the system, the CRM</b>
+
+494
+01:34:42,920 --> 01:34:45,560
+<b>system, ERP system, customer service,</b>
+
+495
+01:34:46,039 --> 01:34:51,079
+<b>the government database, healthcare financial system. If AI</b>
+
+496
+01:34:51,079 --> 01:34:53,920
+<b>cannot connect in to operational</b>
+
+497
+01:34:54,079 --> 01:35:00,880
+<b>system, it remains an isolated intelligence layers. It</b>
+
+498
+01:35:00,880 --> 01:35:04,840
+<b>doesn't create the values. Okay.</b>
+
+499
+01:35:05,039 --> 01:35:10,279
+<b>And then the last one is the JAKA finance. Yeah. This is</b>
+
+500
+01:35:10,279 --> 01:35:14,359
+<b>one of the key component that makes the</b>
+
+501
+01:35:14,359 --> 01:35:18,600
+<b>people trust as well. When we talk about this, we talk</b>
+
+502
+01:35:18,600 --> 01:35:20,680
+<b>about the security, the compliance,</b>
+
+503
+01:35:21,199 --> 01:35:25,800
+<b>the how to monitor it, audited, risk management. Yeah.</b>
+
+504
+01:35:25,960 --> 01:35:29,760
+<b>Without the governance, organizations cannot</b>
+
+505
+01:35:29,760 --> 01:35:33,640
+<b>trust AI. And without trust, the organizations cannot scale</b>
+
+506
+01:35:33,640 --> 01:35:36,520
+<b>the AI. Yeah. This layer becomes</b>
+
+507
+01:35:37,119 --> 01:35:41,439
+<b>increasingly important. So this is what I just mentioned</b>
+
+508
+01:35:41,439 --> 01:35:43,399
+<b>earlier. So I would like to address here</b>
+
+509
+01:35:43,399 --> 01:35:49,920
+<b>again that AI border is just only the iceberg tip. But we</b>
+
+510
+01:35:49,920 --> 01:35:51,039
+<b>have a lot of things that we have</b>
+
+511
+01:35:51,079 --> 01:36:00,439
+<b>to consider about. So many teams just celebrate when the</b>
+
+512
+01:36:00,439 --> 01:36:03,800
+<b>prototype works. And of course, yeah,</b>
+
+513
+01:36:03,800 --> 01:36:06,520
+<b>they are really happy. But the prototype is not the</b>
+
+514
+01:36:06,520 --> 01:36:09,600
+<b>destination. The prototype demonstrates</b>
+
+515
+01:36:09,920 --> 01:36:15,399
+<b>possibilities. And a prototype demonstrates the</b>
+
+516
+01:36:15,399 --> 01:36:18,000
+<b>disabilities. A platform demonstrates</b>
+
+517
+01:36:18,159 --> 01:36:23,279
+<b>the how can you scale. The impact itself</b>
+
+518
+01:36:23,279 --> 01:36:26,840
+<b>will demonstrate the values. So it each stage</b>
+
+519
+01:36:26,840 --> 01:36:29,800
+<b>requires different skills, different stakeholders,</b>
+
+520
+01:36:30,079 --> 01:36:33,039
+<b>different investment, and different ways of</b>
+
+521
+01:36:33,039 --> 01:36:39,279
+<b>thinking. So let's step back a bit. Yeah. Yeah. We now we</b>
+
+522
+01:36:39,279 --> 01:36:43,560
+<b>understand about the AI system. So what</b>
+
+523
+01:36:44,000 --> 01:36:48,720
+<b>problem should we actually solve? Yeah. Because the</b>
+
+524
+01:36:48,720 --> 01:36:51,960
+<b>technology only matters when it improves the</b>
+
+525
+01:36:51,960 --> 01:36:56,680
+<b>human life. And that is where the impact begins. This is</b>
+
+526
+01:36:56,680 --> 01:37:00,560
+<b>the examples of other domains that</b>
+
+527
+01:37:00,560 --> 01:37:11,680
+<b>that normally have the big impact. Yeah. Okay. So many</b>
+
+528
+01:37:11,680 --> 01:37:14,399
+<b>hackathon teams begin with the technologies.</b>
+
+529
+01:37:15,319 --> 01:37:17,960
+<b>Begin with the technologies, a model, a framework, a tool.</b>
+
+530
+01:37:18,560 --> 01:37:20,520
+<b>But I would like, I would encourage you to</b>
+
+531
+01:37:20,520 --> 01:37:25,039
+<b>begin somewhere else. Start with the meaningful problems.</b>
+
+532
+01:37:26,840 --> 01:37:29,319
+<b>After spending time discussing the</b>
+
+533
+01:37:29,359 --> 01:37:36,079
+<b>architecture system and something else. Yeah. Technology is</b>
+
+534
+01:37:36,079 --> 01:37:42,039
+<b>a tool. The real goal of the project</b>
+
+535
+01:37:42,079 --> 01:37:47,760
+<b>is to improve life of the people. The real goal is creating</b>
+
+536
+01:37:47,760 --> 01:37:51,359
+<b>meaningful impact. Whether you evaluate</b>
+
+537
+01:37:51,680 --> 01:37:56,840
+<b>an AI project, ask simple questions. If this succeeds,</b>
+
+538
+01:37:57,399 --> 01:38:00,600
+<b>whose life becomes better? If you cannot</b>
+
+539
+01:38:00,640 --> 01:38:06,279
+<b>answer that query, you may not be solving the right</b>
+
+540
+01:38:06,279 --> 01:38:08,800
+<b>problem. Technology matters, but the people</b>
+
+541
+01:38:08,880 --> 01:38:14,279
+<b>matter most. So you have to create on solving the problem</b>
+
+542
+01:38:14,279 --> 01:38:18,039
+<b>of the people. Okay. Not every problem</b>
+
+543
+01:38:18,159 --> 01:38:23,720
+<b>deserves an AI solution. Some problems are interesting, but</b>
+
+544
+01:38:23,720 --> 01:38:26,399
+<b>unimportant. Some problems are</b>
+
+545
+01:38:27,119 --> 01:38:30,680
+<b>important, but impossible to solve. So</b>
+
+546
+01:38:30,680 --> 01:38:36,880
+<b>when we evaluate opportunities, I like to use</b>
+
+547
+01:38:37,159 --> 01:38:41,720
+<b>four criteria. The first one is, is the problem important?</b>
+
+548
+01:38:43,359 --> 01:38:45,119
+<b>Can it be scaled? Yeah. Can it be</b>
+
+549
+01:38:45,279 --> 01:38:49,279
+<b>scaled? Can it be used more than one or two or 10 or</b>
+
+550
+01:38:49,279 --> 01:38:52,880
+<b>million people? Is it feasible? Yeah. It means</b>
+
+551
+01:38:53,039 --> 01:39:00,520
+<b>it is possible to make the money, for example. This is</b>
+
+552
+01:39:00,520 --> 01:39:04,800
+<b>measurable. The Stormcaps AI project</b>
+
+553
+01:39:05,199 --> 01:39:11,880
+<b>usually performs well across four dimensions. So the great</b>
+
+554
+01:39:11,880 --> 01:39:16,880
+<b>project normally starts with the</b>
+
+555
+01:39:17,119 --> 01:39:23,960
+<b>great problems. So this is just for example, we can</b>
+
+556
+01:39:23,960 --> 01:39:28,680
+<b>consider about doing the project with</b>
+
+557
+01:39:29,439 --> 01:39:45,079
+<b>digital thread. This is because they also face many</b>
+
+558
+01:39:45,079 --> 01:39:47,920
+<b>language barriers, regulatory barriers,</b>
+
+559
+01:39:48,439 --> 01:39:52,119
+<b>the market intelligence challenges, customer support</b>
+
+560
+01:39:52,119 --> 01:39:56,239
+<b>challenges, and many things that when you</b>
+
+561
+01:39:56,640 --> 01:40:02,119
+<b>do the threading across borders, there are many areas that</b>
+
+562
+01:40:02,119 --> 01:40:06,439
+<b>you can address. AI can reduce the</b>
+
+563
+01:40:06,640 --> 01:40:10,159
+<b>barriers to international thread. This is one of the key.</b>
+
+564
+01:40:11,359 --> 01:40:15,399
+<b>Another area is about the public services.</b>
+
+565
+01:40:15,399 --> 01:40:17,279
+<b>Public services also affect</b>
+
+566
+01:40:17,279 --> 01:40:22,600
+<b>millions of people every day also. So many</b>
+
+567
+01:40:23,600 --> 01:40:27,800
+<b>citizens struggle to access information. Government</b>
+
+568
+01:40:27,800 --> 01:40:29,880
+<b>services are often fragmented</b>
+
+569
+01:40:30,560 --> 01:40:36,159
+<b>and also the migration and process. So imagine that the AI</b>
+
+570
+01:40:36,159 --> 01:40:37,640
+<b>assistant can help the citizens</b>
+
+571
+01:40:37,760 --> 01:40:40,119
+<b>understand the government services</b>
+
+572
+01:40:40,119 --> 01:40:44,800
+<b>in their own language, for example.</b>
+
+573
+01:40:45,600 --> 01:40:52,840
+<b>And health care is one of the most promising areas for AI</b>
+
+574
+01:40:52,840 --> 01:40:57,079
+<b>as well. AI can make the health care</b>
+
+575
+01:40:57,199 --> 01:41:03,479
+<b>knowledge more accessible. This is another area also that</b>
+
+576
+01:41:03,479 --> 01:41:05,520
+<b>has a big impact because many people</b>
+
+577
+01:41:06,159 --> 01:41:12,319
+<b>are involved. The education is fundamental about access to</b>
+
+578
+01:41:12,319 --> 01:41:16,800
+<b>the knowledge. For example, AI tutoring,</b>
+
+579
+01:41:17,359 --> 01:41:19,279
+<b>multi-lingual language learning,</b>
+
+580
+01:41:19,880 --> 01:41:24,560
+<b>accessibility from remote areas, or personalized</b>
+
+581
+01:41:25,520 --> 01:41:29,800
+<b>education. Education becomes scalable when knowledge</b>
+
+582
+01:41:29,800 --> 01:41:33,159
+<b>becomes accessible. Using AI will</b>
+
+583
+01:41:33,199 --> 01:41:38,720
+<b>help a lot. So this is the thing that many people focus on</b>
+
+584
+01:41:38,720 --> 01:41:41,840
+<b>this problem about climate change.</b>
+
+585
+01:41:42,520 --> 01:41:47,319
+<b>Climate change reduces AI to use the better information and</b>
+
+586
+01:41:47,319 --> 01:41:48,880
+<b>the faster decision to analyze</b>
+
+587
+01:41:49,119 --> 01:41:52,840
+<b>the large volume of data, predict the risk, improve the</b>
+
+588
+01:41:52,840 --> 01:41:55,199
+<b>disaster response, support the</b>
+
+589
+01:41:55,359 --> 01:42:03,640
+<b>residents planning. Yeah, so this is what AI helps. This</b>
+
+590
+01:42:03,640 --> 01:42:06,840
+<b>slide summarizes the entire journey we have</b>
+
+591
+01:42:06,840 --> 01:42:11,079
+<b>discussed. So normally everything starts with the problems</b>
+
+592
+01:42:11,079 --> 01:42:14,640
+<b>and then they come to the data,</b>
+
+593
+01:42:15,319 --> 01:42:19,279
+<b>then the workflow, then the AI, and finally the impact.</b>
+
+594
+01:42:19,800 --> 01:42:22,159
+<b>Notice where AI appears, right? It</b>
+
+595
+01:42:22,760 --> 01:42:26,439
+<b>doesn't appear at the beginning, but it appears near the</b>
+
+596
+01:42:26,439 --> 01:42:30,560
+<b>end because we focus on the successful</b>
+
+597
+01:42:30,640 --> 01:42:32,319
+<b>team. Normally start with the problem</b>
+
+598
+01:42:32,319 --> 01:42:35,399
+<b>first. Technology will amplify the solutions.</b>
+
+599
+01:42:35,439 --> 01:42:45,159
+<b>Okay, let me end this section just before I go to the next</b>
+
+600
+01:42:45,159 --> 01:42:49,479
+<b>one with a slightly provocative statement.</b>
+
+601
+01:42:50,119 --> 01:42:55,760
+<b>Yeah, the world doesn't need another AI demo. But what we</b>
+
+602
+01:42:55,760 --> 01:42:57,640
+<b>need is we need the solutions that can</b>
+
+603
+01:42:57,680 --> 01:43:03,920
+<b>help improve the pain point, improve the healthcare,</b>
+
+604
+01:43:04,159 --> 01:43:06,560
+<b>improve the education, public services,</b>
+
+605
+01:43:09,359 --> 01:43:13,720
+<b>climate. So what we need is we need more</b>
+
+606
+01:43:13,720 --> 01:43:18,439
+<b>solutions. So this is probably the last one</b>
+
+607
+01:43:18,720 --> 01:43:21,920
+<b>that I would like to spend my time talking about this</b>
+
+608
+01:43:21,920 --> 01:43:26,319
+<b>before I go to the Q&A. Yeah, at this point</b>
+
+609
+01:43:26,399 --> 01:43:30,800
+<b>we have identified the problem with solving. Yeah, but that</b>
+
+610
+01:43:30,800 --> 01:43:34,399
+<b>is another important question. Even if we</b>
+
+611
+01:43:34,479 --> 01:43:40,800
+<b>can build something, should we, for example, less</b>
+
+612
+01:43:40,800 --> 01:43:43,479
+<b>responsible AI is not about the compliance.</b>
+
+613
+01:43:44,720 --> 01:43:49,079
+<b>When people hear the phrase less responsible AI, many</b>
+
+614
+01:43:49,079 --> 01:43:52,560
+<b>immediate think about regulations, compliance,</b>
+
+615
+01:43:53,239 --> 01:43:57,680
+<b>policies, legal requirements. And when those things matter,</b>
+
+616
+01:43:58,359 --> 01:44:01,800
+<b>they are not where responsible AI begins.</b>
+
+617
+01:44:04,319 --> 01:44:11,079
+<b>Responsible AI begins with trust. Yeah, this is a very</b>
+
+618
+01:44:11,079 --> 01:44:15,479
+<b>important concept because no matter how</b>
+
+619
+01:44:15,479 --> 01:44:20,600
+<b>powerful your AI model or AI system is, if the people do</b>
+
+620
+01:44:20,600 --> 01:44:22,479
+<b>not have it, they will not use it.</b>
+
+621
+01:44:23,279 --> 01:44:26,000
+<b>And if they do not use it, it cannot create</b>
+
+622
+01:44:26,000 --> 01:44:29,680
+<b>the impact. The trust is the foundation of</b>
+
+623
+01:44:29,680 --> 01:44:32,840
+<b>adoptions and adoption is the foundation</b>
+
+624
+01:44:32,840 --> 01:44:38,079
+<b>of impact. Yeah, throughout the history,</b>
+
+625
+01:44:38,800 --> 01:44:44,600
+<b>technology has continuously expanded what humans are</b>
+
+626
+01:44:44,600 --> 01:44:49,079
+<b>capable of doing. AI also is no different.</b>
+
+627
+01:44:49,720 --> 01:44:54,079
+<b>Today, we can automate the decisions, we can generate the</b>
+
+628
+01:44:54,079 --> 01:44:56,479
+<b>content, we can analyze the massive</b>
+
+629
+01:44:56,479 --> 01:45:00,560
+<b>amount of information, we can predict the outcome, but</b>
+
+630
+01:45:00,560 --> 01:45:03,600
+<b>capabilities alone does not justify the</b>
+
+631
+01:45:03,600 --> 01:45:07,920
+<b>department because we can build something that does not</b>
+
+632
+01:45:07,920 --> 01:45:12,119
+<b>necessarily mean we should, as AI becomes</b>
+
+633
+01:45:12,479 --> 01:45:16,159
+<b>more powerful, acting the right patience becomes more</b>
+
+634
+01:45:16,159 --> 01:45:19,560
+<b>important than building the right model.</b>
+
+635
+01:45:21,359 --> 01:45:28,720
+<b>And so, yeah, imagine we deploy an AI system. This is, for</b>
+
+636
+01:45:28,720 --> 01:45:32,800
+<b>example, that capable of identifying</b>
+
+637
+01:45:33,439 --> 01:45:38,560
+<b>potential criminals using the public surveillance camera,</b>
+
+638
+01:45:39,199 --> 01:45:41,960
+<b>the system is highly accurate,</b>
+
+639
+01:45:43,840 --> 01:45:47,960
+<b>perhaps 95% accurate. Would you</b>
+
+640
+01:45:47,960 --> 01:45:53,560
+<b>deploy it? Yeah, we have the technologies.</b>
+
+641
+01:45:55,319 --> 01:46:00,319
+<b>Yeah, yeah, yeah, this is for example. Some people will</b>
+
+642
+01:46:00,319 --> 01:46:03,039
+<b>immediately say, yes, we should do it.</b>
+
+643
+01:46:03,720 --> 01:46:08,960
+<b>Others will immediately say no. Yeah, this agreement is</b>
+
+644
+01:46:08,960 --> 01:46:12,199
+<b>exactly why responsible AI matters.</b>
+
+645
+01:46:13,199 --> 01:46:14,960
+<b>Yeah, the first question is not the</b>
+
+646
+01:46:14,960 --> 01:46:18,439
+<b>technical. The first question is societal</b>
+
+647
+01:46:19,520 --> 01:46:24,520
+<b>technology creates the capabilities, the society decides</b>
+
+648
+01:46:24,520 --> 01:46:27,079
+<b>how that capability should be used.</b>
+
+649
+01:46:27,880 --> 01:46:30,800
+<b>Yeah, yeah, this is for example, yeah, you don't need to do</b>
+
+650
+01:46:30,800 --> 01:46:32,680
+<b>the pope. But yeah, this is what I just</b>
+
+651
+01:46:32,720 --> 01:46:39,119
+<b>mentioned. This has been discussed widely in many countries</b>
+
+652
+01:46:39,119 --> 01:46:41,560
+<b>also. If AI system can identify</b>
+
+653
+01:46:41,560 --> 01:46:45,640
+<b>with a potential criminal from the surveillance cameras</b>
+
+654
+01:46:45,640 --> 01:46:48,680
+<b>with a 95% accuracy, should the government</b>
+
+655
+01:46:48,680 --> 01:46:51,079
+<b>deploy it? Many people say, oh, no, no, no, I do not want</b>
+
+656
+01:46:51,079 --> 01:46:55,319
+<b>you to detect my face. Yeah, and then</b>
+
+657
+01:46:55,359 --> 01:46:59,079
+<b>someone may steal that data for something else. So this is</b>
+
+658
+01:46:59,079 --> 01:47:02,479
+<b>a kind of the controversial topic also.</b>
+
+659
+01:47:03,439 --> 01:47:12,319
+<b>Yeah, so yeah, this is the thing that I would like to</b>
+
+660
+01:47:12,319 --> 01:47:16,479
+<b>address again. The benefits, the</b>
+
+661
+01:47:16,479 --> 01:47:20,319
+<b>responsible AI, yeah, yeah, yeah, we have to consider about</b>
+
+662
+01:47:20,319 --> 01:47:23,079
+<b>who benefit from our AI system,</b>
+
+663
+01:47:23,479 --> 01:47:28,640
+<b>but make sure that no one that makes sure that you have to</b>
+
+664
+01:47:28,640 --> 01:47:33,039
+<b>consider about the impact or the harmful</b>
+
+665
+01:47:33,520 --> 01:47:41,159
+<b>to some audiences as well. So, but at the end, you have to</b>
+
+666
+01:47:41,159 --> 01:47:43,399
+<b>identify who gains them, the values,</b>
+
+667
+01:47:44,119 --> 01:47:48,159
+<b>and also who could be harmed. Yeah,</b>
+
+668
+01:47:48,600 --> 01:47:51,119
+<b>yeah, you have to consider about not to</b>
+
+669
+01:47:51,359 --> 01:47:56,000
+<b>do the system that had the bias, the exclusions, or provide</b>
+
+670
+01:47:56,000 --> 01:47:57,680
+<b>the misinformation, the privacy,</b>
+
+671
+01:47:58,680 --> 01:48:01,840
+<b>or do not have the safety, because every</b>
+
+672
+01:48:01,840 --> 01:48:06,920
+<b>technology creates both value and risk.</b>
+
+673
+01:48:08,359 --> 01:48:12,840
+<b>Okay, this is the last tool that I would like to talk</b>
+
+674
+01:48:12,840 --> 01:48:14,800
+<b>about, the AI failure case studies.</b>
+
+675
+01:48:15,439 --> 01:48:18,439
+<b>Beauty AI is easy, you know, but predicting human behavior</b>
+
+676
+01:48:18,439 --> 01:48:22,840
+<b>is very hard. Okay, this is the first</b>
+
+677
+01:48:22,840 --> 01:48:28,319
+<b>example that I, the first example is Microsoft. Hey, yeah,</b>
+
+678
+01:48:28,319 --> 01:48:32,239
+<b>sorry to talk about the brand, but this is</b>
+
+679
+01:48:32,800 --> 01:48:37,640
+<b>the case study everywhere. In the year 2016, Microsoft</b>
+
+680
+01:48:37,640 --> 01:48:40,640
+<b>launched an AI chatbot on the Twitter.</b>
+
+681
+01:48:41,439 --> 01:48:45,000
+<b>The goal was simple. Yeah, Tei was designed to learn from</b>
+
+682
+01:48:45,000 --> 01:48:46,439
+<b>conversations with the users.</b>
+
+683
+01:48:47,119 --> 01:48:50,079
+<b>Unfortunately, users quickly discover how</b>
+
+684
+01:48:50,079 --> 01:48:54,439
+<b>to manipulate the system. Within hours, Tei</b>
+
+685
+01:48:54,560 --> 01:48:59,800
+<b>began generating offensive and inappropriate content. Yeah,</b>
+
+686
+01:49:00,239 --> 01:49:01,920
+<b>Microsoft had to shut the system</b>
+
+687
+01:49:02,000 --> 01:49:05,920
+<b>down in less than 24 hours. The technology was the model</b>
+
+688
+01:49:05,920 --> 01:49:07,640
+<b>learn, but the problem is it learned</b>
+
+689
+01:49:07,680 --> 01:49:13,800
+<b>from the wrong behaviors. And this is the last slide before</b>
+
+690
+01:49:13,800 --> 01:49:19,600
+<b>I jump into the Q&A sessions.</b>
+
+691
+01:49:20,279 --> 01:49:23,840
+<b>The second example comes from Amazon.</b>
+
+692
+01:49:24,239 --> 01:49:28,520
+<b>Amazon experienced with an AI system to help</b>
+
+693
+01:49:28,680 --> 01:49:32,640
+<b>either the job applicants. The system was</b>
+
+694
+01:49:32,640 --> 01:49:34,960
+<b>trained using the historical handling data.</b>
+
+695
+01:49:35,640 --> 01:49:39,840
+<b>At first, it seems reasonable, but there was a hidden</b>
+
+696
+01:49:39,840 --> 01:49:42,399
+<b>problem. Historical hiring decisions</b>
+
+697
+01:49:42,800 --> 01:49:46,319
+<b>contain historical biases. As a result,</b>
+
+698
+01:49:47,079 --> 01:49:50,279
+<b>the AI learned pattern that favor male</b>
+
+699
+01:49:51,119 --> 01:49:54,800
+<b>applicants over the female applicants. The system was not</b>
+
+700
+01:49:54,800 --> 01:49:58,199
+<b>intentionally biased. It simply learned</b>
+
+701
+01:49:58,239 --> 01:50:05,239
+<b>from the biased historical data. Eventually, Amazon left</b>
+
+702
+01:50:05,239 --> 01:50:10,119
+<b>this project behind. So this is</b>
+
+703
+01:50:10,119 --> 01:50:22,239
+<b>of my presentation. At the end, I would like to address</b>
+
+704
+01:50:22,239 --> 01:50:24,600
+<b>that. Do not focus on the AI model.</b>
+
+705
+01:50:24,640 --> 01:50:29,520
+<b>Focus on the problem. The people consider other factors not</b>
+
+706
+01:50:29,520 --> 01:50:31,279
+<b>related to the technology. If you</b>
+
+707
+01:50:31,279 --> 01:50:38,720
+<b>would like to scale your project bigger. Let me pass my</b>
+
+708
+01:50:38,720 --> 01:50:41,119
+<b>session back to Professor Rota Poop.</b>
+
+709
+01:50:41,920 --> 01:50:48,640
+<b>Thank you for your challenge. Very interesting. Actually, I</b>
+
+710
+01:50:48,640 --> 01:50:51,079
+<b>am a researcher. Sometimes we</b>
+
+711
+01:50:51,920 --> 01:50:55,600
+<b>talk about the prototype and the commercialization. We need</b>
+
+712
+01:50:55,600 --> 01:50:58,239
+<b>to scale up. The scale up is definitely</b>
+
+713
+01:50:59,119 --> 01:51:01,600
+<b>not easy. Thank you for guiding</b>
+
+714
+01:51:01,600 --> 01:51:06,680
+<b>and the direction for the hackathon</b>
+
+715
+01:51:08,560 --> 01:51:13,119
+<b>tonight. We have two questions</b>
+
+716
+01:51:13,119 --> 01:51:16,199
+<b>in the chat box. The first one,</b>
+
+717
+01:51:17,199 --> 01:51:23,960
+<b>is how do you handle language and context that are</b>
+
+718
+01:51:24,880 --> 01:51:28,119
+<b>only represented in training</b>
+
+719
+01:51:28,119 --> 01:51:33,159
+<b>data? Let me see the questions.</b>
+
+720
+01:51:34,399 --> 01:51:38,359
+<b>Yes. How do you handle language and context that are</b>
+
+721
+01:51:38,960 --> 01:51:43,399
+<b>under represented in the training data?</b>
+
+722
+01:51:44,199 --> 01:51:47,840
+<b>In the training data, right? I think that</b>
+
+723
+01:51:47,840 --> 01:51:56,159
+<b>the language is one of the challenges also. At the moment,</b>
+
+724
+01:51:56,640 --> 01:52:02,039
+<b>I think comparing with the past few</b>
+
+725
+01:52:02,079 --> 01:52:08,319
+<b>months, the language model, the language</b>
+
+726
+01:52:08,319 --> 01:52:13,960
+<b>model of the out of the box AI, much better.</b>
+
+727
+01:52:15,720 --> 01:52:26,880
+<b>So far, I think this type of language is less and less.</b>
+
+728
+01:52:27,760 --> 01:52:41,159
+<b>Yes. Luckily, what I have to do is I think we need to be</b>
+
+729
+01:52:41,159 --> 01:52:44,119
+<b>more careful about the culture and</b>
+
+730
+01:52:45,199 --> 01:52:48,439
+<b>the style of the language for each</b>
+
+731
+01:52:48,439 --> 01:52:57,199
+<b>country. For example, I give you an example.</b>
+
+732
+01:52:58,000 --> 01:53:04,640
+<b>We build the project of the AI for Chinese</b>
+
+733
+01:53:04,640 --> 01:53:10,760
+<b>languages. But the style of the how to use</b>
+
+734
+01:53:11,119 --> 01:53:16,880
+<b>Chinese in China is different. It's</b>
+
+735
+01:53:16,880 --> 01:53:21,000
+<b>not the same as how they use in Singapore</b>
+
+736
+01:53:22,079 --> 01:53:32,279
+<b>or somewhere else. Even the Chinese language that we use</b>
+
+737
+01:53:32,279 --> 01:53:36,600
+<b>for our customers in Taiwan and the</b>
+
+738
+01:53:36,600 --> 01:53:40,960
+<b>customers in China, of course, the writing</b>
+
+739
+01:53:40,960 --> 01:53:45,399
+<b>is not the same. Because in Taiwan, they use</b>
+
+740
+01:53:46,319 --> 01:53:49,720
+<b>traditional Chinese. But in mainland China, they use</b>
+
+741
+01:53:49,720 --> 01:53:52,960
+<b>simplified Chinese. What we have to train</b>
+
+742
+01:53:52,960 --> 01:53:59,479
+<b>the model is we have to make sure that the model or the</b>
+
+743
+01:53:59,479 --> 01:54:02,720
+<b>data that we use to train is specific</b>
+
+744
+01:54:04,640 --> 01:54:12,600
+<b>to the people that we are targeting with. For example, just</b>
+
+745
+01:54:12,600 --> 01:54:15,119
+<b>even the English language also.</b>
+
+746
+01:54:16,079 --> 01:54:21,840
+<b>We have to consider about the data,</b>
+
+747
+01:54:22,680 --> 01:54:30,039
+<b>about the culture that we use to train the AI</b>
+
+748
+01:54:30,319 --> 01:54:34,520
+<b>to match with our target audiences.</b>
+
+749
+01:54:36,199 --> 01:54:42,279
+<b>I think this is help. This is help.</b>
+
+750
+01:54:42,319 --> 01:54:45,079
+<b>Okay. And for the second question.</b>
+
+751
+01:54:45,840 --> 01:54:49,600
+<b>Second question, you mentioned about the trust in the</b>
+
+752
+01:54:49,600 --> 01:54:54,319
+<b>keyword. The second question is about</b>
+
+753
+01:54:54,319 --> 01:54:56,920
+<b>the trust that you mentioned. How would</b>
+
+754
+01:54:56,920 --> 01:55:00,920
+<b>you build the trust in AI outputs that use</b>
+
+755
+01:55:01,359 --> 01:55:03,920
+<b>Sowai skeptics or black box</b>
+
+756
+01:55:03,920 --> 01:55:16,119
+<b>recommendations? That is really challenging also. Because</b>
+
+757
+01:55:16,800 --> 01:55:28,600
+<b>that's why we need to comply. One of the things that when</b>
+
+758
+01:55:28,600 --> 01:55:32,199
+<b>we do the project is we need to</b>
+
+759
+01:55:32,560 --> 01:55:42,119
+<b>understand about the law and regulations of that country.</b>
+
+760
+01:55:42,159 --> 01:55:50,319
+<b>For example, when we do the project in Thailand or we do</b>
+
+761
+01:55:50,319 --> 01:55:52,880
+<b>the project in China or we do the project</b>
+
+762
+01:55:52,960 --> 01:55:58,359
+<b>in Singapore. Because I think the users, when they trust,</b>
+
+763
+01:55:59,319 --> 01:56:03,319
+<b>they trust the government more than us.</b>
+
+764
+01:56:03,880 --> 01:56:07,319
+<b>Yeah, for sure. What we need to do</b>
+
+765
+01:56:07,319 --> 01:56:10,920
+<b>is we need to make sure that to try</b>
+
+766
+01:56:11,680 --> 01:56:15,279
+<b>everywhere that we comply with the</b>
+
+767
+01:56:15,279 --> 01:56:21,640
+<b>compliance, the laws or the standards that the</b>
+
+768
+01:56:21,920 --> 01:56:24,319
+<b>industry or the government</b>
+
+769
+01:56:24,319 --> 01:56:36,039
+<b>enforce. That's why we need sometimes</b>
+
+770
+01:56:37,039 --> 01:56:45,760
+<b>our customers need to comply to get the certificate or they</b>
+
+771
+01:56:45,760 --> 01:56:49,720
+<b>have to show about the audit report</b>
+
+772
+01:56:51,840 --> 01:56:56,279
+<b>to ensure that their customers trust</b>
+
+773
+01:56:56,279 --> 01:56:59,640
+<b>that they comply with what their government</b>
+
+774
+01:56:59,760 --> 01:57:07,479
+<b>enforce. Yeah. Okay, okay. Actually, we have more than one</b>
+
+775
+01:57:07,479 --> 01:57:10,039
+<b>question. But because the time is</b>
+
+776
+01:57:10,039 --> 01:57:15,159
+<b>in, but I think I will send you another</b>
+
+777
+01:57:15,159 --> 01:57:18,920
+<b>question by email and you can answer. Let's</b>
+
+778
+01:57:18,960 --> 01:57:24,600
+<b>point back to me again. Tonight, thank you so much for</b>
+
+779
+01:57:24,600 --> 01:57:29,920
+<b>sharing everything tonight. And could</b>
+
+780
+01:57:30,439 --> 01:57:34,600
+<b>everyone give a big applause or a big hug to Dr. Vlaanju</b>
+
+781
+01:57:34,600 --> 01:57:37,840
+<b>again? Okay. Yeah, thank you. Thank you.</b>
+
+782
+01:57:38,319 --> 01:57:51,640
+<b>Okay. Hi.</b>
+
+783
+01:57:53,319 --> 01:57:58,800
+<b>Mr. Xiong Zhang. Yes. Yeah. Can I call</b>
+
+784
+01:57:58,800 --> 01:58:02,039
+<b>you Mr. Zhang? Yeah, sure. Oh, can I start</b>
+
+785
+01:58:02,079 --> 01:58:09,000
+<b>share? Okay. Okay. Welcome to the hackathon webinar. Okay.</b>
+
+786
+01:58:09,840 --> 01:58:15,920
+<b>Okay. It is now the last of the</b>
+
+787
+01:58:18,319 --> 01:58:21,520
+<b>speaker tonight. My absolute pleasure to</b>
+
+788
+01:58:21,520 --> 01:58:28,119
+<b>introduce the last speaker, Mr. Xiong Zhang.</b>
+
+789
+01:58:28,840 --> 01:58:31,039
+<b>Mr. Xiong Zhang is the executive</b>
+
+790
+01:58:31,039 --> 01:58:36,960
+<b>director and chief AI officer of the AI 2030.</b>
+
+791
+01:58:38,800 --> 01:58:44,640
+<b>A global initiative dedicated to mainstreaming responsible</b>
+
+792
+01:58:44,640 --> 01:58:48,720
+<b>AI to benefit humanity. A recognized</b>
+
+793
+01:58:49,039 --> 01:58:53,439
+<b>leader in applying emerging technologies for social impact.</b>
+
+794
+01:58:54,239 --> 01:58:56,800
+<b>He has over two decades of the</b>
+
+795
+01:58:56,800 --> 01:59:02,359
+<b>experience at the intersection of AI, FinTech, blockchain</b>
+
+796
+01:59:02,359 --> 01:59:06,000
+<b>and sustainability. Today, he will be</b>
+
+797
+01:59:06,079 --> 01:59:10,880
+<b>presenting on a topic responsible AI for digital trade.</b>
+
+798
+01:59:12,560 --> 01:59:16,279
+<b>Please join me in giving a warm welcome to</b>
+
+799
+01:59:16,279 --> 01:59:20,199
+<b>Mr. Xiong Zhang. Okay. Mr. Xiong Zhang,</b>
+
+800
+01:59:20,520 --> 01:59:24,439
+<b>the floor is yours. Thank you very much. And</b>
+
+801
+01:59:25,039 --> 01:59:30,279
+<b>I really appreciate the opportunity to be able to meet</b>
+
+802
+01:59:30,279 --> 01:59:34,359
+<b>everyone and also have discussion on</b>
+
+803
+01:59:34,359 --> 01:59:40,000
+<b>leveraging AI for global trade. And before I start my</b>
+
+804
+01:59:40,000 --> 01:59:43,560
+<b>presentation, I really like the question</b>
+
+805
+01:59:43,560 --> 01:59:48,479
+<b>raised for the last panel and maybe I can just quickly just</b>
+
+806
+01:59:48,479 --> 01:59:50,680
+<b>go over a few of them. And the first</b>
+
+807
+01:59:51,600 --> 01:59:57,319
+<b>point about the underrepresentation, and we developed a</b>
+
+808
+01:59:57,319 --> 02:00:00,279
+<b>framework around that. And number</b>
+
+809
+02:00:00,279 --> 02:00:03,279
+<b>one is that we have to recognize that the problem exists.</b>
+
+810
+02:00:04,199 --> 02:00:07,079
+<b>And number two is that a lot of models are</b>
+
+811
+02:00:07,079 --> 02:00:14,399
+<b>built in the closed labs, frontier labs. And then a lot of</b>
+
+812
+02:00:14,399 --> 02:00:16,560
+<b>those questions actually cannot be</b>
+
+813
+02:00:16,560 --> 02:00:21,159
+<b>addressed by others if the frontier labs</b>
+
+814
+02:00:21,159 --> 02:00:23,800
+<b>don't really just incorporate the principle</b>
+
+815
+02:00:24,159 --> 02:00:29,199
+<b>to bring the underrepresentation data and context into</b>
+
+816
+02:00:29,199 --> 02:00:33,279
+<b>that. And we all know that now many of the</b>
+
+817
+02:00:33,600 --> 02:00:37,600
+<b>data are just not in model, AI model training from the</b>
+
+818
+02:00:37,600 --> 02:00:41,079
+<b>frontier models. And that itself is not</b>
+
+819
+02:00:41,119 --> 02:00:44,840
+<b>addressed. And I think to just having the global pressure</b>
+
+820
+02:00:44,840 --> 02:00:49,880
+<b>and to request the frontier lab to</b>
+
+821
+02:00:49,880 --> 02:00:53,840
+<b>adopt the principles to just address that is very</b>
+
+822
+02:00:53,840 --> 02:00:56,720
+<b>important. Of course, that they also recognize the</b>
+
+823
+02:00:56,800 --> 02:01:02,039
+<b>problem and we see in many of those reports. But then</b>
+
+824
+02:01:02,039 --> 02:01:06,399
+<b>another direction to that is also not only</b>
+
+825
+02:01:06,800 --> 02:01:10,359
+<b>through the pressure to the frontier lab, also just looking</b>
+
+826
+02:01:10,359 --> 02:01:14,359
+<b>to the open AI models. There that's</b>
+
+827
+02:01:14,560 --> 02:01:19,800
+<b>many times that global cells can put a lot of emphasis or</b>
+
+828
+02:01:19,800 --> 02:01:22,680
+<b>input into the open models where</b>
+
+829
+02:01:24,000 --> 02:01:29,680
+<b>there that's the bottom up approach can potentially add a</b>
+
+830
+02:01:29,680 --> 02:01:31,760
+<b>great value to make those models</b>
+
+831
+02:01:32,800 --> 02:01:38,199
+<b>to be more representative and address the context related</b>
+
+832
+02:01:38,199 --> 02:01:41,640
+<b>issues by leveraging the expertise in those</b>
+
+833
+02:01:41,640 --> 02:01:46,560
+<b>areas which are less represented or the population or</b>
+
+834
+02:01:46,560 --> 02:01:50,239
+<b>community are less represented. And how would</b>
+
+835
+02:01:50,239 --> 02:01:56,880
+<b>you build trust in AI output and there that's AI excellency</b>
+
+836
+02:01:56,880 --> 02:02:00,039
+<b>itself is very important where that's</b>
+
+837
+02:02:00,640 --> 02:02:08,319
+<b>in many companies, especially in the regulated industry and</b>
+
+838
+02:02:08,319 --> 02:02:11,960
+<b>to make AI explainable itself</b>
+
+839
+02:02:12,239 --> 02:02:15,720
+<b>is becoming a very important piece of their work.</b>
+
+840
+02:02:16,840 --> 02:02:21,039
+<b>Otherwise, many times that's in the US where that</b>
+
+841
+02:02:21,039 --> 02:02:26,359
+<b>I'm based that's in the financial industry or in other</b>
+
+842
+02:02:26,359 --> 02:02:29,880
+<b>regulated industry. If you cannot explain</b>
+
+843
+02:02:30,319 --> 02:02:38,399
+<b>your output and then your regulators will not be happy</b>
+
+844
+02:02:38,399 --> 02:02:40,560
+<b>about it and then you may get fine.</b>
+
+845
+02:02:41,359 --> 02:02:47,560
+<b>And so there that's just there are tons of tools to make AI</b>
+
+846
+02:02:47,560 --> 02:02:50,239
+<b>explainable and which just link</b>
+
+847
+02:02:50,640 --> 02:02:54,760
+<b>the output with the input and then you need to be able to</b>
+
+848
+02:02:54,760 --> 02:02:57,439
+<b>trace back. And that is of again,</b>
+
+849
+02:02:58,000 --> 02:03:01,159
+<b>there's tons of publication use cases and happy to share.</b>
+
+850
+02:03:02,079 --> 02:03:07,640
+<b>And so also would be correct to state</b>
+
+851
+02:03:07,680 --> 02:03:11,880
+<b>that's for responsible AI to be a reality there would need</b>
+
+852
+02:03:11,880 --> 02:03:15,279
+<b>to be some universally adopted best</b>
+
+853
+02:03:15,359 --> 02:03:19,920
+<b>practices. That is a yes and no question because I think</b>
+
+854
+02:03:19,920 --> 02:03:23,319
+<b>anything if we claim universally</b>
+
+855
+02:03:24,720 --> 02:03:28,439
+<b>adopted best practice that itself the statement itself is</b>
+
+856
+02:03:28,439 --> 02:03:32,439
+<b>undermining the uniqueness of a lot of</b>
+
+857
+02:03:32,560 --> 02:03:38,760
+<b>communities or population or context. So something worked</b>
+
+858
+02:03:38,760 --> 02:03:41,720
+<b>for somewhere for some population for some</b>
+
+859
+02:03:41,800 --> 02:03:46,359
+<b>company might not work in other places, but that doesn't</b>
+
+860
+02:03:46,359 --> 02:03:50,920
+<b>make it less available to have global</b>
+
+861
+02:03:51,680 --> 02:03:56,720
+<b>best practice as a reference. And which is where that's at</b>
+
+862
+02:03:56,720 --> 02:03:58,960
+<b>least a lot of those best practice</b>
+
+863
+02:03:59,119 --> 02:04:02,399
+<b>provide those question lists where that's</b>
+
+864
+02:04:02,399 --> 02:04:05,560
+<b>if you work on something and then have you</b>
+
+865
+02:04:05,600 --> 02:04:10,800
+<b>address those questions and those can help you to adopt. We</b>
+
+866
+02:04:10,800 --> 02:04:13,720
+<b>developed this toward a global</b>
+
+867
+02:04:14,000 --> 02:04:17,520
+<b>responsible AI framework as a study and</b>
+
+868
+02:04:17,520 --> 02:04:22,279
+<b>we analyzed over 100 some responsible way</b>
+
+869
+02:04:22,720 --> 02:04:26,520
+<b>principles standards from the international organization,</b>
+
+870
+02:04:27,600 --> 02:04:30,039
+<b>specific individual countries</b>
+
+871
+02:04:30,760 --> 02:04:35,159
+<b>and industries and frontier labs. And at</b>
+
+872
+02:04:35,159 --> 02:04:38,439
+<b>the beginning that we want to just see that's</b>
+
+873
+02:04:38,439 --> 02:04:41,039
+<b>whether we are able to even to come up with</b>
+
+874
+02:04:41,039 --> 02:04:45,800
+<b>responsible AI framework, which is globally</b>
+
+875
+02:04:46,319 --> 02:04:50,680
+<b>adaptable. But our conclusion there is a question mark. And</b>
+
+876
+02:04:50,680 --> 02:04:52,439
+<b>because many times when you just</b>
+
+877
+02:04:52,800 --> 02:04:55,760
+<b>review the standards and all that you will see that</b>
+
+878
+02:04:55,760 --> 02:04:58,039
+<b>something which is as cool in this</b>
+
+879
+02:04:59,039 --> 02:05:03,039
+<b>scenario for this population may be seen</b>
+
+880
+02:05:03,039 --> 02:05:06,880
+<b>as not as a cold dark in the other context,</b>
+
+881
+02:05:07,119 --> 02:05:11,159
+<b>similar thing. But there are some foundations which really</b>
+
+882
+02:05:11,159 --> 02:05:14,760
+<b>can just be more plausible across</b>
+
+883
+02:05:14,760 --> 02:05:17,960
+<b>the different contexts. So then it's a yes and no question</b>
+
+884
+02:05:17,960 --> 02:05:23,159
+<b>answer. So that just quickly go. I was</b>
+
+885
+02:05:23,199 --> 02:05:26,640
+<b>inspired by the earlier speaker and the question I want to</b>
+
+886
+02:05:26,640 --> 02:05:30,279
+<b>just quickly jump there. So now that's</b>
+
+887
+02:05:30,319 --> 02:05:38,399
+<b>let me just quickly go to my part and where that's for my</b>
+
+888
+02:05:38,399 --> 02:05:40,680
+<b>presentation is AI for global trade.</b>
+
+889
+02:05:41,279 --> 02:05:45,199
+<b>And I think this hack for myself is very, very timely</b>
+
+890
+02:05:45,199 --> 02:05:47,800
+<b>because in general when you just look at</b>
+
+891
+02:05:48,399 --> 02:05:55,600
+<b>where AI can potentially contribute, a global trade is an</b>
+
+892
+02:05:55,600 --> 02:05:58,640
+<b>area where that's AI can do a lot.</b>
+
+893
+02:05:59,039 --> 02:06:03,800
+<b>And when we talk about especially the global south or the</b>
+
+894
+02:06:03,800 --> 02:06:07,119
+<b>international development where that</b>
+
+895
+02:06:08,239 --> 02:06:13,039
+<b>AI can just really address some of the problems which have</b>
+
+896
+02:06:13,039 --> 02:06:14,359
+<b>been existing for a long time</b>
+
+897
+02:06:15,199 --> 02:06:18,359
+<b>and from the cost saving because we all know in the global</b>
+
+898
+02:06:18,359 --> 02:06:21,279
+<b>supply chain and many times that's</b>
+
+899
+02:06:21,279 --> 02:06:29,279
+<b>the supply chain management occur a lot of costs and those</b>
+
+900
+02:06:29,279 --> 02:06:34,319
+<b>costs can be reduced by leveraging AI</b>
+
+901
+02:06:34,479 --> 02:06:39,520
+<b>and then that benefit can be translated into the supply</b>
+
+902
+02:06:39,520 --> 02:06:41,039
+<b>chain, the factories and all that.</b>
+
+903
+02:06:41,039 --> 02:06:48,720
+<b>And then that directly can result into the betterment or</b>
+
+904
+02:06:48,720 --> 02:06:52,239
+<b>the profits in the trading part.</b>
+
+905
+02:06:52,680 --> 02:06:55,880
+<b>The second part is we all know about the trade finance</b>
+
+906
+02:06:55,880 --> 02:06:59,760
+<b>where that's many of the manufacturers</b>
+
+907
+02:07:00,479 --> 02:07:07,680
+<b>or trading partners really rely heavily on the credits and</b>
+
+908
+02:07:07,680 --> 02:07:09,640
+<b>other financial instruments provided</b>
+
+909
+02:07:09,640 --> 02:07:15,560
+<b>within the supply chain but many times that's the supply</b>
+
+910
+02:07:15,560 --> 02:07:19,279
+<b>chain finance itself has a lot of</b>
+
+911
+02:07:20,079 --> 02:07:23,840
+<b>inefficiency and the blockchain that sorry AI can</b>
+
+912
+02:07:23,840 --> 02:07:27,079
+<b>definitely help to address that. But a lot of</b>
+
+913
+02:07:27,119 --> 02:07:32,399
+<b>those benefits which are related to the developing</b>
+
+914
+02:07:32,399 --> 02:07:36,720
+<b>countries can only be realized and if</b>
+
+915
+02:07:36,720 --> 02:07:43,079
+<b>the developing countries are in the room</b>
+
+916
+02:07:43,079 --> 02:07:45,880
+<b>and here that's just to show you a few data.</b>
+
+917
+02:07:46,479 --> 02:07:54,920
+<b>Although trade can just leave over 30% potential leave to</b>
+
+918
+02:07:54,920 --> 02:07:58,800
+<b>war trade by 2040 and there that's</b>
+
+919
+02:07:59,600 --> 02:08:06,800
+<b>when we look at the income gain for low and mid income and</b>
+
+920
+02:08:06,800 --> 02:08:10,199
+<b>then there's a very clear current gap</b>
+
+921
+02:08:10,640 --> 02:08:12,800
+<b>then when you look at the currently the</b>
+
+922
+02:08:12,800 --> 02:08:19,159
+<b>notable AI models are being used or developed</b>
+
+923
+02:08:19,760 --> 02:08:26,039
+<b>in 87% of them are in the home of the high</b>
+
+924
+02:08:26,039 --> 02:08:29,479
+<b>income countries and then they only have 70%</b>
+
+925
+02:08:29,800 --> 02:08:33,840
+<b>of the world population. So those disparity just shared</b>
+
+926
+02:08:33,840 --> 02:08:39,720
+<b>this is very urgent and we as AI 2030</b>
+
+927
+02:08:40,640 --> 02:08:45,079
+<b>have our name because we want to communicate this urgency</b>
+
+928
+02:08:45,079 --> 02:08:47,840
+<b>where there are things that need to be done</b>
+
+929
+02:08:47,840 --> 02:08:53,199
+<b>can be done the window to change occur from we have a</b>
+
+930
+02:08:53,199 --> 02:08:55,760
+<b>couple years where that we can really just</b>
+
+931
+02:08:57,359 --> 02:09:01,680
+<b>to all working together to make that change. I think this</b>
+
+932
+02:09:01,680 --> 02:09:03,560
+<b>global hackathon is one of those</b>
+
+933
+02:09:04,000 --> 02:09:07,920
+<b>great efforts where that identifying the problem bring the</b>
+
+934
+02:09:07,920 --> 02:09:10,960
+<b>innovators together and then to really</b>
+
+935
+02:09:10,960 --> 02:09:14,720
+<b>bring the real benefits to the global trade and that's the</b>
+
+936
+02:09:14,720 --> 02:09:17,159
+<b>benefit of the community. So when we</b>
+
+937
+02:09:17,159 --> 02:09:22,640
+<b>talk about how AI can really just contributing to global</b>
+
+938
+02:09:22,640 --> 02:09:27,840
+<b>trade and there are many many different</b>
+
+939
+02:09:28,079 --> 02:09:32,640
+<b>areas where there is inefficiency where there is high cost</b>
+
+940
+02:09:32,640 --> 02:09:36,920
+<b>where there is data is very available</b>
+
+941
+02:09:37,359 --> 02:09:43,000
+<b>and also decisions are repeatable and naturally where AI</b>
+
+942
+02:09:43,000 --> 02:09:45,479
+<b>could really play a very important role</b>
+
+943
+02:09:45,520 --> 02:09:51,039
+<b>and a good example from the trade finance and where that's</b>
+
+944
+02:09:51,039 --> 02:09:54,840
+<b>by leveraging AI and if you combine</b>
+
+945
+02:09:54,880 --> 02:10:00,159
+<b>AI also even with blockchain where that's the way in the</b>
+
+946
+02:10:00,159 --> 02:10:02,840
+<b>trade finance you can create the</b>
+
+947
+02:10:03,520 --> 02:10:07,840
+<b>different type of credit score and the credit related risk</b>
+
+948
+02:10:07,840 --> 02:10:11,680
+<b>can be analyzed automatically by AI</b>
+
+949
+02:10:11,840 --> 02:10:16,680
+<b>and then that can just really reducing to make a lot of</b>
+
+950
+02:10:16,680 --> 02:10:20,680
+<b>entities are not credit worthy or just</b>
+
+951
+02:10:20,720 --> 02:10:27,520
+<b>the shipping related documents or shipping</b>
+
+952
+02:10:27,520 --> 02:10:31,159
+<b>trade documents can immediately play a very</b>
+
+953
+02:10:31,159 --> 02:10:36,039
+<b>important role to provide finance for a lot of the</b>
+
+954
+02:10:36,039 --> 02:10:39,560
+<b>stakeholders. So definitely here we have</b>
+
+955
+02:10:39,680 --> 02:10:44,239
+<b>a lot of numbers I don't have time to dive deep on it but</b>
+
+956
+02:10:44,239 --> 02:10:47,640
+<b>you can just look into that while I'm</b>
+
+957
+02:10:47,680 --> 02:10:51,159
+<b>talking and the second part is the custom</b>
+
+958
+02:10:51,159 --> 02:10:56,039
+<b>and documentation and my first job was doing</b>
+
+959
+02:10:56,079 --> 02:11:01,840
+<b>international trade and I remember where that's no matter</b>
+
+960
+02:11:01,840 --> 02:11:04,199
+<b>it's just from the shipping document,</b>
+
+961
+02:11:05,399 --> 02:11:11,119
+<b>the place of a region and the tons of documents which</b>
+
+962
+02:11:11,119 --> 02:11:14,880
+<b>literally when I was starting my career</b>
+
+963
+02:11:15,079 --> 02:11:21,079
+<b>and I feel that my work is so boring and also it was so</b>
+
+964
+02:11:21,079 --> 02:11:25,079
+<b>tedious not productive because I finished</b>
+
+965
+02:11:25,079 --> 02:11:34,279
+<b>bachelor degree and I feel I have a lot to offer but a lot</b>
+
+966
+02:11:34,279 --> 02:11:36,319
+<b>of my time is really just dealing with</b>
+
+967
+02:11:36,319 --> 02:11:40,239
+<b>documents go to different departments getting all the</b>
+
+968
+02:11:40,239 --> 02:11:44,439
+<b>documents here and there but each time</b>
+
+969
+02:11:44,640 --> 02:11:48,960
+<b>it's really just one human to another human and then to</b>
+
+970
+02:11:48,960 --> 02:11:51,560
+<b>just pass exactly the same information</b>
+
+971
+02:11:51,840 --> 02:11:55,880
+<b>but if AI are used in the custom and</b>
+
+972
+02:11:55,880 --> 02:11:58,920
+<b>documentation process where that process</b>
+
+973
+02:12:00,720 --> 02:12:06,199
+<b>can just really take a lot of human related work out of</b>
+
+974
+02:12:06,199 --> 02:12:08,680
+<b>that and then that itself can also just</b>
+
+975
+02:12:08,720 --> 02:12:14,399
+<b>increase efficiency dramatically and of course supply chain</b>
+
+976
+02:12:14,399 --> 02:12:17,640
+<b>visibility is another very important</b>
+
+977
+02:12:17,680 --> 02:12:25,039
+<b>piece of that where if you are in the global supply chain</b>
+
+978
+02:12:25,039 --> 02:12:28,760
+<b>you know that's the data of shipment</b>
+
+979
+02:12:29,199 --> 02:12:36,039
+<b>or in the contract no matter you use FOB or CIF and where</b>
+
+980
+02:12:36,039 --> 02:12:39,680
+<b>that's those days and all that are very</b>
+
+981
+02:12:39,680 --> 02:12:46,199
+<b>important to know where the goods are and whether you are</b>
+
+982
+02:12:46,199 --> 02:12:48,720
+<b>able to deliver on time, whether you are</b>
+
+983
+02:12:48,720 --> 02:12:53,920
+<b>able to just the goods can arrive on time and those are</b>
+
+984
+02:12:53,920 --> 02:12:57,039
+<b>very very important and many times those</b>
+
+985
+02:12:57,600 --> 02:13:00,239
+<b>trade conflicts arise where that's you</b>
+
+986
+02:13:00,239 --> 02:13:03,840
+<b>know visibility doesn't exist where that AI</b>
+
+987
+02:13:04,640 --> 02:13:09,000
+<b>have already just brought a lot of visibility not potential</b>
+
+988
+02:13:09,000 --> 02:13:11,199
+<b>have brought a lot of visibility into</b>
+
+989
+02:13:11,199 --> 02:13:16,079
+<b>that because AI's ability to just processing large quantity</b>
+
+990
+02:13:16,079 --> 02:13:19,680
+<b>of data and at a timely manner</b>
+
+991
+02:13:19,920 --> 02:13:23,279
+<b>and a lot of those efficiency are just you know human</b>
+
+992
+02:13:23,279 --> 02:13:25,319
+<b>related inefficiency you know</b>
+
+993
+02:13:25,520 --> 02:13:29,039
+<b>cause a lot of visibility really issue artists you know</b>
+
+994
+02:13:29,039 --> 02:13:31,640
+<b>much less you know if we just bring AI</b>
+
+995
+02:13:31,680 --> 02:13:36,399
+<b>into the process and then there's non-tariff measures and</b>
+
+996
+02:13:36,399 --> 02:13:38,840
+<b>illicit trade and laundering and</b>
+
+997
+02:13:38,840 --> 02:13:42,640
+<b>we all know that you know there are a lot of sanctions and</b>
+
+998
+02:13:42,640 --> 02:13:45,960
+<b>you know for many many you know</b>
+
+999
+02:13:46,000 --> 02:13:51,399
+<b>the reason why the place of origin is important is because</b>
+
+1000
+02:13:51,399 --> 02:13:55,319
+<b>of you know there are a lot of</b>
+
+1001
+02:13:55,439 --> 02:13:58,640
+<b>you know sanctions or international trade policies which</b>
+
+1002
+02:13:58,640 --> 02:14:02,760
+<b>you know need to just impact each of the</b>
+
+1003
+02:14:02,760 --> 02:14:07,279
+<b>trading you know transaction and if again bring you know</b>
+
+1004
+02:14:07,279 --> 02:14:11,239
+<b>human into the process and you see</b>
+
+1005
+02:14:11,279 --> 02:14:15,800
+<b>inefficiency and where that's you know if AI can help to</b>
+
+1006
+02:14:15,800 --> 02:14:18,640
+<b>just processing documents and then</b>
+
+1007
+02:14:19,199 --> 02:14:22,560
+<b>at a timely manner and then where that's a lot of those</b>
+
+1008
+02:14:22,560 --> 02:14:25,359
+<b>potential you know inefficiency can be you</b>
+
+1009
+02:14:25,359 --> 02:14:28,920
+<b>know taken away from the process and then really just speed</b>
+
+1010
+02:14:28,920 --> 02:14:31,159
+<b>up the the the trading and the</b>
+
+1011
+02:14:31,159 --> 02:14:36,600
+<b>transaction process and also gets you know a lot of returns</b>
+
+1012
+02:14:36,600 --> 02:14:38,760
+<b>and also you know potential you know</b>
+
+1013
+02:14:39,680 --> 02:14:44,199
+<b>trade related tariff reduction all that</b>
+
+1014
+02:14:44,199 --> 02:14:47,880
+<b>back to you know the trading partners and</b>
+
+1015
+02:14:49,279 --> 02:14:52,680
+<b>when I talk about all that you know those are not something</b>
+
+1016
+02:14:52,680 --> 02:14:55,520
+<b>which just in theory we have seen</b>
+
+1017
+02:14:55,840 --> 02:15:00,439
+<b>a lot of you know very concrete large</b>
+
+1018
+02:15:00,439 --> 02:15:04,640
+<b>scale adoption which you know have occurred in</b>
+
+1019
+02:15:04,640 --> 02:15:12,720
+<b>you know here I I list the majority of the the use cases or</b>
+
+1020
+02:15:12,720 --> 02:15:15,119
+<b>examples are from developing countries</b>
+
+1021
+02:15:15,439 --> 02:15:19,800
+<b>and from the air you know customs risk targeting and you</b>
+
+1022
+02:15:19,800 --> 02:15:23,720
+<b>see the Brazil and then you know from</b>
+
+1023
+02:15:23,720 --> 02:15:29,359
+<b>the SME alternative data credit you see you know and my</b>
+
+1024
+02:15:29,359 --> 02:15:33,399
+<b>bank so yeah these are some of the areas</b>
+
+1025
+02:15:33,680 --> 02:15:38,159
+<b>where you already see solutions because you know this is</b>
+
+1026
+02:15:38,159 --> 02:15:41,520
+<b>the hackathon I will not dive deep into</b>
+
+1027
+02:15:41,520 --> 02:15:46,640
+<b>each of those you know areas or case studies but my message</b>
+
+1028
+02:15:46,640 --> 02:15:50,520
+<b>here is that you know leveraging AI to</b>
+
+1029
+02:15:50,560 --> 02:15:57,039
+<b>to just really create benefit for global trade itself you</b>
+
+1030
+02:15:57,039 --> 02:15:59,600
+<b>know it's not early stage it is you</b>
+
+1031
+02:15:59,640 --> 02:16:04,199
+<b>know has already at scale if you are building some</b>
+
+1032
+02:16:04,199 --> 02:16:07,680
+<b>solutions and you know from scratch you</b>
+
+1033
+02:16:07,680 --> 02:16:11,640
+<b>need to understand the the scope and also understand the</b>
+
+1034
+02:16:11,640 --> 02:16:16,640
+<b>landscape and at AI 2030 we also run</b>
+
+1035
+02:16:16,640 --> 02:16:20,920
+<b>you know incubator accelerator program every year I you</b>
+
+1036
+02:16:20,920 --> 02:16:23,479
+<b>know review at least a thousand of startup</b>
+
+1037
+02:16:23,640 --> 02:16:30,720
+<b>um applications and also you know the pitch decks and a lot</b>
+
+1038
+02:16:30,720 --> 02:16:32,920
+<b>of time that's one of the key</b>
+
+1039
+02:16:32,920 --> 02:16:38,360
+<b>problem I see is that you know the innovators have not done</b>
+
+1040
+02:16:38,360 --> 02:16:41,159
+<b>sufficient research regarding</b>
+
+1041
+02:16:41,200 --> 02:16:45,639
+<b>the competitors or you know all the landscape then you know</b>
+
+1042
+02:16:45,639 --> 02:16:47,799
+<b>they claim that's you know nobody's</b>
+
+1043
+02:16:47,840 --> 02:16:53,200
+<b>doing this or there is a market position that we are the</b>
+
+1044
+02:16:53,200 --> 02:16:55,600
+<b>leader and a lot of those claim on</b>
+
+1045
+02:16:55,840 --> 02:17:01,760
+<b>just factually not true and I think you know to just now we</b>
+
+1046
+02:17:01,760 --> 02:17:04,079
+<b>have AI and it's very easy for us</b>
+
+1047
+02:17:04,079 --> 02:17:09,200
+<b>to do a much better uh risk background research and make</b>
+
+1048
+02:17:09,200 --> 02:17:12,159
+<b>sure that's you know whatever um solution</b>
+
+1049
+02:17:12,399 --> 02:17:15,879
+<b>you are trying to build and you know the landscape well you</b>
+
+1050
+02:17:15,879 --> 02:17:18,000
+<b>know what are the solution which already</b>
+
+1051
+02:17:18,000 --> 02:17:20,920
+<b>you know are scaled by which country who</b>
+
+1052
+02:17:20,920 --> 02:17:23,239
+<b>can potentially be your partner your customer</b>
+
+1053
+02:17:23,600 --> 02:17:27,319
+<b>and who are your competitor and where they are in their</b>
+
+1054
+02:17:27,319 --> 02:17:30,680
+<b>process and all you know these are some of</b>
+
+1055
+02:17:30,680 --> 02:17:34,639
+<b>the use cases so which are they you know at a scale and are</b>
+
+1056
+02:17:34,639 --> 02:17:36,280
+<b>you you know do you want to just</b>
+
+1057
+02:17:36,799 --> 02:17:41,159
+<b>reinvent or contributing to those those scalable you know</b>
+
+1058
+02:17:41,159 --> 02:17:43,440
+<b>use cases or you want to identify</b>
+
+1059
+02:17:43,600 --> 02:17:47,079
+<b>something new so those are some of the you know question or</b>
+
+1060
+02:17:47,079 --> 02:17:49,559
+<b>comments I want to just get to you</b>
+
+1061
+02:17:49,559 --> 02:17:55,639
+<b>know the participants of the hackathon and you know here</b>
+
+1062
+02:17:55,639 --> 02:17:59,319
+<b>again this is just some of the</b>
+
+1063
+02:17:59,319 --> 02:18:02,680
+<b>you know name dropping because I think it's very important</b>
+
+1064
+02:18:02,680 --> 02:18:05,799
+<b>to know that you know when you are you</b>
+
+1065
+02:18:05,840 --> 02:18:10,159
+<b>know doing hackathon and one thing you know in the past we</b>
+
+1066
+02:18:10,159 --> 02:18:14,040
+<b>did was we invited the global company</b>
+
+1067
+02:18:14,040 --> 02:18:19,399
+<b>to do reverse pitch reverse pitch for our startups meaning</b>
+
+1068
+02:18:19,399 --> 02:18:21,639
+<b>that's many times that startups the</b>
+
+1069
+02:18:21,639 --> 02:18:25,159
+<b>solution are you know at the early stage and then the</b>
+
+1070
+02:18:25,159 --> 02:18:28,559
+<b>corporate enterprise process is very tedious</b>
+
+1071
+02:18:28,959 --> 02:18:34,520
+<b>and you know it's not easy for startup to navigate the work</b>
+
+1072
+02:18:34,520 --> 02:18:37,280
+<b>problems that you know the enterprise</b>
+
+1073
+02:18:37,920 --> 02:18:42,399
+<b>have and how to just you know navigate their internal</b>
+
+1074
+02:18:42,399 --> 02:18:45,200
+<b>process for procurement or PLC pilot</b>
+
+1075
+02:18:45,280 --> 02:18:49,399
+<b>building and but I think you know to just know that which</b>
+
+1076
+02:18:49,399 --> 02:18:53,040
+<b>company are piloting you know what</b>
+
+1077
+02:18:53,280 --> 02:18:57,440
+<b>and I think at least this gave you you know an idea and</b>
+
+1078
+02:18:57,440 --> 02:19:00,440
+<b>there are potential opportunities</b>
+
+1079
+02:19:01,280 --> 02:19:05,159
+<b>if not from them at least from their competitors meaning</b>
+
+1080
+02:19:05,159 --> 02:19:09,079
+<b>that's you know if they as the key players</b>
+
+1081
+02:19:09,200 --> 02:19:13,319
+<b>have done something in for example you know credit risk or</b>
+
+1082
+02:19:13,319 --> 02:19:18,559
+<b>from the shaping documentation you know</b>
+
+1083
+02:19:18,559 --> 02:19:29,120
+<b>or from the trade finance and then you understand you know</b>
+
+1084
+02:19:29,120 --> 02:19:33,280
+<b>potentially another larger enterprise</b>
+
+1085
+02:19:33,280 --> 02:19:38,120
+<b>of one in the same you know sector working on the same type</b>
+
+1086
+02:19:38,120 --> 02:19:40,200
+<b>of use case potentially have that</b>
+
+1087
+02:19:40,239 --> 02:19:44,079
+<b>demand where that you can you know easily to just you know</b>
+
+1088
+02:19:44,079 --> 02:19:46,559
+<b>identify the top 10 or top five</b>
+
+1089
+02:19:46,639 --> 02:19:50,079
+<b>where that's you you can just you know look into and then</b>
+
+1090
+02:19:50,079 --> 02:19:52,600
+<b>we who are supporting you in that process</b>
+
+1091
+02:19:52,600 --> 02:19:56,239
+<b>can also just based on your research try to open door for</b>
+
+1092
+02:19:56,239 --> 02:19:58,600
+<b>you and see that you know if you know</b>
+
+1093
+02:19:58,600 --> 02:20:01,920
+<b>you don't want to go to UPS because they already have have</b>
+
+1094
+02:20:01,920 --> 02:20:04,280
+<b>something maybe you know we go to you</b>
+
+1095
+02:20:04,319 --> 02:20:08,159
+<b>know FedEx or we go to Maskey and different organization</b>
+
+1096
+02:20:08,159 --> 02:20:10,280
+<b>and if you don't want to go to Alibaba</b>
+
+1097
+02:20:10,479 --> 02:20:13,600
+<b>and then you know there are other e-commerce you know</b>
+
+1098
+02:20:13,600 --> 02:20:17,239
+<b>platform Amazon others you know so</b>
+
+1099
+02:20:17,600 --> 02:20:21,760
+<b>there that's by knowing that who have deployed the AI for</b>
+
+1100
+02:20:21,760 --> 02:20:25,280
+<b>you know the global trade related use cases</b>
+
+1101
+02:20:25,520 --> 02:20:28,559
+<b>that can give you some idea number one to</b>
+
+1102
+02:20:28,559 --> 02:20:31,440
+<b>understand what have been done you you know</b>
+
+1103
+02:20:31,559 --> 02:20:34,920
+<b>either try to just do it differently or try to avoid that</b>
+
+1104
+02:20:34,920 --> 02:20:37,280
+<b>use case or if you really try to do</b>
+
+1105
+02:20:37,280 --> 02:20:40,559
+<b>something similar you also know that's who you can pitch</b>
+
+1106
+02:20:40,559 --> 02:20:43,440
+<b>when you really have a you know solid</b>
+
+1107
+02:20:43,440 --> 02:20:50,399
+<b>solution my next one is you know it's really and this is</b>
+
+1108
+02:20:50,399 --> 02:20:55,159
+<b>more from the ecosystem players no matter</b>
+
+1109
+02:20:55,200 --> 02:20:59,879
+<b>you are universities or UN organization or you know the</b>
+
+1110
+02:20:59,879 --> 02:21:02,760
+<b>government officials where that's you</b>
+
+1111
+02:21:02,760 --> 02:21:06,920
+<b>know although you know every one of us know and talk about</b>
+
+1112
+02:21:06,920 --> 02:21:10,120
+<b>the AI related benefits but you know</b>
+
+1113
+02:21:10,120 --> 02:21:14,719
+<b>AI can also compound you know a lot of create a lot of new</b>
+
+1114
+02:21:14,719 --> 02:21:17,399
+<b>risks for the developing countries</b>
+
+1115
+02:21:17,520 --> 02:21:21,319
+<b>and I just believe in some and I want to make sure that</b>
+
+1116
+02:21:21,319 --> 02:21:23,799
+<b>when we talk about AI we are not</b>
+
+1117
+02:21:23,920 --> 02:21:29,239
+<b>just talking blindly to embrace AI say hey this is</b>
+
+1118
+02:21:29,239 --> 02:21:32,840
+<b>something universally good and they are</b>
+
+1119
+02:21:32,840 --> 02:21:36,639
+<b>university best practice which just you know everyone</b>
+
+1120
+02:21:36,639 --> 02:21:39,520
+<b>should just adopt should so there are</b>
+
+1121
+02:21:39,520 --> 02:21:43,520
+<b>very clear new risks that so everyone need to be aware of</b>
+
+1122
+02:21:43,520 --> 02:21:46,559
+<b>and you know if you are a government</b>
+
+1123
+02:21:46,639 --> 02:21:50,840
+<b>official UN or you know ecosystem player there are things</b>
+
+1124
+02:21:50,840 --> 02:21:55,120
+<b>you know this group can you know need</b>
+
+1125
+02:21:55,120 --> 02:22:00,280
+<b>to to be doing or at least create space for you know the</b>
+
+1126
+02:22:00,280 --> 02:22:02,879
+<b>broader ecosystem to to discuss contribute</b>
+
+1127
+02:22:03,040 --> 02:22:06,959
+<b>and then find a solution and number one is that in many you</b>
+
+1128
+02:22:06,959 --> 02:22:09,200
+<b>know when we talk about AI and then</b>
+
+1129
+02:22:09,520 --> 02:22:13,239
+<b>now a lot of AI is the leave you know is living in the</b>
+
+1130
+02:22:13,239 --> 02:22:15,360
+<b>software and that being in the computer</b>
+
+1131
+02:22:15,639 --> 02:22:20,600
+<b>and leaving the internet and where that's you know if the</b>
+
+1132
+02:22:20,600 --> 02:22:22,200
+<b>the you know there are countries</b>
+
+1133
+02:22:22,200 --> 02:22:25,280
+<b>our community are not connected and naturally that they</b>
+
+1134
+02:22:25,280 --> 02:22:26,959
+<b>just you know when you talk about all</b>
+
+1135
+02:22:26,959 --> 02:22:30,200
+<b>the benefits they just cannot enjoy any of those benefits</b>
+
+1136
+02:22:30,200 --> 02:22:32,920
+<b>because you know there are the basic you</b>
+
+1137
+02:22:32,920 --> 02:22:39,079
+<b>know connectivity problem is has not been addressed and you</b>
+
+1138
+02:22:39,079 --> 02:22:41,399
+<b>know second is you know around the data</b>
+
+1139
+02:22:41,440 --> 02:22:44,799
+<b>center related imbalance as you know you can see us china</b>
+
+1140
+02:22:44,799 --> 02:22:47,879
+<b>hold half of the world data centers and</b>
+
+1141
+02:22:48,079 --> 02:22:52,280
+<b>you know there that's so and and also there's access to</b>
+
+1142
+02:22:52,280 --> 02:22:55,319
+<b>cloud uh uh clouds and and all that</b>
+
+1143
+02:22:55,319 --> 02:22:57,959
+<b>so then there's the infrastructure related you know</b>
+
+1144
+02:22:57,959 --> 02:23:01,920
+<b>imbalance and then you know how both from</b>
+
+1145
+02:23:02,079 --> 02:23:05,760
+<b>at the you know UN level or at the country level that's you</b>
+
+1146
+02:23:05,760 --> 02:23:08,760
+<b>know how you can just create either</b>
+
+1147
+02:23:08,879 --> 02:23:12,920
+<b>alternative solution or you know bring AI to the edge</b>
+
+1148
+02:23:12,920 --> 02:23:15,639
+<b>devices or you know you need all from</b>
+
+1149
+02:23:15,639 --> 02:23:20,040
+<b>distributed computing or just you know have your own data</b>
+
+1150
+02:23:20,040 --> 02:23:23,120
+<b>center and or just uh have partnership</b>
+
+1151
+02:23:23,200 --> 02:23:26,079
+<b>with the global you know data center you know the the</b>
+
+1152
+02:23:26,079 --> 02:23:29,159
+<b>bigger player and every organ you know country</b>
+
+1153
+02:23:29,520 --> 02:23:34,000
+<b>may need to have your very clear AI infrastructure related</b>
+
+1154
+02:23:34,000 --> 02:23:36,280
+<b>you know strategy and all that that is a</b>
+
+1155
+02:23:36,319 --> 02:23:40,639
+<b>priority you know in the long run if AI benefits you are</b>
+
+1156
+02:23:40,639 --> 02:23:42,319
+<b>you are looking into you know how to</b>
+
+1157
+02:23:42,319 --> 02:23:47,159
+<b>leverage AI to just advance the economy and of course you</b>
+
+1158
+02:23:47,159 --> 02:23:49,520
+<b>know when we you know earlier we are</b>
+
+1159
+02:23:49,520 --> 02:23:52,760
+<b>already from the question uh we have folks talked about it</b>
+
+1160
+02:23:52,760 --> 02:23:54,799
+<b>and you know about the bias about</b>
+
+1161
+02:23:55,280 --> 02:24:00,079
+<b>anti-representation about you know the exability</b>
+
+1162
+02:24:00,079 --> 02:24:03,239
+<b>transparency and a lot of you know</b>
+
+1163
+02:24:03,840 --> 02:24:07,159
+<b>AI related risk which are you know really</b>
+
+1164
+02:24:07,159 --> 02:24:10,760
+<b>important because you know without AI and then</b>
+
+1165
+02:24:10,799 --> 02:24:14,600
+<b>individual have bias individual you know a company have</b>
+
+1166
+02:24:14,600 --> 02:24:18,600
+<b>transparency related issues however all those</b>
+
+1167
+02:24:18,600 --> 02:24:22,600
+<b>are just you know at a you know anecdotal level where</b>
+
+1168
+02:24:22,600 --> 02:24:25,040
+<b>individual bias may just you know be</b>
+
+1169
+02:24:25,280 --> 02:24:29,120
+<b>translated the impact will be translating to one person or</b>
+
+1170
+02:24:29,120 --> 02:24:31,959
+<b>your direct customers but AI can really</b>
+
+1171
+02:24:32,120 --> 02:24:37,280
+<b>you know scale bias scale you know those you know better</b>
+
+1172
+02:24:37,280 --> 02:24:40,559
+<b>impact at a global scale and impact</b>
+
+1173
+02:24:40,639 --> 02:24:45,239
+<b>everyone so if that is not being addressed and then you're</b>
+
+1174
+02:24:45,239 --> 02:24:48,319
+<b>introducing your AI and having inherit</b>
+
+1175
+02:24:48,479 --> 02:24:52,239
+<b>all the bias and then that can just you know really you</b>
+
+1176
+02:24:52,239 --> 02:24:55,719
+<b>know create a negative impact for you know</b>
+
+1177
+02:24:56,559 --> 02:24:59,719
+<b>many people good example is you you know if you are a</b>
+
+1178
+02:24:59,719 --> 02:25:02,879
+<b>global shaping company and then you use the</b>
+
+1179
+02:25:02,879 --> 02:25:09,239
+<b>AI and then your AI is just for example and are not you</b>
+
+1180
+02:25:09,239 --> 02:25:12,479
+<b>know have significant bias issue towards</b>
+
+1181
+02:25:13,120 --> 02:25:17,120
+<b>for example developing country you know situation and that</b>
+
+1182
+02:25:17,120 --> 02:25:18,799
+<b>is of you know when you're introducing</b>
+
+1183
+02:25:18,959 --> 02:25:23,920
+<b>such an AI you know before if you know people or humans are</b>
+
+1184
+02:25:23,920 --> 02:25:25,479
+<b>in the process then they can just</b>
+
+1185
+02:25:25,479 --> 02:25:28,760
+<b>recognize that and if anything happens they</b>
+
+1186
+02:25:28,760 --> 02:25:31,360
+<b>can immediately just you know to intervene</b>
+
+1187
+02:25:31,840 --> 02:25:34,440
+<b>but the AI you know is always is you</b>
+
+1188
+02:25:34,440 --> 02:25:39,959
+<b>know have to have enough data and enough</b>
+
+1189
+02:25:41,120 --> 02:25:45,120
+<b>incidents happen then that you know signal or pattern will</b>
+
+1190
+02:25:45,120 --> 02:25:47,120
+<b>be just understood by AI that's</b>
+
+1191
+02:25:47,120 --> 02:25:50,200
+<b>you know many are the impact by that time there's a job</b>
+
+1192
+02:25:50,200 --> 02:25:53,959
+<b>displacement cyber exposure you know energy</b>
+
+1193
+02:25:54,159 --> 02:25:57,840
+<b>I want to emphasize a little bit more here that's you know</b>
+
+1194
+02:25:57,840 --> 02:26:01,760
+<b>it's very clear that's you know AI related</b>
+
+1195
+02:26:01,760 --> 02:26:05,120
+<b>and no matter from the data center or from the you know</b>
+
+1196
+02:26:05,120 --> 02:26:07,319
+<b>leveraging AI now to do basic search</b>
+
+1197
+02:26:07,600 --> 02:26:12,239
+<b>or just the changing of human behavior rely on AI each one</b>
+
+1198
+02:26:12,239 --> 02:26:15,559
+<b>of you know those activity just creates</b>
+
+1199
+02:26:15,760 --> 02:26:18,799
+<b>a lot more you know carbon emission and water consumption</b>
+
+1200
+02:26:18,799 --> 02:26:22,159
+<b>and then we are entered into a phase</b>
+
+1201
+02:26:22,159 --> 02:26:25,799
+<b>where that's you know AI is competing with basic human</b>
+
+1202
+02:26:25,799 --> 02:26:29,079
+<b>needs so then that's you know the ones who</b>
+
+1203
+02:26:29,079 --> 02:26:32,600
+<b>impact the most will be in the developing country and I</b>
+
+1204
+02:26:32,600 --> 02:26:35,680
+<b>think from the policy maker and you know the</b>
+
+1205
+02:26:36,399 --> 02:26:41,000
+<b>organizations need to really be aware of that and make sure</b>
+
+1206
+02:26:41,000 --> 02:26:43,159
+<b>that's you know there's a you know when</b>
+
+1207
+02:26:43,280 --> 02:26:46,280
+<b>AI competes you know with basic human</b>
+
+1208
+02:26:46,280 --> 02:26:49,799
+<b>needs and then there are need to be measures or</b>
+
+1209
+02:26:50,159 --> 02:26:53,120
+<b>guardrails around that to make sure that you know humans</b>
+
+1210
+02:26:53,120 --> 02:26:55,639
+<b>are being protected in the AI economy</b>
+
+1211
+02:26:56,159 --> 02:27:01,200
+<b>and they thought you know what can be done within you know</b>
+
+1212
+02:27:01,200 --> 02:27:05,159
+<b>some this time framework and where that's</b>
+
+1213
+02:27:05,200 --> 02:27:09,479
+<b>you know there are at least some of the international</b>
+
+1214
+02:27:09,479 --> 02:27:13,079
+<b>efforts around this but again that's</b>
+
+1215
+02:27:13,079 --> 02:27:20,000
+<b>you know I highly appreciate UNSCAP is leading you know way</b>
+
+1216
+02:27:20,000 --> 02:27:23,479
+<b>in Asia-Pacific and then to just bring</b>
+
+1217
+02:27:23,479 --> 02:27:27,280
+<b>a lot of important stakeholders together identifying you</b>
+
+1218
+02:27:27,280 --> 02:27:28,959
+<b>know from the standards to the</b>
+
+1219
+02:27:28,959 --> 02:27:32,680
+<b>you know innovation and then to the policy dialogue I think</b>
+
+1220
+02:27:32,680 --> 02:27:34,319
+<b>those efforts are really important</b>
+
+1221
+02:27:35,239 --> 02:27:38,680
+<b>and the five priority for you know trade</b>
+
+1222
+02:27:38,680 --> 02:27:41,959
+<b>negotiators this probably you think this</b>
+
+1223
+02:27:41,959 --> 02:27:45,600
+<b>might not be very relevant for this audience and I will not</b>
+
+1224
+02:27:45,600 --> 02:27:48,840
+<b>you know focus on that. My last slide</b>
+
+1225
+02:27:48,840 --> 02:27:53,760
+<b>is really about you know AI 2030 who we are and why you</b>
+
+1226
+02:27:53,760 --> 02:27:55,959
+<b>know I'm here sharing this with you</b>
+
+1227
+02:27:56,319 --> 02:28:00,319
+<b>so AI 2030 is a non-profit our main goal is to mainstream</b>
+
+1228
+02:28:00,319 --> 02:28:02,639
+<b>responsible research development use</b>
+
+1229
+02:28:02,719 --> 02:28:07,360
+<b>of AI by 2030 we have over 6 000 members across 60</b>
+
+1230
+02:28:07,360 --> 02:28:10,399
+<b>countries and we focus on responsible AI,</b>
+
+1231
+02:28:10,399 --> 02:28:15,159
+<b>AI for good and AI for all and the priority for us include</b>
+
+1232
+02:28:15,159 --> 02:28:17,159
+<b>advanced human leveraging AI to</b>
+
+1233
+02:28:17,360 --> 02:28:21,680
+<b>advance human potential and promote scalable open AI</b>
+
+1234
+02:28:21,680 --> 02:28:24,319
+<b>infrastructure and leveraging AI to solve</b>
+
+1235
+02:28:24,319 --> 02:28:29,200
+<b>planetary problem and challenge and that's why you know all</b>
+
+1236
+02:28:29,200 --> 02:28:31,120
+<b>the issues that we discuss and we really</b>
+
+1237
+02:28:31,200 --> 02:28:36,600
+<b>care about and then we can act at least to just claim we</b>
+
+1238
+02:28:36,600 --> 02:28:40,559
+<b>know there are 6 000 people in this 60</b>
+
+1239
+02:28:40,559 --> 02:28:42,559
+<b>countries who share the same vision share</b>
+
+1240
+02:28:42,559 --> 02:28:45,399
+<b>the same goal and want to just the mainstream</b>
+
+1241
+02:28:45,840 --> 02:28:50,479
+<b>responsible AI by 2030 we hope that you are also just join</b>
+
+1242
+02:28:50,479 --> 02:28:53,600
+<b>this movement and help us to just really</b>
+
+1243
+02:28:53,840 --> 02:28:58,319
+<b>you know make the AI benefit humanity and that's pretty</b>
+
+1244
+02:28:58,319 --> 02:29:00,559
+<b>much you know what I want to share so thank</b>
+
+1245
+02:29:00,600 --> 02:29:12,079
+<b>you very much. Okay thank you for sharing Mr. Chang so we</b>
+
+1246
+02:29:12,079 --> 02:29:14,639
+<b>have one question from the shared box</b>
+
+1247
+02:29:17,040 --> 02:29:22,440
+<b>what would you make the difference between an AI tool that</b>
+
+1248
+02:29:22,440 --> 02:29:24,559
+<b>gets adopted by the government</b>
+
+1249
+02:29:25,239 --> 02:29:29,639
+<b>versus one that stays a prototype?</b>
+
+1250
+02:29:32,799 --> 02:29:37,120
+<b>Yeah this is not only by government in general when you</b>
+
+1251
+02:29:37,120 --> 02:29:40,840
+<b>just look at any you know AI related</b>
+
+1252
+02:29:41,200 --> 02:29:46,719
+<b>application and you see a few processes</b>
+
+1253
+02:29:46,719 --> 02:29:49,959
+<b>there and number one there is you know design</b>
+
+1254
+02:29:50,959 --> 02:29:53,079
+<b>there's a planning there's a design there's</b>
+
+1255
+02:29:53,079 --> 02:29:56,639
+<b>a build there's a POC pilot there's you know</b>
+
+1256
+02:29:57,760 --> 02:30:02,120
+<b>last skill adoption so that can be you know true for</b>
+
+1257
+02:30:02,120 --> 02:30:04,600
+<b>government that can be true for enterprise</b>
+
+1258
+02:30:05,360 --> 02:30:11,600
+<b>and where that's you know when you just look at you know at</b>
+
+1259
+02:30:11,600 --> 02:30:14,760
+<b>a different stage where that's or</b>
+
+1260
+02:30:14,799 --> 02:30:17,559
+<b>if you are a different entity and your focus are different</b>
+
+1261
+02:30:17,559 --> 02:30:20,959
+<b>meaning that if you are a startup</b>
+
+1262
+02:30:20,959 --> 02:30:25,719
+<b>startup and your focus is really you know looking at how</b>
+
+1263
+02:30:25,719 --> 02:30:30,639
+<b>who are whose problem I try to solve and</b>
+
+1264
+02:30:31,120 --> 02:30:35,799
+<b>is that the problem is scalable and how do I go to market</b>
+
+1265
+02:30:35,799 --> 02:30:39,840
+<b>and who can help me to go to market with</b>
+
+1266
+02:30:40,559 --> 02:30:45,120
+<b>and you know how do I just you know if so those are the</b>
+
+1267
+02:30:45,120 --> 02:30:47,000
+<b>questions for a startup you know you</b>
+
+1268
+02:30:47,000 --> 02:30:50,520
+<b>you need to care about then from the you know the</b>
+
+1269
+02:30:50,520 --> 02:30:56,719
+<b>enterprise a lot of time is internal POC pilot</b>
+
+1270
+02:30:57,200 --> 02:31:00,879
+<b>and many of the POC pilots are just you know ready for</b>
+
+1271
+02:31:00,879 --> 02:31:03,840
+<b>learning purpose so if you are a startup</b>
+
+1272
+02:31:04,159 --> 02:31:09,520
+<b>and then you you want to you know get involved in the you</b>
+
+1273
+02:31:09,520 --> 02:31:11,360
+<b>know learning process for enterprise</b>
+
+1274
+02:31:11,440 --> 02:31:15,200
+<b>you also don't it really depends you know where you are if</b>
+
+1275
+02:31:15,200 --> 02:31:18,159
+<b>you know you your expectations the</b>
+
+1276
+02:31:18,159 --> 02:31:22,120
+<b>enterprise will adopt your solution from pilots and also</b>
+
+1277
+02:31:22,120 --> 02:31:24,600
+<b>help you to scale and then if they only</b>
+
+1278
+02:31:24,600 --> 02:31:28,959
+<b>want to learn they have no you know the desire to do that</b>
+
+1279
+02:31:28,959 --> 02:31:30,760
+<b>and then that you know you may you know</b>
+
+1280
+02:31:30,799 --> 02:31:33,840
+<b>have a lot of investment into that that doesn't give you</b>
+
+1281
+02:31:33,840 --> 02:31:35,920
+<b>any financial return so you need to be</b>
+
+1282
+02:31:35,920 --> 02:31:39,040
+<b>very clear and how you interact you know with your</b>
+
+1283
+02:31:39,040 --> 02:31:41,440
+<b>enterprise to get a demand right when you</b>
+
+1284
+02:31:41,440 --> 02:31:45,399
+<b>talk about the government related AI adoption and the</b>
+
+1285
+02:31:45,399 --> 02:31:47,760
+<b>government have two different roles one role</b>
+
+1286
+02:31:47,760 --> 02:31:52,319
+<b>is you know government are the adopter of AI then there are</b>
+
+1287
+02:31:52,319 --> 02:31:54,399
+<b>you know how to leveraging AI to deliver</b>
+
+1288
+02:31:54,479 --> 02:31:58,399
+<b>public service and that is how for you know you can treat</b>
+
+1289
+02:31:58,399 --> 02:32:00,280
+<b>the government as really you know any</b>
+
+1290
+02:32:00,319 --> 02:32:03,680
+<b>other enterprise where that's then they have their internal</b>
+
+1291
+02:32:03,680 --> 02:32:06,680
+<b>process but you know government can also</b>
+
+1292
+02:32:06,719 --> 02:32:12,120
+<b>just play a very different role and which is to create the</b>
+
+1293
+02:32:12,120 --> 02:32:14,840
+<b>infrastructure and also to you know</b>
+
+1294
+02:32:14,840 --> 02:32:19,799
+<b>support a certain you know functionalities you know that is</b>
+
+1295
+02:32:19,799 --> 02:32:21,200
+<b>how if a government introducing</b>
+
+1296
+02:32:22,319 --> 02:32:25,520
+<b>that to practice and you know those becoming the</b>
+
+1297
+02:32:25,520 --> 02:32:28,760
+<b>infrastructure for your AI tools or for your and</b>
+
+1298
+02:32:28,760 --> 02:32:31,319
+<b>then you need to definitely you know a lot of government</b>
+
+1299
+02:32:31,319 --> 02:32:34,159
+<b>provide for example data data sets</b>
+
+1300
+02:32:34,559 --> 02:32:37,440
+<b>for you to you know do a lot of you know from the open</b>
+
+1301
+02:32:37,440 --> 02:32:40,319
+<b>government then they just create a lot of you</b>
+
+1302
+02:32:40,319 --> 02:32:44,120
+<b>know open data where that you can use the open data to you</b>
+
+1303
+02:32:44,120 --> 02:32:46,120
+<b>know build your tools then they also</b>
+
+1304
+02:32:46,239 --> 02:32:50,040
+<b>you know introducing for example some of the computing</b>
+
+1305
+02:32:50,040 --> 02:32:52,840
+<b>resources and then to all open source</b>
+
+1306
+02:32:53,040 --> 02:32:56,760
+<b>you know platform so all those are benefits where you know</b>
+
+1307
+02:32:56,760 --> 02:32:58,920
+<b>your startup can can benefit from yeah</b>
+
+1308
+02:33:00,079 --> 02:33:04,239
+<b>okay thank you for for answer okay now</b>
+
+1309
+02:33:04,239 --> 02:33:07,200
+<b>so we have the AI developer community here</b>
+
+1310
+02:33:07,920 --> 02:33:09,959
+<b>what do you think about the AI</b>
+
+1311
+02:33:09,959 --> 02:33:13,799
+<b>standardization for the role of AI developer?</b>
+
+1312
+02:33:14,799 --> 02:33:15,399
+<b>Sorry?</b>
+
+1313
+02:33:16,680 --> 02:33:19,120
+<b>The AI standardization should be we</b>
+
+1314
+02:33:19,120 --> 02:33:22,520
+<b>should have the standard to control or to</b>
+
+1315
+02:33:24,879 --> 02:33:28,159
+<b>for the AI developer to to comply</b>
+
+1316
+02:33:28,159 --> 02:33:32,120
+<b>them to to save as every country.</b>
+
+1317
+02:33:33,399 --> 02:33:38,719
+<b>Yeah so this is very fragmented and where that's we just</b>
+
+1318
+02:33:38,719 --> 02:33:41,680
+<b>you know in the past few years</b>
+
+1319
+02:33:41,920 --> 02:33:46,680
+<b>we contributed to the UN Global Digital Compact you know</b>
+
+1320
+02:33:46,680 --> 02:33:49,639
+<b>input we provide feedback to the US</b>
+
+1321
+02:33:51,200 --> 02:33:54,520
+<b>National AI Action Plan we provided you</b>
+
+1322
+02:33:54,520 --> 02:33:57,760
+<b>know input to Singapore's AI governance</b>
+
+1323
+02:33:59,600 --> 02:34:04,079
+<b>public consultation and many you know so when we provide</b>
+
+1324
+02:34:04,079 --> 02:34:06,280
+<b>the input into into you know different</b>
+
+1325
+02:34:06,319 --> 02:34:11,120
+<b>different process and there are you know a number of things</b>
+
+1326
+02:34:11,120 --> 02:34:13,920
+<b>we identify number one is that you know</b>
+
+1327
+02:34:15,120 --> 02:34:18,399
+<b>for certain countries there are you know</b>
+
+1328
+02:34:18,399 --> 02:34:22,399
+<b>and certain areas there are some commonalities</b>
+
+1329
+02:34:22,719 --> 02:34:26,840
+<b>and it's very easy for you know countries even you have</b>
+
+1330
+02:34:26,840 --> 02:34:28,440
+<b>different standards and all that the</b>
+
+1331
+02:34:28,479 --> 02:34:33,360
+<b>standard looks very similar so in for those you know areas</b>
+
+1332
+02:34:33,360 --> 02:34:36,440
+<b>the challenge to individual company</b>
+
+1333
+02:34:36,799 --> 02:34:41,239
+<b>to comply is minimal because you know they are very similar</b>
+
+1334
+02:34:41,239 --> 02:34:43,280
+<b>standard they just one you know</b>
+
+1335
+02:34:43,280 --> 02:34:47,159
+<b>there's a consensus or they just copy each other and but</b>
+
+1336
+02:34:47,159 --> 02:34:50,399
+<b>there are areas which are you know</b>
+
+1337
+02:34:50,399 --> 02:34:54,440
+<b>fundamentally different and for example you know whether AI</b>
+
+1338
+02:34:54,440 --> 02:34:57,120
+<b>can be used for you know autonomous</b>
+
+1339
+02:34:57,760 --> 02:35:02,799
+<b>weapons or AI you know the how to leverage AI for defense</b>
+
+1340
+02:35:02,799 --> 02:35:05,799
+<b>and or you know there's you know in</b>
+
+1341
+02:35:05,799 --> 02:35:09,600
+<b>the regulated industry that there are a lot of very</b>
+
+1342
+02:35:09,600 --> 02:35:13,319
+<b>concrete you know country specific regulations</b>
+
+1343
+02:35:14,079 --> 02:35:19,559
+<b>and which can create barriers for others to just and I</b>
+
+1344
+02:35:19,559 --> 02:35:22,920
+<b>think for those you know there are three</b>
+
+1345
+02:35:22,959 --> 02:35:26,360
+<b>levels things that need to be happen number one is you know</b>
+
+1346
+02:35:26,360 --> 02:35:29,680
+<b>from researchers need to just you know</b>
+
+1347
+02:35:29,760 --> 02:35:34,239
+<b>dive deep into those identifying you know if again go back</b>
+
+1348
+02:35:34,239 --> 02:35:37,760
+<b>to trade global trade and what kind of</b>
+
+1349
+02:35:37,840 --> 02:35:42,559
+<b>you know AI policy or standards which are not standardized</b>
+
+1350
+02:35:42,559 --> 02:35:44,760
+<b>enough which create the biggest</b>
+
+1351
+02:35:44,959 --> 02:35:49,520
+<b>barrier highest stake and then you know how that can be</b>
+
+1352
+02:35:49,520 --> 02:35:51,719
+<b>addressed that itself will be a very</b>
+
+1353
+02:35:51,760 --> 02:35:55,399
+<b>important research topic need a lot of you know capability</b>
+
+1354
+02:35:55,399 --> 02:35:58,719
+<b>enter into that second part is that</b>
+
+1355
+02:35:58,719 --> 02:36:03,040
+<b>you know as you know UN I think play a very important role</b>
+
+1356
+02:36:03,040 --> 02:36:05,360
+<b>by convening you know different</b>
+
+1357
+02:36:05,360 --> 02:36:09,799
+<b>countries and not working on a global standard for</b>
+
+1358
+02:36:09,799 --> 02:36:12,680
+<b>everything but identifying those you know</b>
+
+1359
+02:36:12,719 --> 02:36:17,879
+<b>high risk high stake area very you know single single</b>
+
+1360
+02:36:17,879 --> 02:36:21,399
+<b>policy or single standards for single use</b>
+
+1361
+02:36:21,399 --> 02:36:25,559
+<b>case and where that's you know to just really have you know</b>
+
+1362
+02:36:25,559 --> 02:36:27,479
+<b>anything if you want to be make it</b>
+
+1363
+02:36:27,479 --> 02:36:31,239
+<b>comprehensive it'll be difficult but if it's really one</b>
+
+1364
+02:36:31,239 --> 02:36:33,200
+<b>issue and then there is a higher</b>
+
+1365
+02:36:33,200 --> 02:36:37,200
+<b>possibility to just achieve you know the the expected goal</b>
+
+1366
+02:36:37,200 --> 02:36:39,639
+<b>and the last one is that you know</b>
+
+1367
+02:36:39,680 --> 02:36:43,399
+<b>the standard setting bodies you know need really just you</b>
+
+1368
+02:36:43,399 --> 02:36:46,719
+<b>know to working together so how to just</b>
+
+1369
+02:36:46,719 --> 02:36:50,600
+<b>make different standards interoperable and that is how we</b>
+
+1370
+02:36:50,600 --> 02:36:53,799
+<b>did a research called you know G20 AI</b>
+
+1371
+02:36:54,000 --> 02:36:58,200
+<b>Regulation Index we looked at you know G20 you know</b>
+
+1372
+02:36:58,200 --> 02:37:01,239
+<b>countries AI you know regulations and we</b>
+
+1373
+02:37:01,280 --> 02:37:05,440
+<b>scored them and then from the highest to the lowest the</b>
+
+1374
+02:37:05,440 --> 02:37:08,360
+<b>difference in the lowest is 0.3</b>
+
+1375
+02:37:08,760 --> 02:37:12,280
+<b>and the highest like 70 and you can within the G20</b>
+
+1376
+02:37:12,280 --> 02:37:15,280
+<b>countries and as you can see you know there are</b>
+
+1377
+02:37:15,280 --> 02:37:20,559
+<b>a lot of difference you just you know players the ecosystem</b>
+
+1378
+02:37:20,559 --> 02:37:22,760
+<b>players that just need to bear because</b>
+
+1379
+02:37:22,760 --> 02:37:27,239
+<b>you know we have to recognize the reality and AI standard</b>
+
+1380
+02:37:27,239 --> 02:37:29,680
+<b>AI regulation is very fragmented and</b>
+
+1381
+02:37:29,680 --> 02:37:33,879
+<b>then a lot of work can be done need to be done okay thank</b>
+
+1382
+02:37:33,879 --> 02:37:37,120
+<b>you okay Dr. Wollong-yoo are you here</b>
+
+1383
+02:37:37,120 --> 02:37:44,319
+<b>uh yes yes yes yes okay okay we have the the question that</b>
+
+1384
+02:37:44,319 --> 02:37:46,639
+<b>would like both of you to sharing</b>
+
+1385
+02:37:46,879 --> 02:37:51,920
+<b>or discuss the question is about the if</b>
+
+1386
+02:37:51,920 --> 02:37:57,159
+<b>AI generated advice turns out to be wrong</b>
+
+1387
+02:37:58,079 --> 02:38:04,799
+<b>who bears the reliability you first uh Dr. Wollong-yoo uh</b>
+
+1388
+02:38:04,799 --> 02:38:09,079
+<b>yeah yeah of course uh the the the</b>
+
+1389
+02:38:09,079 --> 02:38:13,239
+<b>builder yeah yeah uh yeah because yeah i'm not sure about</b>
+
+1390
+02:38:13,239 --> 02:38:15,879
+<b>about the if if it actually yeah i</b>
+
+1391
+02:38:15,879 --> 02:38:19,520
+<b>just saw the questions if the yes yes okay the advice uh</b>
+
+1392
+02:38:19,520 --> 02:38:22,280
+<b>turned out to be wrong uh definitely</b>
+
+1393
+02:38:22,559 --> 02:38:27,600
+<b>uh yeah it itself yeah cannot bear the</b>
+
+1394
+02:38:27,600 --> 02:38:32,760
+<b>the responsibility yeah yeah but but the</b>
+
+1395
+02:38:32,959 --> 02:38:37,760
+<b>but the response responsibility yeah always remain uh yeah</b>
+
+1396
+02:38:37,760 --> 02:38:40,399
+<b>with the human and organizations who build</b>
+
+1397
+02:38:40,399 --> 02:38:44,520
+<b>it yeah i can generate the recommendations</b>
+
+1398
+02:38:44,520 --> 02:38:51,040
+<b>uh uh yeah i can generate the content but but</b>
+
+1399
+02:38:51,319 --> 02:38:55,680
+<b>AI itself they cannot bear the responsibility so the</b>
+
+1400
+02:38:55,680 --> 02:38:58,399
+<b>accountability always belong to the</b>
+
+1401
+02:38:58,399 --> 02:39:02,600
+<b>organizations or the decision the design maker who does the</b>
+
+1402
+02:39:02,600 --> 02:39:05,760
+<b>AI question how about your opinion</b>
+
+1403
+02:39:05,920 --> 02:39:09,319
+<b>okay yeah this question seemed to be easy but it's very</b>
+
+1404
+02:39:09,319 --> 02:39:13,159
+<b>difficult and you know number one is that</b>
+
+1405
+02:39:13,840 --> 02:39:18,079
+<b>what kind of advice and you know in in some of jurisdiction</b>
+
+1406
+02:39:18,079 --> 02:39:23,079
+<b>that they define you know the for</b>
+
+1407
+02:39:24,559 --> 02:39:28,040
+<b>they they cost significant use cases where that's you know</b>
+
+1408
+02:39:28,040 --> 02:39:31,879
+<b>for more significant use cases and AI's</b>
+
+1409
+02:39:31,879 --> 02:39:35,959
+<b>liability is very different for non-significant use cases</b>
+
+1410
+02:39:35,959 --> 02:39:38,479
+<b>so if you know there's for example</b>
+
+1411
+02:39:38,719 --> 02:39:42,239
+<b>driver's vehicles or is the financial advice that people</b>
+
+1412
+02:39:42,239 --> 02:39:45,319
+<b>lost money or people lost life or health</b>
+
+1413
+02:39:45,440 --> 02:39:50,000
+<b>care really and then those advices and naturally that's uh</b>
+
+1414
+02:39:50,000 --> 02:39:52,159
+<b>you know then there's a very clear</b>
+
+1415
+02:39:52,319 --> 02:39:57,079
+<b>legal base in some of the jurisdictions how that's uh you</b>
+
+1416
+02:39:57,079 --> 02:40:00,799
+<b>know um liability is being translated into</b>
+
+1417
+02:40:01,079 --> 02:40:07,920
+<b>and so there's also you know to to make those liability you</b>
+
+1418
+02:40:07,920 --> 02:40:09,879
+<b>know to have the foundation in the</b>
+
+1419
+02:40:10,000 --> 02:40:13,760
+<b>legal system and the many jurisdiction also enter into the</b>
+
+1420
+02:40:13,760 --> 02:40:17,600
+<b>new law making process so that is you know</b>
+
+1421
+02:40:17,600 --> 02:40:20,520
+<b>one part of the complication the second part of</b>
+
+1422
+02:40:20,520 --> 02:40:23,879
+<b>complication is that you know many of the AI</b>
+
+1423
+02:40:24,319 --> 02:40:29,840
+<b>um application are built you know on the foundational</b>
+
+1424
+02:40:29,840 --> 02:40:33,239
+<b>models and where that's they don't</b>
+
+1425
+02:40:33,239 --> 02:40:37,280
+<b>have control on the foundational models and if you know</b>
+
+1426
+02:40:37,280 --> 02:40:39,600
+<b>that's a liability you know that's advice</b>
+
+1427
+02:40:39,600 --> 02:40:42,520
+<b>and the mistake coming from the foundation</b>
+
+1428
+02:40:42,520 --> 02:40:45,520
+<b>model which they just don't have any control</b>
+
+1429
+02:40:45,520 --> 02:40:49,920
+<b>and whose responsibility is that that is self you know i</b>
+
+1430
+02:40:49,920 --> 02:40:51,799
+<b>agree with you know that's definitely</b>
+
+1431
+02:40:51,920 --> 02:40:57,319
+<b>definitely shouldn't be the user and there should be you</b>
+
+1432
+02:40:57,319 --> 02:40:59,479
+<b>know but you know within the builder because</b>
+
+1433
+02:40:59,479 --> 02:41:03,360
+<b>the AI building process you know without AI and a lot of</b>
+
+1434
+02:41:03,360 --> 02:41:05,159
+<b>time you see you know one company own that</b>
+
+1435
+02:41:05,200 --> 02:41:08,440
+<b>product but now that with the foundation models and all</b>
+
+1436
+02:41:08,440 --> 02:41:10,920
+<b>that's that product coming from an</b>
+
+1437
+02:41:10,959 --> 02:41:14,600
+<b>organization potentially that organization don't own the</b>
+
+1438
+02:41:14,600 --> 02:41:17,520
+<b>whole piece of that product and so then</b>
+
+1439
+02:41:17,600 --> 02:41:22,040
+<b>you need to dive very deep into the procurement contract</b>
+
+1440
+02:41:22,040 --> 02:41:25,079
+<b>between you know the foundation model</b>
+
+1441
+02:41:25,280 --> 02:41:29,520
+<b>and the you know the developer or the company who own that</b>
+
+1442
+02:41:29,520 --> 02:41:32,200
+<b>product and then if you know that's a</b>
+
+1443
+02:41:32,440 --> 02:41:37,319
+<b>procurement contract to protect this you know the product</b>
+
+1444
+02:41:37,319 --> 02:41:39,680
+<b>owner and naturally you know then</b>
+
+1445
+02:41:39,680 --> 02:41:42,680
+<b>they will bear you know the but if that procurement</b>
+
+1446
+02:41:42,680 --> 02:41:46,280
+<b>contract don't protect them and then they have to</b>
+
+1447
+02:41:46,600 --> 02:41:50,239
+<b>you know really own the whole liability where that's you</b>
+
+1448
+02:41:50,239 --> 02:41:51,840
+<b>know part of them they just have no</b>
+
+1449
+02:41:51,840 --> 02:41:55,879
+<b>control so that's why procurement AI procurement as a skill</b>
+
+1450
+02:41:55,879 --> 02:41:58,360
+<b>set becoming very important the last</b>
+
+1451
+02:41:58,360 --> 02:42:03,280
+<b>part is that's you know who bears and then is again you go</b>
+
+1452
+02:42:03,280 --> 02:42:06,680
+<b>to your last question which jurisdiction</b>
+
+1453
+02:42:07,200 --> 02:42:10,840
+<b>you're talking about in many of the jurisdiction there's</b>
+
+1454
+02:42:10,840 --> 02:42:16,360
+<b>just no loss and so you know if there's</b>
+
+1455
+02:42:16,559 --> 02:42:20,600
+<b>no law and you can try to there's a wrong you know advice</b>
+
+1456
+02:42:20,600 --> 02:42:23,040
+<b>and then a lot of time if the law</b>
+
+1457
+02:42:23,040 --> 02:42:26,520
+<b>doesn't protect your rights and then you are the only one</b>
+
+1458
+02:42:26,520 --> 02:42:28,399
+<b>who will bear that you know consequence</b>
+
+1459
+02:42:28,479 --> 02:42:32,680
+<b>but the advice to the you know builders or the companies</b>
+
+1460
+02:42:32,680 --> 02:42:36,079
+<b>are that's you know even there's no law</b>
+
+1461
+02:42:36,319 --> 02:42:40,479
+<b>but you don't want to lose your customer trust so if you</b>
+
+1462
+02:42:40,479 --> 02:42:43,639
+<b>know you can win a legal case but you cannot</b>
+
+1463
+02:42:43,760 --> 02:42:48,680
+<b>win your customer's heart so if you just build with intent</b>
+
+1464
+02:42:48,680 --> 02:42:51,360
+<b>that's hey they are not protected</b>
+
+1465
+02:42:51,680 --> 02:42:54,760
+<b>I'm going to just you know do it in the wrong way when you</b>
+
+1466
+02:42:54,760 --> 02:42:57,200
+<b>lost your your the trust from your</b>
+
+1467
+02:42:57,360 --> 02:43:00,600
+<b>customer even you know you don't have legal consequences</b>
+
+1468
+02:43:00,600 --> 02:43:02,959
+<b>and then your your company will</b>
+
+1469
+02:43:02,959 --> 02:43:07,959
+<b>just you know will not be beneficial from those you know</b>
+
+1470
+02:43:07,959 --> 02:43:10,200
+<b>misbehavior or misconduct yeah</b>
+
+1471
+02:43:10,799 --> 02:43:18,799
+<b>okay okay we still have enough time for the any audience</b>
+
+1472
+02:43:18,799 --> 02:43:21,120
+<b>want to share in or ask some question</b>
+
+1473
+02:43:21,120 --> 02:43:22,680
+<b>light your hand up</b>
+
+1474
+02:43:28,479 --> 02:43:32,040
+<b>yeah I see a question to me we have a solution already for</b>
+
+1475
+02:43:32,040 --> 02:43:34,600
+<b>a trusty digital trade how can we</b>
+
+1476
+02:43:34,600 --> 02:43:36,840
+<b>present it to you and you just reach out</b>
+
+1477
+02:43:36,840 --> 02:43:37,959
+<b>to me on LinkedIn and happy to look at it</b>
+
+1478
+02:43:38,239 --> 02:43:49,280
+<b>I see I see okay no okay okay I think uh</b>
+
+1479
+02:43:49,280 --> 02:43:52,639
+<b>this late night in Bangkok how about your time</b>
+
+1480
+02:43:52,920 --> 02:43:59,520
+<b>Mr. Zhang uh it's 8 49 a.m nine time okay okay just morning</b>
+
+1481
+02:43:59,520 --> 02:44:04,360
+<b>okay okay okay okay today uh I would</b>
+
+1482
+02:44:04,399 --> 02:44:10,719
+<b>like to uh say thank you for all of you for sharing and I</b>
+
+1483
+02:44:10,719 --> 02:44:13,000
+<b>would like to uh the the floor</b>
+
+1484
+02:44:13,840 --> 02:44:22,120
+<b>give a big applause uh to both of you again and uh in the</b>
+
+1485
+02:44:22,120 --> 02:44:24,360
+<b>name of the host of the hackathon</b>
+
+1486
+02:44:24,719 --> 02:44:28,399
+<b>I would like to see you again in the final round maybe for</b>
+
+1487
+02:44:28,399 --> 02:44:31,920
+<b>uh give some comments like commentator</b>
+
+1488
+02:44:32,040 --> 02:44:33,159
+<b>something like that okay</b>
+
+1489
+02:44:35,680 --> 02:44:38,000
+<b>okay thank you thank you thank you</b>
+
+1490
+02:44:38,000 --> 02:44:41,799
+<b>very much thank you thank you okay bye bye</b>
+
+1491
+02:44:41,840 --> 02:44:42,200
+<b>bye</b>
+

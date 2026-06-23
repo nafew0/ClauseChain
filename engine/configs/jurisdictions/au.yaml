@@ -1,0 +1,22 @@
+jurisdiction: AU
+name: Australia
+un_name: Australia
+languages: { primary: en, supported: [en] }
+official_sources:
+  - { name: Federal Register of Legislation, domain: legislation.gov.au, source_type: official_statute_database, authority_rank: 100 }
+  - { name: OAIC, domain: oaic.gov.au, source_type: regulator_guidance, authority_rank: 60 }
+citation_patterns:
+  section: ["s {n}", "section {n}", "s. {n}"]
+  schedule: ["Sch {n}", "Schedule {n}"]
+  paragraph_required: true
+connector: au_legislation
+notes:
+  - "Cleanest portal (structured HTML + 'latest version' metadata) — fast breadth economy; reuse the SG path."
+  - "Australian Privacy Principles live in Schedule 1 of the Privacy Act — exceptions hide in Schedules (Gao's warning)."
+known_index: data/known_index.json
+seeds: data/seeds.json
+rdtii_bindings: { pillars: [6, 7] }
+anchor_instruments:
+  - "Privacy Act 1988 (C2004A03712) incl. APP 8 (cross-border disclosure) in Schedule 1"
+  - "My Health Records Act 2012 (sectoral localization — P6-I1/I2 per portals CSV)"
+  - "Telecommunications (Interception and Access) Act 1979 (gov-access hunting ground for P7-I5)"

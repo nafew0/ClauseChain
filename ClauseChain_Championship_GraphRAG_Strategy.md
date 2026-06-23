@@ -4,6 +4,8 @@
 
 This is the aggressive track. The goal is not to build a plain RAG script that finds some clauses. The goal is to show a legal intelligence engine that can discover, verify, explain, and export regulatory evidence better than a human spreadsheet workflow.
 
+> **⚠️ Post-22-June update — externally validated by the 12-June "RAG and LLMs" talk (Rathachai, KMITL).** The workshop independently presented a **GraphRAG-for-legal schema identical in spirit to ours** — `Document → Article → Paragraph → Item → Subitem` with **`AMENDS` / `REVOKE`** edges — confirming the §5 schema and the currentness/amendment story (adopt those edge types + `SUPERSEDES` / `CROSS_REFERENCES`). It also confirmed **"broad recall, NOT top-k"**: the Direct-Corpus-Interaction / semantic-similarity-bottleneck result (Li et al., arXiv:2605.05242, 2026) — *evidence dropped by a top-k similarity score can't be recovered downstream* — so graph expansion + broad retrieval beat a small top-k. **Final storage decision stands (§12): SQLite-backed `GraphStore` default, Neo4j opt-in.** Master changelog: Dev Plan §0; details in `Hackthon_Knowledge/NOTES_12June_Workshop_Corrected.md`.
+
 ## 1. Strategic Call
 
 Use **Neo4j-backed Agentic GraphRAG** as a core differentiator.
@@ -272,7 +274,7 @@ Aggressive does not mean reckless. Champions do not let one dependency kill the 
 
 Required safeguards:
 
-- Neo4j is part of the primary pipeline.
+- The graph *data model* is part of the primary pipeline; the **storage backend is swappable** (SQLite default for the judged path, Neo4j optional — §12).
 - A cached graph snapshot ships with the demo.
 - The export writer works from verified findings even if the UI/API is down.
 - Every graph edge has provenance.
@@ -285,6 +287,13 @@ Required safeguards:
 ClauseChain should pursue the **Neo4j Agentic GraphRAG track**.
 
 The conservative path can produce a working CSV. The championship path produces a legal reasoning and evidence engine. Given the July 20, 2026 cut to the top teams, the second path is the correct one.
+
+**Final refinement (11 June — this governs):** pursue the GraphRAG **data model** behind a swappable **`GraphStore` interface**, not a hard Neo4j dependency.
+
+- **Default judged path = SQLite-backed graph store** (same node/edge schema as §5, zero extra service). Rationale: the README quick-start contract is clone → venv → pip → `.env` → one command, and judges run it on a fresh machine — a required Neo4j install/container adds friction exactly where the rubric pays for frictionlessness.
+- **Neo4j ships as an optional driver** behind the same interface (`GRAPH_BACKEND=neo4j` in config), powering the live-demo graph view, Cypher answers in the interview, and the §10 demo script. The cached-graph-snapshot safeguard (§11) still applies.
+- The backend swap itself becomes a **scored modularity proof** — same trick as the LLM/OCR swap, demonstrated live.
+- Everything else in this document stands: the schema (§5), the guardrail (§3), the agent tooling (§6), the build order (§9), the demo script (§10).
 
 The win condition is:
 

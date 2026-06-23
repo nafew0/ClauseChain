@@ -6,13 +6,24 @@
 |---|---|
 | Document type | Engineering & delivery plan (companion to `ClauseChain_PRD_Application.md`) |
 | Phase | Round 1 — Build (1 June → 20 July 2026) |
-| Today | 7 June 2026 · ~6 weeks to submission |
+| Today | **Rebased 22 June 2026** · ~4 weeks to submission. **The authoritative timeline + scope + task plan now live in `ClauseChain_Dev_Plan_and_Task_Distribution.md` (guiding star); THIS doc is the architecture/method reference.** P0 (engine scaffold) is DONE. |
 | Mandatory scope | Economies: **Singapore, Australia, Malaysia** (English) · Pillars **6 & 7** · Zones **1 + 2** |
-| Our self-imposed scope ("every optional is mandatory") | + Zone 3 scoring (0–1) · + 1 bonus pillar (**Pillar 2 or 8**, §7) · + scale toward all 8 final-round economies · + extra-mile UI |
+| Scope (22 Jun) | **Core-first, Round-2 additive:** SG/AU/MY × P6&P7 flawless & frozen (~11 Jul) — extra economies score **0** in Round 1 — THEN the **7 Round-2 finals economies** (CN/IN/ID/LA/MN/RU/TH) as an additive track validated vs the new Round-2 gold DB. After core: multilingual/OCR → R2 economies → bonus pillar (if time), with Zone-3 noise-audit + UI woven in. |
 | Indicator codes | **`P6-I1…P6-I5`, `P7-I1…P7-I5` — these ARE the RDTII 2.1 methodology indicators 1:1** (`P6-I1 = 6.1`, … confirmed by the RDTII team, 5 June). The methodology definitions govern (§7); the output-template "Indicator Reference" gloss is superseded. **P6-I5 = 6.5 is non-regulatory → engine extracts P6-I1…I4 + P7-I1…I5 (9 indicators).** |
+| Zone 3 scoring | **Official 0/0.5/1 criteria + P6 indicator weights + P7 polarity now encoded in §7.1** (extracted from the RDTII 2.1 Guide, 11 Jun full read; canonical legal home: DoDont §9.1). |
+| NEW/KNOWN baseline | Per ESCAP's **10 June mail**: master dataset = **primary** KNOWN reference; 384-row Legal Inventory CSV = **secondary** (seeds + validation). See §8. |
 | Hard rule | Mandatory core ships and is unbeatable **before** any stretch work begins. No stretch item may destabilize the core. |
 
 > **Goal statement.** Not to pass — to win, such that no team outscores us on any block. We do that by (1) making the mandatory deliverable flawless and fully rubric-aligned, then (2) layering every optional on top behind a freeze that protects the deadline.
+
+> **⚠️ Post-22-June update (folds in the 11/12/15-June session notes + the Round-2 gold DB; master changelog = Dev Plan §0). Deltas that change THIS doc:**
+> - **Model routing → ACCURACY-FIRST, dual-profile (decided 23 Jun).** Our goal is best output, not the cost-efficiency sub-score. **Default = Path B** (cloud `gpt-5.4-nano`/`mini` reasoning + self-hosted Neo4j GraphRAG + local OCR + local BGE-M3 embeddings; ~cents/doc, measured). **Ship Path A** = key-free local fallback (local LLM + SQLite graph) so it runs in any sandbox. Both are `models.yaml` profiles (= the 15-pt modularity demo). Precompute & cache embeddings. Full rationale: Dev Plan §3A. *(Supersedes the cloud-default routing table in §4 below.)*
+> - **Retrieval = broad recall, NOT top-k** (12-Jun Direct-Corpus-Interaction result + Nikita 5-Jun: evidence dropped by a top-k score can't be recovered downstream). Graph expansion + broad retrieval, then gates cut.
+> - **Zone-3 = Noise Audit** (12-Jun Qian Xiao, built on **Pillar 6 with our exact weights**): multi-persona LLM judges → measure disagreement (**Krippendorff's α**) → emit an **uncertainty band + human approval**, never a bare 0/0.5/1. Extends §7.1.
+> - **GraphRAG edges:** adopt `AMENDS` / `REVOKE` / `SUPERSEDES` / `CROSS_REFERENCES` on the `Document → Article → Paragraph → Item → Subitem` tree (12-Jun schema = ours) — powers currentness + amendment tracking.
+> - **Output contract (§6):** additional columns ARE allowed after the 13 → add **`Coverage`**, **`Verbatim Snippet (English)`**, **`Status`**; **`Location Reference` is optional**; submit **ONE consolidated** CSV/JSON; `Last Amended` = month+year. **NEW = provision-level**; eval vs the **FULL** known evidence; **repealed-cited-as-current = penalty**; no-evidence → "no provision found", never blank (15-Jun).
+> - **Round-2 readiness now:** the engine generalizes by config — validate the 7 finals economies (CN/IN/ID/LA/MN/RU/TH) against `Hackthon_Knowledge/ESCAP-RDTII-2.1_ Round 2 Database.xlsx` (government-verified gold).
+> - **Keep evidence separate from scores; always model uncertainty** (12-Jun design rule).
 
 ---
 
@@ -161,7 +172,7 @@ class OCREngine(Protocol):
 Selection is 100% config-driven (`configs/models.yaml`). The judge's literal test — "swap OpenAI for Llama 3 by changing a config value" — passes by construction.
 
 **Validated by production practice (TH2OECD, 4-June workshop).** A live government legal-AI system independently arrived at our two core bets, which we adopt explicitly:
-- **GraphRAG over plain RAG.** The evidence ledger is a legal knowledge graph — `Law → Section → Provision` plus typed relationships (`amends`, `supersedes`, `qualifies`, `cross-references`, `defines`). It improves retrieval, exception-following (provisions that point into Schedules), and counter-evidence/amendment detection. This *is* §3's ledger, framed as GraphRAG.
+- **GraphRAG over plain RAG.** The evidence ledger is a legal knowledge graph — `Law → Section → Provision` plus typed relationships (`amends`, `supersedes`, `qualifies`, `cross-references`, `defines`). It improves retrieval, exception-following (provisions that point into Schedules), and counter-evidence/amendment detection. This *is* §3's ledger, framed as GraphRAG. **Storage decision (final, 11 Jun):** the graph is a *data model behind a swappable `GraphStore` interface* — **SQLite-backed by default** (the judged quick-start contract is clone→venv→pip→one command; no hard service dependency), with a **Neo4j driver as an optional config swap** (`GRAPH_BACKEND=neo4j`) powering the live-demo graph view. The backend swap itself is one more modularity proof. Details: `ClauseChain_Championship_GraphRAG_Strategy.md` §12.
 - **A hard AI/code boundary.** LLMs only for ambiguity, reading, comparison, drafting; **deterministic code for validation, required-field checks, scoring, version control, and output packaging** (= our rubric-as-code + gates). This is what makes results reproducible.
 - **Observability from day one.** Log every agent output, retrieved source, intermediate result, rubric hit, score, and model version, so a failure can be traced to retrieval vs classification vs reasoning vs formatting. Feeds the iteration loop (every reviewer correction becomes a regression test).
 - **Responsible-AI framing** (OECD principles) for the pitch: transparency, traceability, human oversight, no autonomous final decisions — which our audit trail + HITL already deliver.
@@ -342,6 +353,31 @@ P7-I4: { name: DPIA / DPO requirements }
 P7-I5: { name: Government access to personal data, sources: [privacy_law, criminal_procedure, surveillance, telecom] }
 ```
 
+### 7.1 Zone 3 scoring rules — the official 0 / 0.5 / 1 criteria (RDTII 2.1 Guide)
+
+*Added 11 Jun from the full RDTII-guide read. Canonical legal home: `ClauseChain_Legal_Matching_DoDont.md` §9.1 — update there first, mirror here. Encode all of this in `pillar_*.yaml`; Zone 3 stays deterministic code over gated, controlling-evidence rows (AI suggests, Legal approves — Dev Plan §9).*
+
+**⚠️ Polarity first (a silent score-killer):** **P7-I1 and P7-I2 score the *absence* of a framework** (lack = 1 = more restrictive environment); **P7-I3/I4/I5 score the *presence* of requirements.** All of Pillar 6 scores the presence of restrictions. Higher always = more regulatory burden. A sign-flip here silently corrupts every Zone 3 score — the polarity lives in the YAML, not in anyone's head.
+
+**Scope exclusion (P6):** measures applying **only to government data are NOT scored** for Pillar 6.
+
+| Code | Score 1 | Score 0.5 | Score 0 |
+|---|---|---|---|
+| P6-I1 | ban/local-processing covers **personal data** OR applies **horizontally**; also 1 if **≥2** such requirements on non-personal/specific data (or targeting >1 economy) | a single requirement on non-personal/specific data or one economy | transfer free of such requirements |
+| P6-I2 | mirrors 6.1: copy-stored-domestically rule covers personal data OR horizontal; or ≥2 on non-personal/specific data | single non-personal/specific-data storage rule | no local-storage requirement |
+| P6-I3 | **any** infrastructure requirement exists | — | none |
+| P6-I4 | conditions cover **personal data** (any coverage) OR apply **horizontally** (even non-personal) | non-personal/specific data, or sectoral only | no conditions on transfer |
+| P6-I5 | no binding data-transfer agreement (treaty DBs — **engine does not extract**) | — | ≥1 binding agreement |
+| P7-I1 | **lacks** a comprehensive DP framework | **sectoral-only** laws; or **horizontal-but-thin** (e.g. missing right-to-rectification → "not comprehensive enough" — Juntong, 5 Jun; organizers explicitly invite going deeper than the binary here) | comprehensive horizontal framework exists |
+| P7-I2 | **lacks** a dedicated cybersecurity framework (sectoral notices/scattered clauses don't count as dedicated) | — | dedicated framework exists |
+| P7-I3 | a minimum retention **period is specified** (keep ≥ X days/months/years) | — | no minimum period ("not longer than necessary" is NOT 7.3) |
+| P7-I4 | DPIA **or** DPO required (either suffices) | — | neither required |
+| P7-I5 | government access to personal data enabled/required | — | otherwise |
+
+**Pillar-6 indicator weights** (for the dashboard + pitch math): **6.1 = 38 %** · **6.3 = 31 %** · 6.2 = 12 % · 6.4 = 12 % · 6.5 = 8 %. The two heavyweights (6.1, 6.3) are exactly the pair with the trickiest disambiguations (6.4-vs-6.1 ban, 6.2-storage-vs-6.3-infrastructure) — mapping accuracy there is worth disproportionately more.
+
+**Bonus completeness:** auto-check the treaty/status pages for the non-regulatory indicators (URLs listed in `Non-regulatory indicators.pdf`) so P6-I5 ships with a treaty-database citation instead of a blank.
+
 **The mapping question, per RDTII (= our predicate tuple):** *who* is regulated · *what* is required/prohibited · to *what* data/service/sector · under *what* conditions · with *what* exceptions. Map on legal **function, not keywords** — a transfer *condition* is 6.4 (not a 6.1 ban); network-segmentation/encryption rules are cybersecurity 7.2 (not infrastructure 6.3). Don't ignore thresholds, exemptions, schedules, or implementing rules that define the real scope.
 
 **Bonus pillar.** The organizers named **Pillars 3, 5, 9** as examples — but their indicators (3.4, 5.3, 9.1) need *secondary-source / de-facto-practice* handling (a different pipeline). For maximum reuse of our P6/P7 *regulatory* engine, prefer a purely-regulatory pillar: **Pillar 2 (Public Procurement)** — horizontal, clean gold data, already in our PRD — or **Pillar 8 (Intermediary Liability)**. Decide once Ring 0 is green; it is one more `pillar_X.yaml`. *(Build-guide recommendation updated from "P8 only" to "P2 or P8, P2 slightly preferred for reuse.")*
@@ -355,7 +391,7 @@ P7-I5: { name: Government access to personal data, sources: [privacy_law, crimin
 **Definition (refined per 5-June Q&A).** NEW/KNOWN is judged at **provision granularity, not law granularity.** A *new provision inside an already-recorded law* still counts as **NEW** — because the RDTII team often recorded only the law name or the first relevant provision (space/time limits). So even on "known" laws like the SG PDPA there is large NEW headroom: extra articles, exceptions, and sectoral provisions they never cited. `KNOWN` = the exact (instrument + article) was already a provided example (reproduce it — it proves recall).
 
 **Design:**
-1. Each jurisdiction pack ships a `known_provisions:` list from the sample kit / sample DB, keyed on **(instrument + article)** — and note where the DB recorded only a law name (then *any* specific article we cite is NEW).
+1. **Baseline ruling (ESCAP 10 June mail — authoritative):** the **master dataset** (`Sample Kit/ESCAP-RDTII-2.1_ Round 1 Database.xlsx`) is the **primary KNOWN reference**. The new 384-row **`Mail Content 10 June/Singapore, Malaysia, Australia, Legal Inventory.csv`** (all pillars, long-form, MY 146 / SG 131 / AU 107 — no Impact/provision columns) is **secondary**: crawler seeds + structure/format validation; ESCAP's own words: evidence beyond it "may be classified as NEW". Each jurisdiction pack ships a `known_provisions:` list keyed on **(instrument + article)** — built by normalizing master-DB law names/numbers **and parsing the article references out of its Impact-column prose** (that is where the gold articles actually live). Where the DB recorded only a law name, *any* specific article we cite is NEW.
 2. After mapping + verification, the discovery-diff stage normalizes each result `(instrument, article, indicator)` and checks membership against the KNOWN set → tags `NEW`/`KNOWN`. A new article within a known instrument → `NEW`.
 3. **Recall maximization** is the actual engineering: broad two-pass discovery (semantic + keyword over the full portal), retrieve at rule-unit granularity, and run *counter-retrieval* for exceptions/amendments so we surface provisions other teams' chunkers miss.
 4. Every `NEW` row goes through the **full gate stack** — a NEW provision that fails verification is worse than not finding it (false positives lose points). NEW + verified is the gold.
@@ -423,14 +459,14 @@ These five are the human reviewers' own pre-entry check — turning them into de
 
 ## 11. Phase plan
 
-7 weeks. **Core freezes 5 July; stretch is additive-only after that.** Technical workshops 11–15 June (RAG/OCR/architecture) inform Phase 1–2 — attend and fold in learnings.
+Rebased **11 June** (~5.5 weeks). **Core freezes 5 July; stretch is additive-only after that** (absolute max slide: 8 Jul, and only after applying the Dev-Plan §12 cut order). Technical workshops 11–15 June (RAG/OCR/architecture) run alongside P0 — attend and fold in learnings. **Email the Q&A questions before 15 Jun (Dev Plan §14).**
 
 | Phase | Dates | Outcome | Maps to |
 |---|---|---|---|
-| **P0 — Foundations** | Jun 3–7 | Repo skeleton; Pydantic schemas; `csv_writer` asserting template header; `pillar_6/7.yaml` with the **methodology definitions** (P6-I1…I4 + P7-I1…I5); KNOWN-lists for SG/AU/MY at (instrument+article) granularity; `models.yaml` with local+cloud providers; eval harness skeleton wired to sample DB. | Architecture, Output contract |
-| **P1 — Vertical slice** | Jun 8–14 | **One command end-to-end:** `run.py --country SG --pillar 6` → crawl SSO HTML → extract → map P6-I1…I4 → CSV+JSON, verbatim + exact citation. Cross-check vs SG gold. First green benchmark row. | Deliverables 1,2; all rubric blocks at small scale |
-| **P2 — Breadth & resilience** | Jun 15–28 | Add **Pillar 7**; add **AU + MY** (connectors); **live crawling** hardened; **OCR path** on a scanned MY/SG gazette with CER<5%; **modular swap** demoed (local↔cloud). All 3 economies × P6+P7 passing benchmark. | Technical (10+10+e2e), Architecture (15 modular) |
-| **P3 — Differentiators** | Jun 29–Jul 5 | **NEW/KNOWN discovery** + recall maximization; **amendment/Last-Amended** tracking; **G1–G8** wired to every row; **Zone 3 scoring (0–1) + Impact**; confidence + flag-for-review. **CORE FREEZE Jul 5.** | Substantive (NEW 20pts), Audit trail (15), Zone 3 |
+| **P0 — Foundations** | Jun 11–13 (rebased) | Repo skeleton; Pydantic schemas; `csv_writer` asserting template header; `pillar_6/7.yaml` with the **methodology definitions** (P6-I1…I4 + P7-I1…I5); KNOWN-lists for SG/AU/MY at (instrument+article) granularity; `models.yaml` with local+cloud providers; eval harness skeleton wired to sample DB. | Architecture, Output contract |
+| **P1 — Vertical slice** | Jun 14–20 (rebased) | **One command end-to-end:** `run.py --country SG --pillar 6` → crawl SSO HTML → extract → map P6-I1…I4 → CSV+JSON, verbatim + exact citation. Cross-check vs SG gold. First green benchmark row. | Deliverables 1,2; all rubric blocks at small scale |
+| **P2 — Breadth & resilience** | Jun 21 – Jul 1 (rebased) | Add **Pillar 7**; add **AU + MY** (connectors); **live crawling** hardened; **OCR path** on a scanned MY/SG gazette with CER<5%; **modular swap** demoed (local↔cloud). All 3 economies × P6+P7 passing benchmark. | Technical (10+10+e2e), Architecture (15 modular) |
+| **P3 — Differentiators** | Jul 2–5 (rebased; tight — cut order before freeze-slide) | **NEW/KNOWN discovery** + recall maximization; **amendment/Last-Amended** tracking; **G1–G8** wired to every row; **Zone 3 scoring (0–1) + Impact**; confidence + flag-for-review. **CORE FREEZE Jul 5.** | Substantive (NEW 20pts), Audit trail (15), Zone 3 |
 | **P4 — Stretch (champion)** | Jul 6–12 | **Bonus pillar (P2/P8)** for SG/AU/MY; **2–3 Tier-A economies** (India/Indonesia/Mongolia/Timor-Leste) as live proof; **extra-mile UI** wired to engine; cost meter. | All optionals |
 | **P5 — Package & harden** | Jul 13–19 | **Quick Start README**; **pitch deck** (framed on 40/30/30 + failure-mode catches); **≤10-min screen recording** (scanned-PDF → citation); benchmark `report.md`; edge-case handling (misspelt country, dead URL); **live-demo dry runs**. | Deliverables 1,3,4; live-pitch prep |
 | **Submit** | **Jul 20** | All 5 deliverables uploaded. | — |
@@ -500,10 +536,10 @@ Aligned to the hackathon's "Tech Lead + Substantive Lead" structure; adapt to yo
 
 ## Immediate next actions (this week, P0)
 
-1. **Do Juntong's manual extraction assignment (due 9 June)** — Indicator 6.1 (Singapore) + 7.3 (Malaysia), 5.3 (India) optional. It doubles as our **gold-label spec**: the operative clause, citation, coverage, timeframe, and reasoning we collect by hand become the first benchmark rows our engine must reproduce.
+1. **Email the Q&A questions before 15 June** (the four in Dev Plan §14: hold-out seeding · Zone-3 judging · live-demo network/API constraints · Coverage-column permission from §6). Attend the 11–15 Jun technical workshops; fold learnings into P1–P2.
 2. Scaffold the repo (§5); define Pydantic schemas + the template-asserting `csv_writer` **first** so every stage targets the real contract.
-3. Author `pillar_6.yaml` + `pillar_7.yaml` with the **methodology definitions** (§7) and the SG/AU/MY `known_provisions` lists (instrument+article) from the sample kit + portals CSV.
+3. Author `pillar_6.yaml` + `pillar_7.yaml` with the **methodology definitions (§7) + the official scoring criteria, weights, and P7 polarity (§7.1)**, and the SG/AU/MY `known_provisions` lists (instrument+article) — **built from the master DB (parse the Impact column; primary baseline per the 10 Jun mail), portals CSV, and the 10-June Legal Inventory as secondary seeds**.
 4. Stand up `models.yaml` with a local provider + one cloud provider, and prove the swap.
-5. Wire the eval harness to the sample DB so we have a scoreboard from day one.
+5. Wire the eval harness to the sample DB so we have a scoreboard from day one. *(The 9-Jun manual-extraction assignment deadline has passed — if not submitted, Legal still completes those rows internally; they remain our gold-label spec.)*
 
 > Build the engine the PRD already designed — just pointed at Singapore, Australia, Malaysia, the exact `P6-I1…P7-I5` output template, and the NEW-evidence prize. Make the core unbeatable first; then spend every remaining hour on the optionals that turn "shortlisted" into "champion."

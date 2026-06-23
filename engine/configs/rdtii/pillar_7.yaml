@@ -1,0 +1,99 @@
+# RDTII 2.1 — Pillar 7: Domestic data protection and privacy
+# POLARITY WARNING (silent score-killer): P7-I1 and P7-I2 score the ABSENCE of a
+# framework (lack = 1 = more restrictive environment); P7-I3/I4/I5 score the
+# PRESENCE of requirements. Encoded per indicator below — never in anyone's head.
+
+schema_version: rdtii-2.1
+pillar: 7
+name: Domestic data protection and privacy
+question: How is data governed domestically — privacy, cybersecurity, retention, accountability, government access?
+
+indicators:
+  P7-I1:
+    methodology_number: "7.1"
+    name: Lack of comprehensive legal framework for data protection
+    policy_name: Lack of comprehensive legal framework for data protection
+    polarity: framework_absent_scores_high
+    question: Does the economy LACK a comprehensive (horizontal) personal-data-protection law?
+    check_order:
+      - "First: does a horizontal personal-data law exist (applies across sectors)?"
+      - "Then: substantive sufficiency — does it grant core rights (access, correction/rectification, etc.)?"
+    positive_cues: ["Personal Data Protection Act", "Privacy Act", "data protection law"]
+    exclusions:
+      - "Sectoral DP laws are RECORDED but do not make the framework comprehensive."
+      - "A cybersecurity law does not answer the data-protection question -> P7-I2."
+    scoring:
+      "1": No comprehensive framework exists.
+      "0.5": Sectoral-only laws; OR horizontal-but-thin (e.g. missing right-to-rectification — "not comprehensive enough", Juntong 5 Jun). Organizers invite going deeper than the binary here.
+      "0": A comprehensive horizontal framework exists.
+    example: "SG PDPA 2012 (horizontal) -> score 0; sectoral-only economy -> 0.5."
+
+  P7-I2:
+    methodology_number: "7.2"
+    name: Lack of dedicated legal framework for cybersecurity
+    policy_name: Lack of dedicated legal framework for cybersecurity
+    polarity: framework_absent_scores_high
+    question: Does the economy LACK a law specifically designed for cybersecurity (network security, incident response, critical infrastructure, cyber-risk)?
+    positive_cues: ["Cybersecurity Act", "Cyber Security Act", "information security law"]
+    exclusions:
+      - "Scattered security clauses inside a privacy/sectoral law do NOT make a dedicated framework."
+      - "Sectoral notices (e.g. MAS Cyber Hygiene for financial sector) are recorded but are NOT the controlling evidence when a horizontal act exists (Assignment-1 trap; the MAS 2019 notice was also superseded by FSM-N16)."
+    scoring:
+      "1": No dedicated cybersecurity framework.
+      "0": A dedicated framework exists.
+    example: "SG Cybersecurity Act 2018 (horizontal) -> score 0; MY Cyber Security Act 854 (2024)."
+
+  P7-I3:
+    methodology_number: "7.3"
+    name: Minimum period of data retention requirements
+    policy_name: Minimum period of data retention requirements
+    polarity: requirement_present_scores_high
+    question: Must data be kept FOR AT LEAST a specified period (days/months/years)?
+    positive_cues:
+      - "shall be retained for at least"
+      - "keep ... for a period of not less than"
+      - "for six years from"
+      - "for a period of seven years"
+    exclusions:
+      - "'Do NOT keep longer than necessary' is a retention LIMIT (data minimisation) — the OPPOSITE. NEVER 7.3 (their most-repeated warning)."
+    hunt_in:
+      - "Sectoral law: anti-money-laundering, tax, companies/accounting, telecom, health, employment."
+    scoring:
+      "1": A minimum retention period is clearly specified.
+      "0": No minimum period specified.
+    example: "Bangladesh: e-commerce transaction data retained 6 years from the transaction."
+
+  P7-I4:
+    methodology_number: "7.4"
+    name: DPIA / DPO requirements
+    policy_name: Data Protection Impact Assessment or Data Protection Officer requirements
+    polarity: requirement_present_scores_high
+    question: Must organisations appoint a Data Protection Officer and/or run Data Protection Impact Assessments?
+    positive_cues:
+      - "shall appoint a data protection officer"
+      - "data protection impact assessment"
+    exclusions:
+      - "Having a privacy law in general is NOT enough — the question is the specific accountability mechanisms."
+    scoring:
+      "1": Either DPO or DPIA (or both) required.
+      "0": Neither required.
+    example: "India DPDP Act 2023 s. 10: Significant Data Fiduciary must appoint DPO + run DPIA."
+
+  P7-I5:
+    methodology_number: "7.5"
+    name: Requirements to allow government access to personal data
+    policy_name: Requirements to allow government access to personal data
+    polarity: requirement_present_scores_high
+    question: Does any law enable or require government access to personal data?
+    hunt_in:
+      - "Look BEYOND the privacy statute: criminal procedure codes, surveillance/lawful-access law, telecom law, national security law (their explicit research lesson — and our richest NEW-evidence vein)."
+    positive_cues:
+      - "police officer may access"
+      - "shall provide access to ... upon request"
+      - "authorised officer may ... search any data"
+    exclusions:
+      - "Exceptions inside the privacy act often point to the REAL access powers defined elsewhere — follow them."
+    scoring:
+      "1": A government access power exists.
+      "0": Otherwise.
+    example: "SG Criminal Procedure Code: police may access/search/copy computer data. Sri Lanka: telecom operators must open databases to the regulator."

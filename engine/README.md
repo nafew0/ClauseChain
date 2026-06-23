@@ -4,7 +4,7 @@ This is the clean Python engine for the ClauseChain Round 1 submission.
 
 It is intentionally isolated from the old Django/Next SaaS starter. The judged artifact starts here: a CLI engine that produces the required CSV and JSON outputs from legal evidence.
 
-Current status: **P0 skeleton**. It proves the contracts, output shape, model routing, and local Neo4j configuration path. It does not yet perform real crawling, OCR, retrieval, graph loading, or legal mapping.
+Current status: **P0 COMPLETE (11 Jun)**. Contracts, template-exact output (verified against the official xlsx byte-for-byte), model routing with real OpenAI/Gemini providers + fallback, swappable graph store (SQLite default / Neo4j optional), the KNOWN/NEW baseline parsed from the master dataset, fetch/OCR spike scripts, and the eval scoreboard. It does not yet perform real crawling→mapping end-to-end — that is P1 (real SG/P6 by 20 Jun).
 
 ## What This Engine Must Do
 
@@ -35,6 +35,23 @@ Run the skeleton:
 cd engine
 uv run pytest
 uv run python run.py --country SG --pillar 6 --out outputs/demo
+# --economy is an alias (matches the organizer README): 
+uv run python run.py --economy Singapore --pillar 6 --out outputs/demo
+```
+
+P0 data + spike commands (run once, in this order):
+
+```bash
+# 1. Build the KNOWN/NEW baseline from the ESCAP files (master = primary, 10-Jun mail)
+uv run python scripts/build_known_index.py
+# 2. Grade any output.csv against the baseline (the scoreboard)
+uv run python scripts/eval_vs_master.py --output outputs/demo/output.csv --economy Singapore --pillar 6
+# 3. AI-1 spike: fetch the SG PDPA page (httpx first; --playwright if blocked)
+uv run python scripts/spike_sg_fetch.py
+# 4. AI-1 spike: prove scanned-PDF detection on the sample kit
+uv run python scripts/spike_ocr_check.py
+# 5. AI-2 spike: real model routing (needs OPENAI_API_KEY in .env; GEMINI_API_KEY optional)
+uv run python scripts/spike_providers.py
 ```
 
 Expected outputs:
@@ -77,29 +94,45 @@ P0 uses dummy data, so the current verifier gates are placeholders.
 
 ```text
 engine/
-  run.py                      CLI entrypoint
-  pyproject.toml              Python project + dependencies
+  run.py                      CLI entrypoint (--country / --economy)
+  pyproject.toml              Python project + dependencies (groups: dev, crawl, ocr)
   configs/
-    models.yaml               model routing profiles
-    graph.yaml                local Neo4j config contract
+    models.yaml               model routing profiles (+ graph backend)
+    graph.yaml                GraphStore backend contract (sqlite default / neo4j optional)
+    rdtii/
+      pillar_6.yaml           indicator rules + official 0/0.5/1 criteria + weights
+      pillar_7.yaml           same, incl. the P7-I1/I2 polarity (absence = 1)
+    jurisdictions/
+      sg.yaml my.yaml au.yaml portals, citation grammar, anchor instruments, notes
   packages/
-    core/
-      schemas.py              Pydantic contracts shared by all stages
-      interfaces.py           LLM/OCR/embedding/graph protocols
-      orchestrator.py         pipeline coordinator; P0 returns dummy data
-    export/
-      csv_writer.py           exact judged CSV writer
-      json_writer.py          transparent run envelope writer
+    core/                     schemas.py · interfaces.py · orchestrator.py
+    connectors/
+      sg_sso.py               SG fetcher (httpx first, Playwright fallback)
+    ingest/
+      xlsx.py                 stdlib-only xlsx reader
+      known_index.py          master-DB Impact parser -> KNOWN baseline
+    export/                   csv_writer.py (template-exact) · json_writer.py
     graph/
-      neo4j_client.py         local Neo4j adapter stub
-      schema.cypher           future legal graph constraints
+      store.py                get_graph_store() factory (GRAPH_BACKEND)
+      sqlite_graph.py         DEFAULT judged-path store
+      neo4j_client.py         optional demo swap
+      schema.cypher           Neo4j constraints
     providers/
-      model_router.py         reads configs/models.yaml
-      embedding_provider.py   P0 embedding stub
-      ocr_provider.py         P0 local OCR placeholder
-  tests/
-    test_csv_writer.py
-    test_run_dummy.py
+      model_router.py         profiles + resolve_llm()/resolve_embedding()
+      llm_providers.py        OpenAI + Gemini (REST) + FallbackLLM
+      embedding_provider.py   OpenAI embeddings + stub
+      ocr_provider.py         P0 placeholder (real OCR lands in P2)
+  scripts/
+    build_known_index.py      ESCAP files -> data/known_index.json + data/seeds.json
+    eval_vs_master.py         the scoreboard (KNOWN recall + format checks)
+    spike_sg_fetch.py         AI-1 spike: live SG fetch
+    spike_ocr_check.py        AI-1 spike: scanned-PDF detection
+    spike_providers.py        AI-2 spike: real routing (needs API keys)
+  data/
+    known_index.json          KNOWN baseline (master = primary; built artifact)
+    seeds.json                crawler seeds (Legal Inventory, all pillars)
+    gold/gold_rows.csv        the answer key (Legal verifies every row)
+  tests/                      16 tests incl. template-contract guard (fixtures/)
 ```
 
 ## Model Routing
@@ -139,31 +172,24 @@ NEO4J_PASSWORD=
 
 The P0 dummy run does not require API keys or Neo4j.
 
-## Local Neo4j
+## Legal evidence graph (SQLite default, Neo4j optional)
 
-Neo4j is the canonical legal evidence graph. It will store:
+**Final decision (GraphRAG Strategy §12):** the graph is a *data model* behind the
+swappable `GraphStore` interface — same nodes/edges either way:
 
-- economies
-- instruments
-- versions
-- sections
-- provisions
-- source spans
-- indicators
-- candidate findings
-- verified findings
+- economies, instruments, versions, sections, provisions, source spans,
+  indicators, candidate findings, verified findings
 
-`packages/graph/schema.cypher` defines the first constraints.
+Backends:
 
-For now, Neo4j is env-only. Start it however your machine supports it, then set:
+| Backend | When | Setup |
+|---|---|---|
+| `sqlite` (**default**) | The judged path. Zero extra services — judges run pip-only. | none (`data/graph.db` auto-created) |
+| `neo4j` (optional) | Live-demo graph view + Cypher answers in the interview. | set `GRAPH_BACKEND=neo4j` + the `NEO4J_*` vars |
 
-```bash
-NEO4J_URI=bolt://localhost:7687
-NEO4J_USER=neo4j
-NEO4J_PASSWORD=your_password
-```
-
-The dummy run must continue to work even when Neo4j is not available.
+The swap is one env var — the same trick as the LLM/OCR swap, and demoed the same way.
+`packages/graph/schema.cypher` defines the Neo4j constraints; `packages/graph/sqlite_graph.py`
+is the default store. The dummy run works with no graph service at all.
 
 ## Team Responsibilities
 
@@ -223,12 +249,17 @@ cat outputs/demo/output.json
 
 ## Next Engineering Milestones
 
-P0 complete when:
+P0 complete when: ✅ DONE (11 Jun)
 
-- tests pass
-- dummy command writes CSV + JSON
-- schemas are stable enough for team work
-- each owner knows which objects they must return
+- [x] tests pass (16)
+- [x] dummy command writes CSV + JSON (header verified against the official template file)
+- [x] schemas are stable enough for team work
+- [x] each owner knows which objects they must return
+- [x] rubric YAMLs encode the official scoring criteria (incl. P7 polarity)
+- [x] KNOWN baseline built from the master DB (306 article refs parsed from Impact prose)
+- [x] graph store swappable (sqlite default / neo4j optional)
+- [x] eval scoreboard runs (`scripts/eval_vs_master.py`)
+- [ ] HUMAN VERIFY: API-key spike (`scripts/spike_providers.py`) + SG fetch spike — need keys/network
 
 P1 target:
 

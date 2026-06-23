@@ -1,0 +1,7589 @@
+1
+01:00:00,320 --> 01:00:03,360
+<b>Hello everyone and welcome. Thank</b>
+
+2
+01:00:03,360 --> 01:00:07,079
+<b>you for tuning in to today's webinar.</b>
+
+3
+01:00:07,800 --> 01:00:11,960
+<b>Tonight is the final day of the Open Workshop session and</b>
+
+4
+01:00:11,960 --> 01:00:14,360
+<b>on Monday we have wrap-up session</b>
+
+5
+01:00:14,800 --> 01:00:18,840
+<b>for the Hackathon Survivors for the next round competition.</b>
+
+6
+01:00:20,119 --> 01:00:21,639
+<b>I am Ratapul Baliyat Bisha from</b>
+
+7
+01:00:21,639 --> 01:00:24,639
+<b>School of Engineering, Kim Kuk-in-Sih of Technology, Laka</b>
+
+8
+01:00:24,639 --> 01:00:27,440
+<b>Bang. I am the moderator of webinar today.</b>
+
+9
+01:00:27,440 --> 01:00:32,400
+<b>If you have been following the AI space, you know that</b>
+
+10
+01:00:32,400 --> 01:00:36,119
+<b>documents AI and IHE or retrieval</b>
+
+11
+01:00:36,320 --> 01:00:41,440
+<b>augmented generation are absolute game changers right now.</b>
+
+12
+01:00:42,039 --> 01:00:44,360
+<b>But how do you actually build these</b>
+
+13
+01:00:44,400 --> 01:00:49,039
+<b>two chains and what does the development, the deployment</b>
+
+14
+01:00:49,039 --> 01:00:51,360
+<b>architecture look like in the real world?</b>
+
+15
+01:00:52,320 --> 01:00:55,960
+<b>That is exactly what we are breaking down today in our</b>
+
+16
+01:00:55,960 --> 01:00:58,880
+<b>session, Document AI and Lecture</b>
+
+17
+01:00:58,960 --> 01:01:04,639
+<b>Chains and Deployment Architecture. We have a fantastic</b>
+
+18
+01:01:04,639 --> 01:01:07,079
+<b>line-up today with two billion</b>
+
+19
+01:01:07,119 --> 01:01:09,679
+<b>minds who are the forefront of engineering</b>
+
+20
+01:01:09,679 --> 01:01:14,280
+<b>education and research. Let's welcome Dr.</b>
+
+21
+01:01:14,800 --> 01:01:18,320
+<b>Shen Chiu, Professor of Engineering at Maynooth</b>
+
+22
+01:01:18,320 --> 01:01:20,920
+<b>International Engineering College.</b>
+
+23
+01:01:21,599 --> 01:01:25,599
+<b>And also we have my colleague Dr. Latachi</b>
+
+24
+01:01:27,119 --> 01:01:30,760
+<b>Shau-Wu Tai, Professor of Engineering from School of</b>
+
+25
+01:01:30,760 --> 01:01:33,199
+<b>Engineering, Kim Kuk-in-Sih of Technology, Laka Bang.</b>
+
+26
+01:01:34,559 --> 01:01:38,880
+<b>Professor Latachi is the first speaker today. He is now</b>
+
+27
+01:01:38,880 --> 01:01:41,639
+<b>leading in expert data analytics and software</b>
+
+28
+01:01:41,679 --> 01:01:44,800
+<b>engineering, specializing in semantic</b>
+
+29
+01:01:44,800 --> 01:01:47,199
+<b>web technologies and knowledge management.</b>
+
+30
+01:01:47,960 --> 01:01:50,199
+<b>He brings extensive international research</b>
+
+31
+01:01:50,199 --> 01:01:52,760
+<b>experience from the National Institute of</b>
+
+32
+01:01:53,079 --> 01:01:57,719
+<b>Informatics in Japan, focusing on link-open data and data</b>
+
+33
+01:01:57,719 --> 01:02:01,480
+<b>visualization. Please give a warm welcome</b>
+
+34
+01:02:01,480 --> 01:02:06,239
+<b>to Dr. Latachi. Okay, Dr. Latachi, now the floor is yours.</b>
+
+35
+01:02:08,599 --> 01:02:10,239
+<b>Okay, thank you, Dr. Latachi.</b>
+
+36
+01:02:12,519 --> 01:02:17,320
+<b>I can say that good evening from Bangkok. Maybe you are</b>
+
+37
+01:02:17,320 --> 01:02:19,960
+<b>allowed to go, right? Maybe say hello to</b>
+
+38
+01:02:20,079 --> 01:02:25,039
+<b>all of you. Okay, I will share this. I</b>
+
+39
+01:02:25,039 --> 01:02:29,039
+<b>send that URL of my slide into the chat box.</b>
+
+40
+01:02:29,559 --> 01:02:30,440
+<b>You may exit that one.</b>
+
+41
+01:02:31,119 --> 01:02:42,760
+<b>I think that you may see my sharing. Yes, sure.</b>
+
+42
+01:02:49,159 --> 01:02:50,880
+<b>Okay, let's start. This one is about the knowledge</b>
+
+43
+01:02:50,880 --> 01:02:53,039
+<b>workshop. I'm Latachi Shau-Wu Tai,</b>
+
+44
+01:02:53,559 --> 01:02:58,440
+<b>who is working on this topic, SCAP-XM2L with the knowledge</b>
+
+45
+01:02:58,440 --> 01:03:02,079
+<b>workshop. Maybe I will start with that.</b>
+
+46
+01:03:03,320 --> 01:03:06,400
+<b>Sorry. I'll introduce myself first. I'm Latachi Shau-Wu Tai</b>
+
+47
+01:03:06,400 --> 01:03:09,280
+<b>from Computer Engineering. I finished</b>
+
+48
+01:03:09,280 --> 01:03:14,519
+<b>PhD from the second day in Japan. My work has about five</b>
+
+49
+01:03:14,519 --> 01:03:16,119
+<b>years working at PILENZ at the</b>
+
+50
+01:03:16,159 --> 01:03:22,119
+<b>Thomson Reuters in Thailand and at Pansan Asia. For my few</b>
+
+51
+01:03:22,119 --> 01:03:23,800
+<b>of today's slides, it's about AI</b>
+
+52
+01:03:23,800 --> 01:03:27,079
+<b>machine learning and the last-located model and something</b>
+
+53
+01:03:27,079 --> 01:03:29,639
+<b>else about the GPS, data analytics,</b>
+
+54
+01:03:30,320 --> 01:03:34,320
+<b>software engineering and some synthetic technology. Okay,</b>
+
+55
+01:03:34,320 --> 01:03:36,440
+<b>maybe we'll start with today's three topics,</b>
+
+56
+01:03:37,119 --> 01:03:39,599
+<b>generative AI, LMS and that.</b>
+
+57
+01:03:41,039 --> 01:03:45,400
+<b>First, I will talk about generative AI.</b>
+
+58
+01:03:46,320 --> 01:03:49,159
+<b>I think that right now you know already that the AI can</b>
+
+59
+01:03:49,159 --> 01:03:52,119
+<b>produce anything, right? Like any content.</b>
+
+60
+01:03:53,000 --> 01:03:57,000
+<b>The input can be anything like a text, voice or image and</b>
+
+61
+01:03:57,000 --> 01:03:58,599
+<b>image together with the video.</b>
+
+62
+01:03:59,599 --> 01:04:02,880
+<b>Okay, and this becomes a problem. And then inside the model</b>
+
+63
+01:04:02,880 --> 01:04:05,719
+<b>right now is the neural network that</b>
+
+64
+01:04:06,000 --> 01:04:08,320
+<b>has the architecture of deep learning.</b>
+
+65
+01:04:09,000 --> 01:04:11,480
+<b>And it's produce that output like a text,</b>
+
+66
+01:04:12,440 --> 01:04:15,800
+<b>image or audio or video as you need.</b>
+
+67
+01:04:16,559 --> 01:04:18,440
+<b>This one is not new right now. Okay,</b>
+
+68
+01:04:18,840 --> 01:04:22,400
+<b>many people talk about this and use this product around the</b>
+
+69
+01:04:22,400 --> 01:04:25,119
+<b>world. Okay, and as you know that,</b>
+
+70
+01:04:25,119 --> 01:04:30,280
+<b>for the main things of the generative AI, they are about</b>
+
+71
+01:04:30,280 --> 01:04:31,719
+<b>the tech generation that you'd</b>
+
+72
+01:04:31,760 --> 01:04:36,159
+<b>form the chativity from the Gemini and Crot something else</b>
+
+73
+01:04:36,159 --> 01:04:38,519
+<b>and the image generation and audio</b>
+
+74
+01:04:38,719 --> 01:04:42,639
+<b>and video and the best one is we can</b>
+
+75
+01:04:42,639 --> 01:04:46,400
+<b>produce the code, the programming programming code</b>
+
+76
+01:04:46,800 --> 01:04:50,559
+<b>from the generative AI. That's why we can</b>
+
+77
+01:04:50,559 --> 01:04:53,559
+<b>make any software from the human prompt.</b>
+
+78
+01:04:54,960 --> 01:04:56,920
+<b>This one is about the generative AI. I think you know</b>
+
+79
+01:04:56,920 --> 01:04:59,960
+<b>already, but I need to recall a little bit.</b>
+
+80
+01:05:00,880 --> 01:05:07,239
+<b>And then under the generative AI that produce the text and</b>
+
+81
+01:05:07,239 --> 01:05:11,320
+<b>code inside is the LM or the last</b>
+
+82
+01:05:11,320 --> 01:05:18,320
+<b>language modules. This one is a different example from the</b>
+
+83
+01:05:18,320 --> 01:05:22,760
+<b>professor Andrew. He said that example</b>
+
+84
+01:05:23,360 --> 01:05:27,159
+<b>this example that okay, start with that when we input this</b>
+
+85
+01:05:27,159 --> 01:05:31,159
+<b>one, my first foot is it and and</b>
+
+86
+01:05:31,519 --> 01:05:35,960
+<b>pass to the error module and return the vehicle. And after</b>
+
+87
+01:05:35,960 --> 01:05:37,920
+<b>that the vehicle becomes input again</b>
+
+88
+01:05:38,159 --> 01:05:43,400
+<b>and this produce the width. And after that, the width</b>
+
+89
+01:05:43,400 --> 01:05:45,679
+<b>becomes the input again and then it's</b>
+
+90
+01:05:45,679 --> 01:05:51,800
+<b>produced a cream and once the cream becomes the input</b>
+
+91
+01:05:51,800 --> 01:05:54,159
+<b>again, it produces the chest and it produces</b>
+
+92
+01:05:54,480 --> 01:05:57,159
+<b>the next word until the end of</b>
+
+93
+01:05:57,159 --> 01:06:00,719
+<b>sentence. This one is inside a language module.</b>
+
+94
+01:06:02,360 --> 01:06:04,800
+<b>And for the language module, I think that</b>
+
+95
+01:06:04,800 --> 01:06:10,440
+<b>you may know that the natural language of NLP</b>
+
+96
+01:06:11,280 --> 01:06:18,679
+<b>is start many years before and then for the every word that</b>
+
+97
+01:06:18,679 --> 01:06:21,039
+<b>we mentioned that it changed to the</b>
+
+98
+01:06:21,039 --> 01:06:24,960
+<b>vector start from this year 2013. That's because of our</b>
+
+99
+01:06:24,960 --> 01:06:27,639
+<b>word to work, change the human word</b>
+
+100
+01:06:28,639 --> 01:06:33,639
+<b>to the vector. And after we pass to that era of the neural</b>
+
+101
+01:06:33,639 --> 01:06:35,800
+<b>network like in N, F, C, M and</b>
+
+102
+01:06:36,400 --> 01:06:41,719
+<b>attention and until 2017, it become the transformer. At</b>
+
+103
+01:06:41,719 --> 01:06:43,880
+<b>that time, the world changed a lot.</b>
+
+104
+01:06:44,960 --> 01:06:48,960
+<b>And at this time, the AI module can produce any contents</b>
+
+105
+01:06:48,960 --> 01:06:52,800
+<b>and many, many modules produce after</b>
+
+106
+01:06:52,800 --> 01:07:00,239
+<b>that until now and become the era of the AI agent. Inside</b>
+
+107
+01:07:00,239 --> 01:07:04,280
+<b>the module, we talked a little bit about</b>
+
+108
+01:07:04,320 --> 01:07:10,800
+<b>this. Inside the module is about a metamatix. Here is some</b>
+
+109
+01:07:10,800 --> 01:07:15,880
+<b>example that I want to show you.</b>
+
+110
+01:07:16,519 --> 01:07:19,440
+<b>For example, when we have the input like this,</b>
+
+111
+01:07:21,000 --> 01:07:23,519
+<b>it's changed the input that has the human</b>
+
+112
+01:07:23,519 --> 01:07:28,280
+<b>word into the token vector like this one.</b>
+
+113
+01:07:28,320 --> 01:07:35,880
+<b>And after that, we have the</b>
+
+114
+01:07:35,880 --> 01:07:38,840
+<b>transformer module, including a lot of metrics.</b>
+
+115
+01:07:39,920 --> 01:07:44,440
+<b>We have the many, many layers and inside each layer, they</b>
+
+116
+01:07:44,440 --> 01:07:47,320
+<b>have the many kind of metrics layer</b>
+
+117
+01:07:47,360 --> 01:07:53,880
+<b>that are key and value until they do</b>
+
+118
+01:07:53,880 --> 01:07:57,400
+<b>like this, until they produce the output.</b>
+
+119
+01:08:00,679 --> 01:08:02,239
+<b>It means that the AI that we know is</b>
+
+120
+01:08:02,239 --> 01:08:07,159
+<b>just about the metrics inside the AI module.</b>
+
+121
+01:08:07,199 --> 01:08:14,679
+<b>Here is about the AI we talked</b>
+
+122
+01:08:14,679 --> 01:08:17,119
+<b>about looking to that inside the module.</b>
+
+123
+01:08:20,079 --> 01:08:23,319
+<b>And after that, we talked a little bit about the chatbot.</b>
+
+124
+01:08:26,159 --> 01:08:30,760
+<b>As you know, when we have the last run-read module that can</b>
+
+125
+01:08:30,760 --> 01:08:34,399
+<b>produce the contents from the user</b>
+
+126
+01:08:34,479 --> 01:08:38,840
+<b>prompt, we can use this thing to make a chatbot like this</b>
+
+127
+01:08:38,840 --> 01:08:42,079
+<b>one. For example, when we have the</b>
+
+128
+01:08:42,079 --> 01:08:46,800
+<b>chatbot application here, we have mobile application, web</b>
+
+129
+01:08:46,800 --> 01:08:47,720
+<b>application, only thing application,</b>
+
+130
+01:08:48,439 --> 01:08:51,960
+<b>and we use to submit the question to the chatbot like this.</b>
+
+131
+01:08:52,760 --> 01:08:55,159
+<b>And the chatbot will change this thing</b>
+
+132
+01:08:55,159 --> 01:08:59,119
+<b>into the prompt. And this prompt becomes the input to the</b>
+
+133
+01:08:59,119 --> 01:09:02,000
+<b>last run-read module. And then the LAM</b>
+
+134
+01:09:02,359 --> 01:09:05,520
+<b>generate the answer and the chatbot forward the answer to</b>
+
+135
+01:09:05,520 --> 01:09:08,399
+<b>user. This is just like a simple chatbot</b>
+
+136
+01:09:08,399 --> 01:09:16,199
+<b>that we use at the moment. But the problem is the module</b>
+
+137
+01:09:16,199 --> 01:09:19,159
+<b>doesn't train every day. It means that</b>
+
+138
+01:09:19,680 --> 01:09:22,840
+<b>when one is trained, the new knowledge, they don't</b>
+
+139
+01:09:22,840 --> 01:09:25,720
+<b>understand the new knowledge. That's why for some</b>
+
+140
+01:09:25,760 --> 01:09:30,159
+<b>time, they don't know the some word like this one. As I</b>
+
+141
+01:09:30,159 --> 01:09:34,920
+<b>added LAMAT 3.2, it's about 3 billion. I think</b>
+
+142
+01:09:34,920 --> 01:09:40,720
+<b>that this one is this built two years before. I asked that,</b>
+
+143
+01:09:41,119 --> 01:09:45,279
+<b>what is CE-KMTL? CE-KMTL is my department.</b>
+
+144
+01:09:45,600 --> 01:09:48,640
+<b>It's the username of my department, computer engineering</b>
+
+145
+01:09:48,640 --> 01:09:50,760
+<b>from the Kim Good Institute of</b>
+
+146
+01:09:50,840 --> 01:09:57,960
+<b>technology like a bank. And then one, the answer is CE-KMTL</b>
+
+147
+01:09:57,960 --> 01:10:00,399
+<b>or the College of Engineering. This one</b>
+
+148
+01:10:00,399 --> 01:10:07,159
+<b>is not correct. That's why we have to make the module</b>
+
+149
+01:10:07,159 --> 01:10:11,760
+<b>smarter. Another way that they use the</b>
+
+150
+01:10:11,760 --> 01:10:17,520
+<b>5 tuning. This one 5 tuning, they try to change the weights</b>
+
+151
+01:10:17,520 --> 01:10:20,119
+<b>or the number in the matrix to answer</b>
+
+152
+01:10:20,159 --> 01:10:24,520
+<b>the new question. This one, they have to have a lot of</b>
+
+153
+01:10:24,520 --> 01:10:27,840
+<b>documents that contain the question and answer.</b>
+
+154
+01:10:28,520 --> 01:10:33,359
+<b>And then they try to confirm to put to to to to change that</b>
+
+155
+01:10:33,359 --> 01:10:36,840
+<b>some matrix inside the module</b>
+
+156
+01:10:37,359 --> 01:10:42,880
+<b>until they can answer the new question. Here is example of</b>
+
+157
+01:10:42,880 --> 01:10:44,720
+<b>the data like this. They have the</b>
+
+158
+01:10:44,720 --> 01:10:49,000
+<b>instruction input and output layer, identify the full name</b>
+
+159
+01:10:49,000 --> 01:10:51,720
+<b>of the of this chart name. The input is</b>
+
+160
+01:10:51,720 --> 01:10:56,000
+<b>what is CE-KMTL and the output is the department. This is</b>
+
+161
+01:10:56,000 --> 01:10:59,279
+<b>the thing that we need to to train this</b>
+
+162
+01:10:59,279 --> 01:11:02,279
+<b>one by using this data, the department of computer</b>
+
+163
+01:11:02,279 --> 01:11:04,279
+<b>engineering from Kim Good Institute of Technology</b>
+
+164
+01:11:04,319 --> 01:11:10,960
+<b>like a bank. And this one is good. Last one or two years</b>
+
+165
+01:11:10,960 --> 01:11:13,760
+<b>before we are right in the world,</b>
+
+166
+01:11:13,760 --> 01:11:17,880
+<b>we will try to do this. But the problem is, and then</b>
+
+167
+01:11:17,880 --> 01:11:20,279
+<b>another example layer for medical domain.</b>
+
+168
+01:11:22,079 --> 01:11:25,039
+<b>Further provide the name of the drug.</b>
+
+169
+01:11:26,920 --> 01:11:29,319
+<b>For example, the input is the question for</b>
+
+170
+01:11:29,600 --> 01:11:32,279
+<b>I have the new headache and output</b>
+
+171
+01:11:32,279 --> 01:11:34,079
+<b>that you choose. Consider taking the</b>
+
+172
+01:11:34,600 --> 01:11:38,760
+<b>ibuprofen this form the medical domain. And this one, the</b>
+
+173
+01:11:38,760 --> 01:11:41,439
+<b>problem is that to do the 5 tuning,</b>
+
+174
+01:11:44,000 --> 01:11:49,319
+<b>we need a lot of resource like the big GPU</b>
+
+175
+01:11:49,319 --> 01:11:51,880
+<b>because we say that it's really expensive.</b>
+
+176
+01:11:52,800 --> 01:11:55,199
+<b>That's why the world come to</b>
+
+177
+01:11:55,199 --> 01:12:00,000
+<b>another solution by using the IHG orac.</b>
+
+178
+01:12:04,199 --> 01:12:07,920
+<b>For the IHG, I stand for the Retrieval Augmented</b>
+
+179
+01:12:07,920 --> 01:12:10,840
+<b>Generation. This one is the process</b>
+
+180
+01:12:11,840 --> 01:12:17,199
+<b>to make the LM module to answer the question based on the</b>
+
+181
+01:12:17,199 --> 01:12:19,720
+<b>incoming document without training</b>
+
+182
+01:12:19,760 --> 01:12:23,119
+<b>the module. We don't need to retain the module again. It</b>
+
+183
+01:12:23,119 --> 01:12:26,880
+<b>means that the process obtaining is</b>
+
+184
+01:12:27,039 --> 01:12:36,520
+<b>cheaper. But our work is try to manage the knowledge bit. I</b>
+
+185
+01:12:36,520 --> 01:12:37,640
+<b>will show some examples here.</b>
+
+186
+01:12:37,720 --> 01:12:47,399
+<b>Further like the challenge of the including is for the LM,</b>
+
+187
+01:12:48,359 --> 01:12:51,600
+<b>it may present for information.</b>
+
+188
+01:12:52,399 --> 01:12:56,920
+<b>The LM only they may present our update information. Maybe</b>
+
+189
+01:12:56,920 --> 01:12:59,279
+<b>it can create hallucination data.</b>
+
+190
+01:13:01,359 --> 01:13:03,720
+<b>Further like they can show this. This</b>
+
+191
+01:13:03,720 --> 01:13:08,359
+<b>one is the overall architecture of the IHG.</b>
+
+192
+01:13:08,359 --> 01:13:13,960
+<b>This form the application here. When the question from the</b>
+
+193
+01:13:13,960 --> 01:13:16,279
+<b>application go to the chatbot application.</b>
+
+194
+01:13:16,880 --> 01:13:18,199
+<b>Chatbot application we call that</b>
+
+195
+01:13:18,199 --> 01:13:19,880
+<b>is layer backend service or API.</b>
+
+196
+01:13:20,159 --> 01:13:27,359
+<b>The chatbot application convert this into the vector.</b>
+
+197
+01:13:29,159 --> 01:13:32,399
+<b>I should go back to the original thing. Before this for</b>
+
+198
+01:13:32,399 --> 01:13:35,720
+<b>people said we have many documents here.</b>
+
+199
+01:13:36,520 --> 01:13:41,720
+<b>A lot of documents here and we need to gather the text from</b>
+
+200
+01:13:41,720 --> 01:13:43,279
+<b>the document into the small chunks.</b>
+
+201
+01:13:44,239 --> 01:13:46,079
+<b>And then every chunk we have to</b>
+
+202
+01:13:46,079 --> 01:13:48,039
+<b>convert every chunk into the vector.</b>
+
+203
+01:13:49,960 --> 01:13:54,359
+<b>By using the some kind of embedding module. Right now I use</b>
+
+204
+01:13:54,359 --> 01:13:56,760
+<b>the BGM3. I will show you in the demo.</b>
+
+205
+01:13:57,600 --> 01:14:02,560
+<b>And put this one in the vector database. For the vector</b>
+
+206
+01:14:02,560 --> 01:14:04,399
+<b>database it's not the final solution.</b>
+
+207
+01:14:05,079 --> 01:14:08,079
+<b>But right now many people use the vector database. But you</b>
+
+208
+01:14:08,079 --> 01:14:09,520
+<b>can use any kind of database that can</b>
+
+209
+01:14:10,479 --> 01:14:14,520
+<b>answer the question from the user. And further like right</b>
+
+210
+01:14:14,520 --> 01:14:16,600
+<b>now we have a lot of data including</b>
+
+211
+01:14:16,600 --> 01:14:20,760
+<b>the vector and text vector and text vector and text. When</b>
+
+212
+01:14:20,760 --> 01:14:23,279
+<b>the user submit the question to the</b>
+
+213
+01:14:23,279 --> 01:14:27,840
+<b>chatbot. Again we have to query the proper answer from this</b>
+
+214
+01:14:27,840 --> 01:14:32,680
+<b>one. But in the in the in the</b>
+
+215
+01:14:32,800 --> 01:14:36,279
+<b>mathematic things we have to convert the question into the</b>
+
+216
+01:14:36,279 --> 01:14:38,399
+<b>vector by using the same module.</b>
+
+217
+01:14:38,399 --> 01:14:40,560
+<b>Like this one the same model the same</b>
+
+218
+01:14:40,560 --> 01:14:42,600
+<b>AI module to convert it to the vector.</b>
+
+219
+01:14:43,039 --> 01:14:45,760
+<b>And then we need to find the stimuli vector.</b>
+
+220
+01:14:50,079 --> 01:14:56,119
+<b>You can choose any number of of of of of the answer like a</b>
+
+221
+01:14:56,119 --> 01:14:59,399
+<b>top k like a top 10 top 5 or top 20.</b>
+
+222
+01:14:59,399 --> 01:15:03,359
+<b>It depends on you. It depends on the system. This one you</b>
+
+223
+01:15:03,359 --> 01:15:05,000
+<b>the developer can can config.</b>
+
+224
+01:15:05,680 --> 01:15:11,760
+<b>And right now okay one one for example we we get that the</b>
+
+225
+01:15:11,760 --> 01:15:15,159
+<b>files the file the file are answered from</b>
+
+226
+01:15:15,159 --> 01:15:20,000
+<b>this. This one will receive the contact clarify answer. And</b>
+
+227
+01:15:20,000 --> 01:15:23,319
+<b>after that the problem including the</b>
+
+228
+01:15:23,800 --> 01:15:30,680
+<b>question and the answer from the vector database. It's not</b>
+
+229
+01:15:30,680 --> 01:15:32,760
+<b>the pre-op question. It's not only the</b>
+
+230
+01:15:33,439 --> 01:15:43,560
+<b>question but include this one. And then the LM will answer</b>
+
+231
+01:15:43,560 --> 01:15:46,119
+<b>that will keep the answer to the user</b>
+
+232
+01:15:46,119 --> 01:15:50,199
+<b>based on this question and the answer the answer we call</b>
+
+233
+01:15:50,199 --> 01:15:53,640
+<b>the retic context. Like this one got get</b>
+
+234
+01:15:53,920 --> 01:15:59,760
+<b>the response to the user. It means that we can use the all</b>
+
+235
+01:15:59,760 --> 01:16:03,039
+<b>the out to date the out data if they</b>
+
+236
+01:16:03,039 --> 01:16:05,079
+<b>don't know the answer is okay but the answer is here.</b>
+
+237
+01:16:06,159 --> 01:16:08,439
+<b>That's why the model is just try to</b>
+
+238
+01:16:08,720 --> 01:16:14,439
+<b>rearrange the answer into the human friendly things.</b>
+
+239
+01:16:14,479 --> 01:16:23,199
+<b>This one is the main main issue of the RHE. We can</b>
+
+240
+01:16:23,199 --> 01:16:26,039
+<b>summarize this one. The first one maybe the</b>
+
+241
+01:16:26,800 --> 01:16:30,159
+<b>the pre-poset is try to convert the text from the many</b>
+
+242
+01:16:30,159 --> 01:16:32,560
+<b>documents into the vector data.</b>
+
+243
+01:16:35,800 --> 01:16:39,000
+<b>Try to give us a more strong optics and</b>
+
+244
+01:16:39,000 --> 01:16:40,960
+<b>change it to the vector data. It means the</b>
+
+245
+01:16:40,960 --> 01:16:50,680
+<b>vector database contains the vector and the text. And we</b>
+
+246
+01:16:50,680 --> 01:16:52,199
+<b>can say that which one becomes the</b>
+
+247
+01:16:52,199 --> 01:16:56,039
+<b>knowledge base. If we say the knowledge base can anything</b>
+
+248
+01:16:56,039 --> 01:16:58,479
+<b>can be vector database can be graph</b>
+
+249
+01:16:58,479 --> 01:17:03,319
+<b>database can be rational database or can be no QL data. It</b>
+
+250
+01:17:03,319 --> 01:17:04,720
+<b>depends on that. If we say that</b>
+
+251
+01:17:04,960 --> 01:17:10,079
+<b>don't base it better. And the step first step step one user</b>
+
+252
+01:17:10,079 --> 01:17:12,600
+<b>send the question to the chatbot</b>
+
+253
+01:17:12,640 --> 01:17:16,960
+<b>application. And the chatbot application change the human</b>
+
+254
+01:17:16,960 --> 01:17:21,279
+<b>question into the vector by using the model.</b>
+
+255
+01:17:22,199 --> 01:17:30,479
+<b>And then this part is the answer like five answer, ten</b>
+
+256
+01:17:30,479 --> 01:17:32,600
+<b>answer or 12 answer something like this</b>
+
+257
+01:17:33,600 --> 01:17:38,159
+<b>to the chatbot. And after that chatbot will set the new</b>
+
+258
+01:17:38,159 --> 01:17:40,680
+<b>problem including the question and the</b>
+
+259
+01:17:40,680 --> 01:17:45,159
+<b>relative context to the LAM. And LAM will rearrange the</b>
+
+260
+01:17:45,159 --> 01:17:48,520
+<b>response into the humanly able thing to the user.</b>
+
+261
+01:17:51,680 --> 01:17:54,359
+<b>The reason that we still need LAM is that</b>
+
+262
+01:17:54,359 --> 01:17:58,000
+<b>this one is not easy to read. It may be the</b>
+
+263
+01:17:58,399 --> 01:18:05,720
+<b>formal word from the local documents. And LAM help to</b>
+
+264
+01:18:06,239 --> 01:18:08,920
+<b>rearrange this into the smooth and easy to</b>
+
+265
+01:18:08,920 --> 01:18:11,840
+<b>create to the user based on the question.</b>
+
+266
+01:18:15,159 --> 01:18:20,800
+<b>We can say that the good system or black it depends on this</b>
+
+267
+01:18:20,800 --> 01:18:23,680
+<b>one. If we have a good knowledge base</b>
+
+268
+01:18:24,239 --> 01:18:30,640
+<b>nobody can answer the correct thing. The</b>
+
+269
+01:18:30,640 --> 01:18:34,000
+<b>black system will give the correct answer.</b>
+
+270
+01:18:35,319 --> 01:18:40,239
+<b>But we use the LAM for the real end that takes only.</b>
+
+271
+01:18:44,479 --> 01:18:49,439
+<b>After that for the term RAG, it is</b>
+
+272
+01:18:49,439 --> 01:18:52,600
+<b>one. For the term RAT4, it is one.</b>
+
+273
+01:18:53,439 --> 01:19:00,880
+<b>Littable is this. Just try to get the answer from the</b>
+
+274
+01:19:00,880 --> 01:19:03,119
+<b>knowledge base. This one is the Littable step.</b>
+
+275
+01:19:05,560 --> 01:19:11,439
+<b>For the A augmented is about the augmented problem by using</b>
+
+276
+01:19:11,439 --> 01:19:13,560
+<b>the RIT answer or the context.</b>
+
+277
+01:19:14,279 --> 01:19:18,600
+<b>This one the augmented. And then the generation is LAM</b>
+
+278
+01:19:18,600 --> 01:19:20,920
+<b>generated respond to the user</b>
+
+279
+01:19:21,399 --> 01:19:25,199
+<b>this is a generation step. That's why we call it RAG.</b>
+
+280
+01:19:28,279 --> 01:19:32,840
+<b>And as I say to improve that the system we have to improve</b>
+
+281
+01:19:32,840 --> 01:19:35,680
+<b>this thing. The way to process the</b>
+
+282
+01:19:35,680 --> 01:19:39,840
+<b>document into the knowledge base this is the critical thing</b>
+
+283
+01:19:39,840 --> 01:19:41,399
+<b>that you have to do in order to</b>
+
+284
+01:19:41,439 --> 01:19:46,199
+<b>make the precise system. And for the LAM</b>
+
+285
+01:19:46,199 --> 01:19:50,159
+<b>model I can say that sometimes this one</b>
+
+286
+01:19:50,960 --> 01:19:54,159
+<b>it will fix that okay it's five answer. The in the five</b>
+
+287
+01:19:54,159 --> 01:19:56,560
+<b>answer maybe sometime they have the</b>
+
+288
+01:19:56,840 --> 01:20:01,920
+<b>three answer and the other two maybe not the event. But</b>
+
+289
+01:20:01,920 --> 01:20:04,840
+<b>only only three three answer events.</b>
+
+290
+01:20:05,680 --> 01:20:10,279
+<b>The good LM can help you to filter the</b>
+
+291
+01:20:10,279 --> 01:20:13,439
+<b>good answer the correct answer to the user.</b>
+
+292
+01:20:14,520 --> 01:20:15,880
+<b>This one it helps to have you use the</b>
+
+293
+01:20:15,880 --> 01:20:20,680
+<b>power of LM. If we use a small LM the small LM</b>
+
+294
+01:20:21,279 --> 01:20:27,079
+<b>just the small M they try to conclude this thing into the</b>
+
+295
+01:20:27,079 --> 01:20:28,439
+<b>answer. That's why maybe it's</b>
+
+296
+01:20:28,479 --> 01:20:32,960
+<b>included channel in good noise. And if we use the good</b>
+
+297
+01:20:32,960 --> 01:20:36,520
+<b>enough LM they try to select only the</b>
+
+298
+01:20:36,520 --> 01:20:42,039
+<b>little one one to the user. It means that we cannot use any</b>
+
+299
+01:20:42,039 --> 01:20:43,920
+<b>LM we need to good enough LM.</b>
+
+300
+01:20:45,119 --> 01:20:51,119
+<b>For example right now I use the quin maybe</b>
+
+301
+01:20:51,119 --> 01:20:55,079
+<b>30 billion this one is a sort of good one.</b>
+
+302
+01:20:55,840 --> 01:20:59,039
+<b>Or the new one maybe you can use Gemma</b>
+
+303
+01:20:59,039 --> 01:21:04,039
+<b>for 12 billion right now. I didn't use</b>
+
+304
+01:21:04,560 --> 01:21:07,640
+<b>maybe I hope that it may be the good</b>
+
+305
+01:21:07,640 --> 01:21:10,720
+<b>one to be the candidate for the LM.</b>
+
+306
+01:21:17,239 --> 01:21:19,079
+<b>Okay here I did the document step</b>
+
+307
+01:21:19,079 --> 01:21:20,920
+<b>we have the problem pair like this.</b>
+
+308
+01:21:22,119 --> 01:21:24,880
+<b>This one the problem pair like this. Use the following</b>
+
+309
+01:21:24,880 --> 01:21:26,920
+<b>context to answer the question below</b>
+
+310
+01:21:27,039 --> 01:21:31,039
+<b>the context is here. This one is the list of answers that</b>
+
+311
+01:21:31,039 --> 01:21:32,279
+<b>we got from the knowledge bed.</b>
+
+312
+01:21:34,039 --> 01:21:36,159
+<b>And then we say that the question is</b>
+
+313
+01:21:36,159 --> 01:21:37,720
+<b>this this one is the neutral question</b>
+
+314
+01:21:38,399 --> 01:21:40,279
+<b>and we put the answer colon in order</b>
+
+315
+01:21:40,279 --> 01:21:41,920
+<b>to make the M to answer the question.</b>
+
+316
+01:21:41,920 --> 01:21:48,479
+<b>Or sometimes we can make more fancy from</b>
+
+317
+01:21:48,479 --> 01:21:54,399
+<b>like this. You are an expert in architectural,</b>
+
+318
+01:21:55,319 --> 01:22:00,520
+<b>you are expert in medical domain, you are expert in the</b>
+
+319
+01:22:02,000 --> 01:22:04,680
+<b>the Lego about the export something like that.</b>
+
+320
+01:22:06,000 --> 01:22:08,720
+<b>And answer the following question in the</b>
+
+321
+01:22:08,720 --> 01:22:11,800
+<b>language. Give some like a Thai language,</b>
+
+322
+01:22:12,159 --> 01:22:16,760
+<b>English language or some other language else. And then do</b>
+
+323
+01:22:16,760 --> 01:22:18,840
+<b>the same thing just put the answer here,</b>
+
+324
+01:22:19,159 --> 01:22:21,159
+<b>the list of answer here and put</b>
+
+325
+01:22:21,159 --> 01:22:23,760
+<b>the question from the user here.</b>
+
+326
+01:22:27,960 --> 01:22:31,800
+<b>For example here if you are you are expert in food please</b>
+
+327
+01:22:31,800 --> 01:22:33,279
+<b>answer the question in English</b>
+
+328
+01:22:34,680 --> 01:22:37,520
+<b>and then this one and and I can say that okay keep the</b>
+
+329
+01:22:37,520 --> 01:22:40,840
+<b>answer only to let the LM to keep the answer</b>
+
+330
+01:22:40,840 --> 01:22:44,479
+<b>only. And this one use the only</b>
+
+331
+01:22:44,479 --> 01:22:46,439
+<b>provide contact with this one basic.</b>
+
+332
+01:22:46,920 --> 01:22:54,439
+<b>Better this one the key feeling is about it one cook a hot</b>
+
+333
+01:22:54,439 --> 01:22:56,520
+<b>grill flip carefully and top it something</b>
+
+334
+01:22:56,560 --> 01:23:00,640
+<b>like this and I got when I can finish cooking the Japanese</b>
+
+335
+01:23:00,640 --> 01:23:04,720
+<b>and this and the LM will try to</b>
+
+336
+01:23:05,520 --> 01:23:07,960
+<b>analyze this and keep the answer that</b>
+
+337
+01:23:07,960 --> 01:23:10,199
+<b>corresponding to the question from the user.</b>
+
+338
+01:23:12,359 --> 01:23:17,119
+<b>This thing we get from the knowledge bed and after that</b>
+
+339
+01:23:17,119 --> 01:23:21,079
+<b>this problem will submit to the LM</b>
+
+340
+01:23:21,720 --> 01:23:24,720
+<b>and LM will be will answer I will</b>
+
+341
+01:23:24,720 --> 01:23:26,800
+<b>show some example like this one.</b>
+
+342
+01:23:27,159 --> 01:23:29,640
+<b>We just try to use from any LM like this</b>
+
+343
+01:23:29,640 --> 01:23:35,319
+<b>one just copy this problem and try to maybe</b>
+
+344
+01:23:35,600 --> 01:23:42,640
+<b>go to some LM layer chat GPT and</b>
+
+345
+01:23:42,640 --> 01:23:45,520
+<b>put this problem into the chat GPT</b>
+
+346
+01:23:48,880 --> 01:23:52,600
+<b>and based on this the LM will answer this.</b>
+
+347
+01:23:54,600 --> 01:23:56,720
+<b>You can finish the cook when that both</b>
+
+348
+01:23:56,720 --> 01:23:58,399
+<b>side are golden brows something like this.</b>
+
+349
+01:24:05,680 --> 01:24:10,279
+<b>And I will show you another example another</b>
+
+350
+01:24:10,279 --> 01:24:15,560
+<b>example is this one if I if I only this one</b>
+
+351
+01:24:15,560 --> 01:24:23,920
+<b>it can be this one I will go to another application like a</b>
+
+352
+01:24:23,920 --> 01:24:27,439
+<b>typhoon typhoon is the Thai LM.</b>
+
+353
+01:24:36,399 --> 01:24:40,319
+<b>I put that who donated land to my university.</b>
+
+354
+01:24:42,760 --> 01:24:47,039
+<b>The answer is the land of KMTL</b>
+
+355
+01:24:47,039 --> 01:24:48,640
+<b>it donated by the king Pupi Poon.</b>
+
+356
+01:24:49,359 --> 01:24:53,279
+<b>King that the former king this one is not correct okay this</b>
+
+357
+01:24:53,279 --> 01:24:55,960
+<b>one is not correct but after I</b>
+
+358
+01:24:56,159 --> 01:25:02,520
+<b>use the IHG system after I use the IHG system like this one</b>
+
+359
+01:25:02,520 --> 01:25:04,760
+<b>you are expert in KMTL please</b>
+
+360
+01:25:04,800 --> 01:25:07,640
+<b>answer the following question in English and this one you</b>
+
+361
+01:25:07,640 --> 01:25:10,479
+<b>contact like this one is held by the</b>
+
+362
+01:25:10,960 --> 01:25:14,840
+<b>memorial to japa ya sugo waya what something I did jokun da</b>
+
+363
+01:25:14,840 --> 01:25:16,720
+<b>haan and a lot of things okay</b>
+
+364
+01:25:17,279 --> 01:25:20,479
+<b>and I give this information to the LM.</b>
+
+365
+01:25:23,680 --> 01:25:24,840
+<b>Give this information to the LM.</b>
+
+366
+01:25:24,880 --> 01:25:34,640
+<b>And the answer is Miss Liam.</b>
+
+367
+01:25:36,079 --> 01:25:39,039
+<b>This one is the correct one this uh</b>
+
+368
+01:25:39,039 --> 01:25:41,960
+<b>this lady donated land to the KMTL.</b>
+
+369
+01:25:44,239 --> 01:25:46,079
+<b>That's why the leg become the powerful</b>
+
+370
+01:25:46,079 --> 01:25:49,600
+<b>when the LM is not smart enough okay.</b>
+
+371
+01:25:55,680 --> 01:25:59,279
+<b>And next I will go to the vector</b>
+
+372
+01:25:59,279 --> 01:26:03,039
+<b>database for the vector database is about uh</b>
+
+373
+01:26:03,039 --> 01:26:06,520
+<b>the first time we need to change every</b>
+
+374
+01:26:06,520 --> 01:26:09,279
+<b>sentence every product up into the vector.</b>
+
+375
+01:26:10,399 --> 01:26:13,560
+<b>For the vector they have a word emitting like I is changed</b>
+
+376
+01:26:13,560 --> 01:26:15,399
+<b>to vector one we change the vector</b>
+
+377
+01:26:15,520 --> 01:26:18,159
+<b>two change the vector after that they conclude the vector</b>
+
+378
+01:26:18,159 --> 01:26:21,399
+<b>into the one single vector like this one</b>
+
+379
+01:26:21,439 --> 01:26:24,840
+<b>we have a lot a lot more there and to</b>
+
+380
+01:26:24,840 --> 01:26:27,039
+<b>find that this time with a win vector</b>
+
+381
+01:26:27,920 --> 01:26:30,479
+<b>they have many will have a few ways the</b>
+
+382
+01:26:30,479 --> 01:26:32,680
+<b>first one this one is the token vector</b>
+
+383
+01:26:34,079 --> 01:26:36,279
+<b>you can you can look at the vector to the dimension like</b>
+
+384
+01:26:36,279 --> 01:26:38,960
+<b>this one is that word cat word tiger and word</b>
+
+385
+01:26:38,960 --> 01:26:43,279
+<b>fish. While we use the even by the UK</b>
+
+386
+01:26:43,279 --> 01:26:46,159
+<b>this time the cat and feet they hold together</b>
+
+387
+01:26:47,119 --> 01:26:50,880
+<b>but cat and tiger they are the cat is far</b>
+
+388
+01:26:50,880 --> 01:26:54,399
+<b>from tiger but if you another one like close</b>
+
+389
+01:26:54,399 --> 01:27:00,319
+<b>side this time we check at the ankle right now the cat is</b>
+
+390
+01:27:00,319 --> 01:27:02,039
+<b>close to tiger based on the ankle</b>
+
+391
+01:27:02,319 --> 01:27:07,399
+<b>and the cat is far from fish made on the ankle. In your</b>
+
+392
+01:27:07,399 --> 01:27:09,840
+<b>term you have to choose the proper one</b>
+
+393
+01:27:10,079 --> 01:27:12,920
+<b>you can understand or the whole side is done you can check</b>
+
+394
+01:27:12,920 --> 01:27:15,800
+<b>the model if the model is trained from</b>
+
+395
+01:27:15,840 --> 01:27:18,880
+<b>the whole side is done you choose the whole side is done if</b>
+
+396
+01:27:18,880 --> 01:27:21,159
+<b>the model they train from the UK</b>
+
+397
+01:27:21,199 --> 01:27:25,479
+<b>understand you have to choose the UK understand once my</b>
+
+398
+01:27:25,479 --> 01:27:28,279
+<b>student one of my students they use the</b>
+
+399
+01:27:28,279 --> 01:27:31,960
+<b>UK understand and they said a lot of incorrect answer I</b>
+
+400
+01:27:31,960 --> 01:27:33,520
+<b>asked them to share to the whole side</b>
+
+401
+01:27:33,760 --> 01:27:36,800
+<b>and after that it become the correct answer</b>
+
+402
+01:27:36,800 --> 01:27:40,319
+<b>it's based on the model but I can say that</b>
+
+403
+01:27:40,640 --> 01:27:48,560
+<b>a lot of model they use the close side is done. Here is the</b>
+
+404
+01:27:48,560 --> 01:27:50,880
+<b>vector database like this one we have</b>
+
+405
+01:27:50,880 --> 01:27:54,520
+<b>a lot of text chunks and use the embedding model and change</b>
+
+406
+01:27:54,520 --> 01:27:56,319
+<b>the text this one is one chunk two</b>
+
+407
+01:27:56,319 --> 01:28:00,880
+<b>chunk three chunk four chunk and n chunk and then this is</b>
+
+408
+01:28:00,880 --> 01:28:04,159
+<b>an example of that vector and this one is</b>
+
+409
+01:28:04,159 --> 01:28:07,479
+<b>a chunk of data in the human readable text this one is a</b>
+
+410
+01:28:07,479 --> 01:28:09,760
+<b>text vector and text vector and text</b>
+
+411
+01:28:12,119 --> 01:28:17,159
+<b>and after that when the user ask something this one is the</b>
+
+412
+01:28:17,159 --> 01:28:19,399
+<b>example operation in the text</b>
+
+413
+01:28:19,600 --> 01:28:22,760
+<b>we pass to the embedding model again and it change to the</b>
+
+414
+01:28:22,760 --> 01:28:26,680
+<b>vector and after that we go to the creative process</b>
+
+415
+01:28:26,960 --> 01:28:33,000
+<b>and this one is fine the cross vector the technical</b>
+
+416
+01:28:33,000 --> 01:28:37,039
+<b>crossing to this that's why they answer this and this</b>
+
+417
+01:28:37,640 --> 01:28:41,239
+<b>we do the top n with the text and you</b>
+
+418
+01:28:41,239 --> 01:28:43,880
+<b>can choose anything like top five top ten</b>
+
+419
+01:28:44,079 --> 01:28:47,560
+<b>top twenty it depend on you or even on your application</b>
+
+420
+01:28:53,119 --> 01:28:59,199
+<b>uh I'm familiar with this model VTM3 as I still use it</b>
+
+421
+01:28:59,199 --> 01:29:02,399
+<b>because VTM3 is a train for the question and answer</b>
+
+422
+01:29:03,359 --> 01:29:09,399
+<b>and it's not too big and it can say that it's multi-link</b>
+
+423
+01:29:09,399 --> 01:29:12,560
+<b>worth you can work with many uh many</b>
+
+424
+01:29:13,359 --> 01:29:13,880
+<b>language</b>
+
+425
+01:29:17,840 --> 01:29:22,760
+<b>and then here is some except something inside the VTM3 but</b>
+
+426
+01:29:22,760 --> 01:29:24,720
+<b>I want to show much about that</b>
+
+427
+01:29:25,520 --> 01:29:27,239
+<b>and we can say that we can we can</b>
+
+428
+01:29:27,239 --> 01:29:30,600
+<b>train retain the VTM3 by yourself yeah</b>
+
+429
+01:29:32,359 --> 01:29:35,039
+<b>okay we have a little bit time to</b>
+
+430
+01:29:35,039 --> 01:29:37,800
+<b>go to the hand on uh with the search</b>
+
+431
+01:29:38,079 --> 01:29:41,880
+<b>when you have to lie you can you can go to this example</b>
+
+432
+01:29:42,960 --> 01:29:45,840
+<b>this one example in the google so</b>
+
+433
+01:29:45,840 --> 01:29:48,920
+<b>I will keep you in the zoom again</b>
+
+434
+01:29:50,920 --> 01:29:51,279
+<b>where is zoom actually</b>
+
+435
+01:30:02,600 --> 01:30:03,600
+<b>um</b>
+
+436
+01:30:11,800 --> 01:30:17,760
+<b>uh h e demo and then I go back to that</b>
+
+437
+01:30:21,800 --> 01:30:24,760
+<b>I go back to that uh to the to my slide again</b>
+
+438
+01:30:25,119 --> 01:30:31,439
+<b>yeah when you click this let me go to this one</b>
+
+439
+01:30:37,840 --> 01:30:42,399
+<b>uh sorry right now it's not connected uh once you open this</b>
+
+440
+01:30:42,399 --> 01:30:44,600
+<b>please uh you you you cannot edit</b>
+
+441
+01:30:44,600 --> 01:30:47,399
+<b>anything but if you want to edit something you just go to</b>
+
+442
+01:30:47,399 --> 01:30:49,079
+<b>the file and then save a copy in your drive</b>
+
+443
+01:30:49,119 --> 01:30:54,560
+<b>and after this you can edit this one and then I recommend</b>
+
+444
+01:30:54,560 --> 01:30:58,239
+<b>you to change the GPU to the T4</b>
+
+445
+01:30:58,319 --> 01:31:03,279
+<b>because this one is you need to work with the GPU okay I</b>
+
+446
+01:31:03,279 --> 01:31:06,000
+<b>start from import something first</b>
+
+447
+01:31:07,039 --> 01:31:11,079
+<b>and then I uh download the model VTM3 here</b>
+
+448
+01:31:13,520 --> 01:31:15,039
+<b>we need to wait a little bit uh</b>
+
+449
+01:31:15,039 --> 01:31:17,760
+<b>because the VTM3 is about two two gigabytes</b>
+
+450
+01:31:34,760 --> 01:31:41,560
+<b>and after uh after that I I I made that in uh emitting</b>
+
+451
+01:31:41,560 --> 01:31:44,439
+<b>function input is take and the output</b>
+
+452
+01:31:44,479 --> 01:31:49,359
+<b>is the vector like this one and then I implement the cosine</b>
+
+453
+01:31:49,359 --> 01:31:51,720
+<b>similarity input is the vector a and</b>
+
+454
+01:31:51,720 --> 01:31:59,600
+<b>vector b and the output is the the cosine similarity and</b>
+
+455
+01:31:59,600 --> 01:32:01,159
+<b>first one I try to check that</b>
+
+456
+01:32:01,359 --> 01:32:05,800
+<b>okay the third vector is about uh the word character city</b>
+
+457
+01:32:05,800 --> 01:32:09,319
+<b>type capital city this one is the first one</b>
+
+458
+01:32:10,079 --> 01:32:15,439
+<b>and then I show the example vector of this one</b>
+
+459
+01:32:17,880 --> 01:32:22,279
+<b>the lens of vector is about one oh uh</b>
+
+460
+01:32:22,279 --> 01:32:26,680
+<b>1024 this this is because of the the</b>
+
+461
+01:32:26,960 --> 01:32:32,000
+<b>mvgm3 when we use change to another model it may be</b>
+
+462
+01:32:32,000 --> 01:32:36,399
+<b>different for example the gpt2 is about 768</b>
+
+463
+01:32:37,600 --> 01:32:40,239
+<b>for the llama maybe uh bigger than this</b>
+
+464
+01:32:40,239 --> 01:32:44,000
+<b>twice okay here is example of the third vector</b>
+
+465
+01:32:44,479 --> 01:32:47,840
+<b>for the second vector is a bankok the third vector is tesla</b>
+
+466
+01:32:49,520 --> 01:32:51,119
+<b>and then I check the whole side really</b>
+
+467
+01:32:51,119 --> 01:32:54,760
+<b>between the capital city of thai line and bankok</b>
+
+468
+01:32:55,760 --> 01:32:58,279
+<b>that's the symmetry is about 0.6</b>
+
+469
+01:32:58,399 --> 01:33:02,880
+<b>one we try to check with the capital</b>
+
+470
+01:33:02,880 --> 01:33:05,800
+<b>city of capital city of thai and the tesla</b>
+
+471
+01:33:06,880 --> 01:33:10,840
+<b>it becomes lower like this one it means that we can believe</b>
+
+472
+01:33:10,840 --> 01:33:14,199
+<b>that uh the vector the the uh the</b>
+
+473
+01:33:14,199 --> 01:33:18,920
+<b>sentence to work something like this and then I try adding</b>
+
+474
+01:33:18,920 --> 01:33:21,279
+<b>the data this one is I I got the data</b>
+
+475
+01:33:21,359 --> 01:33:26,239
+<b>about the the rule in the exam room like all this might be</b>
+
+476
+01:33:26,239 --> 01:33:27,359
+<b>completely something like this</b>
+
+477
+01:33:28,760 --> 01:33:32,279
+<b>I put this in the uh vector database uh in the data bed</b>
+
+478
+01:33:32,279 --> 01:33:35,640
+<b>like this one right now I use the pandas</b>
+
+479
+01:33:35,920 --> 01:33:39,359
+<b>this one is simple one okay in in your in your work you</b>
+
+480
+01:33:39,359 --> 01:33:41,520
+<b>have to use another thing not this one</b>
+
+481
+01:33:42,720 --> 01:33:47,399
+<b>you have to use some real production like a pikone or uh</b>
+
+482
+01:33:47,399 --> 01:33:51,039
+<b>open source uh vector database or something</b>
+
+483
+01:33:51,159 --> 01:33:56,920
+<b>else and this data are there are 10 documents here and</b>
+
+484
+01:33:56,920 --> 01:34:00,600
+<b>after that I try to embed in vector into the</b>
+
+485
+01:34:02,079 --> 01:34:06,079
+<b>every text into the vector wait a little</b>
+
+486
+01:34:06,079 --> 01:34:08,600
+<b>bit okay and check the data right this one</b>
+
+487
+01:34:09,600 --> 01:34:11,199
+<b>this one you text and this is the</b>
+
+488
+01:34:11,199 --> 01:34:13,520
+<b>vector text and vector take a vector</b>
+
+489
+01:34:14,239 --> 01:34:17,119
+<b>like this</b>
+
+490
+01:34:18,960 --> 01:34:23,159
+<b>and this is the the way to uh the function to query the</b>
+
+491
+01:34:23,159 --> 01:34:28,680
+<b>query is I I try to uh I try to get that</b>
+
+492
+01:34:29,239 --> 01:34:34,119
+<b>I try to get that uh real in that the answer from the the</b>
+
+493
+01:34:34,119 --> 01:34:35,560
+<b>high the the really close answer to the</b>
+
+494
+01:34:35,600 --> 01:34:41,359
+<b>uh to the last one for example when I add that can student</b>
+
+495
+01:34:41,359 --> 01:34:44,159
+<b>submit before half hour okay sorry</b>
+
+496
+01:34:44,159 --> 01:34:51,319
+<b>can student submit before half hour it show this one Italy</b>
+
+497
+01:34:51,319 --> 01:34:54,880
+<b>alliance again the first answer is no</b>
+
+498
+01:34:54,880 --> 01:34:56,720
+<b>student allow to leave the exam room</b>
+
+499
+01:34:56,720 --> 01:34:59,479
+<b>during the first 30 minutes something like this</b>
+
+500
+01:34:59,920 --> 01:34:59,960
+<b>it depend on this
+vector and this vector</b>
+
+501
+01:35:00,039 --> 01:35:07,560
+<b>once you change the question for example</b>
+
+502
+01:35:07,560 --> 01:35:16,560
+<b>uh can student uh put take a cow creator</b>
+
+503
+01:35:17,279 --> 01:35:20,560
+<b>uh take a cow creator</b>
+
+504
+01:35:24,319 --> 01:35:25,600
+<b>it's made the alliance to something</b>
+
+505
+01:35:25,600 --> 01:35:32,039
+<b>else okay can student bring a smart boss</b>
+
+506
+01:35:36,239 --> 01:35:37,720
+<b>it become this one</b>
+
+507
+01:35:39,840 --> 01:35:42,119
+<b>okay every chain two and uh uh can see</b>
+
+508
+01:35:42,119 --> 01:35:45,039
+<b>can student submit before half an hour</b>
+
+509
+01:35:46,840 --> 01:35:51,439
+<b>the answer become this this one we have to believe the the</b>
+
+510
+01:35:51,439 --> 01:35:53,319
+<b>world the the vector space okay</b>
+
+511
+01:35:54,560 --> 01:35:59,119
+<b>and after that uh I use the IH but</b>
+
+512
+01:35:59,119 --> 01:36:01,560
+<b>right now for the more they're like a</b>
+
+513
+01:36:02,560 --> 01:36:05,680
+<b>for sure we have to download the model but right now I use</b>
+
+514
+01:36:05,680 --> 01:36:09,079
+<b>the Gemini service like this one</b>
+
+515
+01:36:10,960 --> 01:36:13,560
+<b>if you need this one you have to file</b>
+
+516
+01:36:13,560 --> 01:36:16,159
+<b>your Gemini key and put the Gemini key here</b>
+
+517
+01:36:18,239 --> 01:36:21,199
+<b>put the Gemini key and here you have to</b>
+
+518
+01:36:21,199 --> 01:36:23,119
+<b>file your Gemini key by yourself okay and put</b>
+
+519
+01:36:23,199 --> 01:36:28,439
+<b>Gemini key here and I try to check that Gemini is working</b>
+
+520
+01:36:28,439 --> 01:36:30,399
+<b>or not by acting at what is the</b>
+
+521
+01:36:30,399 --> 01:36:32,840
+<b>capital city of Thailand it answer that man called it's</b>
+
+522
+01:36:32,840 --> 01:36:40,359
+<b>okay and after that I try to uh make that</b>
+
+523
+01:36:41,039 --> 01:36:45,840
+<b>function for getting the LML so like this one get our MDS</b>
+
+524
+01:36:45,840 --> 01:36:48,520
+<b>spawn and then we put that question here</b>
+
+525
+01:36:50,279 --> 01:36:52,199
+<b>and I hope that it show the answer like</b>
+
+526
+01:36:52,199 --> 01:36:55,079
+<b>this one one if we as I check that okay</b>
+
+527
+01:36:55,119 --> 01:36:58,159
+<b>if we say hello world the Gemini will</b>
+
+528
+01:36:58,159 --> 01:37:00,680
+<b>answer this one hello there something like this</b>
+
+529
+01:37:03,399 --> 01:37:06,000
+<b>and after that I create the prompt template like this one</b>
+
+530
+01:37:06,000 --> 01:37:09,840
+<b>you are as AI model as done your</b>
+
+531
+01:37:09,840 --> 01:37:12,359
+<b>expert in answering the question with the national tone</b>
+
+532
+01:37:12,359 --> 01:37:14,600
+<b>answer the question based on the</b>
+
+533
+01:37:14,800 --> 01:37:18,880
+<b>foreign context the contact is here original question is</b>
+
+534
+01:37:18,880 --> 01:37:21,880
+<b>here this one is the function that I made</b>
+
+535
+01:37:23,439 --> 01:37:26,680
+<b>it is I have to check this one okay if I have the user</b>
+
+536
+01:37:26,680 --> 01:37:28,640
+<b>question here and the list of</b>
+
+537
+01:37:28,640 --> 01:37:34,159
+<b>contact for the vector db here the prompt become this this</b>
+
+538
+01:37:34,159 --> 01:37:35,840
+<b>one is a list of contact for the vector</b>
+
+539
+01:37:35,840 --> 01:37:39,840
+<b>db and this one is the user question okay after we apply</b>
+
+540
+01:37:39,840 --> 01:37:41,800
+<b>everything we go to the query</b>
+
+541
+01:37:42,800 --> 01:37:45,279
+<b>the question is user question is can</b>
+
+542
+01:37:45,279 --> 01:37:48,359
+<b>students submit before sorry before half an hour</b>
+
+543
+01:37:49,439 --> 01:37:55,119
+<b>and then I set the top three lists out like this one just</b>
+
+544
+01:37:55,119 --> 01:37:56,600
+<b>check the top three lists out</b>
+
+545
+01:37:56,640 --> 01:38:07,000
+<b>and after that I try to get that answer like this one get</b>
+
+546
+01:38:07,000 --> 01:38:09,079
+<b>the top one the query is here top</b>
+
+547
+01:38:09,079 --> 01:38:14,159
+<b>end is here no student allow this one is the context I will</b>
+
+548
+01:38:14,159 --> 01:38:16,279
+<b>I will show you problem again</b>
+
+549
+01:38:16,479 --> 01:38:19,800
+<b>it become this one you are AI extend you</b>
+
+550
+01:38:19,800 --> 01:38:21,880
+<b>are expert in answering the question and</b>
+
+551
+01:38:22,039 --> 01:38:23,520
+<b>answering this one this one is the</b>
+
+552
+01:38:23,520 --> 01:38:25,920
+<b>thing that we kept from the vector database</b>
+
+553
+01:38:29,680 --> 01:38:33,600
+<b>and this one is original question is student can you submit</b>
+
+554
+01:38:33,600 --> 01:38:36,479
+<b>half an hour and after that I put this</b>
+
+555
+01:38:36,479 --> 01:38:46,279
+<b>thing into the ln answer this one no student are not</b>
+
+556
+01:38:46,279 --> 01:38:48,319
+<b>allowed to leave the exam room during the first</b>
+
+557
+01:38:48,319 --> 01:38:52,760
+<b>30 minutes of the testing period this</b>
+
+558
+01:38:52,760 --> 01:38:56,399
+<b>one what we get from the from the ih system</b>
+
+559
+01:38:58,000 --> 01:39:03,560
+<b>okay what what we try to to to ask again the answer is</b>
+
+560
+01:39:03,560 --> 01:39:05,560
+<b>different a little bit this one is about</b>
+
+561
+01:39:06,319 --> 01:39:08,960
+<b>ln mechanism that not provide the</b>
+
+562
+01:39:08,960 --> 01:39:11,159
+<b>same answer with the same prompt okay</b>
+
+563
+01:39:11,199 --> 01:39:20,119
+<b>okay after this is it your is it you it is your turn to</b>
+
+564
+01:39:20,119 --> 01:39:24,680
+<b>choose the proper tool for this one</b>
+
+565
+01:39:25,159 --> 01:39:26,319
+<b>like a</b>
+
+566
+01:39:28,000 --> 01:39:32,720
+<b>like for the vector database this one you can use your own</b>
+
+567
+01:39:32,720 --> 01:39:34,600
+<b>vector database the proper one for the</b>
+
+568
+01:39:34,640 --> 01:39:39,520
+<b>production layer pichorn or the open source or the pg</b>
+
+569
+01:39:39,520 --> 01:39:42,199
+<b>vector something like this for the lm you</b>
+
+570
+01:39:42,199 --> 01:39:46,039
+<b>can use any downloadable lm that open sort</b>
+
+571
+01:39:46,039 --> 01:39:50,000
+<b>in layer llama quinn gem or something else</b>
+
+572
+01:39:52,159 --> 01:39:55,039
+<b>and then you have to do a big both say that you have to</b>
+
+573
+01:39:55,039 --> 01:39:56,920
+<b>transform the pdf into the text</b>
+
+574
+01:39:57,279 --> 01:40:00,640
+<b>and then make the text into the vector you have to find a</b>
+
+575
+01:40:00,640 --> 01:40:02,279
+<b>proper emitting module by yourself</b>
+
+576
+01:40:02,319 --> 01:40:10,600
+<b>so even though you can try to bgm3 first okay and then uh</b>
+
+577
+01:40:10,600 --> 01:40:13,079
+<b>one more thing about this one</b>
+
+578
+01:40:14,319 --> 01:40:18,399
+<b>if as if you know that you are your hackathon is about the</b>
+
+579
+01:40:18,399 --> 01:40:22,079
+<b>lego for sorry I need to go to the</b>
+
+580
+01:40:22,079 --> 01:40:25,720
+<b>this next slide and this slide</b>
+
+581
+01:40:25,800 --> 01:40:35,600
+<b>okay your work is about a lego that's why uh that's why we</b>
+
+582
+01:40:35,600 --> 01:40:37,520
+<b>have to go to another database</b>
+
+583
+01:40:37,920 --> 01:40:40,159
+<b>for example in another case you can use</b>
+
+584
+01:40:40,159 --> 01:40:42,279
+<b>for the emitting module you can use the image</b>
+
+585
+01:40:42,640 --> 01:40:47,079
+<b>to be the vector that your your your system can find can</b>
+
+586
+01:40:47,079 --> 01:40:49,039
+<b>answer with the image or you can change</b>
+
+587
+01:40:49,039 --> 01:40:54,880
+<b>the sound into the into the vector or so okay for your work</b>
+
+588
+01:40:54,880 --> 01:40:56,279
+<b>you may choose the knowledge graph</b>
+
+589
+01:40:57,359 --> 01:41:02,800
+<b>because of the rule is not a normal text you for the for</b>
+
+590
+01:41:02,800 --> 01:41:05,119
+<b>the law is not you cannot read from the</b>
+
+591
+01:41:05,119 --> 01:41:08,880
+<b>top to the bottom but the rule is that you can make is</b>
+
+592
+01:41:08,880 --> 01:41:10,800
+<b>connect one section to another section</b>
+
+593
+01:41:10,800 --> 01:41:14,359
+<b>and two maybe to another document that's why we have to use</b>
+
+594
+01:41:14,359 --> 01:41:16,319
+<b>the knowledge graph for solving this</b>
+
+595
+01:41:17,279 --> 01:41:19,680
+<b>uh for for so internet app like this</b>
+
+596
+01:41:19,680 --> 01:41:23,600
+<b>one the application and they call the last</b>
+
+597
+01:41:23,600 --> 01:41:26,960
+<b>circuit model sorry lot of a module here and then they</b>
+
+598
+01:41:26,960 --> 01:41:28,439
+<b>change the question into the vector</b>
+
+599
+01:41:29,039 --> 01:41:33,560
+<b>and after that become the vector source and then it's go to</b>
+
+600
+01:41:33,560 --> 01:41:36,920
+<b>the uh graph database to find</b>
+
+601
+01:41:36,920 --> 01:41:40,720
+<b>answer from the graph database and then return the answer</b>
+
+602
+01:41:40,720 --> 01:41:44,800
+<b>to the application and this one right now</b>
+
+603
+01:41:45,279 --> 01:41:50,399
+<b>many solution they use the old 4j for another thing for the</b>
+
+604
+01:41:50,399 --> 01:41:52,439
+<b>energy that the q-read term is</b>
+
+605
+01:41:52,439 --> 01:41:57,439
+<b>the we call the cipher the cipher is that it's similar to</b>
+
+606
+01:41:57,439 --> 01:41:59,720
+<b>the scl but it's for the graph knowledge</b>
+
+607
+01:42:00,640 --> 01:42:03,680
+<b>they have solution like this change that the question the</b>
+
+608
+01:42:03,680 --> 01:42:05,720
+<b>human question into the cipher</b>
+
+609
+01:42:05,920 --> 01:42:07,880
+<b>to hurry a little bit but you have to</b>
+
+610
+01:42:07,880 --> 01:42:09,880
+<b>try it yourself okay by using the old 4j</b>
+
+611
+01:42:10,399 --> 01:42:15,520
+<b>it's become the couplet like this one the document into the</b>
+
+612
+01:42:15,520 --> 01:42:17,119
+<b>document the document is the graph</b>
+
+613
+01:42:17,319 --> 01:42:19,159
+<b>the local document to the graph and then</b>
+
+614
+01:42:19,159 --> 01:42:25,119
+<b>uh the system can curate the graph no drop</b>
+
+615
+01:42:25,119 --> 01:42:26,720
+<b>down to the base instead of the</b>
+
+616
+01:42:26,720 --> 01:42:28,600
+<b>vector with an answer to the user</b>
+
+617
+01:42:29,680 --> 01:42:34,199
+<b>and for the couplet you have because of the the the local</b>
+
+618
+01:42:34,199 --> 01:42:35,159
+<b>document they have the article inside</b>
+
+619
+01:42:35,199 --> 01:42:40,319
+<b>let me write a product and item and then some article they</b>
+
+620
+01:42:40,319 --> 01:42:43,720
+<b>connect to another product or some</b>
+
+621
+01:42:43,720 --> 01:42:46,600
+<b>sub item connect to another item from different documents</b>
+
+622
+01:42:46,600 --> 01:42:48,960
+<b>that why you have to link this by</b>
+
+623
+01:42:48,960 --> 01:42:55,319
+<b>yourself or use the ai module try to link this one but you</b>
+
+624
+01:42:55,319 --> 01:42:57,840
+<b>have to you have to review the result</b>
+
+625
+01:42:58,399 --> 01:43:02,560
+<b>but this one is a big big process big human process try to</b>
+
+626
+01:43:02,560 --> 01:43:04,560
+<b>convert the document into the</b>
+
+627
+01:43:05,359 --> 01:43:07,279
+<b>to the shank and then link the</b>
+
+628
+01:43:07,279 --> 01:43:09,319
+<b>similar shank together by using the graph</b>
+
+629
+01:43:12,640 --> 01:43:17,479
+<b>for example this one document a article a this one uh is it</b>
+
+630
+01:43:17,479 --> 01:43:19,239
+<b>means this product graph and this</b>
+
+631
+01:43:19,239 --> 01:43:24,319
+<b>sub item they work this item this one is your task your big</b>
+
+632
+01:43:24,319 --> 01:43:27,159
+<b>task to make a smart little process</b>
+
+633
+01:43:28,319 --> 01:43:33,560
+<b>okay another solution is go to the graph like i never try</b>
+
+634
+01:43:33,560 --> 01:43:36,800
+<b>but uh most of many of my friends in</b>
+
+635
+01:43:36,800 --> 01:43:42,079
+<b>the e30 they say that okay Microsoft graph is also a good</b>
+
+636
+01:43:42,079 --> 01:43:44,760
+<b>solution to make that uh the graph like</b>
+
+637
+01:43:47,439 --> 01:43:48,760
+<b>okay in summary like it's about</b>
+
+638
+01:43:48,760 --> 01:43:50,680
+<b>this thing uh it's a receiver process</b>
+
+639
+01:43:50,720 --> 01:43:56,800
+<b>a is about the augment from the question and some answer</b>
+
+640
+01:43:56,800 --> 01:43:59,640
+<b>and then the generation is that</b>
+
+641
+01:43:59,720 --> 01:44:04,079
+<b>lm generate the answer to the user but the big task is try</b>
+
+642
+01:44:04,079 --> 01:44:07,760
+<b>to convert the document into the</b>
+
+643
+01:44:07,960 --> 01:44:11,079
+<b>knowledge bed this is your task the</b>
+
+644
+01:44:11,079 --> 01:44:13,199
+<b>system is smart or not it depends on this</b>
+
+645
+01:44:14,680 --> 01:44:16,720
+<b>the major is this the minor is</b>
+
+646
+01:44:16,720 --> 01:44:19,600
+<b>lm the major is knowledge bed okay</b>
+
+647
+01:44:21,159 --> 01:44:28,920
+<b>i think that i use a lot of time okay okay yes the time is</b>
+
+648
+01:44:28,920 --> 01:44:32,479
+<b>okay okay thank you uh dr latacai</b>
+
+649
+01:44:32,479 --> 01:44:36,399
+<b>for your sharing and give a basic knowledge and also the</b>
+
+650
+01:44:36,399 --> 01:44:39,359
+<b>technical knowledge of the lm and the</b>
+
+651
+01:44:39,439 --> 01:44:45,439
+<b>latacai okay we have one question in the q and a chat box</b>
+
+652
+01:44:45,439 --> 01:44:50,880
+<b>okay how do you deal with ai that</b>
+
+653
+01:44:51,640 --> 01:44:56,680
+<b>genuinely follow the answer in the documents versus one</b>
+
+654
+01:44:56,680 --> 01:44:59,079
+<b>that sometimes just produce a</b>
+
+655
+01:44:59,439 --> 01:45:04,119
+<b>possible sounding answer sometimes like a</b>
+
+656
+01:45:04,119 --> 01:45:06,920
+<b>hallucination answer and colleague answer</b>
+
+657
+01:45:06,960 --> 01:45:10,239
+<b>how do you deal with the ai like that</b>
+
+658
+01:45:10,239 --> 01:45:15,199
+<b>this is a big problem for the like system</b>
+
+659
+01:45:16,399 --> 01:45:20,279
+<b>that that's uh the for for the knowledge bed they don't</b>
+
+660
+01:45:20,279 --> 01:45:21,760
+<b>know the correct answer or not they</b>
+
+661
+01:45:21,760 --> 01:45:24,359
+<b>know that okay this answer is close to the</b>
+
+662
+01:45:24,359 --> 01:45:29,079
+<b>question based on the vector they know that</b>
+
+663
+01:45:29,079 --> 01:45:32,960
+<b>it's it's mathematic similarity they don't know the human</b>
+
+664
+01:45:32,960 --> 01:45:34,600
+<b>thing okay they don't don't know the</b>
+
+665
+01:45:34,640 --> 01:45:39,680
+<b>human meaning and then i say that uh if we have the good</b>
+
+666
+01:45:39,680 --> 01:45:42,960
+<b>enough lm model the good enough lm model</b>
+
+667
+01:45:43,439 --> 01:45:50,279
+<b>can filter the correct answer to the user this one this i</b>
+
+668
+01:45:50,279 --> 01:45:52,159
+<b>can say like right now because what</b>
+
+669
+01:45:52,159 --> 01:45:55,319
+<b>are you does really some more model because a stupid model</b>
+
+670
+01:45:55,319 --> 01:45:57,319
+<b>they're trying to mix everything</b>
+
+671
+01:45:57,359 --> 01:46:01,319
+<b>together but when i use this good enough model they try to</b>
+
+672
+01:46:01,319 --> 01:46:04,399
+<b>filter some uh something else and then</b>
+
+673
+01:46:05,000 --> 01:46:07,920
+<b>try to keep only the precise answer and keep to the user</b>
+
+674
+01:46:07,920 --> 01:46:12,119
+<b>okay i think the hackathon now is</b>
+
+675
+01:46:12,239 --> 01:46:18,079
+<b>we try to build a smart model yeah not stupid model okay</b>
+
+676
+01:46:18,079 --> 01:46:21,279
+<b>sometimes you you understood that</b>
+
+677
+01:46:21,279 --> 01:46:25,239
+<b>that the the the participant maybe have to uh fight you in</b>
+
+678
+01:46:25,239 --> 01:46:29,319
+<b>the model to make small smother okay okay</b>
+
+679
+01:46:29,840 --> 01:46:33,840
+<b>dr lata chai i think we will join together again after dr</b>
+
+680
+01:46:33,840 --> 01:46:37,800
+<b>dr chills finish their her presentation</b>
+
+681
+01:46:38,560 --> 01:46:44,399
+<b>okay uh okay we will continue with uh dr uh professor sheng</b>
+
+682
+01:46:44,399 --> 01:46:49,039
+<b>chil okay we'll come back again and</b>
+
+683
+01:46:49,439 --> 01:46:55,079
+<b>okay uh now is uh uh uh last session of</b>
+
+684
+01:46:55,079 --> 01:47:00,079
+<b>the webinar okay let me introduce the speaker</b>
+
+685
+01:47:02,159 --> 01:47:07,239
+<b>smart woman professor sheng chil she</b>
+
+686
+01:47:07,239 --> 01:47:10,079
+<b>she's professor of engineering at mainus</b>
+
+687
+01:47:11,039 --> 01:47:12,199
+<b>international engineering</b>
+
+688
+01:47:12,199 --> 01:47:18,119
+<b>co-collec uh her research interests are</b>
+
+689
+01:47:18,880 --> 01:47:21,920
+<b>center on machine learning and data mining</b>
+
+690
+01:47:21,920 --> 01:47:26,800
+<b>particularly the applications in data privacy</b>
+
+691
+01:47:27,680 --> 01:47:31,279
+<b>educational data analytics urban data</b>
+
+692
+01:47:31,279 --> 01:47:34,600
+<b>modeling and sustainability analysis</b>
+
+693
+01:47:35,520 --> 01:47:39,159
+<b>molly saidly her work has focused on</b>
+
+694
+01:47:39,159 --> 01:47:43,079
+<b>the foundation models for ai safety</b>
+
+695
+01:47:43,920 --> 01:47:48,159
+<b>agentic ai for learning analytics and ai for carbon</b>
+
+696
+01:47:48,159 --> 01:47:50,800
+<b>accounting reporting and verification</b>
+
+697
+01:47:52,000 --> 01:47:58,279
+<b>okay now please give a warm welcome to dr sheng chil okay</b>
+
+698
+01:47:58,279 --> 01:48:00,600
+<b>dr sheng chil the floor is your now</b>
+
+699
+01:48:00,640 --> 01:48:13,760
+<b>house thank you so much chair um</b>
+
+700
+01:48:14,159 --> 01:48:17,960
+<b>sorry chair um could i share my slide not sure</b>
+
+701
+01:48:18,000 --> 01:48:18,159
+<b>so</b>
+
+702
+01:48:18,159 --> 01:48:35,920
+<b>are you showing um sure the button or the back</b>
+
+703
+01:48:51,079 --> 01:48:54,199
+<b>sorry the is the sharing button at the bottom it's not</b>
+
+704
+01:48:54,199 --> 01:48:57,920
+<b>appear not sure really you may you may</b>
+
+705
+01:48:57,920 --> 01:49:05,800
+<b>out of screen and go back again come back again yeah no no</b>
+
+706
+01:49:05,800 --> 01:49:08,920
+<b>no not go back from from so much uh</b>
+
+707
+01:49:08,920 --> 01:49:12,199
+<b>uh out from the screen first and and chatting again</b>
+
+708
+01:49:12,279 --> 01:49:17,800
+<b>wow the sharing button is in at the</b>
+
+709
+01:49:17,800 --> 01:49:22,279
+<b>bottom of your screen yeah appear here</b>
+
+710
+01:49:22,279 --> 01:49:28,560
+<b>do you want me to share for you yeah yes yes yes</b>
+
+711
+01:49:28,560 --> 01:49:37,920
+<b>all right it happens all the time i</b>
+
+712
+01:49:37,920 --> 01:49:39,920
+<b>know bob i'm not happy enough time</b>
+
+713
+01:49:44,600 --> 01:49:48,199
+<b>and for the for the limit question review we will catch up</b>
+
+714
+01:49:48,199 --> 01:49:51,079
+<b>together after professor shuan finish</b>
+
+715
+01:49:51,079 --> 01:49:55,920
+<b>okay yeah now yeah okay thanks</b>
+
+716
+01:49:55,920 --> 01:49:58,760
+<b>so much okay okay go ahead yes</b>
+
+717
+01:50:00,279 --> 01:50:04,840
+<b>um okay thank you everyone and good afternoon good evening</b>
+
+718
+01:50:04,840 --> 01:50:06,600
+<b>um so i'm so honored to be here</b>
+
+719
+01:50:06,640 --> 01:50:12,119
+<b>uh to share for some of my experience um there's all the</b>
+
+720
+01:50:12,119 --> 01:50:15,600
+<b>sharpness that is here and uh first of</b>
+
+721
+01:50:15,600 --> 01:50:21,319
+<b>all so the the first speaker already already give quite a</b>
+
+722
+01:50:21,319 --> 01:50:23,840
+<b>lot of detail so i will have quite a</b>
+
+723
+01:50:23,840 --> 01:50:27,520
+<b>similar content but i try to avoid like the similar</b>
+
+724
+01:50:27,520 --> 01:50:29,720
+<b>strengths our first speaker just gave</b>
+
+725
+01:50:30,399 --> 01:50:35,880
+<b>uh so my focus for this session is actually to discuss</b>
+
+726
+01:50:35,880 --> 01:50:38,800
+<b>about actually the uh questions that we</b>
+
+727
+01:50:38,800 --> 01:50:44,800
+<b>just saw um in the q&a sessions is to discuss about the</b>
+
+728
+01:50:44,800 --> 01:50:47,880
+<b>quality of for lm answers or the ai</b>
+
+729
+01:50:47,920 --> 01:50:53,720
+<b>system in general and um i would try to give some advices</b>
+
+730
+01:50:53,720 --> 01:50:56,039
+<b>um to how to control the quality</b>
+
+731
+01:50:56,880 --> 01:51:02,920
+<b>um from the ai systems in general about nowadays the</b>
+
+732
+01:51:02,920 --> 01:51:05,039
+<b>general ai systems to give us the</b>
+
+733
+01:51:05,680 --> 01:51:09,560
+<b>the answers and about how we can human beings to audit</b>
+
+734
+01:51:09,560 --> 01:51:13,520
+<b>those answers um and just a little bit to</b>
+
+735
+01:51:13,520 --> 01:51:16,920
+<b>interact a little bit uh background about myself so i'm</b>
+
+736
+01:51:16,920 --> 01:51:18,520
+<b>from a north international international</b>
+
+737
+01:51:19,479 --> 01:51:26,560
+<b>engineering college um so i teach in china and i got my phd</b>
+
+738
+01:51:26,560 --> 01:51:29,399
+<b>uh specialized in data privacy</b>
+
+739
+01:51:29,680 --> 01:51:32,560
+<b>actually a long time ago from national university of</b>
+
+740
+01:51:32,560 --> 01:51:36,800
+<b>singapore and uh since then i also worked in</b>
+
+741
+01:51:36,800 --> 01:51:43,800
+<b>the industry uh for telecom um for telecom standards oh wow</b>
+
+742
+01:51:43,800 --> 01:51:47,159
+<b>and uh then now i'm working as</b>
+
+743
+01:51:47,199 --> 01:51:51,439
+<b>the assistant professor in at monose university uh in</b>
+
+744
+01:51:51,439 --> 01:51:54,680
+<b>ireland so i kind of know like these three</b>
+
+745
+01:51:54,680 --> 01:51:58,720
+<b>different kind of angles towards the data quality problems</b>
+
+746
+01:51:58,720 --> 01:52:02,880
+<b>specifically for the data intense systems</b>
+
+747
+01:52:02,880 --> 01:52:07,760
+<b>or like the ai system in general for quite a few years um</b>
+
+748
+01:52:07,760 --> 01:52:10,840
+<b>but i surely uh that you know you've</b>
+
+749
+01:52:10,880 --> 01:52:15,239
+<b>seen the currents um a few years especially the current of</b>
+
+750
+01:52:15,239 --> 01:52:17,760
+<b>probably three years the one sitting</b>
+
+751
+01:52:17,760 --> 01:52:23,560
+<b>ai system so i would just want to uh uh highlight that um</b>
+
+752
+01:52:23,560 --> 01:52:26,520
+<b>so even even for me like the findings</b>
+
+753
+01:52:26,520 --> 01:52:31,279
+<b>that share the findings from the ai system um based on my</b>
+
+754
+01:52:31,279 --> 01:52:33,000
+<b>observations changing every day</b>
+
+755
+01:52:33,039 --> 01:52:36,680
+<b>so today is mostly about many of our</b>
+
+756
+01:52:36,680 --> 01:52:39,960
+<b>perspectives and the examples we've seen</b>
+
+757
+01:52:40,399 --> 01:52:43,439
+<b>not just particularly in the legal context but in general</b>
+
+758
+01:52:43,439 --> 01:52:46,119
+<b>how we design how we design this kind</b>
+
+759
+01:52:46,119 --> 01:52:49,920
+<b>of ai system to have sort of quality control in terms of</b>
+
+760
+01:52:49,920 --> 01:52:53,319
+<b>the answers uh jingtong go ahead please</b>
+
+761
+01:52:53,520 --> 01:53:01,159
+<b>the next slide yeah so uh as i mentioned uh just now so the</b>
+
+762
+01:53:01,159 --> 01:53:02,960
+<b>focus of this session is about building</b>
+
+763
+01:53:03,119 --> 01:53:08,720
+<b>responsible ai system i will have a little like more um</b>
+
+764
+01:53:08,720 --> 01:53:11,840
+<b>discussion about agentic ai specifically</b>
+
+765
+01:53:11,920 --> 01:53:16,840
+<b>because i know um i've also seen the recordings in previous</b>
+
+766
+01:53:16,840 --> 01:53:20,880
+<b>sessions that even for the legal experts</b>
+
+767
+01:53:21,279 --> 01:53:23,439
+<b>that they heard about these words about the</b>
+
+768
+01:53:23,439 --> 01:53:28,239
+<b>ai agents sort of thing so i will divide it</b>
+
+769
+01:53:28,520 --> 01:53:32,199
+<b>into the sessions into three parts first of all i have a</b>
+
+770
+01:53:32,199 --> 01:53:34,960
+<b>discuss about the challenges that the</b>
+
+771
+01:53:34,960 --> 01:53:38,159
+<b>problems that we have about large mv model</b>
+
+772
+01:53:38,159 --> 01:53:42,119
+<b>especially when we use it to do the judgment</b>
+
+773
+01:53:42,800 --> 01:53:45,880
+<b>and the second one is about how how we measure how we</b>
+
+774
+01:53:45,880 --> 01:53:48,640
+<b>outdid those ariam success in terms of</b>
+
+775
+01:53:48,640 --> 01:53:52,960
+<b>the judgment the third one is to how to align the larger</b>
+
+776
+01:53:52,960 --> 01:53:55,399
+<b>model with human principles so as you can</b>
+
+777
+01:53:55,439 --> 01:53:59,039
+<b>see that there's quite some like technical parts but</b>
+
+778
+01:53:59,039 --> 01:54:01,800
+<b>there's also quite some of the observations</b>
+
+779
+01:54:01,800 --> 01:54:05,800
+<b>and the findings from the human from the human centric side</b>
+
+780
+01:54:05,800 --> 01:54:09,039
+<b>perspective uh so jingtong next slide</b>
+
+781
+01:54:09,039 --> 01:54:14,479
+<b>please yeah so uh first of all i just want to highlight</b>
+
+782
+01:54:14,479 --> 01:54:16,920
+<b>that so the problem that this hekerson</b>
+
+783
+01:54:16,960 --> 01:54:20,880
+<b>tried to solve it's self is a very complex for analyzing</b>
+
+784
+01:54:20,880 --> 01:54:24,680
+<b>digital trade policy itself um even for</b>
+
+785
+01:54:24,800 --> 01:54:29,119
+<b>like human beings i mean i'm not from a legal background</b>
+
+786
+01:54:29,119 --> 01:54:33,680
+<b>but even for the legal experts um</b>
+
+787
+01:54:33,760 --> 01:54:37,800
+<b>it's very complicated to work flow and the complexity comes</b>
+
+788
+01:54:37,800 --> 01:54:39,880
+<b>from like three aspects i put here</b>
+
+789
+01:54:39,880 --> 01:54:43,319
+<b>the first one is the legal purpose and policy life cycle</b>
+
+790
+01:54:43,319 --> 01:54:46,960
+<b>for digital trade policies so as we can see</b>
+
+791
+01:54:46,960 --> 01:54:49,840
+<b>the news all the all the times that the policy changing all</b>
+
+792
+01:54:49,840 --> 01:54:51,399
+<b>the time especially from for the</b>
+
+793
+01:54:51,439 --> 01:54:56,840
+<b>united states right um and for other people uh like me even</b>
+
+794
+01:54:56,840 --> 01:54:58,680
+<b>to understand the legal terminologies</b>
+
+795
+01:54:58,960 --> 01:55:01,720
+<b>it's quite challenging and the policy is changing all the</b>
+
+796
+01:55:01,720 --> 01:55:05,359
+<b>times and we see the like one policy</b>
+
+797
+01:55:05,680 --> 01:55:09,960
+<b>came out and later on have the amendment so it's can be</b>
+
+798
+01:55:09,960 --> 01:55:12,960
+<b>virus and can be very quick so that's one</b>
+
+799
+01:55:12,960 --> 01:55:17,439
+<b>of the challenge for for us to um design this kind of</b>
+
+800
+01:55:17,439 --> 01:55:19,279
+<b>system because you need to have this mindset</b>
+
+801
+01:55:19,560 --> 01:55:22,199
+<b>it's changing all the time it has a life cycle for the</b>
+
+802
+01:55:22,199 --> 01:55:25,279
+<b>policy so the second one is the policy</b>
+
+803
+01:55:25,279 --> 01:55:29,159
+<b>it's there in terms of the digital treating is very complex</b>
+
+804
+01:55:29,159 --> 01:55:32,800
+<b>and it has a regional divergence</b>
+
+805
+01:55:33,279 --> 01:55:37,600
+<b>um in that sense i mean like for example europe where we</b>
+
+806
+01:55:37,600 --> 01:55:41,079
+<b>have the gdpr for the privacy uh for the</b>
+
+807
+01:55:41,119 --> 01:55:47,520
+<b>data privacy we have recently have the eo act um for the</b>
+
+808
+01:55:47,520 --> 01:55:49,920
+<b>particular to regulate the ai systems</b>
+
+809
+01:55:50,399 --> 01:55:53,920
+<b>and i've been in singapore i know that um there's like um</b>
+
+810
+01:55:53,920 --> 01:55:56,039
+<b>in singapore side tend to be on the</b>
+
+811
+01:55:56,039 --> 01:56:00,960
+<b>strict side right there's quite a lot of rules uh about the</b>
+
+812
+01:56:00,960 --> 01:56:04,560
+<b>regulations and um from in china in</b>
+
+813
+01:56:04,560 --> 01:56:07,640
+<b>taiwan believe that all kinds of different kind of policies</b>
+
+814
+01:56:07,640 --> 01:56:11,960
+<b>um for that what i want to highlight</b>
+
+815
+01:56:11,960 --> 01:56:15,720
+<b>is that we need to have this kind of mindset even like uh</b>
+
+816
+01:56:15,720 --> 01:56:19,159
+<b>human things like us to navigate um</b>
+
+817
+01:56:19,960 --> 01:56:23,119
+<b>among all those policies in different regions it's kind of</b>
+
+818
+01:56:23,119 --> 01:56:25,039
+<b>challenging instead it's not just for</b>
+
+819
+01:56:25,039 --> 01:56:29,920
+<b>ai it's it's also for us as humans and the third one is and</b>
+
+820
+01:56:29,920 --> 01:56:32,560
+<b>and hopefully that you're aware of some</b>
+
+821
+01:56:32,560 --> 01:56:38,479
+<b>kind of standards are there i put uh one one screenshot</b>
+
+822
+01:56:38,479 --> 01:56:41,199
+<b>actually from our hacker organization</b>
+
+823
+01:56:41,600 --> 01:56:47,119
+<b>website um so it's about the pillar 11 uh the standards</b>
+
+824
+01:56:47,119 --> 01:56:49,479
+<b>already there so pillar 11 in case</b>
+
+825
+01:56:49,479 --> 01:56:54,600
+<b>you don't know it's relevant to the ict uh boost uh</b>
+
+826
+01:56:54,600 --> 01:56:57,239
+<b>specifically the trading for the telecom industry</b>
+
+827
+01:56:57,359 --> 01:57:00,279
+<b>so i used to working as i mentioned i used to working for</b>
+
+828
+01:57:00,279 --> 01:57:04,039
+<b>the telecom uh sector so i kind of</b>
+
+829
+01:57:04,039 --> 01:57:07,720
+<b>know that the standards in this zone it's kind of already</b>
+
+830
+01:57:07,720 --> 01:57:10,640
+<b>provide a lot of details so if you've seen</b>
+
+831
+01:57:10,640 --> 01:57:14,640
+<b>the analysis that i put the links at the bottom so you can</b>
+
+832
+01:57:14,640 --> 01:57:17,079
+<b>see that for pillar 11 it's already</b>
+
+833
+01:57:17,199 --> 01:57:22,159
+<b>like in terms of uh how easy it is like the complexity it's</b>
+
+834
+01:57:22,159 --> 01:57:25,520
+<b>already an easy one for uh for</b>
+
+835
+01:57:25,520 --> 01:57:29,439
+<b>the ai system to handle in general the legal side has um</b>
+
+836
+01:57:29,439 --> 01:57:31,800
+<b>the legal expert will consider pillar 11</b>
+
+837
+01:57:31,800 --> 01:57:36,039
+<b>is kind of easy area to deal with that's because we have a</b>
+
+838
+01:57:36,039 --> 01:57:39,319
+<b>lot of standards there uh why for a lot</b>
+
+839
+01:57:39,319 --> 01:57:42,920
+<b>of other pillars and we have so many pillars here for the</b>
+
+840
+01:57:42,920 --> 01:57:45,720
+<b>hacker zone it tend to be very complex and</b>
+
+841
+01:57:45,720 --> 01:57:51,039
+<b>there's no standards and that's kind of uh give us another</b>
+
+842
+01:57:51,039 --> 01:57:53,039
+<b>layer of complexity that because if</b>
+
+843
+01:57:53,039 --> 01:57:56,640
+<b>there's no standards and even human beings are even for the</b>
+
+844
+01:57:56,640 --> 01:57:59,039
+<b>legal experts it's difficult to</b>
+
+845
+01:57:59,680 --> 01:58:03,159
+<b>navigate all this complexity yeah so this is like the three</b>
+
+846
+01:58:03,159 --> 01:58:05,359
+<b>challenges i want to just point it out</b>
+
+847
+01:58:05,439 --> 01:58:08,840
+<b>here it's not just for the ai system but the problem itself</b>
+
+848
+01:58:08,840 --> 01:58:10,840
+<b>is complicated so the goal of</b>
+
+849
+01:58:10,840 --> 01:58:14,560
+<b>this hacker zone is of course you leave the workload uh for</b>
+
+850
+01:58:14,560 --> 01:58:16,039
+<b>the legal experts so it's not</b>
+
+851
+01:58:16,079 --> 01:58:18,520
+<b>just for a single like uh information</b>
+
+852
+01:58:18,520 --> 01:58:21,800
+<b>retrieving system uh next slide please</b>
+
+853
+01:58:23,680 --> 01:58:29,600
+<b>yeah so um i just mentioned about the complexity um and i</b>
+
+854
+01:58:29,600 --> 01:58:31,359
+<b>really know i'm done with saying like all</b>
+
+855
+01:58:31,359 --> 01:58:34,479
+<b>kinds of tools and especially nowadays um</b>
+
+856
+01:58:34,479 --> 01:58:37,720
+<b>i want to point out that especially for the</b>
+
+857
+01:58:37,760 --> 01:58:40,239
+<b>rest of the years right we've seen the searching interface</b>
+
+858
+01:58:40,239 --> 01:58:45,079
+<b>i would like to put um um the ai tools</b>
+
+859
+01:58:45,119 --> 01:58:49,199
+<b>like what we have like chat gbt or you use deep seek or</b>
+
+860
+01:58:49,199 --> 01:58:51,960
+<b>cloud code all kinds of about all kinds</b>
+
+861
+01:58:51,960 --> 01:58:55,640
+<b>of out all kind of the ai tools we have it's kind of</b>
+
+862
+01:58:55,640 --> 01:58:59,319
+<b>interface with search information so if we</b>
+
+863
+01:58:59,319 --> 01:59:01,840
+<b>think about in this way the search the searching interface</b>
+
+864
+01:59:01,840 --> 01:59:03,720
+<b>is changing but the complexity is</b>
+
+865
+01:59:03,800 --> 01:59:07,960
+<b>actually never decreases so the problem is that we have</b>
+
+866
+01:59:07,960 --> 01:59:10,159
+<b>like all kinds of tools in the past we</b>
+
+867
+01:59:10,159 --> 01:59:14,279
+<b>have like database right here the postcards and my my</b>
+
+868
+01:59:14,279 --> 01:59:17,680
+<b>secure and nowadays we have the searching</b>
+
+869
+01:59:18,239 --> 01:59:23,800
+<b>with the ai interface or chat gbt so the tools we have more</b>
+
+870
+01:59:23,800 --> 01:59:25,800
+<b>tools doesn't mean that it's effective</b>
+
+871
+01:59:26,239 --> 01:59:30,039
+<b>and the tools um especially nowadays the ai tools if you</b>
+
+872
+01:59:30,039 --> 01:59:32,560
+<b>use cloud code those are terminal base</b>
+
+873
+01:59:32,560 --> 01:59:37,239
+<b>um or codex you you you can experience that the tools</b>
+
+874
+01:59:37,239 --> 01:59:40,319
+<b>itself has like learning curves um and many</b>
+
+875
+01:59:40,319 --> 01:59:43,119
+<b>of them are kind of hidden the features are kind of hidden</b>
+
+876
+01:59:43,119 --> 01:59:45,520
+<b>or like the complexity of the tools</b>
+
+877
+01:59:46,239 --> 01:59:50,840
+<b>is very well hidden and the third one is the tools have the</b>
+
+878
+01:59:50,840 --> 01:59:53,359
+<b>floors and we need to be aware of that</b>
+
+879
+01:59:53,920 --> 01:59:57,720
+<b>before we actually use it and this is very important i will</b>
+
+880
+01:59:57,720 --> 01:59:59,720
+<b>uh mention it uh a bit in the</b>
+
+881
+01:59:59,760 --> 02:00:03,720
+<b>in the later the slides about the floors we have especially</b>
+
+882
+02:00:03,720 --> 02:00:06,279
+<b>for the nowadays uh gen ai system</b>
+
+883
+02:00:06,800 --> 02:00:09,800
+<b>and just to have this mindset uh it's very</b>
+
+884
+02:00:09,800 --> 02:00:12,279
+<b>important and can be very helpful when we</b>
+
+885
+02:00:12,279 --> 02:00:15,439
+<b>actually design because this hackerson is about design ai</b>
+
+886
+02:00:15,439 --> 02:00:18,079
+<b>system and first one is that the tools</b>
+
+887
+02:00:18,079 --> 02:00:22,239
+<b>need to be adapted to be useful so this is this hackerson</b>
+
+888
+02:00:22,239 --> 02:00:25,319
+<b>session this webinar is about how we</b>
+
+889
+02:00:25,359 --> 02:00:27,920
+<b>adapt them to this particular scenario</b>
+
+890
+02:00:27,920 --> 02:00:31,920
+<b>for legal contact next next slide please</b>
+
+891
+02:00:31,920 --> 02:00:37,399
+<b>all right next yeah okay here we go so um</b>
+
+892
+02:00:37,399 --> 02:00:39,920
+<b>so the good news before we go into the time</b>
+
+893
+02:00:39,920 --> 02:00:43,560
+<b>to talk the good news are the promise of our arms uh as we</b>
+
+894
+02:00:43,560 --> 02:00:46,279
+<b>wait uh as we all can't experience it</b>
+
+895
+02:00:46,279 --> 02:00:50,159
+<b>right so the first while putting the uh uh the first part</b>
+
+896
+02:00:50,159 --> 02:00:52,359
+<b>is about save time so for our arm</b>
+
+897
+02:00:52,760 --> 02:00:55,319
+<b>it can process a lot of</b>
+
+898
+02:00:55,319 --> 02:00:58,800
+<b>documents in parallel if you use charge</b>
+
+899
+02:00:58,800 --> 02:01:14,680
+<b>with charge gpt very fast i would say and nowadays we have</b>
+
+900
+02:01:14,680 --> 02:01:17,000
+<b>them to have this summarization retrieval</b>
+
+901
+02:01:17,439 --> 02:01:20,319
+<b>reference findings all they are all kinds of features you</b>
+
+902
+02:01:20,319 --> 02:01:23,279
+<b>can use receive um my part of work</b>
+
+903
+02:01:23,279 --> 02:01:27,479
+<b>time of time and i believe it's also for your workflow and</b>
+
+904
+02:01:27,479 --> 02:01:29,680
+<b>the second one is it makes searching</b>
+
+905
+02:01:29,760 --> 02:01:33,960
+<b>and i think it's never in the past but now uh the gen ai</b>
+
+906
+02:01:33,960 --> 02:01:35,920
+<b>can have the searching more personal on</b>
+
+907
+02:01:35,920 --> 02:01:40,680
+<b>context aware um if you know how it works like three years</b>
+
+908
+02:01:40,680 --> 02:01:43,560
+<b>ago the charge gpt and now uh what you</b>
+
+909
+02:01:43,600 --> 02:01:47,039
+<b>can do uh with charge gpt you can use you can upload the</b>
+
+910
+02:01:47,039 --> 02:01:49,159
+<b>files right you can ask question just</b>
+
+911
+02:01:50,159 --> 02:01:54,279
+<b>relevant to that files you you pair the links to your your</b>
+
+912
+02:01:54,279 --> 02:01:56,439
+<b>serial charge gpt so it makes your</b>
+
+913
+02:01:56,439 --> 02:02:01,199
+<b>searching uh very personalized very context aware and the</b>
+
+914
+02:02:01,199 --> 02:02:03,880
+<b>third one is that the error actually is</b>
+
+915
+02:02:03,880 --> 02:02:09,680
+<b>kind of a new tools we have um to navigating ambiguity um</b>
+
+916
+02:02:09,680 --> 02:02:11,640
+<b>by that what i meant is if you</b>
+
+917
+02:02:11,680 --> 02:02:14,720
+<b>use google search right you use keyword searching and you</b>
+
+918
+02:02:14,720 --> 02:02:17,039
+<b>sometimes you can you can sense that you</b>
+
+919
+02:02:17,039 --> 02:02:20,119
+<b>need you need to be kind of very precise about to put the</b>
+
+920
+02:02:20,119 --> 02:02:22,520
+<b>keywords in terms of the searching</b>
+
+921
+02:02:23,039 --> 02:02:27,359
+<b>uh interface why m can handle this kind of ambiguous</b>
+
+922
+02:02:27,359 --> 02:02:29,920
+<b>queries and that's quite powerful</b>
+
+923
+02:02:30,319 --> 02:02:33,159
+<b>and that's it's even like more powerful</b>
+
+924
+02:02:33,159 --> 02:02:35,800
+<b>when the situation or information is missing</b>
+
+925
+02:02:35,920 --> 02:02:39,560
+<b>and in the legal context and it happens all the time so in</b>
+
+926
+02:02:39,560 --> 02:02:40,800
+<b>the beginning of the conversation</b>
+
+927
+02:02:41,359 --> 02:02:44,960
+<b>and information may be like incomplete or like under</b>
+
+928
+02:02:44,960 --> 02:02:47,439
+<b>specified and or even conflicting</b>
+
+929
+02:02:47,920 --> 02:02:50,920
+<b>in this case it's like the policy can complicate each other</b>
+
+930
+02:02:50,920 --> 02:02:53,520
+<b>but that's not the problem for uh the</b>
+
+931
+02:02:53,520 --> 02:02:59,199
+<b>um to process information and the last one is also um the</b>
+
+932
+02:02:59,199 --> 02:03:01,920
+<b>focus of this hacker song is to make the</b>
+
+933
+02:03:01,920 --> 02:03:07,199
+<b>workflow um uh automated and that's specifically what we</b>
+
+934
+02:03:07,199 --> 02:03:10,079
+<b>mentioned the recent system we have about</b>
+
+935
+02:03:10,479 --> 02:03:15,079
+<b>use ai agents it's very powerful because you can uh plan</b>
+
+936
+02:03:15,079 --> 02:03:17,560
+<b>you can actually specify what you want</b>
+
+937
+02:03:17,560 --> 02:03:21,760
+<b>the ai agents to do the planning you can ask them to make</b>
+
+938
+02:03:21,760 --> 02:03:24,800
+<b>decisions use tools and take actions</b>
+
+939
+02:03:25,119 --> 02:03:29,520
+<b>right with a very limited uh human situation so that's</b>
+
+940
+02:03:29,520 --> 02:03:32,279
+<b>quite a good advantage of uh nowadays</b>
+
+941
+02:03:32,640 --> 02:03:37,319
+<b>the cutting edge uh the gni system so next slide please</b>
+
+942
+02:03:39,840 --> 02:03:44,600
+<b>yeah so however even all those given all those like uh</b>
+
+943
+02:03:44,600 --> 02:03:48,159
+<b>advantage we have nowadays uh for gni</b>
+
+944
+02:03:48,800 --> 02:03:52,840
+<b>and i put a screenshot here that at the bottom of your uh</b>
+
+945
+02:03:52,840 --> 02:03:54,640
+<b>charge gpt interface right highlights</b>
+
+946
+02:03:55,079 --> 02:03:58,760
+<b>here even since the day one like charge gpt is ai and can</b>
+
+947
+02:03:58,760 --> 02:04:03,000
+<b>make mistakes and it's out there and i i</b>
+
+948
+02:04:03,000 --> 02:04:08,279
+<b>and i think i want to be aware of that so um ai can make</b>
+
+949
+02:04:08,279 --> 02:04:11,119
+<b>mistakes and it's all because of like</b>
+
+950
+02:04:11,119 --> 02:04:15,039
+<b>uh a different kind of things first thing first reason is</b>
+
+951
+02:04:15,039 --> 02:04:17,720
+<b>that uh so i think most people aware of</b>
+
+952
+02:04:17,800 --> 02:04:22,319
+<b>the problem about the frustration um first frustration i</b>
+
+953
+02:04:22,319 --> 02:04:24,239
+<b>will explain it a little bit later</b>
+
+954
+02:04:24,399 --> 02:04:29,600
+<b>but that's like um the major problem that we have is uh</b>
+
+955
+02:04:29,600 --> 02:04:33,279
+<b>with the large end model and it is structure</b>
+
+956
+02:04:33,680 --> 02:04:37,720
+<b>structure means that we can really not um avoid this</b>
+
+957
+02:04:37,720 --> 02:04:40,560
+<b>problem because we trained a larger model</b>
+
+958
+02:04:40,640 --> 02:04:44,840
+<b>in that way and that's why we need to we need to deal with</b>
+
+959
+02:04:44,840 --> 02:04:48,039
+<b>that right so second one is it's uh</b>
+
+960
+02:04:48,520 --> 02:04:54,039
+<b>not transparent in terms of the iam itself um like how it</b>
+
+961
+02:04:54,039 --> 02:04:57,479
+<b>produces answers um it's basically</b>
+
+962
+02:04:57,680 --> 02:05:02,600
+<b>to us is the black box but nowadays the gen ai um the ai</b>
+
+963
+02:05:02,600 --> 02:05:05,640
+<b>agent um sides thing can bring our</b>
+
+964
+02:05:06,399 --> 02:05:10,159
+<b>reasoning step inside so that's kind of a new thing we have</b>
+
+965
+02:05:10,159 --> 02:05:12,800
+<b>uh but i just want you to be aware</b>
+
+966
+02:05:13,279 --> 02:05:19,680
+<b>aware of that um so at the root the iam the language um</b>
+
+967
+02:05:19,680 --> 02:05:22,680
+<b>models are not transparent it's</b>
+
+968
+02:05:22,680 --> 02:05:26,800
+<b>basically a black box so third one uh is about out of</b>
+
+969
+02:05:26,800 --> 02:05:30,319
+<b>alignment of the human uh of human</b>
+
+970
+02:05:30,960 --> 02:05:35,880
+<b>human instructions i i pretty sure that's uh you experience</b>
+
+971
+02:05:35,880 --> 02:05:37,880
+<b>that it's just your ai don't listen to</b>
+
+972
+02:05:37,880 --> 02:05:42,039
+<b>you kind of fit one for the fitting mode when we use large</b>
+
+973
+02:05:42,039 --> 02:05:44,960
+<b>end models so how do you have a feeling</b>
+
+974
+02:05:44,960 --> 02:05:49,199
+<b>that sometimes a prompt uh it's not very good so the ai</b>
+
+975
+02:05:49,199 --> 02:05:52,600
+<b>produce uh the ones you you really not</b>
+
+976
+02:05:52,880 --> 02:05:56,079
+<b>wants it to produce in that way so this kind of the</b>
+
+977
+02:05:56,079 --> 02:05:58,119
+<b>alignment problems that we have with the</b>
+
+978
+02:05:58,159 --> 02:06:02,479
+<b>gen i system and the first one and if you're not very</b>
+
+979
+02:06:02,479 --> 02:06:06,000
+<b>careful if you're using the very</b>
+
+980
+02:06:06,000 --> 02:06:12,319
+<b>recent very powerful um the systems like codex uh or cloud</b>
+
+981
+02:06:12,319 --> 02:06:15,079
+<b>code you you will feel um that it is</b>
+
+982
+02:06:15,079 --> 02:06:19,520
+<b>very costly and this is like all the problems we have with</b>
+
+983
+02:06:19,520 --> 02:06:22,279
+<b>uh especially nowadays um very modern</b>
+
+984
+02:06:22,640 --> 02:06:27,279
+<b>cutting edge ai uh ai tools just to bear in mind of all</b>
+
+985
+02:06:27,279 --> 02:06:29,800
+<b>these problems that we have so next nice</b>
+
+986
+02:06:29,800 --> 02:06:36,960
+<b>okay so um so i would like to reach in</b>
+
+987
+02:06:36,960 --> 02:06:39,560
+<b>finally reach into the first part of it to</b>
+
+988
+02:06:39,760 --> 02:06:45,239
+<b>we've pointed out all the challenges uh um very roughly i</b>
+
+989
+02:06:45,239 --> 02:06:48,279
+<b>would like to dive into a little a little</b>
+
+990
+02:06:48,319 --> 02:06:52,399
+<b>bit more details about all these challenges and how we are</b>
+
+991
+02:06:52,399 --> 02:06:55,680
+<b>we going to mitigate it um in</b>
+
+992
+02:06:56,720 --> 02:07:00,560
+<b>when we design this kind of system um so the first part i</b>
+
+993
+02:07:00,560 --> 02:07:03,039
+<b>would like to highlight is the floors um</b>
+
+994
+02:07:03,119 --> 02:07:06,479
+<b>that we've been mentioned the view slide um in the previous</b>
+
+995
+02:07:06,479 --> 02:07:08,439
+<b>slides that's the floors we have</b>
+
+996
+02:07:08,800 --> 02:07:13,159
+<b>in our um particularly i will divide into two parts one the</b>
+
+997
+02:07:13,159 --> 02:07:14,880
+<b>structure another is inherited</b>
+
+998
+02:07:15,800 --> 02:07:23,760
+<b>next slide please yeah so um i want uh i</b>
+
+999
+02:07:23,760 --> 02:07:26,359
+<b>still have kind of the mindset that's uh</b>
+
+1000
+02:07:26,880 --> 02:07:30,920
+<b>about the rm intelligence what we have um i just mentioned</b>
+
+1001
+02:07:30,920 --> 02:07:33,319
+<b>a little bit so but i've seen all the</b>
+
+1002
+02:07:33,319 --> 02:07:36,840
+<b>times there's a common misunderstanding about the rm</b>
+
+1003
+02:07:36,840 --> 02:07:40,159
+<b>intelligence so at the bottom as the first</b>
+
+1004
+02:07:40,319 --> 02:07:45,399
+<b>speaker also mentioned about uh the rm architecture so</b>
+
+1005
+02:07:45,399 --> 02:07:50,399
+<b>basically um how we train uh our um is with this</b>
+
+1006
+02:07:50,399 --> 02:07:54,279
+<b>game like bearing in blank games is essentially to predict</b>
+
+1007
+02:07:54,279 --> 02:07:57,279
+<b>uh the missing words in one sentence</b>
+
+1008
+02:07:57,439 --> 02:08:02,159
+<b>this is how those models begin and but uh we need to be</b>
+
+1009
+02:08:02,159 --> 02:08:04,439
+<b>aware of that this it doesn't mean that</b>
+
+1010
+02:08:04,880 --> 02:08:09,359
+<b>rm can reason by itself um especially the model themselves</b>
+
+1011
+02:08:09,359 --> 02:08:11,600
+<b>so i will put in this you probably</b>
+
+1012
+02:08:11,600 --> 02:08:16,279
+<b>heard about this uh this way of uh this way of describing</b>
+
+1013
+02:08:16,279 --> 02:08:19,399
+<b>rm is another forming of intelligence</b>
+
+1014
+02:08:19,520 --> 02:08:21,560
+<b>and as the first speaker also mentioned its</b>
+
+1015
+02:08:21,560 --> 02:08:23,760
+<b>foundation its foundation is a statistical</b>
+
+1016
+02:08:24,319 --> 02:08:29,119
+<b>so it's all about probability distributions and this kind</b>
+
+1017
+02:08:29,119 --> 02:08:31,319
+<b>of intelligence is not human intelligence</b>
+
+1018
+02:08:32,000 --> 02:08:38,279
+<b>all right the next slide please yeah so um also it's</b>
+
+1019
+02:08:38,279 --> 02:08:40,319
+<b>already mentioned in the previous session</b>
+
+1020
+02:08:40,399 --> 02:08:45,359
+<b>about the transformer um so transformer uh i think i</b>
+
+1021
+02:08:45,359 --> 02:08:48,800
+<b>believe it's also uh just a few years ago so all</b>
+
+1022
+02:08:48,800 --> 02:08:52,079
+<b>the modern uh large-scale model uh based on</b>
+
+1023
+02:08:52,079 --> 02:08:55,079
+<b>the transformer it was uh invented by google</b>
+
+1024
+02:08:55,680 --> 02:09:00,039
+<b>uh a few years ago and um in the previous</b>
+
+1025
+02:09:00,039 --> 02:09:02,319
+<b>session we've already mentioned about the</b>
+
+1026
+02:09:02,319 --> 02:09:06,880
+<b>rm textures and how will i convert all those words into</b>
+
+1027
+02:09:06,880 --> 02:09:11,680
+<b>embeddings into tokens um so this this is a</b>
+
+1028
+02:09:11,680 --> 02:09:15,880
+<b>very nice uh websites which can show you how the</b>
+
+1029
+02:09:15,880 --> 02:09:19,199
+<b>transformer actually uh represent the words into</b>
+
+1030
+02:09:20,239 --> 02:09:24,319
+<b>the vectors and if you're interested you can dive into it</b>
+
+1031
+02:09:24,319 --> 02:09:26,720
+<b>but the idea is here you can say that</b>
+
+1032
+02:09:26,720 --> 02:09:30,600
+<b>the the goal of how we train the transformer is actually</b>
+
+1033
+02:09:30,600 --> 02:09:34,079
+<b>predicting the next words so all all this</b>
+
+1034
+02:09:34,800 --> 02:09:39,159
+<b>like uh the way we treat uh we train the rm is about</b>
+
+1035
+02:09:39,159 --> 02:09:41,880
+<b>feeling blank this this game so that</b>
+
+1036
+02:09:41,880 --> 02:09:45,199
+<b>it's not a human intelligence it's not a form of human</b>
+
+1037
+02:09:45,199 --> 02:09:47,279
+<b>intelligence next slide please</b>
+
+1038
+02:09:49,359 --> 02:09:54,319
+<b>yeah so i won't go to go to details for this slide as um</b>
+
+1039
+02:09:54,319 --> 02:09:56,079
+<b>just now of course people already</b>
+
+1040
+02:09:56,079 --> 02:10:00,920
+<b>mentioned quite a lot about it um but uh i think the</b>
+
+1041
+02:10:00,920 --> 02:10:03,319
+<b>takeaway point here is that inside transformer</b>
+
+1042
+02:10:03,439 --> 02:10:07,439
+<b>that every every word is essentially every token will be</b>
+
+1043
+02:10:07,439 --> 02:10:11,119
+<b>converted into uh uh encoding which is a</b>
+
+1044
+02:10:11,159 --> 02:10:17,079
+<b>kind of the a vector essentially so um this is how i am</b>
+
+1045
+02:10:17,079 --> 02:10:20,600
+<b>digest the information uh next slide please</b>
+
+1046
+02:10:23,680 --> 02:10:29,119
+<b>yeah so uh because of that all the uh all the words um from</b>
+
+1047
+02:10:29,119 --> 02:10:31,000
+<b>the larger mode point of view is</b>
+
+1048
+02:10:31,000 --> 02:10:37,520
+<b>essentially a vector so how the i am like predict the next</b>
+
+1049
+02:10:37,520 --> 02:10:39,600
+<b>words is depending on the similarity as</b>
+
+1050
+02:10:39,600 --> 02:10:43,720
+<b>the first speaker pointed out so this is the word embedding</b>
+
+1051
+02:10:43,720 --> 02:10:46,600
+<b>uh that so we can visualize um in the</b>
+
+1052
+02:10:46,600 --> 02:10:52,680
+<b>high-dimensional space um in the rm inside the n so for</b>
+
+1053
+02:10:52,680 --> 02:10:55,439
+<b>example here the game um for the particle</b>
+
+1054
+02:10:55,439 --> 02:11:01,399
+<b>word game you can find the similarity uh in the n um the</b>
+
+1055
+02:11:01,399 --> 02:11:04,680
+<b>it's latent space and the next the the</b>
+
+1056
+02:11:05,279 --> 02:11:08,600
+<b>nearest word is playing so it's playing games so you can</b>
+
+1057
+02:11:08,600 --> 02:11:11,760
+<b>visualize all the similarity uh with the</b>
+
+1058
+02:11:11,760 --> 02:11:16,319
+<b>tools we have however you can see that all these uh</b>
+
+1059
+02:11:16,319 --> 02:11:19,079
+<b>calculations is very statistical</b>
+
+1060
+02:11:19,760 --> 02:11:21,640
+<b>so the base on the probability</b>
+
+1061
+02:11:21,640 --> 02:11:24,279
+<b>distribution uh next slide please</b>
+
+1062
+02:11:25,119 --> 02:11:32,680
+<b>yeah so um so i probably put very similar um parts as our</b>
+
+1063
+02:11:32,680 --> 02:11:36,000
+<b>first um speaker put there so</b>
+
+1064
+02:11:37,199 --> 02:11:42,720
+<b>one of the very powerful tools we have nowadays is uh is a</b>
+
+1065
+02:11:42,720 --> 02:11:45,359
+<b>rack these are extract information from</b>
+
+1066
+02:11:45,760 --> 02:11:50,359
+<b>documents um so basically if you have the agents so your</b>
+
+1067
+02:11:50,359 --> 02:11:52,800
+<b>queries about a vector database</b>
+
+1068
+02:11:53,760 --> 02:11:58,359
+<b>and so you can retrieve the top k repeats uh inside these</b>
+
+1069
+02:11:58,359 --> 02:12:01,760
+<b>documents so um i put the links</b>
+
+1070
+02:12:01,840 --> 02:12:05,279
+<b>for the open AI cookbook example here if you are interested</b>
+
+1071
+02:12:05,279 --> 02:12:08,039
+<b>to see it in more detail so you can</b>
+
+1072
+02:12:08,239 --> 02:12:12,079
+<b>check the open AI's example here but</b>
+
+1073
+02:12:12,079 --> 02:12:15,239
+<b>roughly uh you can see the diagram here we have so</b>
+
+1074
+02:12:15,920 --> 02:12:20,439
+<b>um for for our average digest all this uh all this system</b>
+
+1075
+02:12:20,439 --> 02:12:23,840
+<b>especially with drag um is you have</b>
+
+1076
+02:12:23,840 --> 02:12:28,680
+<b>this kind of a vector interface vector database um to</b>
+
+1077
+02:12:28,680 --> 02:12:32,199
+<b>project all the informations from the text</b>
+
+1078
+02:12:32,319 --> 02:12:35,920
+<b>from the text space uh to a vector space as we just found</b>
+
+1079
+02:12:35,920 --> 02:12:38,239
+<b>out so it's all about so comparing</b>
+
+1080
+02:12:38,560 --> 02:12:42,479
+<b>similarity as previous slide shows about what they're</b>
+
+1081
+02:12:42,479 --> 02:12:44,720
+<b>inviting is you're comparing the similarity</b>
+
+1082
+02:12:45,119 --> 02:12:48,800
+<b>in the the latent space about this uh</b>
+
+1083
+02:12:48,800 --> 02:12:51,239
+<b>terminology or sentences next slide please</b>
+
+1084
+02:12:53,359 --> 02:13:00,880
+<b>yeah but drag is not just like one uh one step so deep</b>
+
+1085
+02:13:00,880 --> 02:13:03,439
+<b>inside is actually quite a lot of stuff</b>
+
+1086
+02:13:03,640 --> 02:13:09,520
+<b>that the rack system will will handle this uh this document</b>
+
+1087
+02:13:09,520 --> 02:13:12,000
+<b>processing for us so roughly we can</b>
+
+1088
+02:13:12,000 --> 02:13:16,119
+<b>divide into four parts the data preparation uh input</b>
+
+1089
+02:13:16,119 --> 02:13:18,840
+<b>processing retrieval and answer generation</b>
+
+1090
+02:13:19,199 --> 02:13:23,119
+<b>so the reason that um i want you to have an understanding</b>
+
+1091
+02:13:23,119 --> 02:13:26,359
+<b>about this four steps on the hood</b>
+
+1092
+02:13:26,720 --> 02:13:30,159
+<b>is because when we are trying to control the quality of</b>
+
+1093
+02:13:30,159 --> 02:13:32,600
+<b>answers basically we need to optimize</b>
+
+1094
+02:13:33,840 --> 02:13:39,039
+<b>inside these steps like quite a lot of engineering tricks</b>
+
+1095
+02:13:39,039 --> 02:13:42,319
+<b>you can do but this is how we actually</b>
+
+1096
+02:13:43,119 --> 02:13:50,159
+<b>try to make the the answers better and we need to deal with</b>
+
+1097
+02:13:50,159 --> 02:13:52,520
+<b>the those steps within the rack system</b>
+
+1098
+02:13:53,039 --> 02:13:59,039
+<b>the next slide please yeah so first one is the data</b>
+
+1099
+02:13:59,039 --> 02:14:03,000
+<b>preparation um so uh once i want to highlight</b>
+
+1100
+02:14:03,119 --> 02:14:07,119
+<b>that um there's like uh like very practical ways how do how</b>
+
+1101
+02:14:07,119 --> 02:14:10,039
+<b>you actually um do the do the rack</b>
+
+1102
+02:14:10,079 --> 02:14:13,520
+<b>just now we've also mentioned about the graph rack so all</b>
+
+1103
+02:14:13,520 --> 02:14:16,359
+<b>kinds of the rack system you can use</b>
+
+1104
+02:14:16,880 --> 02:14:21,199
+<b>um but i want to point out that the data preparation in</b>
+
+1105
+02:14:21,199 --> 02:14:23,119
+<b>terms of different different tools</b>
+
+1106
+02:14:23,439 --> 02:14:27,119
+<b>for rack is important but also preparing data is also</b>
+
+1107
+02:14:27,119 --> 02:14:30,039
+<b>important one thing you can do is augmenting</b>
+
+1108
+02:14:30,039 --> 02:14:35,039
+<b>the content um you can add a summary you can add like</b>
+
+1109
+02:14:35,039 --> 02:14:39,159
+<b>additional uh metadata for for one particular</b>
+
+1110
+02:14:39,279 --> 02:14:44,319
+<b>document without just expecting them to do all all these</b>
+
+1111
+02:14:44,319 --> 02:14:47,079
+<b>things for there actually it's very</b>
+
+1112
+02:14:47,600 --> 02:14:52,680
+<b>important for preparing the data um so if you say later we</b>
+
+1113
+02:14:52,680 --> 02:14:54,319
+<b>probably can discuss a little</b>
+
+1114
+02:14:54,640 --> 02:14:58,840
+<b>that how we design modern AI agent system you can see like</b>
+
+1115
+02:14:58,840 --> 02:15:00,960
+<b>the five layers of compaction</b>
+
+1116
+02:15:01,680 --> 02:15:05,840
+<b>inside cloud code this kind of the AI agent system uh which</b>
+
+1117
+02:15:05,840 --> 02:15:08,079
+<b>basically like five uh different</b>
+
+1118
+02:15:08,479 --> 02:15:13,439
+<b>granularity in terms of summarization um for the for the</b>
+
+1119
+02:15:13,439 --> 02:15:15,880
+<b>prompt so with that you can already</b>
+
+1120
+02:15:15,920 --> 02:15:21,159
+<b>say that so to preparing to provide additional layer of</b>
+
+1121
+02:15:21,159 --> 02:15:24,159
+<b>summarization for your document for</b>
+
+1122
+02:15:24,159 --> 02:15:28,279
+<b>RM is actually very important um but kind of common</b>
+
+1123
+02:15:28,279 --> 02:15:30,399
+<b>pitfalls is that you just show everything</b>
+
+1124
+02:15:30,479 --> 02:15:33,800
+<b>inside in RM without caring it's having too much like low</b>
+
+1125
+02:15:33,800 --> 02:15:36,680
+<b>quality content or too large too large</b>
+
+1126
+02:15:36,720 --> 02:15:43,399
+<b>documents um to RM is actually uh it will make it perform</b>
+
+1127
+02:15:43,399 --> 02:15:47,920
+<b>much worse um because RM can tend to</b>
+
+1128
+02:15:47,920 --> 02:15:51,600
+<b>like rely on this attention system and have very limited uh</b>
+
+1129
+02:15:51,600 --> 02:15:54,840
+<b>the context windows so don't just show</b>
+
+1130
+02:15:54,880 --> 02:16:02,760
+<b>too long documents to it directly uh next slide please yeah</b>
+
+1131
+02:16:02,760 --> 02:16:05,239
+<b>so the second step is input processing</b>
+
+1132
+02:16:05,880 --> 02:16:08,920
+<b>um and it's basically what we just described how you</b>
+
+1133
+02:16:08,920 --> 02:16:11,319
+<b>project all these contents to embeddings and</b>
+
+1134
+02:16:11,319 --> 02:16:14,960
+<b>you have the knowledge base with your database and how you</b>
+
+1135
+02:16:14,960 --> 02:16:18,119
+<b>how you process this part this time put</b>
+
+1136
+02:16:18,720 --> 02:16:22,399
+<b>some like good practices is you consider how you transform</b>
+
+1137
+02:16:22,399 --> 02:16:25,159
+<b>uh your input to match the content in</b>
+
+1138
+02:16:25,159 --> 02:16:29,680
+<b>the database instead of just don't care about about this</b>
+
+1139
+02:16:29,680 --> 02:16:31,039
+<b>matching problem especially for the</b>
+
+1140
+02:16:31,039 --> 02:16:34,159
+<b>legal kind of sense the very mind that so there's a</b>
+
+1141
+02:16:34,159 --> 02:16:37,159
+<b>different ways to describe the same kind of</b>
+
+1142
+02:16:37,159 --> 02:16:41,760
+<b>legal concept right so we need to uh like have this kind of</b>
+
+1143
+02:16:41,760 --> 02:16:44,079
+<b>mindset we need to have the um</b>
+
+1144
+02:16:44,719 --> 02:16:48,639
+<b>to find to find this kind of matching if you have kind of</b>
+
+1145
+02:16:48,639 --> 02:16:50,680
+<b>mechanical way to do it do it in a</b>
+
+1146
+02:16:50,680 --> 02:16:55,159
+<b>mechanical way uh so common pitfalls we have here is just</b>
+
+1147
+02:16:55,159 --> 02:16:56,719
+<b>don't don't really care just see everything</b>
+
+1148
+02:16:56,879 --> 02:16:59,959
+<b>in the database and hopefully RM can do the work that you</b>
+
+1149
+02:16:59,959 --> 02:17:02,639
+<b>already don't do the work for you uh next</b>
+
+1150
+02:17:02,639 --> 02:17:09,920
+<b>slide please yeah so for retrieval part um and also in the</b>
+
+1151
+02:17:09,920 --> 02:17:11,719
+<b>previous sessions for the hackerson</b>
+
+1152
+02:17:12,000 --> 02:17:16,159
+<b>and most most of time you need to merge like different uh</b>
+
+1153
+02:17:16,159 --> 02:17:18,639
+<b>different kinds of results one is</b>
+
+1154
+02:17:18,639 --> 02:17:23,239
+<b>RM native answers like the RM will actually check the</b>
+
+1155
+02:17:23,239 --> 02:17:26,559
+<b>vector database and have a few uh results</b>
+
+1156
+02:17:27,200 --> 02:17:33,239
+<b>and internally um the RM also rank the results for you so</b>
+
+1157
+02:17:33,239 --> 02:17:35,200
+<b>be aware of that you can tweak the</b>
+
+1158
+02:17:35,200 --> 02:17:38,719
+<b>re-ranking uh the strategy you can have different ways as</b>
+
+1159
+02:17:38,719 --> 02:17:43,120
+<b>RM to rank it and that would um have like</b>
+
+1160
+02:17:43,120 --> 02:17:48,040
+<b>a major impact of the answers you have um from the drug</b>
+
+1161
+02:17:48,040 --> 02:17:51,159
+<b>system and also be aware that you can</b>
+
+1162
+02:17:51,159 --> 02:17:54,520
+<b>integrate the data with some kind of deterministic answers</b>
+
+1163
+02:17:54,520 --> 02:17:56,399
+<b>from relational database so no SQL</b>
+
+1164
+02:17:56,479 --> 02:17:59,000
+<b>database so you can twiggle this together</b>
+
+1165
+02:17:59,000 --> 02:18:03,399
+<b>and to retrieve for your final answers um so</b>
+
+1166
+02:18:03,399 --> 02:18:08,200
+<b>common pitfalls again you are you are you are actually um</b>
+
+1167
+02:18:08,200 --> 02:18:11,280
+<b>you can see that how RM ranked uh</b>
+
+1168
+02:18:11,639 --> 02:18:14,479
+<b>how the rank in the rank system how round</b>
+
+1169
+02:18:14,479 --> 02:18:17,200
+<b>how the result being ranked so if the wrong</b>
+
+1170
+02:18:17,280 --> 02:18:21,040
+<b>if the wrong elements of the document have been ranked very</b>
+
+1171
+02:18:21,040 --> 02:18:23,239
+<b>high of course you will get a wrong</b>
+
+1172
+02:18:23,280 --> 02:18:25,239
+<b>uh next slide please</b>
+
+1173
+02:18:28,719 --> 02:18:31,120
+<b>yeah so uh so far we've already</b>
+
+1174
+02:18:31,120 --> 02:18:35,719
+<b>described like the strategy how how under who the</b>
+
+1175
+02:18:35,719 --> 02:18:39,559
+<b>rack system actually works um but i would like to mention a</b>
+
+1176
+02:18:39,559 --> 02:18:41,879
+<b>little bit uh like one bottleneck</b>
+
+1177
+02:18:42,079 --> 02:18:46,040
+<b>if you use rak in general the rak system is you we've seen</b>
+
+1178
+02:18:46,040 --> 02:18:48,360
+<b>that the rack system actually needs</b>
+
+1179
+02:18:48,399 --> 02:18:52,920
+<b>the vector database to rank all those snippets for you</b>
+
+1180
+02:18:52,920 --> 02:18:55,639
+<b>right and that is basically the bottleneck</b>
+
+1181
+02:18:55,920 --> 02:18:59,719
+<b>that we have uh because even before the AI</b>
+
+1182
+02:18:59,719 --> 02:19:03,239
+<b>agents try to put a reasoning step for you</b>
+
+1183
+02:19:03,760 --> 02:19:07,840
+<b>and if in the this ranking system this rank your rank</b>
+
+1184
+02:19:07,840 --> 02:19:09,959
+<b>strategy is not very good or not very</b>
+
+1185
+02:19:09,959 --> 02:19:13,639
+<b>customized for the legal context and you may miss the</b>
+
+1186
+02:19:13,639 --> 02:19:17,799
+<b>important part and that's why if this kind of</b>
+
+1187
+02:19:17,840 --> 02:19:21,840
+<b>bottom-up uh bottleneck is there right so if the important</b>
+
+1188
+02:19:21,840 --> 02:19:24,239
+<b>information is not there there's no way</b>
+
+1189
+02:19:24,239 --> 02:19:28,239
+<b>that the quality of the answer can be good just to be aware</b>
+
+1190
+02:19:28,239 --> 02:19:30,479
+<b>of this bottleneck there's always this</b>
+
+1191
+02:19:30,479 --> 02:19:36,200
+<b>top k similarity uh comparison there um because as we</b>
+
+1192
+02:19:36,200 --> 02:19:38,360
+<b>mentioned all this word embedding the</b>
+
+1193
+02:19:38,360 --> 02:19:41,879
+<b>similarity comparison is uh statistical it's basically</b>
+
+1194
+02:19:41,879 --> 02:19:43,959
+<b>based on the probability distribution</b>
+
+1195
+02:19:44,159 --> 02:19:47,239
+<b>it's all linked together that's why we've seen that the lm</b>
+
+1196
+02:19:47,239 --> 02:19:48,840
+<b>is different kind of intelligence</b>
+
+1197
+02:19:49,840 --> 02:19:51,360
+<b>next slide please</b>
+
+1198
+02:19:53,760 --> 02:19:57,559
+<b>yeah so i'd like to like highlight some like viral viral</b>
+
+1199
+02:19:57,559 --> 02:20:00,079
+<b>results findings we have from the</b>
+
+1200
+02:20:00,079 --> 02:20:05,600
+<b>AI research uh basically it's a very powerful um nowadays</b>
+
+1201
+02:20:05,600 --> 02:20:08,360
+<b>uh the large model uh some some</b>
+
+1202
+02:20:08,399 --> 02:20:12,239
+<b>researchers found that if you use direct coppers</b>
+
+1203
+02:20:12,239 --> 02:20:16,959
+<b>interaction to handle that um coppers directly</b>
+
+1204
+02:20:17,120 --> 02:20:22,319
+<b>without ranking the ranking in the vector database it's</b>
+
+1205
+02:20:22,319 --> 02:20:25,520
+<b>probably better it's probably better it's</b>
+
+1206
+02:20:25,520 --> 02:20:30,719
+<b>also can save uh can save tokens can save the cost um but</b>
+
+1207
+02:20:30,719 --> 02:20:33,120
+<b>uh this this study is for like the</b>
+
+1208
+02:20:33,120 --> 02:20:36,440
+<b>general context it's not specialized for the legal context</b>
+
+1209
+02:20:36,440 --> 02:20:38,520
+<b>it's just to be aware of that the</b>
+
+1210
+02:20:38,520 --> 02:20:42,639
+<b>coppers um are not really more than natural models not</b>
+
+1211
+02:20:42,639 --> 02:20:45,319
+<b>trained to understand the legal coppers and so</b>
+
+1212
+02:20:45,319 --> 02:20:49,280
+<b>if you use the approach just be cautious about that but</b>
+
+1213
+02:20:49,280 --> 02:20:52,120
+<b>that may overcome the bottleneck</b>
+
+1214
+02:20:54,000 --> 02:20:57,600
+<b>inside inside the rack system yeah next slide please</b>
+
+1215
+02:21:01,280 --> 02:21:05,120
+<b>yeah so this is basically the findings of these studies and</b>
+
+1216
+02:21:05,120 --> 02:21:07,280
+<b>um pretty much the extent that</b>
+
+1217
+02:21:07,440 --> 02:21:13,000
+<b>by directing direct interact with the coppers uh with AI</b>
+
+1218
+02:21:13,000 --> 02:21:16,120
+<b>with tools with particular those tools not</b>
+
+1219
+02:21:16,399 --> 02:21:20,079
+<b>not actually AI tools particularly just those tools to</b>
+
+1220
+02:21:20,079 --> 02:21:23,959
+<b>processing all those uh coppers um</b>
+
+1221
+02:21:24,520 --> 02:21:28,079
+<b>actually it's actually better uh because according to this</b>
+
+1222
+02:21:28,079 --> 02:21:32,440
+<b>study that um for most case it can it can</b>
+
+1223
+02:21:32,440 --> 02:21:35,239
+<b>retrieve the the gold document they put here</b>
+
+1224
+02:21:35,239 --> 02:21:37,799
+<b>like the viral viral important document for</b>
+
+1225
+02:21:37,799 --> 02:21:40,639
+<b>particular answer and that's what i've</b>
+
+1226
+02:21:40,639 --> 02:21:44,600
+<b>just mentioned if in your popk uh similarity</b>
+
+1227
+02:21:44,639 --> 02:21:48,479
+<b>comparison it didn't find the rack system didn't find out</b>
+
+1228
+02:21:48,479 --> 02:21:50,680
+<b>this gold document it's a very important</b>
+
+1229
+02:21:50,719 --> 02:21:53,719
+<b>document basically there's no way that the answers can be</b>
+
+1230
+02:21:53,719 --> 02:21:56,360
+<b>can be good yeah the next slide please</b>
+
+1231
+02:21:59,760 --> 02:22:03,600
+<b>yeah so basically we've just mentioned about um just now</b>
+
+1232
+02:22:03,600 --> 02:22:06,920
+<b>about uh flaws in um judgments especially</b>
+
+1233
+02:22:07,040 --> 02:22:10,760
+<b>for uh structure problem we have for the large end model</b>
+
+1234
+02:22:10,760 --> 02:22:12,360
+<b>because we trained them in that way</b>
+
+1235
+02:22:12,399 --> 02:22:16,040
+<b>so that's pretty much that's not like good good solutions</b>
+
+1236
+02:22:16,040 --> 02:22:18,120
+<b>to handle it you just need to be very</b>
+
+1237
+02:22:18,159 --> 02:22:23,520
+<b>careful um especially when you design the AI system so the</b>
+
+1238
+02:22:23,520 --> 02:22:25,159
+<b>next one i want to highlight is</b>
+
+1239
+02:22:25,159 --> 02:22:29,479
+<b>about the inherited flaws in larger model which actually</b>
+
+1240
+02:22:29,479 --> 02:22:31,840
+<b>inherited from human judgments next</b>
+
+1241
+02:22:31,840 --> 02:22:39,280
+<b>slide please yeah yeah so just now we've um mentioning a</b>
+
+1242
+02:22:39,280 --> 02:22:41,639
+<b>lot of details about larger language</b>
+
+1243
+02:22:41,840 --> 02:22:45,680
+<b>model the model is there uh but recently i've also</b>
+
+1244
+02:22:45,680 --> 02:22:48,360
+<b>mentioned so most people are already become</b>
+
+1245
+02:22:48,360 --> 02:22:51,719
+<b>polarized with the word AI agents that's actually kind of</b>
+
+1246
+02:22:51,719 --> 02:22:56,360
+<b>the system too uh for the very uh</b>
+
+1247
+02:22:56,399 --> 02:23:00,280
+<b>recent a few years of AI research uh i just want to</b>
+
+1248
+02:23:00,280 --> 02:23:04,040
+<b>highlight that AI agents all this kind of design</b>
+
+1249
+02:23:04,159 --> 02:23:08,280
+<b>is actually inspired from psychology uh studies i put this</b>
+
+1250
+02:23:08,280 --> 02:23:11,120
+<b>book here uh which is from denier</b>
+
+1251
+02:23:11,959 --> 02:23:15,239
+<b>um kind of thinking fast so you probably</b>
+
+1252
+02:23:15,239 --> 02:23:19,360
+<b>heard about it so basically one kind of</b>
+
+1253
+02:23:19,920 --> 02:23:23,280
+<b>breakthrough we have for the AI agents why you can feel</b>
+
+1254
+02:23:23,280 --> 02:23:25,760
+<b>especially for the rest in two years</b>
+
+1255
+02:23:26,159 --> 02:23:30,719
+<b>um the the kind general AI is way better than the like a</b>
+
+1256
+02:23:30,719 --> 02:23:32,920
+<b>few years ago when charge we just appear</b>
+
+1257
+02:23:33,120 --> 02:23:37,040
+<b>is because we have involved this kind of really strategy in</b>
+
+1258
+02:23:37,040 --> 02:23:38,840
+<b>terms of short-term memory and</b>
+
+1259
+02:23:38,879 --> 02:23:41,920
+<b>long-term memory and this is inspired by</b>
+
+1260
+02:23:41,920 --> 02:23:46,200
+<b>quite a long time ago uh by denier this uh</b>
+
+1261
+02:23:46,559 --> 02:23:52,360
+<b>this study about human how how human thinking is so um i</b>
+
+1262
+02:23:52,360 --> 02:23:54,760
+<b>think uh the takeaway point is here</b>
+
+1263
+02:23:54,879 --> 02:23:58,840
+<b>just to be aware that that's uh the human thinking is</b>
+
+1264
+02:23:58,840 --> 02:24:01,159
+<b>actually very important when you design</b>
+
+1265
+02:24:01,520 --> 02:24:07,559
+<b>AI agent specifically and um back in i put uh the chart</b>
+
+1266
+02:24:07,559 --> 02:24:09,799
+<b>here back in like the 20th time history</b>
+
+1267
+02:24:10,239 --> 02:24:13,559
+<b>for the researchers in open AI and they've write this thing</b>
+
+1268
+02:24:13,559 --> 02:24:15,799
+<b>about that they've involved this kind</b>
+
+1269
+02:24:15,799 --> 02:24:20,319
+<b>of the design uh inside the AI agents at that time yeah</b>
+
+1270
+02:24:20,319 --> 02:24:23,319
+<b>it's kind of very new yeah next slide please</b>
+
+1271
+02:24:23,360 --> 02:24:31,840
+<b>okay so uh we've mentioned that um about today's topic that</b>
+
+1272
+02:24:31,840 --> 02:24:34,000
+<b>we want you to be aware of that</b>
+
+1273
+02:24:34,319 --> 02:24:38,799
+<b>the inherited floors in our army it's actually a floor in</b>
+
+1274
+02:24:38,799 --> 02:24:41,840
+<b>human judgment uh and this is based on</b>
+
+1275
+02:24:41,840 --> 02:24:45,559
+<b>also psychology study which is the same author uh one of</b>
+
+1276
+02:24:45,559 --> 02:24:47,639
+<b>the other is uh is the same author from the</b>
+
+1277
+02:24:47,680 --> 02:24:52,079
+<b>first book that we shared it's from denier um this is quite</b>
+
+1278
+02:24:52,079 --> 02:24:55,680
+<b>a quite a very recent study in 2021</b>
+
+1279
+02:24:56,399 --> 02:25:00,959
+<b>and basically this is here a psychology book a psychology</b>
+
+1280
+02:25:00,959 --> 02:25:04,079
+<b>uh theory but i would like to uh</b>
+
+1281
+02:25:04,079 --> 02:25:08,600
+<b>to be aware of that uh so the key point here is that even</b>
+
+1282
+02:25:08,600 --> 02:25:10,319
+<b>in human judgments we have noise</b>
+
+1283
+02:25:10,879 --> 02:25:15,639
+<b>there's a the variability in terms of even human judgment</b>
+
+1284
+02:25:15,639 --> 02:25:19,360
+<b>and because of um uh all these language</b>
+
+1285
+02:25:19,360 --> 02:25:24,920
+<b>models that train on our human human uh facts right human</b>
+
+1286
+02:25:24,920 --> 02:25:27,000
+<b>produce the text so it actually</b>
+
+1287
+02:25:27,000 --> 02:25:32,120
+<b>inherited this problem and this kind of variability in</b>
+
+1288
+02:25:32,120 --> 02:25:35,799
+<b>judgment um you can see in AI you can also see</b>
+
+1289
+02:25:35,920 --> 02:25:39,680
+<b>the human judgment so that's why this is something we need</b>
+
+1290
+02:25:39,680 --> 02:25:41,840
+<b>to deal with it and we need also need to</b>
+
+1291
+02:25:41,840 --> 02:25:45,760
+<b>be very kind of aware of it aware of that but you actually</b>
+
+1292
+02:25:45,760 --> 02:25:49,760
+<b>use uh for judgment especially for the</b>
+
+1293
+02:25:49,840 --> 02:25:54,280
+<b>legal context right so most of times um you probably heard</b>
+
+1294
+02:25:54,280 --> 02:25:57,280
+<b>the word as a judge so be very careful</b>
+
+1295
+02:25:57,920 --> 02:26:02,200
+<b>about this this floors actually deep inside from our human</b>
+
+1296
+02:26:02,200 --> 02:26:04,920
+<b>beings and all these things that it's</b>
+
+1297
+02:26:05,040 --> 02:26:08,440
+<b>actually because um even human judgment is the statistical</b>
+
+1298
+02:26:08,440 --> 02:26:10,799
+<b>process and also from psychology</b>
+
+1299
+02:26:10,799 --> 02:26:12,639
+<b>point of view it's actually a very</b>
+
+1300
+02:26:12,639 --> 02:26:15,639
+<b>natural things that we have uh next slide please</b>
+
+1301
+02:26:19,120 --> 02:26:23,600
+<b>yeah so actually in this book uh it describes this problem</b>
+
+1302
+02:26:23,600 --> 02:26:26,120
+<b>that from a human for the human</b>
+
+1303
+02:26:26,120 --> 02:26:31,200
+<b>judgments we cannot really say a human judgment is accurate</b>
+
+1304
+02:26:31,200 --> 02:26:33,239
+<b>because whenever we describe that</b>
+
+1305
+02:26:33,440 --> 02:26:38,120
+<b>um about the judgments people tend to use the word accuracy</b>
+
+1306
+02:26:38,120 --> 02:26:40,840
+<b>um but you heard about the buyers</b>
+
+1307
+02:26:41,200 --> 02:26:45,639
+<b>and that's a like directional arrow so it's actually easy</b>
+
+1308
+02:26:45,639 --> 02:26:49,879
+<b>to to detect but the noise it's</b>
+
+1309
+02:26:49,879 --> 02:26:53,200
+<b>actually very very difficult uh here is based on in this</b>
+
+1310
+02:26:53,200 --> 02:26:54,840
+<b>book that even for human judge</b>
+
+1311
+02:26:54,879 --> 02:27:00,959
+<b>uh for they they've had this study for human judge the kind</b>
+
+1312
+02:27:00,959 --> 02:27:03,479
+<b>of variability and it's very very</b>
+
+1313
+02:27:03,520 --> 02:27:06,959
+<b>different for the same case that so can uh</b>
+
+1314
+02:27:06,959 --> 02:27:10,680
+<b>the same case they put here uh that's the</b>
+
+1315
+02:27:12,079 --> 02:27:15,399
+<b>the the judgment can be in this case of</b>
+
+1316
+02:27:15,399 --> 02:27:19,239
+<b>for the prison years that's based on the</b>
+
+1317
+02:27:19,559 --> 02:27:25,200
+<b>judge sentences um can be from 1.1 years on average but the</b>
+
+1318
+02:27:25,200 --> 02:27:27,120
+<b>highest one can be as high as</b>
+
+1319
+02:27:27,120 --> 02:27:31,639
+<b>15 years so you can see that even even we pull that like</b>
+
+1320
+02:27:31,639 --> 02:27:33,959
+<b>legal expert the judge here the judgments</b>
+
+1321
+02:27:34,079 --> 02:27:38,239
+<b>can be can be very very different um so the kind of bad</b>
+
+1322
+02:27:38,239 --> 02:27:40,600
+<b>news here is that the noise detection is</b>
+
+1323
+02:27:40,600 --> 02:27:44,079
+<b>actually very very difficult so it's not just for the ai</b>
+
+1324
+02:27:44,079 --> 02:27:47,360
+<b>it's just if we want to detect the noise</b>
+
+1325
+02:27:47,440 --> 02:27:51,799
+<b>in human judgment based on this book and this theory it's</b>
+
+1326
+02:27:51,799 --> 02:27:54,079
+<b>very very difficult and next slide</b>
+
+1327
+02:27:57,840 --> 02:28:02,440
+<b>yeah um so given that the conclusion we</b>
+
+1328
+02:28:02,440 --> 02:28:05,159
+<b>have there's always noise inside the judgments</b>
+
+1329
+02:28:06,719 --> 02:28:10,600
+<b>but we don't really want to reach in their own noise</b>
+
+1330
+02:28:10,600 --> 02:28:13,680
+<b>because if we actually can reach their</b>
+
+1331
+02:28:13,760 --> 02:28:18,920
+<b>noise we actually reach the just pure rules and as we know</b>
+
+1332
+02:28:18,920 --> 02:28:21,680
+<b>that's uh in legal system it's not</b>
+
+1333
+02:28:21,680 --> 02:28:23,920
+<b>just about the rules it's a it's about the</b>
+
+1334
+02:28:23,920 --> 02:28:26,360
+<b>interpretation it's about the context the</b>
+
+1335
+02:28:26,360 --> 02:28:31,479
+<b>specific case that so we need to consider so try to balance</b>
+
+1336
+02:28:31,479 --> 02:28:33,760
+<b>it the flexible the flexibility</b>
+
+1337
+02:28:34,159 --> 02:28:39,120
+<b>and the the rules that we don't really want to uh reach in</b>
+
+1338
+02:28:39,120 --> 02:28:41,120
+<b>the zero noise but they say i i don't</b>
+
+1339
+02:28:41,120 --> 02:28:47,360
+<b>even think we can so just be aware of that um no matter you</b>
+
+1340
+02:28:47,360 --> 02:28:50,360
+<b>you actually hire the legal experts</b>
+
+1341
+02:28:50,799 --> 02:28:54,799
+<b>to do the judgment to label your data let's say or you use</b>
+
+1342
+02:28:54,799 --> 02:28:58,120
+<b>the ai agent as a judge that there will</b>
+
+1343
+02:28:58,120 --> 02:29:04,040
+<b>be always this noise uh inside uh but we we need this kind</b>
+
+1344
+02:29:04,040 --> 02:29:06,840
+<b>of flexibility uh in the judgment so</b>
+
+1345
+02:29:07,280 --> 02:29:10,879
+<b>basically it's actually a good thing yeah next slide please</b>
+
+1346
+02:29:13,719 --> 02:29:17,239
+<b>um so we've seen this theory so basically</b>
+
+1347
+02:29:17,239 --> 02:29:20,040
+<b>the point here is that i'm actually inherited</b>
+
+1348
+02:29:20,399 --> 02:29:25,200
+<b>this problem from human judgment um i'm putting this way</b>
+
+1349
+02:29:25,200 --> 02:29:27,520
+<b>instead of ask the questions like how</b>
+
+1350
+02:29:27,520 --> 02:29:31,520
+<b>accurate to you i am judgment can be it's basically a not a</b>
+
+1351
+02:29:31,520 --> 02:29:33,520
+<b>very good question or i i can put in this</b>
+
+1352
+02:29:33,559 --> 02:29:37,920
+<b>being uh it's a wrong question a better way um to put the</b>
+
+1353
+02:29:37,920 --> 02:29:40,319
+<b>question is that so how can we design</b>
+
+1354
+02:29:40,799 --> 02:29:46,959
+<b>uh i am uh judgment system that has a high fidelity how</b>
+
+1355
+02:29:46,959 --> 02:29:49,559
+<b>faithful it is and the good news</b>
+
+1356
+02:29:49,559 --> 02:29:52,920
+<b>is that so we can actually do that we can actually design a</b>
+
+1357
+02:29:52,920 --> 02:29:57,120
+<b>system uh that is faithful that is uh has</b>
+
+1358
+02:29:57,120 --> 02:30:02,600
+<b>a high fidelity even though every time uh that each um each</b>
+
+1359
+02:30:02,600 --> 02:30:05,040
+<b>each time the judgment can be different</b>
+
+1360
+02:30:05,360 --> 02:30:08,280
+<b>so there's a kind of a two kind of things two kind of</b>
+
+1361
+02:30:08,280 --> 02:30:11,959
+<b>things we're discussing one side is accuracy</b>
+
+1362
+02:30:12,159 --> 02:30:16,360
+<b>it's just one number uh basically i i would say that if you</b>
+
+1363
+02:30:16,360 --> 02:30:18,440
+<b>use the arm for judge any single</b>
+
+1364
+02:30:18,479 --> 02:30:21,959
+<b>scores is not reliable because every time it's different</b>
+
+1365
+02:30:21,959 --> 02:30:23,600
+<b>and the arm can give you a different</b>
+
+1366
+02:30:23,639 --> 02:30:26,719
+<b>answer but the good news is that you can</b>
+
+1367
+02:30:26,719 --> 02:30:28,840
+<b>actually control it you can actually put the</b>
+
+1368
+02:30:28,840 --> 02:30:33,120
+<b>design slide and control the fitting part yeah next slide</b>
+
+1369
+02:30:33,120 --> 02:30:37,799
+<b>please so based on these sides i won't</b>
+
+1370
+02:30:37,799 --> 02:30:42,399
+<b>go into details basically you can do a noise or this so the</b>
+
+1371
+02:30:42,399 --> 02:30:45,159
+<b>idea here is that instead of rely on</b>
+
+1372
+02:30:45,200 --> 02:30:50,159
+<b>one um or one um uh agent you can actually have multiple</b>
+
+1373
+02:30:50,159 --> 02:30:53,280
+<b>different kind of um judge the different</b>
+
+1374
+02:30:53,280 --> 02:30:58,200
+<b>kind of personas you can simulate it you can like have this</b>
+
+1375
+02:30:58,200 --> 02:31:01,040
+<b>prompt that arm have different kind of</b>
+
+1376
+02:31:01,040 --> 02:31:04,879
+<b>perspectives and then collectively uh you put the</b>
+
+1377
+02:31:04,879 --> 02:31:07,680
+<b>adjustment together just be aware of those</b>
+
+1378
+02:31:08,559 --> 02:31:12,280
+<b>sub uh what i would call the sub-agents you make sure the</b>
+
+1379
+02:31:12,280 --> 02:31:14,920
+<b>judgment is independent and then you can</b>
+
+1380
+02:31:15,040 --> 02:31:17,840
+<b>narrow kinds this uh disagreement among</b>
+
+1381
+02:31:17,840 --> 02:31:20,159
+<b>the different kind of judge you can merge the</b>
+
+1382
+02:31:20,479 --> 02:31:24,680
+<b>answers together to have a better uh i won't say a better</b>
+
+1383
+02:31:24,680 --> 02:31:27,159
+<b>answer of answer have a higher</b>
+
+1384
+02:31:28,079 --> 02:31:31,280
+<b>fidelity so that's kind of saying how you do the noise</b>
+
+1385
+02:31:31,280 --> 02:31:34,760
+<b>updates based on this book yeah the next uh</b>
+
+1386
+02:31:34,799 --> 02:31:37,680
+<b>and the good news is that this simulation two arm is</b>
+
+1387
+02:31:37,680 --> 02:31:39,040
+<b>actually very cheap you don't need to</b>
+
+1388
+02:31:39,040 --> 02:31:45,840
+<b>hire a legal expert to do it okay next slide please yeah so</b>
+
+1389
+02:31:45,840 --> 02:31:47,399
+<b>there's other things you can use</b>
+
+1390
+02:31:47,399 --> 02:31:50,920
+<b>the tools you can use heat map to see like the disagreement</b>
+
+1391
+02:31:50,920 --> 02:31:53,120
+<b>between different kind of arm judge</b>
+
+1392
+02:31:53,200 --> 02:31:57,079
+<b>or different different kinds of arm agents um so the point</b>
+
+1393
+02:31:57,079 --> 02:31:59,040
+<b>here is that just to be aware that you</b>
+
+1394
+02:31:59,040 --> 02:32:04,559
+<b>can actually audit so the um um judgments for you by</b>
+
+1395
+02:32:04,559 --> 02:32:07,239
+<b>utilizing different multiple agents together</b>
+
+1396
+02:32:07,559 --> 02:32:09,719
+<b>okay next and next slide please</b>
+
+1397
+02:32:12,559 --> 02:32:16,920
+<b>yeah so i think the uh tips for this part is that don't</b>
+
+1398
+02:32:16,920 --> 02:32:20,040
+<b>don't let your arm collapse evidence in</b>
+
+1399
+02:32:20,159 --> 02:32:26,639
+<b>in two scores and i put one one uh number too early uh</b>
+
+1400
+02:32:26,639 --> 02:32:29,120
+<b>that's kind of you try to make the reasoning</b>
+
+1401
+02:32:29,120 --> 02:32:34,600
+<b>or like how the arm can manifest it's really steps as long</b>
+
+1402
+02:32:34,600 --> 02:32:37,040
+<b>as possible right so you can see that how</b>
+
+1403
+02:32:38,000 --> 02:32:43,040
+<b>whether it follows uh the rendering logic you want it to do</b>
+
+1404
+02:32:43,040 --> 02:32:45,120
+<b>and the second one is try to model</b>
+
+1405
+02:32:45,120 --> 02:32:48,559
+<b>this uncertainty because we are dealing with this uh so</b>
+
+1406
+02:32:48,559 --> 02:32:50,959
+<b>this system that you you need to be aware of</b>
+
+1407
+02:32:50,959 --> 02:32:57,639
+<b>that yeah so next slide please yeah so i think i probably</b>
+
+1408
+02:32:57,639 --> 02:33:01,520
+<b>will run uh run over time but and i try i</b>
+
+1409
+02:33:01,600 --> 02:33:06,840
+<b>try to uh explain the next two parts a bit quicker uh so</b>
+
+1410
+02:33:06,840 --> 02:33:10,120
+<b>second one is how to model and audit arm</b>
+
+1411
+02:33:10,159 --> 02:33:14,079
+<b>success in in in in terms of the judgment so just now we</b>
+
+1412
+02:33:14,079 --> 02:33:16,200
+<b>describe the first uh the floors</b>
+
+1413
+02:33:16,879 --> 02:33:21,840
+<b>and how we how we handle it and now if you're using arm</b>
+
+1414
+02:33:21,840 --> 02:33:25,280
+<b>success fully and how to really success</b>
+
+1415
+02:33:25,440 --> 02:33:31,760
+<b>uh next slide please so i would like to use the one study</b>
+
+1416
+02:33:31,760 --> 02:33:34,440
+<b>uh it's also very very new this year</b>
+
+1417
+02:33:34,799 --> 02:33:39,200
+<b>from stanford law school professors from standard law</b>
+
+1418
+02:33:39,200 --> 02:33:41,840
+<b>school so they basically have designed have</b>
+
+1419
+02:33:41,840 --> 02:33:50,040
+<b>this um have this study um that to testing how our whether</b>
+
+1420
+02:33:50,040 --> 02:33:53,319
+<b>whether the arm judgment is any good for</b>
+
+1421
+02:33:53,360 --> 02:33:57,799
+<b>for for the for the law context and the comfort news is</b>
+
+1422
+02:33:57,799 --> 02:34:00,280
+<b>that it's actually way better than i</b>
+
+1423
+02:34:00,280 --> 02:34:07,079
+<b>expected so next next slide please yeah so they basically</b>
+
+1424
+02:34:07,079 --> 02:34:10,840
+<b>have um designed this kind of</b>
+
+1425
+02:34:12,399 --> 02:34:16,239
+<b>this kind of study uh have three steps first of all they</b>
+
+1426
+02:34:16,239 --> 02:34:18,680
+<b>have like uh human baseline they have</b>
+
+1427
+02:34:18,719 --> 02:34:23,399
+<b>like 16 professors from 14 law school from the states and</b>
+
+1428
+02:34:23,399 --> 02:34:26,120
+<b>dealing with 40 representative</b>
+
+1429
+02:34:26,399 --> 02:34:30,079
+<b>office hour questions it's short questions uh for the legal</b>
+
+1430
+02:34:30,079 --> 02:34:33,360
+<b>context um and they do some like blind</b>
+
+1431
+02:34:33,360 --> 02:34:39,479
+<b>judgment about 3000 randomized comparison between the uh</b>
+
+1432
+02:34:39,479 --> 02:34:43,600
+<b>between the um answers which are two um</b>
+
+1433
+02:34:44,319 --> 02:34:49,920
+<b>sorry two ai uh two ai tools they have one is a Gemini 2.5</b>
+
+1434
+02:34:49,920 --> 02:34:53,000
+<b>another one is notebook um with drag</b>
+
+1435
+02:34:53,520 --> 02:34:57,920
+<b>and so they compare the like ai general answers uh to the</b>
+
+1436
+02:34:57,920 --> 02:34:59,920
+<b>human professors the human professor</b>
+
+1437
+02:35:00,559 --> 02:35:06,079
+<b>next one please next slide please yeah so as i mentioned</b>
+
+1438
+02:35:06,079 --> 02:35:08,280
+<b>the result is very comforting and</b>
+
+1439
+02:35:09,040 --> 02:35:11,040
+<b>honestly i'm kind of surprised with</b>
+
+1440
+02:35:11,040 --> 02:35:14,360
+<b>the results overall it mentioned that uh</b>
+
+1441
+02:35:14,360 --> 02:35:17,719
+<b>gimme 2.5 2.5 is the last year this model</b>
+
+1442
+02:35:17,719 --> 02:35:22,680
+<b>have achieving uh more than 75 percent um</b>
+
+1443
+02:35:23,200 --> 02:35:26,440
+<b>when it's comparing to the human structure uh notebook</b>
+
+1444
+02:35:26,440 --> 02:35:28,399
+<b>notebook arm this drug is a bit</b>
+
+1445
+02:35:28,399 --> 02:35:33,000
+<b>less but still very good so you can see in terms of this uh</b>
+
+1446
+02:35:33,000 --> 02:35:36,079
+<b>diagram we have the uh the vingridge</b>
+
+1447
+02:35:36,680 --> 02:35:40,840
+<b>compared to the arm and the instructors um</b>
+
+1448
+02:35:40,840 --> 02:35:44,120
+<b>and you you can see here it's also use the</b>
+
+1449
+02:35:44,239 --> 02:35:49,280
+<b>confidence intervals uh for for calculating all these cases</b>
+
+1450
+02:35:49,280 --> 02:35:51,600
+<b>and for the rates right so just now</b>
+
+1451
+02:35:51,600 --> 02:35:54,639
+<b>we mentioned just to be aware of this this this is the</b>
+
+1452
+02:35:54,639 --> 02:35:57,159
+<b>statistical system you need to have this</b>
+
+1453
+02:35:57,159 --> 02:36:01,120
+<b>kind of uh this kind of uh the statistical</b>
+
+1454
+02:36:01,120 --> 02:36:04,280
+<b>environment to measure how confident we are</b>
+
+1455
+02:36:05,040 --> 02:36:09,959
+<b>to see um how how good is especially to compare to human</b>
+
+1456
+02:36:09,959 --> 02:36:13,399
+<b>beings uh judgment yeah next slide please</b>
+
+1457
+02:36:17,040 --> 02:36:21,440
+<b>yeah so overall even in this paper they also uh like narrow</b>
+
+1458
+02:36:21,440 --> 02:36:23,239
+<b>the uncertainty of the being uh</b>
+
+1459
+02:36:23,239 --> 02:36:27,440
+<b>the vingridge uh but the good news that's not sure is the</b>
+
+1460
+02:36:27,440 --> 02:36:31,239
+<b>good or bad news um so the human</b>
+
+1461
+02:36:32,000 --> 02:36:34,959
+<b>instructors are actually not performance aware when</b>
+
+1462
+02:36:34,959 --> 02:36:37,760
+<b>compared to gimme and notebook for this</b>
+
+1463
+02:36:37,799 --> 02:36:41,520
+<b>particular task so bear in mind this task is uh just for</b>
+
+1464
+02:36:41,520 --> 02:36:46,040
+<b>the very uh representative uh short uh</b>
+
+1465
+02:36:46,079 --> 02:36:49,319
+<b>short questions so the expected answer is also very short</b>
+
+1466
+02:36:49,319 --> 02:36:52,040
+<b>there's not so much complexity inside</b>
+
+1467
+02:36:52,879 --> 02:36:56,200
+<b>so they're just comparing uh those answers from human</b>
+
+1468
+02:36:56,200 --> 02:36:59,319
+<b>instructors and gimme 2.5 and if you know</b>
+
+1469
+02:36:59,360 --> 02:37:04,440
+<b>if you use gimme last year you already know that gimme 2.5</b>
+
+1470
+02:37:04,440 --> 02:37:07,719
+<b>this year's gimme 3 is way better okay</b>
+
+1471
+02:37:08,280 --> 02:37:14,200
+<b>yeah next slide please yeah so they also compared the</b>
+
+1472
+02:37:14,200 --> 02:37:16,680
+<b>harmful rates and that's also quite a surprise</b>
+
+1473
+02:37:16,680 --> 02:37:20,600
+<b>to me and because one of the concerns that uh we should we</b>
+
+1474
+02:37:20,600 --> 02:37:22,360
+<b>should be aware of that is also and can</b>
+
+1475
+02:37:22,399 --> 02:37:26,920
+<b>produce harmful responses and we don't really want that at</b>
+
+1476
+02:37:26,920 --> 02:37:30,959
+<b>all um but i think this study kind of</b>
+
+1477
+02:37:31,200 --> 02:37:34,840
+<b>give us some comforting news that um so we've trained it</b>
+
+1478
+02:37:34,840 --> 02:37:38,000
+<b>today some modern um so we're so it's</b>
+
+1479
+02:37:38,159 --> 02:37:44,319
+<b>time to produce much less uh harmful content yeah so but i</b>
+
+1480
+02:37:44,319 --> 02:37:45,600
+<b>think it's good for your system</b>
+
+1481
+02:37:45,760 --> 02:37:52,200
+<b>actually to monitor it yeah next one please yeah so very</b>
+
+1482
+02:37:52,200 --> 02:37:54,280
+<b>last part i will brief it measure</b>
+
+1483
+02:37:54,280 --> 02:37:57,239
+<b>because it's very very new it's how to align i am these</b>
+
+1484
+02:37:57,239 --> 02:38:01,360
+<b>human principles next one please</b>
+
+1485
+02:38:03,479 --> 02:38:06,479
+<b>oh next slide yeah this is again an AI generate image</b>
+
+1486
+02:38:06,479 --> 02:38:09,120
+<b>actually um i put one example</b>
+
+1487
+02:38:09,600 --> 02:38:10,719
+<b>particularly you probably</b>
+
+1488
+02:38:10,719 --> 02:38:13,600
+<b>heard about it about the cloud code</b>
+
+1489
+02:38:14,239 --> 02:38:19,760
+<b>um um this kind of analysis of cloud code how we design how</b>
+
+1490
+02:38:19,760 --> 02:38:22,120
+<b>how the cloud code was designed</b>
+
+1491
+02:38:22,399 --> 02:38:26,440
+<b>so once the very very very new findings we found that if</b>
+
+1492
+02:38:26,440 --> 02:38:29,719
+<b>you look at the cloud code uh it's actually</b>
+
+1493
+02:38:29,719 --> 02:38:33,559
+<b>from my topic uh in case you don't know um this is very</b>
+
+1494
+02:38:33,559 --> 02:38:38,120
+<b>very uh advanced AI agent and within its</b>
+
+1495
+02:38:38,159 --> 02:38:44,120
+<b>design very surprisingly only 1.6 um is</b>
+
+1496
+02:38:44,120 --> 02:38:49,600
+<b>AI physiologic the last 98 percent is very</b>
+
+1497
+02:38:49,600 --> 02:38:54,120
+<b>deterministic infrastructure it's very engineering and</b>
+
+1498
+02:38:54,120 --> 02:38:59,040
+<b>mechanical way uh to prevent the AI uh not</b>
+
+1499
+02:38:59,120 --> 02:39:02,879
+<b>align with human human human instructions</b>
+
+1500
+02:39:02,879 --> 02:39:07,159
+<b>so as you can see that the human kind of</b>
+
+1501
+02:39:07,639 --> 02:39:11,559
+<b>our kind of principles um human values it's very very</b>
+
+1502
+02:39:11,559 --> 02:39:15,120
+<b>important to design successful like useful</b>
+
+1503
+02:39:15,600 --> 02:39:24,000
+<b>modern AI agents yeah the next slide please yeah um but</b>
+
+1504
+02:39:24,000 --> 02:39:26,760
+<b>like if we want to simplify the</b>
+
+1505
+02:39:26,799 --> 02:39:30,040
+<b>design architecture of cloud code you can you can see it</b>
+
+1506
+02:39:30,040 --> 02:39:33,479
+<b>very clear um to make sure your AI</b>
+
+1507
+02:39:33,479 --> 02:39:37,600
+<b>agents actually align this uh with your principles with</b>
+
+1508
+02:39:37,600 --> 02:39:40,520
+<b>your kind of design steps it's very important</b>
+
+1509
+02:39:40,520 --> 02:39:45,479
+<b>to have these looks inside inside your system so the AI</b>
+
+1510
+02:39:45,479 --> 02:39:48,639
+<b>agents can now can collect the feedback</b>
+
+1511
+02:39:48,799 --> 02:39:54,520
+<b>um based on what you're instructed to do and it can dive</b>
+
+1512
+02:39:54,520 --> 02:39:58,360
+<b>inside the back and to correct it there</b>
+
+1513
+02:39:58,799 --> 02:40:01,879
+<b>and this is what we've learned from the design of cloud</b>
+
+1514
+02:40:01,879 --> 02:40:05,760
+<b>code this make it tremendously way better</b>
+
+1515
+02:40:06,079 --> 02:40:10,920
+<b>uh than many uh than many like the similar kind of AI agent</b>
+
+1516
+02:40:10,920 --> 02:40:13,079
+<b>we have in the past and that's probably</b>
+
+1517
+02:40:13,200 --> 02:40:16,879
+<b>one very important lessons we've we've seen</b>
+
+1518
+02:40:16,879 --> 02:40:20,520
+<b>so this year i mentioned this very very new</b>
+
+1519
+02:40:21,200 --> 02:40:24,360
+<b>studies we have yeah the next slide please</b>
+
+1520
+02:40:28,639 --> 02:40:34,479
+<b>yeah so another thing that we've seen from the AI agents um</b>
+
+1521
+02:40:34,479 --> 02:40:36,879
+<b>from cloud code is that you divide</b>
+
+1522
+02:40:37,200 --> 02:40:41,600
+<b>to isolated context when we design the staff agents as we</b>
+
+1523
+02:40:41,600 --> 02:40:43,399
+<b>just also describe about the multi</b>
+
+1524
+02:40:43,399 --> 02:40:48,399
+<b>agent system so if you can like very clean um do a very</b>
+
+1525
+02:40:48,399 --> 02:40:52,239
+<b>clean separation about those tasks and you</b>
+
+1526
+02:40:52,239 --> 02:40:56,840
+<b>have multiple staff agents that actually can do better um</b>
+
+1527
+02:40:56,840 --> 02:40:59,239
+<b>and you have a parent node or a parent</b>
+
+1528
+02:40:59,680 --> 02:41:03,719
+<b>agents on the top to module these answers they tend to be</b>
+
+1529
+02:41:03,719 --> 02:41:05,920
+<b>have you it tend to give you a better</b>
+
+1530
+02:41:06,159 --> 02:41:11,479
+<b>answers yeah the next slide i will run very quickly to next</b>
+
+1531
+02:41:11,479 --> 02:41:13,600
+<b>a few slides so i won't go to</b>
+
+1532
+02:41:13,600 --> 02:41:18,440
+<b>a lot of details for the other slides but um just want you</b>
+
+1533
+02:41:18,440 --> 02:41:21,440
+<b>to be aware of that just so like uh one</b>
+
+1534
+02:41:21,440 --> 02:41:24,680
+<b>months ago uh i think less than less than one month and</b>
+
+1535
+02:41:24,680 --> 02:41:26,520
+<b>chocolate actually reduced the cloud</b>
+
+1536
+02:41:26,520 --> 02:41:31,719
+<b>for legal plugins you can find it online on github and it's</b>
+
+1537
+02:41:31,719 --> 02:41:35,600
+<b>very very um useful from my point of view</b>
+
+1538
+02:41:35,840 --> 02:41:41,959
+<b>it's give you very like detailed um like um like</b>
+
+1539
+02:41:41,959 --> 02:41:44,920
+<b>instructions how they design AI agents</b>
+
+1540
+02:41:45,280 --> 02:41:50,440
+<b>next slide please i will go over very quickly yes but you</b>
+
+1541
+02:41:50,440 --> 02:41:52,799
+<b>can see that even for an entropic they put</b>
+
+1542
+02:41:53,280 --> 02:41:57,440
+<b>all those uh factings you can see that they have been very</b>
+
+1543
+02:41:57,440 --> 02:42:00,280
+<b>clear matching to AI agents that's the</b>
+
+1544
+02:42:00,319 --> 02:42:03,920
+<b>AI regulatory landscape is moving fast as we just mentioned</b>
+
+1545
+02:42:03,920 --> 02:42:05,520
+<b>about the complexity of the problem</b>
+
+1546
+02:42:05,840 --> 02:42:09,719
+<b>in the in the very beginning of the the slides and it also</b>
+
+1547
+02:42:09,719 --> 02:42:12,920
+<b>mentioned to uh the AI agents that</b>
+
+1548
+02:42:12,920 --> 02:42:18,040
+<b>the one regulation is incredibly ambiguous to say so you</b>
+
+1549
+02:42:18,040 --> 02:42:21,920
+<b>don't don't let AI agent to jump okay and</b>
+
+1550
+02:42:22,079 --> 02:42:26,760
+<b>he asks specifically agents don't paper or answer yeah so</b>
+
+1551
+02:42:26,760 --> 02:42:30,159
+<b>that's all today's uh our our part of</b>
+
+1552
+02:42:30,319 --> 02:42:34,719
+<b>the tutorials all about we need AI agent to handle this</b>
+
+1553
+02:42:34,719 --> 02:42:37,520
+<b>uncertainty yeah i guess i can stop here</b>
+
+1554
+02:42:37,520 --> 02:42:42,040
+<b>because they are all about those um uh cloud code for legal</b>
+
+1555
+02:42:42,040 --> 02:42:44,120
+<b>plugins and you can find all those</b>
+
+1556
+02:42:44,120 --> 02:42:49,600
+<b>details online yeah thank you all for it i think i can stop</b>
+
+1557
+02:42:49,600 --> 02:42:55,120
+<b>here okay professor shears thank you</b>
+
+1558
+02:42:55,120 --> 02:43:00,520
+<b>for your awesome information and chatting okay i think we</b>
+
+1559
+02:43:00,520 --> 02:43:03,319
+<b>are almost in the room are engineers</b>
+
+1560
+02:43:03,600 --> 02:43:09,440
+<b>that's why so many problems so many sure yeah the</b>
+
+1561
+02:43:09,440 --> 02:43:14,559
+<b>techniques yeah yeah okay thank you for for the</b>
+
+1562
+02:43:14,600 --> 02:43:21,959
+<b>idea that try to mitigate the the flaw in LLM and IAG so</b>
+
+1563
+02:43:21,959 --> 02:43:24,600
+<b>many techniques that that maybe the</b>
+
+1564
+02:43:24,959 --> 02:43:29,319
+<b>participant can apply to to the the work okay we have so</b>
+
+1565
+02:43:29,319 --> 02:43:31,200
+<b>many problems i will start from the first</b>
+
+1566
+02:43:31,200 --> 02:43:36,600
+<b>one uh i would like to invite dr latachai to join with uh</b>
+
+1567
+02:43:36,600 --> 02:43:40,040
+<b>professor sheo together okay okay</b>
+
+1568
+02:43:40,079 --> 02:43:45,079
+<b>we will go one by one uh maybe from start from the</b>
+
+1569
+02:43:45,079 --> 02:43:48,680
+<b>professor sheo first what are the best ways</b>
+
+1570
+02:43:48,959 --> 02:43:54,799
+<b>to control LLM stochasticity and the second</b>
+
+1571
+02:43:54,799 --> 02:43:58,360
+<b>question at the same how to make IAG and LLM</b>
+
+1572
+02:43:58,399 --> 02:44:04,559
+<b>less bond deterministic i guess i basically</b>
+
+1573
+02:44:04,559 --> 02:44:08,959
+<b>roughly answer question is uh use my slides</b>
+
+1574
+02:44:09,280 --> 02:44:14,840
+<b>basically there's no past away because today's uh is that</b>
+
+1575
+02:44:14,840 --> 02:44:19,520
+<b>tomorrow's uh yeah yeah yeah and um and</b>
+
+1576
+02:44:19,600 --> 02:44:23,760
+<b>i'm personally using it uh law so i can see like as i</b>
+
+1577
+02:44:23,760 --> 02:44:26,280
+<b>mentioned uh also stanford study right last</b>
+
+1578
+02:44:26,399 --> 02:44:31,120
+<b>year's june like 2.5 and this year's 3.5 it's very very</b>
+
+1579
+02:44:31,120 --> 02:44:33,680
+<b>different and cloud code to be honest</b>
+
+1580
+02:44:33,680 --> 02:44:36,760
+<b>and it's quite expensive so i don't have so much experience</b>
+
+1581
+02:44:36,760 --> 02:44:42,000
+<b>so i i guess if if you look at how uh</b>
+
+1582
+02:44:42,000 --> 02:44:43,719
+<b>that's why i put the entropic that</b>
+
+1583
+02:44:43,719 --> 02:44:45,760
+<b>plug in i personally i've learned a lot</b>
+
+1584
+02:44:47,200 --> 02:44:49,719
+<b>you can see very clear that's how</b>
+
+1585
+02:44:49,719 --> 02:44:53,959
+<b>they can how they specify uh instruct the</b>
+
+1586
+02:44:54,719 --> 02:44:58,079
+<b>don't jump don't don't conclude too fast</b>
+
+1587
+02:44:58,079 --> 02:45:02,239
+<b>yeah so you can we cannot really control the</b>
+
+1588
+02:45:02,239 --> 02:45:06,200
+<b>the distal side of but you can instruct we can interact</b>
+
+1589
+02:45:06,200 --> 02:45:10,959
+<b>with very specifically uh specification</b>
+
+1590
+02:45:11,360 --> 02:45:17,399
+<b>please follow blah blah blah abc and for example i remember</b>
+
+1591
+02:45:17,399 --> 02:45:19,520
+<b>if i have one slide at the bottom i</b>
+
+1592
+02:45:19,559 --> 02:45:26,120
+<b>already jumped uh that part it has been very clear about uh</b>
+
+1593
+02:45:26,120 --> 02:45:28,239
+<b>eoac for example it has been mentioned</b>
+
+1594
+02:45:28,239 --> 02:45:35,440
+<b>to uh in the skiers dot mv files eoac need quite a lot of</b>
+
+1595
+02:45:35,440 --> 02:45:38,239
+<b>interpretation so that means the policy</b>
+
+1596
+02:45:38,239 --> 02:45:41,680
+<b>service ambiguous and i'm not being ambiguous it need a</b>
+
+1597
+02:45:41,680 --> 02:45:44,280
+<b>little it did a lot of more interpretation</b>
+
+1598
+02:45:44,639 --> 02:45:51,360
+<b>right so on purpose um drawing that point i think the</b>
+
+1599
+02:45:51,360 --> 02:45:54,079
+<b>better question for this is we cannot make</b>
+
+1600
+02:45:54,079 --> 02:45:57,280
+<b>a um deterministic because that is uh this thing i've</b>
+
+1601
+02:45:57,280 --> 02:45:59,319
+<b>mentioned you we want to balance the</b>
+
+1602
+02:46:00,319 --> 02:46:04,239
+<b>flexibility to only rules so that that's the thing we want</b>
+
+1603
+02:46:04,239 --> 02:46:06,280
+<b>we want to balance so if we want</b>
+
+1604
+02:46:06,319 --> 02:46:11,360
+<b>the flexibility of ai agents we cannot let it deterministic</b>
+
+1605
+02:46:11,360 --> 02:46:14,079
+<b>so i think the best way is we</b>
+
+1606
+02:46:14,639 --> 02:46:17,559
+<b>we need a kind of embodies principles</b>
+
+1607
+02:46:17,559 --> 02:46:20,239
+<b>the human principles inside those spheres</b>
+
+1608
+02:46:21,760 --> 02:46:26,719
+<b>mcdonk files and to be very specific to to ai agents so</b>
+
+1609
+02:46:26,719 --> 02:46:29,799
+<b>that we can observe that whether the</b>
+
+1610
+02:46:29,920 --> 02:46:33,879
+<b>those agents follow our staff that's the best thing i can i</b>
+
+1611
+02:46:33,879 --> 02:46:35,319
+<b>can imagine but of course you</b>
+
+1612
+02:46:36,000 --> 02:46:38,920
+<b>probably can't have like more creative ways that have</b>
+
+1613
+02:46:38,920 --> 02:46:41,280
+<b>better ways than that yeah i hope that</b>
+
+1614
+02:46:41,280 --> 02:46:45,120
+<b>answered questions yeah okay thank you okay for the second</b>
+
+1615
+02:46:45,120 --> 02:46:47,120
+<b>question i think dr la chai will</b>
+
+1616
+02:46:48,559 --> 02:46:52,840
+<b>catch up this uh very well because you can</b>
+
+1617
+02:46:52,840 --> 02:46:55,760
+<b>handle not only software but hardware also</b>
+
+1618
+02:46:56,079 --> 02:46:58,399
+<b>how should we deal with the lack of</b>
+
+1619
+02:46:58,399 --> 02:47:01,399
+<b>gpu when we are prototyping the solution</b>
+
+1620
+02:47:02,000 --> 02:47:05,079
+<b>by your experience</b>
+
+1621
+02:47:08,319 --> 02:47:10,040
+<b>okay</b>
+
+1622
+02:47:10,319 --> 02:47:15,559
+<b>you you you you get a piece uh sorry yes okay i'm sorry</b>
+
+1623
+02:47:15,559 --> 02:47:19,920
+<b>that okay uh for the gpu is not a big</b>
+
+1624
+02:47:19,920 --> 02:47:23,520
+<b>problem because of that uh we just use</b>
+
+1625
+02:47:23,520 --> 02:47:25,399
+<b>the existing lm that we can download from uh</b>
+
+1626
+02:47:26,399 --> 02:47:33,000
+<b>hacking fest website we use the open source uh the problem</b>
+
+1627
+02:47:33,000 --> 02:47:35,520
+<b>is about uh the other resource only</b>
+
+1628
+02:47:35,520 --> 02:47:43,559
+<b>if we have the five i would say digx spark this is about i</b>
+
+1629
+02:47:43,559 --> 02:47:46,559
+<b>forgot the price we can use until the</b>
+
+1630
+02:47:47,280 --> 02:47:56,319
+<b>120 million billion parameters the one that we can use uh</b>
+
+1631
+02:47:56,319 --> 02:47:59,399
+<b>but but but in this case we don't need</b>
+
+1632
+02:47:59,399 --> 02:48:02,319
+<b>to train the model again because we can use the existing</b>
+
+1633
+02:48:02,319 --> 02:48:04,559
+<b>model that's why we don't need the much</b>
+
+1634
+02:48:04,799 --> 02:48:09,920
+<b>power of the resource which is due to inference mode of the</b>
+
+1635
+02:48:09,920 --> 02:48:13,879
+<b>resource only for that uh the disorder</b>
+
+1636
+02:48:14,079 --> 02:48:20,120
+<b>we needed is about uh uh the pre-processing result that to</b>
+
+1637
+02:48:20,120 --> 02:48:22,120
+<b>try to convert a very very big</b>
+
+1638
+02:48:22,200 --> 02:48:27,559
+<b>document into the windows space or the uh graph database</b>
+
+1639
+02:48:27,559 --> 02:48:30,000
+<b>this one just can answer this</b>
+
+1640
+02:48:30,959 --> 02:48:35,079
+<b>okay thank you and the next session maybe for both the</b>
+
+1641
+02:48:35,079 --> 02:48:37,680
+<b>chills could you please share your</b>
+
+1642
+02:48:37,760 --> 02:48:41,879
+<b>technique to handle a little document that was once</b>
+
+1643
+02:48:41,879 --> 02:48:47,600
+<b>autolytitative but has been partially amended</b>
+
+1644
+02:48:48,159 --> 02:48:54,559
+<b>or withdrawal yeah yeah i think i finally find the button</b>
+
+1645
+02:48:54,559 --> 02:48:57,440
+<b>to share i can share my my very</b>
+
+1646
+02:48:57,680 --> 02:49:02,399
+<b>okay last slide okay the last slide okay yeah yeah that's</b>
+
+1647
+02:49:02,399 --> 02:49:04,399
+<b>how i jumped for this question okay</b>
+
+1648
+02:49:05,079 --> 02:49:10,280
+<b>am i sharing yeah yeah that's right yeah he's one yeah i</b>
+
+1649
+02:49:10,280 --> 02:49:11,920
+<b>just jumped that's actually for this</b>
+
+1650
+02:49:11,920 --> 02:49:15,520
+<b>question uh i never tried but uh and</b>
+
+1651
+02:49:15,520 --> 02:49:17,600
+<b>traffic the plugin have this particular</b>
+
+1652
+02:49:18,319 --> 02:49:21,840
+<b>skiers or the ai agents and you can find the details how</b>
+
+1653
+02:49:21,840 --> 02:49:24,280
+<b>this specify uh it's called the policy</b>
+
+1654
+02:49:24,479 --> 02:49:30,200
+<b>deeper tool so i put some like screenshots the some parts</b>
+
+1655
+02:49:30,200 --> 02:49:33,239
+<b>of the skiers uh markdown files and</b>
+
+1656
+02:49:33,239 --> 02:49:35,879
+<b>you can you can see that that's what i'll just mention</b>
+
+1657
+02:49:35,879 --> 02:49:38,639
+<b>about the last part how to embed the human</b>
+
+1658
+02:49:38,639 --> 02:49:42,520
+<b>principle inside you can see very clearly it tried to stop</b>
+
+1659
+02:49:42,520 --> 02:49:47,360
+<b>the ai agents from uh drop from</b>
+
+1660
+02:49:47,440 --> 02:49:50,840
+<b>i conclude too fast so it's a mention that specifically</b>
+
+1661
+02:49:50,840 --> 02:49:52,559
+<b>before different please answer</b>
+
+1662
+02:49:53,280 --> 02:49:57,319
+<b>does it apply jurisdiction threshold</b>
+
+1663
+02:49:57,319 --> 02:50:02,040
+<b>sectors uh like is uh like just don't he asked to</b>
+
+1664
+02:50:02,040 --> 02:50:03,920
+<b>vice-versa okay the ai agents don't</b>
+
+1665
+02:50:03,920 --> 02:50:07,680
+<b>assume and then it asked the question one</b>
+
+1666
+02:50:09,200 --> 02:50:13,719
+<b>defective dates as uh so this is for amendment i believe so</b>
+
+1667
+02:50:13,719 --> 02:50:15,639
+<b>it asked ai agent to specify very</b>
+
+1668
+02:50:15,680 --> 02:50:19,040
+<b>clearly effective dates enforcement dates often different</b>
+
+1669
+02:50:19,040 --> 02:50:24,639
+<b>and verify policy so the third one is</b>
+
+1670
+02:50:24,639 --> 02:50:28,360
+<b>what's actually new so you can see that this question was</b>
+
+1671
+02:50:28,360 --> 02:50:31,360
+<b>put specifically to drill inside</b>
+
+1672
+02:50:31,760 --> 02:50:36,120
+<b>those laws it's mentioned that identify the delta from what</b>
+
+1673
+02:50:36,120 --> 02:50:38,920
+<b>you already do not the full context of</b>
+
+1674
+02:50:38,959 --> 02:50:44,079
+<b>the law so this is from anotropic i believe they kind of</b>
+
+1675
+02:50:44,079 --> 02:50:47,040
+<b>optimize this prompt a lot with the legal</b>
+
+1676
+02:50:47,040 --> 02:50:51,079
+<b>experts so to me i've learned a lot that's how they do it</b>
+
+1677
+02:50:51,079 --> 02:50:54,440
+<b>it's very specific i would i was hoping</b>
+
+1678
+02:50:54,440 --> 02:50:57,680
+<b>that our lots of students can do these things for</b>
+
+1679
+02:50:57,680 --> 02:51:01,879
+<b>computer-sized students but uh three weeks ago</b>
+
+1680
+02:51:01,920 --> 02:51:05,079
+<b>though i'm trying to fix up this problem for us and it's</b>
+
+1681
+02:51:05,079 --> 02:51:07,200
+<b>good to know that they release it they</b>
+
+1682
+02:51:07,200 --> 02:51:11,920
+<b>release it for free yeah and i think it's very very</b>
+
+1683
+02:51:11,920 --> 02:51:15,680
+<b>generous okay yeah hopefully found the question</b>
+
+1684
+02:51:16,239 --> 02:51:20,079
+<b>yes and uh question number four and five i think almost</b>
+
+1685
+02:51:20,079 --> 02:51:23,600
+<b>similar so i will ask only one question</b>
+
+1686
+02:51:23,600 --> 02:51:29,600
+<b>uh what are the best two our frameworks available today for</b>
+
+1687
+02:51:29,600 --> 02:51:32,040
+<b>domain experts to officially audit</b>
+
+1688
+02:51:32,399 --> 02:51:37,040
+<b>and evaluate llm outputs in a lab by life okay dr lata chai</b>
+
+1689
+02:51:37,040 --> 02:51:39,639
+<b>and uh for social both of you can</b>
+
+1690
+02:51:39,639 --> 02:51:44,600
+<b>share link about the the this this answer yes or give some</b>
+
+1691
+02:51:44,600 --> 02:51:46,200
+<b>discussion about this question</b>
+
+1692
+02:51:47,120 --> 02:51:49,799
+<b>okay dr lata chai do you want to share something for this</b>
+
+1693
+02:51:49,799 --> 02:51:52,760
+<b>question i know but but i forgot the name</b>
+
+1694
+02:51:52,799 --> 02:51:55,760
+<b>can can can i can i say for even if i</b>
+
+1695
+02:51:55,760 --> 02:51:58,760
+<b>forgot the name okay no problem no problem okay</b>
+
+1696
+02:51:59,559 --> 02:52:03,239
+<b>dr she'll about this question the best</b>
+
+1697
+02:52:03,239 --> 02:52:07,879
+<b>truth now i think again we don't know the best</b>
+
+1698
+02:52:10,639 --> 02:52:14,879
+<b>yeah every what participant needs the best everything the</b>
+
+1699
+02:52:14,879 --> 02:52:16,920
+<b>best but know the best you want</b>
+
+1700
+02:52:17,200 --> 02:52:21,600
+<b>i don't really yeah i'm mentioning that the best too and</b>
+
+1701
+02:52:21,600 --> 02:52:23,559
+<b>not i'm not saying the best but uh</b>
+
+1702
+02:52:23,559 --> 02:52:29,200
+<b>overall we've heard entropic is bad yeah but it's quite</b>
+
+1703
+02:52:29,200 --> 02:52:32,120
+<b>quite costly yeah quite costly i think this</b>
+
+1704
+02:52:32,120 --> 02:52:36,680
+<b>hacker so is also we want to build our open source and we</b>
+
+1705
+02:52:36,680 --> 02:52:39,680
+<b>don't want wonder specific models</b>
+
+1706
+02:52:40,239 --> 02:52:42,559
+<b>because today's entropic model is not</b>
+
+1707
+02:52:42,559 --> 02:52:46,879
+<b>models and truck so so bear that in mind i think</b>
+
+1708
+02:52:46,959 --> 02:52:52,000
+<b>the design here is that we need to design the auditing</b>
+
+1709
+02:52:52,000 --> 02:52:54,479
+<b>process inside system instead of rely</b>
+
+1710
+02:52:54,799 --> 02:52:58,680
+<b>everything on the models is there yeah this is uh what i</b>
+
+1711
+02:52:58,680 --> 02:53:01,040
+<b>can put it in this way i think it's better</b>
+
+1712
+02:53:01,360 --> 02:53:07,040
+<b>for this for solving actually yeah for the uh everybody in</b>
+
+1713
+02:53:07,040 --> 02:53:09,799
+<b>the room uh i think uh professor</b>
+
+1714
+02:53:09,799 --> 02:53:14,159
+<b>she will carry your slide to everybody like yeah yeah yeah</b>
+
+1715
+02:53:14,159 --> 02:53:16,719
+<b>okay thank you thank you okay and</b>
+
+1716
+02:53:16,959 --> 02:53:22,040
+<b>uh dr rata chai do you want to share something yeah sorry i</b>
+
+1717
+02:53:22,040 --> 02:53:23,639
+<b>can't find it there are four methods</b>
+
+1718
+02:53:23,639 --> 02:53:26,559
+<b>one is about the faithfulness i forgot the name i'm sorry</b>
+
+1719
+02:53:26,559 --> 02:53:28,399
+<b>it's just read from the book last week</b>
+
+1720
+02:53:28,399 --> 02:53:32,799
+<b>okay i see uh and the other one need to be needed about we</b>
+
+1721
+02:53:32,799 --> 02:53:35,680
+<b>need uh some question and answer for the</b>
+
+1722
+02:53:35,680 --> 02:53:40,840
+<b>experts first and then we can use the rack uh to uh to</b>
+
+1723
+02:53:40,840 --> 02:53:42,920
+<b>check the answer from the rack system by</b>
+
+1724
+02:53:43,120 --> 02:53:47,000
+<b>using the bird or brew or rule or something that we have a</b>
+
+1725
+02:53:47,000 --> 02:53:49,639
+<b>lot yeah and the other one is we can use</b>
+
+1726
+02:53:49,639 --> 02:53:54,079
+<b>the lma just to use the bigger commercial m like a cloud or</b>
+
+1727
+02:53:54,079 --> 02:53:55,879
+<b>gbt or something to check the answer</b>
+
+1728
+02:53:57,520 --> 02:54:01,360
+<b>yeah okay and i forgot the four metrics sorry about that no</b>
+
+1729
+02:54:01,360 --> 02:54:03,239
+<b>problem no problem for all problem</b>
+
+1730
+02:54:03,239 --> 02:54:07,360
+<b>uh i i think i will send you by email both of you and and</b>
+
+1731
+02:54:07,360 --> 02:54:09,799
+<b>you may uh answer them again okay no</b>
+
+1732
+02:54:09,840 --> 02:54:14,760
+<b>problem okay and uh i think this one for malia malia uh you</b>
+
+1733
+02:54:14,760 --> 02:54:17,360
+<b>finish your quota so i go to the other one</b>
+
+1734
+02:54:18,559 --> 02:54:24,479
+<b>okay this one okay i will go to this one uh what do you do</b>
+
+1735
+02:54:24,479 --> 02:54:27,520
+<b>you expect us to build oh i did this</b>
+
+1736
+02:54:27,520 --> 02:54:31,959
+<b>one i'm not sure this uh i just doing this is the question</b>
+
+1737
+02:54:31,959 --> 02:54:35,360
+<b>for for the the the ekaton start</b>
+
+1738
+02:54:35,600 --> 02:54:40,959
+<b>and this one when a law document is withdrawn uh but the</b>
+
+1739
+02:54:40,959 --> 02:54:45,319
+<b>other documents in the purpose still</b>
+
+1740
+02:54:45,319 --> 02:54:50,760
+<b>different or sighted how do you handle those uh the</b>
+
+1741
+02:54:50,760 --> 02:54:54,639
+<b>anchoring references so the system does not</b>
+
+1742
+02:54:55,000 --> 02:54:58,079
+<b>mislead you sir who follow them</b>
+
+1743
+02:55:00,920 --> 02:55:04,799
+<b>quite long question will be answered this way</b>
+
+1744
+02:55:04,799 --> 02:55:11,840
+<b>i think i can have a short answer for it</b>
+
+1745
+02:55:11,840 --> 02:55:16,319
+<b>i yeah yeah i i got that again that we've</b>
+
+1746
+02:55:16,319 --> 02:55:19,719
+<b>saying just now about anchoring how how they specified it</b>
+
+1747
+02:55:19,719 --> 02:55:22,799
+<b>just have another tool to verify</b>
+
+1748
+02:55:23,280 --> 02:55:29,520
+<b>the the reference is missing um if if that's actually a</b>
+
+1749
+02:55:29,520 --> 02:55:31,120
+<b>downrange reference the reference is</b>
+
+1750
+02:55:31,360 --> 02:55:35,879
+<b>if you have another tool mechanically check that probably</b>
+
+1751
+02:55:35,879 --> 02:55:38,079
+<b>the the tools you can ask the AI agents</b>
+
+1752
+02:55:38,159 --> 02:55:43,719
+<b>to check before it uh before it uh give you the conclusion</b>
+
+1753
+02:55:43,719 --> 02:55:49,959
+<b>yeah okay for the from dong li uh at</b>
+
+1754
+02:55:50,000 --> 02:55:56,959
+<b>once llm answers always better than basic than basic models</b>
+
+1755
+02:55:56,959 --> 02:56:00,120
+<b>which level llm should be should we</b>
+
+1756
+02:56:00,120 --> 02:56:04,760
+<b>use i think uh them maybe for the this ekaton</b>
+
+1757
+02:56:17,959 --> 02:56:18,559
+<b>this one</b>
+
+1758
+02:56:18,559 --> 02:56:26,799
+<b>at once llm answers are way better than basic models</b>
+
+1759
+02:56:26,879 --> 02:56:34,079
+<b>yes the uh the bigger model can answer better than the</b>
+
+1760
+02:56:34,079 --> 02:56:38,200
+<b>small model yeah i can say this</b>
+
+1761
+02:56:39,280 --> 02:56:43,079
+<b>and the second question is which level of</b>
+
+1762
+02:56:43,079 --> 02:56:47,879
+<b>llm should we use what kind of level if you</b>
+
+1763
+02:56:47,879 --> 02:56:50,920
+<b>i don't know i don't know maybe the billion uh maybe the</b>
+
+1764
+02:56:50,920 --> 02:56:54,600
+<b>number of parameter for me i i recommend</b>
+
+1765
+02:56:54,799 --> 02:56:58,719
+<b>that for the good answer is about more than 10 billion for</b>
+
+1766
+02:56:58,719 --> 02:57:02,079
+<b>the good answer if you need to use the</b>
+
+1767
+02:57:02,079 --> 02:57:06,799
+<b>tool use that for example you end up to to call the tune i</b>
+
+1768
+02:57:06,799 --> 02:57:11,239
+<b>think that more than 30 billion is better</b>
+
+1769
+02:57:13,200 --> 02:57:16,600
+<b>okay and the other one that uh one i work with that some</b>
+
+1770
+02:57:16,600 --> 02:57:19,079
+<b>thai language sometimes we work with</b>
+
+1771
+02:57:19,120 --> 02:57:27,399
+<b>the typo the gpt always is 120 billion is better for the</b>
+
+1772
+02:57:27,399 --> 02:57:31,280
+<b>typo and we correct every time okay</b>
+
+1773
+02:57:32,000 --> 02:57:38,440
+<b>okay okay this is this question maybe go to over social the</b>
+
+1774
+02:57:38,440 --> 02:57:40,079
+<b>problem that you need class from</b>
+
+1775
+02:57:40,079 --> 02:57:47,159
+<b>kraut for new policy analysis is it only good for agent or</b>
+
+1776
+02:57:47,159 --> 02:57:50,239
+<b>is is also good for api cause to</b>
+
+1777
+02:57:50,399 --> 02:57:58,280
+<b>listening model like the listen gpt models yeah i guess</b>
+
+1778
+02:57:58,280 --> 02:58:02,559
+<b>again i never built such thing for this</b>
+
+1779
+02:58:02,559 --> 02:58:08,920
+<b>hacker so i might there but definitely that we cannot just</b>
+
+1780
+02:58:08,920 --> 02:58:12,440
+<b>rely on cloud cloud code sorry cloud</b>
+
+1781
+02:58:12,959 --> 02:58:19,600
+<b>or entropic the plugin for this hacker so but cloud code</b>
+
+1782
+02:58:19,600 --> 02:58:22,879
+<b>can help us to process the legal documents</b>
+
+1783
+02:58:22,959 --> 02:58:28,440
+<b>to if you recall that on my slide to prepare you to prepare</b>
+
+1784
+02:58:28,440 --> 02:58:30,399
+<b>the data set you put out you put</b>
+
+1785
+02:58:30,799 --> 02:58:34,319
+<b>inside the rug so that's one thing you can do so another</b>
+
+1786
+02:58:34,319 --> 02:58:36,959
+<b>thing is that whether you can use</b>
+
+1787
+02:58:38,000 --> 02:58:42,719
+<b>api cause to do something similar the answer is yes so you</b>
+
+1788
+02:58:42,719 --> 02:58:47,239
+<b>need to check uh the ai uh agent</b>
+
+1789
+02:58:47,239 --> 02:58:52,559
+<b>protocols like google hua agent to agent protocol and to</b>
+
+1790
+02:58:52,559 --> 02:58:54,280
+<b>invite this kind of similar sign</b>
+
+1791
+02:58:54,719 --> 02:59:00,040
+<b>um maybe in your agent cards a description of this agent</b>
+
+1792
+02:59:00,040 --> 02:59:02,399
+<b>and basically you can programmable</b>
+
+1793
+02:59:03,040 --> 02:59:06,680
+<b>you have a programmable way to embed these things if you</b>
+
+1794
+02:59:06,680 --> 02:59:09,959
+<b>use a multi-agent today if you're using</b>
+
+1795
+02:59:10,639 --> 02:59:16,760
+<b>those ai a giant ai framework and hua is one for them yeah</b>
+
+1796
+02:59:16,760 --> 02:59:20,600
+<b>okay i think the time is finished now</b>
+
+1797
+02:59:20,639 --> 02:59:25,239
+<b>so we have the remain to question i think i i will i will</b>
+
+1798
+02:59:25,239 --> 02:59:28,520
+<b>send the question to to both of you and</b>
+
+1799
+02:59:29,040 --> 02:59:33,200
+<b>and for the remain for the remain question and when we give</b>
+
+1800
+02:59:33,200 --> 02:59:36,680
+<b>uh to the the the participant again</b>
+
+1801
+02:59:37,280 --> 02:59:42,879
+<b>after after maybe on monday okay on monday we have uh we</b>
+
+1802
+02:59:42,879 --> 02:59:47,159
+<b>have a wrap-up session for the survivors</b>
+
+1803
+02:59:47,760 --> 02:59:53,959
+<b>of the hackathon participants okay okay the warrior that's</b>
+
+1804
+02:59:53,959 --> 02:59:57,120
+<b>why that's why okay okay thank you</b>
+
+1805
+02:59:57,280 --> 03:00:01,399
+<b>for uh both of you to for sharing today uh</b>
+
+1806
+03:00:01,399 --> 03:00:04,520
+<b>very pleasure from the staff of hackathon</b>
+
+1807
+03:00:05,280 --> 03:00:09,920
+<b>okay thank you for all participants for for the last</b>
+
+1808
+03:00:09,920 --> 03:00:12,520
+<b>session of the opening for everybody</b>
+
+1809
+03:00:12,879 --> 03:00:17,639
+<b>dr vita da okay could you may i say something because yeah</b>
+
+1810
+03:00:17,639 --> 03:00:20,680
+<b>um because uh next week it's going</b>
+
+1811
+03:00:20,680 --> 03:00:24,600
+<b>to be uh the q&a sessions and opportunity for the</b>
+
+1812
+03:00:24,600 --> 03:00:27,840
+<b>participants to ask us the questions that they have</b>
+
+1813
+03:00:27,840 --> 03:00:33,319
+<b>in mind and uh we request participants to submit the</b>
+
+1814
+03:00:33,319 --> 03:00:36,360
+<b>questions that they want to answer before the</b>
+
+1815
+03:00:36,399 --> 03:00:44,120
+<b>sessions uh so if anyone still have uh unclear uh and</b>
+
+1816
+03:00:44,120 --> 03:00:47,040
+<b>anything that you want to know from the</b>
+
+1817
+03:00:47,520 --> 03:00:50,600
+<b>hackathon committee team please send us</b>
+
+1818
+03:00:50,600 --> 03:00:54,879
+<b>the questions by monday morning please</b>
+
+1819
+03:00:55,600 --> 03:00:59,040
+<b>because we will meet again uh monday 7</b>
+
+1820
+03:00:59,040 --> 03:01:01,600
+<b>p.m bank of time so same time as today</b>
+
+1821
+03:01:01,920 --> 03:01:07,920
+<b>i noticed the questions in the q&a that one is coming</b>
+
+1822
+03:01:07,920 --> 03:01:10,239
+<b>addressed to the committee which</b>
+
+1823
+03:01:10,239 --> 03:01:13,079
+<b>i have to answer i will answer these</b>
+
+1824
+03:01:13,079 --> 03:01:18,239
+<b>questions in the next sessions okay okay</b>
+
+1825
+03:01:18,239 --> 03:01:24,719
+<b>okay could you say the close closing but</b>
+
+1826
+03:01:24,719 --> 03:01:26,120
+<b>thank you very much i i really enjoyed the</b>
+
+1827
+03:01:26,319 --> 03:01:31,799
+<b>sessions that are delivered by uh both dr</b>
+
+1828
+03:01:31,799 --> 03:01:36,280
+<b>rata shai and dr shelk uh is very useful and</b>
+
+1829
+03:01:36,280 --> 03:01:41,159
+<b>actually i noticed that the slides that dr</b>
+
+1830
+03:01:41,159 --> 03:01:45,280
+<b>shelk who can have skipped on the entropic</b>
+
+1831
+03:01:45,360 --> 03:01:49,319
+<b>uh quad for legal it's very useful it's already include</b>
+
+1832
+03:01:49,319 --> 03:01:51,959
+<b>many tricks that actually the participants</b>
+
+1833
+03:01:52,239 --> 03:01:57,159
+<b>the participants if they really study that they already</b>
+
+1834
+03:01:57,159 --> 03:01:59,680
+<b>achieved the result and what that what i</b>
+
+1835
+03:01:59,680 --> 03:02:06,159
+<b>can say yeah but if that's clear yeah yeah yeah i actually</b>
+
+1836
+03:02:06,159 --> 03:02:10,120
+<b>cannot share for the permission uh i think</b>
+
+1837
+03:02:10,239 --> 03:02:15,879
+<b>um jin tong could you could you put in the chat box just</b>
+
+1838
+03:02:15,879 --> 03:02:17,879
+<b>not sure about my side i couldn't really</b>
+
+1839
+03:02:18,000 --> 03:02:26,239
+<b>share because of the the main um yeah but anyway yes as</b>
+
+1840
+03:02:26,239 --> 03:02:29,079
+<b>doctor we thought we thought i'd mention that</b>
+
+1841
+03:02:29,600 --> 03:02:33,120
+<b>it's actually found this uh their release</b>
+
+1842
+03:02:33,120 --> 03:02:36,920
+<b>um during the time of my university's team</b>
+
+1843
+03:02:37,040 --> 03:02:42,440
+<b>still working out and like during the haikou so but once</b>
+
+1844
+03:02:42,440 --> 03:02:44,600
+<b>you release i was wondering what we can do</b>
+
+1845
+03:02:45,040 --> 03:02:49,120
+<b>and but i think the good news is that that</b>
+
+1846
+03:02:49,120 --> 03:02:51,440
+<b>is uh as the one the participant mentioned</b>
+
+1847
+03:02:51,680 --> 03:02:56,879
+<b>it's a general purpose general purpose agent we need you</b>
+
+1848
+03:02:56,879 --> 03:02:59,879
+<b>he's to specialize for these contacts</b>
+
+1849
+03:03:00,079 --> 03:03:04,280
+<b>and you still have a lot of rooms to optimize it from even</b>
+
+1850
+03:03:04,280 --> 03:03:06,239
+<b>from a from the side point of view</b>
+
+1851
+03:03:06,559 --> 03:03:10,399
+<b>tons of things that uh the entropic leave the heavy</b>
+
+1852
+03:03:10,399 --> 03:03:14,559
+<b>workload in the legal side for us already</b>
+
+1853
+03:03:15,760 --> 03:03:20,399
+<b>so it makes this hackathon even more interesting that even</b>
+
+1854
+03:03:20,399 --> 03:03:23,360
+<b>if entropic is really into this idea</b>
+
+1855
+03:03:23,440 --> 03:03:28,639
+<b>into this era really that is a very very important area to</b>
+
+1856
+03:03:28,639 --> 03:03:31,079
+<b>solve yeah so we are looking forward for</b>
+
+1857
+03:03:31,120 --> 03:03:36,159
+<b>the all the teams in the shop this and to come up with very</b>
+
+1858
+03:03:36,159 --> 03:03:38,559
+<b>innovative approach to do it and</b>
+
+1859
+03:03:38,559 --> 03:03:41,879
+<b>definitely as doctor because i mentioned the entropic</b>
+
+1860
+03:03:41,879 --> 03:03:44,600
+<b>solved a lot of problems so definitely</b>
+
+1861
+03:03:44,600 --> 03:03:49,200
+<b>check inside and i've highlighted in my slides and you can</b>
+
+1862
+03:03:49,200 --> 03:03:52,360
+<b>see how how much they optimize the</b>
+
+1863
+03:03:52,399 --> 03:03:56,600
+<b>prompt yeah very very very brilliant</b>
+
+1864
+03:03:56,600 --> 03:04:01,559
+<b>like procedures that i'm very i'm very</b>
+
+1865
+03:04:03,360 --> 03:04:10,879
+<b>impressed about applying as euro from entropic yeah but i</b>
+
+1866
+03:04:10,879 --> 03:04:13,000
+<b>guess when they apply these principles</b>
+
+1867
+03:04:13,120 --> 03:04:17,479
+<b>to specific domains and specific countries they will still</b>
+
+1868
+03:04:17,479 --> 03:04:20,120
+<b>have the challenge of applying it to</b>
+
+1869
+03:04:20,159 --> 03:04:25,239
+<b>that specific yeah exactly yeah yeah exactly exactly</b>
+
+1870
+03:04:25,239 --> 03:04:28,239
+<b>there's for for every particular thing</b>
+
+1871
+03:04:28,239 --> 03:04:31,719
+<b>as i mentioned that it's for the general purpose one for</b>
+
+1872
+03:04:31,719 --> 03:04:34,120
+<b>training policies specifically the tools</b>
+
+1873
+03:04:34,639 --> 03:04:37,879
+<b>what kind of the mechanical tools in terms of like existing</b>
+
+1874
+03:04:37,879 --> 03:04:40,079
+<b>tools we try to verify i know that</b>
+
+1875
+03:04:40,079 --> 03:04:44,040
+<b>singapore many teams from singapore uh singapore has the ai</b>
+
+1876
+03:04:44,040 --> 03:04:46,559
+<b>verified tools for general purpose the</b>
+
+1877
+03:04:46,559 --> 03:04:54,159
+<b>ai system and you may can check other other tools um for</b>
+
+1878
+03:04:54,159 --> 03:04:56,479
+<b>this particular uh digital training</b>
+
+1879
+03:04:56,479 --> 03:05:00,639
+<b>regulation hire and the definitely as what we conclude</b>
+
+1880
+03:05:00,639 --> 03:05:02,200
+<b>there's a lot of space is a very</b>
+
+1881
+03:05:02,200 --> 03:05:06,840
+<b>important topic to work on definitely check how entropic do</b>
+
+1882
+03:05:06,840 --> 03:05:10,280
+<b>it in that way and try to customize</b>
+
+1883
+03:05:10,399 --> 03:05:13,559
+<b>in this particular hackerson and personally including me</b>
+
+1884
+03:05:13,559 --> 03:05:15,559
+<b>i've learned a lot from from the</b>
+
+1885
+03:05:15,600 --> 03:05:19,719
+<b>plugins it's just too many they have too many you probably</b>
+
+1886
+03:05:19,719 --> 03:05:22,559
+<b>need some ai to help you to to to</b>
+
+1887
+03:05:22,559 --> 03:05:28,399
+<b>like yeah yeah that's very useful and thank you very much</b>
+
+1888
+03:05:28,399 --> 03:05:30,959
+<b>and uh i hope that we will still</b>
+
+1889
+03:05:31,360 --> 03:05:34,280
+<b>have you indicate in the next step of the</b>
+
+1890
+03:05:34,280 --> 03:05:37,959
+<b>hackathons yeah sure yeah appreciate and</b>
+
+1891
+03:05:38,239 --> 03:05:45,280
+<b>dr rakshan is going to say something like uh okay okay i</b>
+
+1892
+03:05:45,280 --> 03:05:47,040
+<b>just found that uh the framework</b>
+
+1893
+03:05:47,200 --> 03:05:52,079
+<b>cousin is sent into the uh chat box already okay okay thank</b>
+
+1894
+03:05:52,079 --> 03:05:53,879
+<b>you thank you for sharing everything</b>
+
+1895
+03:05:54,079 --> 03:05:57,319
+<b>okay okay see you for the survival</b>
+
+1896
+03:05:57,319 --> 03:06:01,879
+<b>on monday okay bye-bye good night</b>
+
+1897
+03:06:01,920 --> 03:06:05,239
+<b>thank you bye bye bye</b>
+

@@ -5,11 +5,21 @@
 | Field | Value |
 |---|---|
 | Companion to | `ClauseChain_Round1_Build_Guide.md` (architecture), `ClauseChain_PRD_Application.md` |
-| Source of truth | RDTII 2.1 Guide + internal guide + the 1/4/5 June workshop worked examples (Juntong, Nikita) |
+| Source of truth | RDTII 2.1 Guide + internal guide + the 1/4/5 June workshop worked examples (Juntong, Nikita) + **ESCAP 10 June mail** (master-vs-inventory NEW/KNOWN baseline ruling) |
 | Scope | Pillars 6 & 7 (P6-I1…I4 + P7-I1…I5). `P6-I5`=6.5 is non-regulatory — not extracted. |
 | How to use | §13 example bank → few-shot prompt examples · §3–§9 rules → system-prompt rules + `pillar_*.yaml` exclusions · §12 checklist → verification gates + eval |
 
 > **Mental model.** Every output row answers one question: *"Does this exact, current, official, domestic legal provision satisfy this RDTII indicator's legal test — and can a lawyer verify it from the citation in seconds?"* Each DO/DON'T below removes one way that answer goes wrong.
+
+> **⚠️ Post-22-June update (12/15-June notes + Round-2 gold DB; master changelog = Dev Plan §0).**
+> - **Multilingual verbatim:** put the **original-language** text in `Verbatim Snippet`; add a **`Verbatim Snippet (English)`** column (allowed, appended after the 13). Prioritize the native-language version (most up-to-date), English as reference; flag translation/bilingual source in `Notes`. (15-Jun)
+> - **Repealed law cited as current = penalty.** Record only active laws; if you keep a repealed one, mark **`Status=repealed`**. **No-evidence → "no provision found" + cite the governing law**, never a blank row. (15-Jun)
+> - **Keep evidence separate from the score; always model uncertainty** (legal text is vague / translated / outdated / sector-specific). Zone-3 ships a **noise-audit uncertainty band** (multi-persona judges + Krippendorff's α), not a bare number. (12-Jun Qian Xiao)
+> - **NEW = provision-level** even inside a known law; evaluated vs the **FULL** known evidence (find MORE, not less) — official 15-Jun confirmations of the 20-pt lever.
+> - **More gold to mine into §13:** the **Round-2 DB** (CN/IN/ID/LA/MN/RU/TH, government-verified) is a rich source of worked examples — add them, especially multilingual disambiguations. Seed examples:
+>   - ✅ **Thailand** PDPA B.E. 2562 **s.28** → **P6-I4** (conditional cross-border transfer, score 1): transfer allowed *subject to conditions*, not a ban.
+>   - ✅ **China** ride-hailing / credit-reporting "servers / data **located within** the territory" → **P6-I3** infrastructure (or **6.2** if only a *copy* must stay) — distinguish by whether a *facility* is required.
+>   - ✅ **India** **RBI 2018** payment-data directive ("stored only in India") → **P6-I2** local storage (sectoral, payment data).
 
 ---
 
@@ -149,11 +159,31 @@ These are the exact confusions the RDTII team flagged. Encode each as a `pillar_
 - ❌ Let the **score contradict the explanation** (e.g. score 0 while the text clearly imposes a restriction → should be ≥ 0.5/1).
 - ❌ Treat "fighting the NO" as easy — absence is *harder* to prove than presence; budget search effort accordingly.
 
+### 9.1 The official 0 / 0.5 / 1 criteria (RDTII 2.1 Guide — canonical here; mirrored in Build Guide §7.1)
+
+**⚠️ Polarity (a silent score-killer): P7-I1 and P7-I2 score the *absence* of a framework** (lack = 1); **P7-I3/I4/I5 score the *presence* of requirements.** All of Pillar 6 scores presence of restrictions. Higher always = more regulatory burden. **Scope exclusion:** P6 measures applying *only to government data* are NOT scored.
+
+| Code | Score 1 | Score 0.5 | Score 0 |
+|---|---|---|---|
+| P6-I1 | ban/local-processing covers **personal data** OR applies **horizontally**; also 1 if **≥2** such requirements on non-personal/specific data (or >1 economy) | single requirement on non-personal/specific data or one economy | transfer free of such requirements |
+| P6-I2 | mirrors 6.1 (personal data OR horizontal; or ≥2 non-personal/specific) | single non-personal/specific-data storage rule | no local-storage requirement |
+| P6-I3 | **any** infrastructure requirement | — | none |
+| P6-I4 | conditions cover **personal data** (any coverage) OR apply **horizontally** | non-personal/specific data or sectoral only | no conditions |
+| P6-I5 | no binding data-transfer agreement (treaty DBs; not extracted) | — | ≥1 binding agreement |
+| P7-I1 | **lacks** comprehensive DP framework | **sectoral-only**; or **horizontal-but-thin** (e.g. missing rectification → "not comprehensive enough" — Juntong, 5 Jun; organizers invite going deeper than the binary) | comprehensive horizontal framework exists |
+| P7-I2 | **lacks** dedicated cybersecurity framework | — | dedicated framework exists |
+| P7-I3 | minimum retention **period specified** (keep ≥ X) | — | none |
+| P7-I4 | DPIA **or** DPO required | — | neither |
+| P7-I5 | government access enabled/required | — | otherwise |
+
+**P6 indicator weights:** 6.1 = **38 %** · 6.3 = **31 %** · 6.2 = 12 % · 6.4 = 12 % · 6.5 = 8 % — the heavyweights are exactly the trickiest disambiguation pair (§6), so mapping accuracy there is worth disproportionately more.
+
 ---
 
 ## 10. NEW vs KNOWN discovery (the 20-point lever)
 
 **DO**
+- Use the right baseline (**ESCAP 10 June mail — authoritative**): the **master dataset** (`Round 1 Database.xlsx`) is the **primary KNOWN reference** — build the KNOWN index by normalizing its law names/numbers **and parsing the article references out of its Impact-column prose** (that's where the gold articles live). The 384-row **Legal Inventory CSV** (all pillars, no provisions/Impact) is **secondary**: crawler seeds + format validation; ESCAP's words: evidence beyond it "may be classified as NEW".
 - Tag at **(instrument + article)** granularity. A **new provision inside an already-recorded law** counts as **NEW** (the RDTII DB often recorded only the law name or the first relevant clause).
 - Maximise **recall** — surface relevant provisions, exceptions, and sectoral instruments humans missed.
 - Run every NEW candidate through the **full gate stack** before tagging it.

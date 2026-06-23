@@ -1,0 +1,1833 @@
+[Thanavit Anuwongpinit] 18:48:38
+Okay, uh, actually, uh, it is on the screen is the, like, if our top line.
+
+[Thanavit Anuwongpinit] 18:48:44
+for, uh, for submit.
+
+[Thanavit Anuwongpinit] 18:48:47
+Okay, um, how…
+
+[Thanavit Anuwongpinit] 18:48:50
+how you actually submit, uh, everything, okay, uh, everything goes, uh,
+
+[Thanavit Anuwongpinit] 18:48:55
+shorter, uh, thinker online form, uh, maybe on a dot form that a form
+
+[Thanavit Anuwongpinit] 18:49:01
+and I form that you will submit.
+
+[Thanavit Anuwongpinit] 18:49:02
+on… in the, uh, for registration to…
+
+[Thanavit Anuwongpinit] 18:49:06
+this hackathon, okay? Uh, one form, and all four are different.
+
+[Thanavit Anuwongpinit] 18:49:10
+Okay? Uh, the…
+
+[Thanavit Anuwongpinit] 18:49:14
+Um, uh, you, you, you must submit all of
+
+[Thanavit Anuwongpinit] 18:49:16
+Uh, that we require the functional prototype, the structure output 5, and…
+
+[Thanavit Anuwongpinit] 18:49:23
+Notation Nicole Peach Connect, and…
+
+[Thanavit Anuwongpinit] 18:49:24
+Yeah, maybe the… the lights are within all the screen recording walkthrough in our platform, okay, that we will send to…
+
+[Thanavit Anuwongpinit] 18:49:36
+the link, okay, the link for this dot form we will send to you later in maybe the…
+
+[Thanavit Anuwongpinit] 18:49:43
+that he had… head off…
+
+[Thanavit Anuwongpinit] 18:49:46
+you know, your team email.
+
+[Thanavit Anuwongpinit] 18:49:47
+Okay, uh, we will provide the form link for our submission.
+
+[Thanavit Anuwongpinit] 18:49:53
+Yeah.
+
+[Thanavit Anuwongpinit] 18:49:56
+And I think the top lie…
+
+[Thanavit Anuwongpinit] 18:50:00
+the submission timeline for the…
+
+[Thanavit Anuwongpinit] 18:50:04
+us now on the, uh,
+
+[Thanavit Anuwongpinit] 18:50:06
+on 20th July, maybe.
+
+[Thanavit Anuwongpinit] 18:50:08
+Um, maybe depending on time and time, right? I'm not sure.
+
+[Witada Anukoonwattaka] 18:50:13
+Yes.
+
+[Witada Anukoonwattaka] 18:50:15
+Bangkok time.
+
+[Thanavit Anuwongpinit] 18:50:16
+Yep, Bangkok time, right?
+
+[Witada Anukoonwattaka] 18:50:21
+Yes.
+
+[Nikita Shahu] 18:50:24
+And, um…
+
+[Nikita Shahu] 18:50:27
+Did you cover about the required formats, and for the pitch deck and the 10-minute video, are there any specific formats or file size limitations?
+
+[Nikita Shahu] 18:50:36
+Where can we find this information, and…
+
+[Nikita Shahu] 18:50:39
+Where can the participants, yeah, find this information?
+
+[Thanavit Anuwongpinit] 18:50:42
+Okay, I think I will, uh…
+
+[Thanavit Anuwongpinit] 18:50:45
+that we provide of information.
+
+[Thanavit Anuwongpinit] 18:50:48
+We had a family-channel link form, okay?
+
+[Nikita Shahu] 18:50:52
+Okay.
+
+[Nikita Shahu] 18:50:55
+Okay, so I hope that clears up submission and output-related requirements for our participants.
+
+[Nikita Shahu] 18:51:02
+Now, we have some technical questions in our
+
+[Nikita Shahu] 18:51:06
+In our question bank. And I hope I can ask…
+
+[Nikita Shahu] 18:51:11
+to answer these questions, right? So, the first question is about the user input design.
+
+[Nikita Shahu] 18:51:20
+Uh, will the users interact with the tool through
+
+[Nikita Shahu] 18:51:23
+free text prompts, or should Teams design structured inputs such as country drop-downs and indicator selectors?
+
+[Thanavit Anuwongpinit] 18:51:36
+thing, uh…
+
+[Thanavit Anuwongpinit] 18:51:37
+Yeah, yeah. Question is…
+
+[Thanavit Anuwongpinit] 18:51:41
+Can you repeat the question again, please?
+
+[Nikita Shahu] 18:51:43
+Sure, no problem. So, the question is about the…
+
+[Nikita Shahu] 18:51:47
+input design, like, how will users interact with the tool itself?
+
+[Nikita Shahu] 18:51:51
+through the… will the users interact with the tool through a free text prompt?
+
+[Nikita Shahu] 18:51:57
+Or should teams design…
+
+[Nikita Shahu] 18:51:59
+structured inputs such as country drop-downs, or selecting…
+
+[Nikita Shahu] 18:52:02
+selecting mechanisms, basically.
+
+[Thanavit Anuwongpinit] 18:52:04
+I think it's up to you, because
+
+[Thanavit Anuwongpinit] 18:52:06
+Uh, I think our top may have the criteria for, uh,
+
+[Thanavit Anuwongpinit] 18:52:12
+for input to shake
+
+[Thanavit Anuwongpinit] 18:52:15
+that answer or shape your output.
+
+[Thanavit Anuwongpinit] 18:52:17
+for your solution, I think so.
+
+[Thanavit Anuwongpinit] 18:52:19
+Yeah, I think it's up to you, okay, your solution may be…
+
+[Thanavit Anuwongpinit] 18:52:24
+don't dial, or anything else, I think it's okay, because we… I think we will have
+
+[Thanavit Anuwongpinit] 18:52:29
+Um…
+
+[Thanavit Anuwongpinit] 18:52:31
+I think we would have to… the solution to check your…
+
+[Thanavit Anuwongpinit] 18:52:36
+answer on your output, okay?
+
+[Nikita Shahu] 18:52:38
+Okay.
+
+[Nikita Shahu] 18:52:41
+The next question is also about the interface of the tool that they make.
+
+[Nikita Shahu] 18:52:47
+is a command line interface, or CLI, required, or a graphical user interface, like GUIs are also acceptable?
+
+[Thanavit Anuwongpinit] 18:52:58
+I think a common line interface, or CI, is not meant
+
+[Thanavit Anuwongpinit] 18:53:02
+not how it, um…
+
+[Thanavit Anuwongpinit] 18:53:05
+Mark, I think if you use the…
+
+[Thanavit Anuwongpinit] 18:53:07
+graphic user interface, uh, DUI, yeah, maybe provide.
+
+[Thanavit Anuwongpinit] 18:53:12
+code usability and…
+
+[Thanavit Anuwongpinit] 18:53:15
+the presentation, I think so.
+
+[Thanavit Anuwongpinit] 18:53:16
+Okay, um, but, okay, uh,
+
+[Thanavit Anuwongpinit] 18:53:19
+if… I think the CR is documentary, that I said is up to your solution.
+
+[Thanavit Anuwongpinit] 18:53:24
+Okay, um…
+
+[Thanavit Anuwongpinit] 18:53:26
+I left it, uh, it is specifically required by a…
+
+[Thanavit Anuwongpinit] 18:53:31
+Yeah,
+
+[Thanavit Anuwongpinit] 18:53:34
+the repository, or the…
+
+[Thanavit Anuwongpinit] 18:53:36
+our submission checklist, okay?
+
+[Thanavit Anuwongpinit] 18:53:39
+or you use BART, C-O-I-N.
+
+[Thanavit Anuwongpinit] 18:53:43
+DUI? I think, uh, acceptable.
+
+[Thanavit Anuwongpinit] 18:53:46
+acceptable, okay? You may…
+
+[Thanavit Anuwongpinit] 18:53:48
+for why a CLI of interface, or…
+
+[Thanavit Anuwongpinit] 18:53:54
+live API, or notebook-based interface, okay? Actually…
+
+[Thanavit Anuwongpinit] 18:53:58
+I think it's up to your solution.
+
+[Thanavit Anuwongpinit] 18:54:01
+Yeah, but you need to…
+
+[Thanavit Anuwongpinit] 18:54:03
+Um, but why don't…
+
+[Thanavit Anuwongpinit] 18:54:06
+read me find MDFI,
+
+[Thanavit Anuwongpinit] 18:54:09
+Yeah, um, you'll… I think when you submit, you'll…
+
+[Thanavit Anuwongpinit] 18:54:12
+You must, um, combine everything into the single repository.
+
+[Thanavit Anuwongpinit] 18:54:18
+With GitHub or anything else that…
+
+[Thanavit Anuwongpinit] 18:54:22
+that that can…
+
+[Thanavit Anuwongpinit] 18:54:23
+Yeah, that can read your MD or README FHI, and…
+
+[Thanavit Anuwongpinit] 18:54:28
+run your solution.
+
+[Thanavit Anuwongpinit] 18:54:30
+Okay. Yeah.
+
+[Witada Anukoonwattaka] 18:54:33
+May I add something?
+
+[Nikita Shahu] 18:54:34
+Yes, please, please go ahead.
+
+[Witada Anukoonwattaka] 18:54:35
+Yeah, um, the…
+
+[Witada Anukoonwattaka] 18:54:39
+beautiful peace tie!
+
+[Witada Anukoonwattaka] 18:54:41
+user interface is not required in this route.
+
+[Witada Anukoonwattaka] 18:54:46
+But it will be required in the final round.
+
+[Witada Anukoonwattaka] 18:54:49
+So, until then, you are free to…
+
+[Witada Anukoonwattaka] 18:54:52
+to do.
+
+[Witada Anukoonwattaka] 18:54:55
+what documented, uh, in a structured way that we can, cloning and replicate what you did to test.
+
+[Nikita Shahu] 18:55:07
+Okay, thank you so much for clarification. Now, the next question, again, for… it's technical.
+
+[Nikita Shahu] 18:55:12
+It's about the web search approach, basically. And the teams are asking, should teams prioritize official APIs and third-party search services instead of direct web scraping?
+
+[Nikita Shahu] 18:55:24
+Do we have a preference, basically?
+
+[Nikita Shahu] 18:55:27
+for any of these methods.
+
+[Witada Anukoonwattaka] 18:55:33
+Who do you ask?
+
+[Nikita Shahu] 18:55:34
+Um, I guess I can start with Dr. Kanavit, and then Kulvitada, or Dr. Datpong, if you want to add anything.
+
+[Thanavit Anuwongpinit] 18:55:46
+I think…
+
+[Thanavit Anuwongpinit] 18:55:49
+Um, you know, the question is about the periodic ties, right, between, uh, official API or third-party search.
+
+[Thanavit Anuwongpinit] 18:55:58
+is the direct web scrapping, right?
+
+[Witada Anukoonwattaka] 18:56:04
+Yes, the question is like that.
+
+[Nikita Shahu] 18:56:05
+Yeah.
+
+[Thanavit Anuwongpinit] 18:56:09
+Yep, um, I think…
+
+[Witada Anukoonwattaka] 18:56:09
+Do you want me to answer?
+
+[Thanavit Anuwongpinit] 18:56:13
+Okay, uh, yeah, after we turn that, maybe answer this question?
+
+[Witada Anukoonwattaka] 18:56:18
+Um…
+
+[Witada Anukoonwattaka] 18:56:20
+I… it… we don't… we don't prohibit you from using third parties.
+
+[Witada Anukoonwattaka] 18:56:26
+But, uh, pris…
+
+[Witada Anukoonwattaka] 18:56:29
+note that one of the evaluation criteria is cost efficiencies.
+
+[Witada Anukoonwattaka] 18:56:35
+If the third-party application…
+
+[Witada Anukoonwattaka] 18:56:39
+to the cause, then that would…
+
+[Witada Anukoonwattaka] 18:56:43
+effect somewhat to… to the evaluations.
+
+[Thanavit Anuwongpinit] 18:56:48
+Yeah, actually, my answer, I'm not sure, because maybe…
+
+[Thanavit Anuwongpinit] 18:56:53
+in the context of the legal, maybe, Shane, but in… actually, in my opinion, I think if you can build it,
+
+[Thanavit Anuwongpinit] 18:57:01
+that Dr. Whitana said, if you can save your…
+
+[Thanavit Anuwongpinit] 18:57:06
+cough, okay, life, or you can build a…
+
+[Thanavit Anuwongpinit] 18:57:09
+like a third party, but…
+
+[Thanavit Anuwongpinit] 18:57:11
+in the log, uh, can be installed in your local repository or your server.
+
+[Thanavit Anuwongpinit] 18:57:18
+And can save your cost, right? And the output is…
+
+[Thanavit Anuwongpinit] 18:57:23
+Uh, if I go, I think.
+
+[Thanavit Anuwongpinit] 18:57:26
+maybe better fire up.
+
+[Thanavit Anuwongpinit] 18:57:28
+for your fellowship.
+
+[Nikita Shahu] 18:57:33
+Okay, understood.
+
+[Nikita Shahu] 18:57:35
+So, the teams have to basically make a decision based on their best…
+
+[Nikita Shahu] 18:57:40
+approach of that tool and their design, etc., basically.
+
+[Witada Anukoonwattaka] 18:57:44
+efficiencies, I mean, product days and cost efficiencies.
+
+[Nikita Shahu] 18:57:48
+Yeah. Okay.
+
+[Nikita Shahu] 18:57:50
+And similarly, we have a question about the document ingestation part.
+
+[Nikita Shahu] 18:57:57
+Uh, the question was, can existing PDF documents be ingested into the vector database for retrieval and querying?
+
+[Nikita Shahu] 18:58:05
+I guess that is a lot to be said about this, so…
+
+[Nikita Shahu] 18:58:10
+Um, doctor…
+
+[Nikita Shahu] 18:58:12
+Vitala or Ajanthana with any one of you can start.
+
+[Nikita Shahu] 18:58:16
+I was ready to answer.
+
+[Thanavit Anuwongpinit] 18:58:19
+I think, um, if you'll…
+
+[Thanavit Anuwongpinit] 18:58:22
+Kim told it.
+
+[Thanavit Anuwongpinit] 18:58:24
+workshop session on…
+
+[Thanavit Anuwongpinit] 18:58:27
+on the path, in the 2L.
+
+[Thanavit Anuwongpinit] 18:58:30
+Um, I think Dr. Ratashai, or the…
+
+[Thanavit Anuwongpinit] 18:58:34
+Another professor, uh, they…
+
+[Thanavit Anuwongpinit] 18:58:37
+And they talk about the detail, how to ingest it.
+
+[Thanavit Anuwongpinit] 18:58:41
+maybe lies a wrap or anything else. Yeah, I think.
+
+[Thanavit Anuwongpinit] 18:58:46
+Yeah, if you follow the…
+
+[Thanavit Anuwongpinit] 18:58:49
+Uh, the solution that…
+
+[Thanavit Anuwongpinit] 18:58:50
+Black Professor provide to you, I think,
+
+[Thanavit Anuwongpinit] 18:58:54
+You can know the detail.
+
+[Thanavit Anuwongpinit] 18:58:57
+how to ingest a document, how to work with the vector database on it.
+
+[Thanavit Anuwongpinit] 18:59:02
+Anything else?
+
+[Thanavit Anuwongpinit] 18:59:05
+We did it on, maybe.
+
+[Thanavit Anuwongpinit] 18:59:07
+more details, no?
+
+[Witada Anukoonwattaka] 18:59:08
+Uh, I just want to add that, um,
+
+[Witada Anukoonwattaka] 18:59:13
+Once you intest the files,
+
+[Witada Anukoonwattaka] 18:59:16
+chang it and save it.
+
+[Witada Anukoonwattaka] 18:59:18
+Uh, is okay, but you need to have the system that you can.
+
+[Witada Anukoonwattaka] 18:59:24
+track, monitor any new
+
+[Witada Anukoonwattaka] 18:59:27
+documents that will come in.
+
+[Witada Anukoonwattaka] 18:59:30
+After you already downloaded an interest, because
+
+[Witada Anukoonwattaka] 18:59:34
+in any times, or any days coming, there might be additional evidence released.
+
+[Nikita Shahu] 18:59:45
+Yeah, I agree. So, basically, for the existing PDF documents that we already had, they can be used, but there is a scenario in which countries go ahead and update their laws,
+
+[Nikita Shahu] 18:59:56
+or they repeal them, or they make… they cancel their notifications.
+
+[Nikita Shahu] 19:00:00
+So, in that case, like Kunmitana said, like, you will have to have a system in which…
+
+[Nikita Shahu] 19:00:05
+you need to find a way to, like, update.
+
+[Nikita Shahu] 19:00:09
+the existing repository… repository of documents we have.
+
+[Nikita Shahu] 19:00:14
+Yeah. Okay.
+
+[Nikita Shahu] 19:00:16
+Um,
+
+[Nikita Shahu] 19:00:19
+I just wanted to go back to one of the questions I asked. I'm not sure if it was answered, actually, about the updating the submissions. I'm sorry if I didn't hear…
+
+[Nikita Shahu] 19:00:30
+But the question was, like, can we… can the participants update their submissions after they have…
+
+[Nikita Shahu] 19:00:38
+submitted, and the deadline has passed.
+
+[Thanavit Anuwongpinit] 19:00:45
+Um, I think?
+
+[Thanavit Anuwongpinit] 19:00:47
+we will allow until the…
+
+[Thanavit Anuwongpinit] 19:00:51
+to resubmit, right? Until the deadline, or not.
+
+[Witada Anukoonwattaka] 19:00:56
+Sorry, can you repeat the question?
+
+[Nikita Shahu] 19:00:58
+The question is basically, can the teams update or change their submissions after they have submitted?
+
+[Nikita Shahu] 19:01:04
+And the deadline has passed.
+
+[Witada Anukoonwattaka] 19:01:08
+Uh, no, because we… once they start meet, we will have to start reviewing it, and if they…
+
+[Witada Anukoonwattaka] 19:01:16
+chance, then we will never end the process.
+
+[Nikita Shahu] 19:01:20
+Yeah.
+
+[Nikita Shahu] 19:01:21
+Okay.
+
+[Nikita Shahu] 19:01:29
+I see one more question in my list before maybe we can move on to some live questions.
+
+[Nikita Shahu] 19:01:36
+If you… if you want. But there is one question about what is the expected time budget per evaluation run?
+
+[Nikita Shahu] 19:01:47
+is minutes on hours.
+
+[Nikita Shahu] 19:01:54
+So, I guess I can ask this to…
+
+[Nikita Shahu] 19:01:59
+Gunmatada, if you can start, and then maybe…
+
+[Nikita Shahu] 19:02:02
+Professor Ajan can… uh, sorry, Ajantha Narit Google?
+
+[Witada Anukoonwattaka] 19:02:05
+buckets per what? I'm… I'm not following.
+
+[Nikita Shahu] 19:02:08
+The time budget, so they're asking for the evaluation runs.
+
+[Witada Anukoonwattaka] 19:02:13
+Um, but yet, what do you mean, Tombatit?
+
+[Nikita Shahu] 19:02:13
+Um, is there an expected…
+
+[Nikita Shahu] 19:02:17
+In the sense, how much time should every evaluation run take? Are we expecting it to run in minutes, or are we expecting it to run in hours?
+
+[Witada Anukoonwattaka] 19:02:27
+For one country?
+
+[Nikita Shahu] 19:02:31
+I don't…
+
+[Witada Anukoonwattaka] 19:02:31
+For how many countries we are talking about, and how many indicators?
+
+[Nikita Shahu] 19:02:34
+Yeah, I don't think they have…
+
+[Nikita Shahu] 19:02:37
+clarified in this question, but let's say one country…
+
+[Nikita Shahu] 19:02:41
+Or maybe the existing three-country, yeah.
+
+[Witada Anukoonwattaka] 19:02:44
+I… I think, uh, I'm reluctant to say what exactly would be the time estimated, because, uh,
+
+[Witada Anukoonwattaka] 19:02:54
+if the system that you decide is making it a reasonable fast, that would be
+
+[Witada Anukoonwattaka] 19:03:01
+score high. If you are slow, then…
+
+[Witada Anukoonwattaka] 19:03:03
+efficiency score will be lower.
+
+[Witada Anukoonwattaka] 19:03:06
+But, um…
+
+[Witada Anukoonwattaka] 19:03:08
+Yeah. So this is a competition, so maybe it's…
+
+[Witada Anukoonwattaka] 19:03:13
+fast as much as you can.
+
+[Nikita Shahu] 19:03:15
+Yeah, so as fast as possible would be the name of the game.
+
+[Witada Anukoonwattaka] 19:03:18
+Yes, and maybe we will see who leads the fastest, and more accurate.
+
+[Witada Anukoonwattaka] 19:03:23
+more evidence as well.
+
+[Nikita Shahu] 19:03:24
+Yeah, okay. So, I…
+
+[Nikita Shahu] 19:03:29
+I think we have… I have…
+
+[Nikita Shahu] 19:03:30
+I have asked you all the questions that I had in my list.
+
+[Nikita Shahu] 19:03:34
+Um, would you be open to taking, um…
+
+[Nikita Shahu] 19:03:39
+Life from Q&A box.
+
+[Witada Anukoonwattaka] 19:03:42
+Do we have time?
+
+[Nikita Shahu] 19:03:44
+Uh, we have maybe, like, 15 to 20 minutes.
+
+[Witada Anukoonwattaka] 19:03:45
+Yes?
+
+[Witada Anukoonwattaka] 19:03:49
+Okay, I think we can…
+
+[Witada Anukoonwattaka] 19:03:52
+You can go through them until we…
+
+[Witada Anukoonwattaka] 19:03:55
+Until the times of unacted.
+
+[Nikita Shahu] 19:03:57
+Okay. So, let me just take a quick look at one of the questions I had found before.
+
+[Nikita Shahu] 19:04:12
+So, one of the questions is, during the presentation, during the submission,
+
+[Nikita Shahu] 19:04:18
+Uh, should we have a real working prototype, or a description of the… and…
+
+[Nikita Shahu] 19:04:23
+Sorry. During the presentation,
+
+[Nikita Shahu] 19:04:26
+We should show a real working prototype and a description of the product itself, right? That's a question that we have.
+
+[Nikita Shahu] 19:04:33
+received.
+
+[Witada Anukoonwattaka] 19:04:40
+Um, this is referring to a live demo, or…?
+
+[Witada Anukoonwattaka] 19:04:44
+presentation interview.
+
+[Nikita Shahu] 19:04:47
+So, it says during the presentation, uh, if SZM could clarify, then maybe…
+
+[Nikita Shahu] 19:04:53
+I couldn't bring it back to you, basically.
+
+[Witada Anukoonwattaka] 19:04:56
+But basically, in principle, yes, make your prototype working, and de-first.
+
+[Nikita Shahu] 19:05:04
+Okay.
+
+[Witada Anukoonwattaka] 19:05:05
+You will be interviewed.
+
+[Witada Anukoonwattaka] 19:05:07
+enjoying your product life.
+
+[Nikita Shahu] 19:05:10
+Right.
+
+[Nikita Shahu] 19:05:15
+Okay, so, uh, there's a question from Mohammad, and it's a follow-up on the question that Jung Tong answered.
+
+[Nikita Shahu] 19:05:23
+about the scenario where one…
+
+[Nikita Shahu] 19:05:25
+provision is at the law level, and then the follow-up detailed provision
+
+[Nikita Shahu] 19:05:31
+is regulated at a law under it. So, one provision is at the higher law level, or the act level maybe, is that… if that's what they mean.
+
+[Nikita Shahu] 19:05:38
+And a detailed probation is more at a…
+
+[Nikita Shahu] 19:05:41
+lower than ACT-level hierarchy. And they're saying in the RDTI database, there is one example of this.
+
+[Nikita Shahu] 19:05:47
+In the Indonesian health law, and then there's a follow-up that is in the
+
+[Nikita Shahu] 19:05:52
+regulation of the health. In this case, is it recommended to combine it into one row, or record it separately?
+
+[Nikita Shahu] 19:06:01
+We're basically asking if two regulations fade into each other and inform each other, should they record it together, or should…
+
+[Nikita Shahu] 19:06:09
+Then I called it separately.
+
+[Nikita Shahu] 19:06:12
+I think maybe Juntong, if you could answer this question for us?
+
+[Juntong Hou] 19:06:17
+Yes, um…
+
+[Juntong Hou] 19:06:19
+Yes, um, Hamad is right. Uh, so…
+
+[Juntong Hou] 19:06:23
+I mean, in RDTI database, I'm just saying, like, the manual
+
+[Juntong Hou] 19:06:27
+data collection process.
+
+[Juntong Hou] 19:06:30
+Uh, in this case, uh, we will record this to the…
+
+[Juntong Hou] 19:06:35
+upper heart hierarchy and the lower hierarchy in…
+
+[Juntong Hou] 19:06:37
+the same entry. Uh, but as Dr. Retanda said, like, in order to make your output template clean,
+
+[Juntong Hou] 19:06:45
+Uh, then we prefer to have one entry for one provision.
+
+[Juntong Hou] 19:06:50
+Right?
+
+[Witada Anukoonwattaka] 19:06:51
+Yes, and then make use your note column to… to explain the… the cross.
+
+[Juntong Hou] 19:06:55
+Mm-hmm.
+
+[Witada Anukoonwattaka] 19:06:59
+reference and a hierarchy of this
+
+[Witada Anukoonwattaka] 19:07:03
+two laws.
+
+[Nikita Shahu] 19:07:04
+Yeah.
+
+[Juntong Hou] 19:07:05
+Yeah, so…
+
+[Witada Anukoonwattaka] 19:07:05
+You can document them, uh, in different…
+
+[Witada Anukoonwattaka] 19:07:10
+role, but next to each other's, and put the notes, explain that these two laws are…
+
+[Witada Anukoonwattaka] 19:07:16
+Working together, and what would be the implementation?
+
+[Juntong Hou] 19:07:21
+Yeah, so for the manual process, um,
+
+[Juntong Hou] 19:07:25
+You can put it together, but, I mean, for the output, then just… yeah.
+
+[Juntong Hou] 19:07:30
+tool whenever you were requested to do.
+
+[Nikita Shahu] 19:07:34
+Okay.
+
+[Nikita Shahu] 19:07:36
+Okay, I think you've answered his question. Um…
+
+[Nikita Shahu] 19:07:41
+There is a question about evaluation.
+
+[Nikita Shahu] 19:07:44
+For the evaluation techniques that we'll use, will we test against…
+
+[Nikita Shahu] 19:07:49
+our full non-provision sample kit, or a subset of it.
+
+[Nikita Shahu] 19:07:54
+So, I guess they're asking, like, will we make sure that they have found every single
+
+[Nikita Shahu] 19:08:01
+provision and law that we have found.
+
+[Nikita Shahu] 19:08:03
+Or are we okay if they only find a subset of those laws and provisions?
+
+[Nikita Shahu] 19:08:11
+I guess this is a question about efficiency, whether they need to find everything we have already found, or should they… are they… are they okay with the tools finding just
+
+[Nikita Shahu] 19:08:21
+a little bit of what we have already found.
+
+[Nikita Shahu] 19:08:25
+Yeah.
+
+[Witada Anukoonwattaka] 19:08:33
+bibliotess against the full known evidence.
+
+[Nikita Shahu] 19:08:36
+Okay, so we will always compare, I guess.
+
+[Witada Anukoonwattaka] 19:08:39
+Yeah.
+
+[Nikita Shahu] 19:08:39
+And students, right? And beyond, if they can…
+
+[Nikita Shahu] 19:08:42
+find something, but not really, like,
+
+[Witada Anukoonwattaka] 19:08:43
+Yes, the objective is you far more than what we found. Not less than…
+
+[Nikita Shahu] 19:08:51
+Yeah. Uh…
+
+[Nikita Shahu] 19:08:54
+It is an interesting question about source validation and URL links.
+
+[Nikita Shahu] 19:08:59
+Should the tool detect and flag broken URLs and repeat laws automatically?
+
+[Nikita Shahu] 19:09:05
+Or it should be noted separately in the documentation.
+
+[Nikita Shahu] 19:09:16
+Um, so…
+
+[Witada Anukoonwattaka] 19:09:17
+Rich question? Do I have… I'm not following which questions?
+
+[Nikita Shahu] 19:09:19
+Okay, so they're asking, basically, for their tool,
+
+[Nikita Shahu] 19:09:24
+Should the tool be able to tell us whether there is a broken URL, or the law has been repealed automatically?
+
+[Nikita Shahu] 19:09:30
+As part of the output, like, when they give us their output in our… in the framework that we have asked them to.
+
+[Nikita Shahu] 19:09:36
+Or is it something that should go into the notes column, or should be documented separately?
+
+[Nikita Shahu] 19:09:41
+in a different part of the output.
+
+[Witada Anukoonwattaka] 19:09:47
+Uh, I think…
+
+[Witada Anukoonwattaka] 19:09:48
+Because we don't have the car alarm that show…
+
+[Witada Anukoonwattaka] 19:09:55
+the status, like, broken URL, or…
+
+[Witada Anukoonwattaka] 19:09:59
+repeal laws. So I think what you can do is you have to use notes column.
+
+[Nikita Shahu] 19:10:07
+I mean, if the law is also repealed…
+
+[Nikita Shahu] 19:10:10
+then we don't record it, because we also record only active laws, right?
+
+[Nikita Shahu] 19:10:14
+So, in that case, there is also a scenario where they might find a law that is…
+
+[Nikita Shahu] 19:10:20
+repeat, then I don't think you record it. That's what we…
+
+[Witada Anukoonwattaka] 19:10:22
+If… if the… if they happen to record it, but…
+
+[Witada Anukoonwattaka] 19:10:27
+the market correctly, that it is repealed.
+
+[Witada Anukoonwattaka] 19:10:31
+we don't… we… I mean, we are okay with it.
+
+[Witada Anukoonwattaka] 19:10:34
+But if they record it,
+
+[Witada Anukoonwattaka] 19:10:37
+If they record repeal law.
+
+[Witada Anukoonwattaka] 19:10:39
+And they don't say that it is repealed. It would imply that this law is still active, then it's become a wrong dividend.
+
+[Nikita Shahu] 19:10:46
+Yeah.
+
+[Witada Anukoonwattaka] 19:10:48
+UBU will be penal lines.
+
+[Nikita Shahu] 19:10:51
+Right, okay. So, always record active laws and the ones that are still
+
+[Nikita Shahu] 19:10:56
+operational EFI.
+
+[Witada Anukoonwattaka] 19:10:57
+Yes. If you're… if you happen to file
+
+[Witada Anukoonwattaka] 19:11:01
+a law, and you know that it is repealed, and you want to keep it for… for…
+
+[Witada Anukoonwattaka] 19:11:07
+And she agrees to something.
+
+[Witada Anukoonwattaka] 19:11:09
+fine, but put it clear in the… in the notes, or as additional columns of the statements.
+
+[Nikita Shahu] 19:11:16
+Right.
+
+[Nikita Shahu] 19:11:18
+Okay. Um…
+
+[Nikita Shahu] 19:11:20
+This is a question about, can teams use the Anthropic clod for legal…
+
+[Nikita Shahu] 19:11:27
+As a base framework.
+
+[Nikita Shahu] 19:11:29
+Or must the tool be built from scratch?
+
+[Witada Anukoonwattaka] 19:11:33
+Teams can use, uh, whatever, as long as, uh, you build it in the architectures that satisfy our conditions of
+
+[Witada Anukoonwattaka] 19:11:45
+It is flexible to be swapped between modules.
+
+[Nikita Shahu] 19:11:50
+Right. Okay.
+
+[Nikita Shahu] 19:11:53
+Um…
+
+[Nikita Shahu] 19:12:01
+I think… okay.
+
+[Nikita Shahu] 19:12:03
+I think I'm going to direct… oh, I see. I think KM already answered it right as I was about to ask it.
+
+[Nikita Shahu] 19:12:09
+Okay, and in terms of…
+
+[Nikita Shahu] 19:12:13
+In a scenario when there is no legal or relevant law found for an indicator,
+
+[Nikita Shahu] 19:12:18
+How do… how should they record it? Should they just live… leave a blank row, or should they just…
+
+[Nikita Shahu] 19:12:25
+yeah, just not recorded at all for that indicator.
+
+[Witada Anukoonwattaka] 19:12:34
+Basically, Keith?
+
+[Nikita Shahu] 19:12:36
+Yeah, in case that a team happens to find, in this scenario, no relevant law or regulation,
+
+[Nikita Shahu] 19:12:43
+water indicator. What should they do in that scenario?
+
+[Witada Anukoonwattaka] 19:12:49
+Um, you should put… you should put…
+
+[Witada Anukoonwattaka] 19:12:54
+a map of…
+
+[Witada Anukoonwattaka] 19:12:56
+no evidence, no provision files, something like that.
+
+[Witada Anukoonwattaka] 19:13:01
+Don't make it anything, because it's not clear.
+
+[Nikita Shahu] 19:13:03
+Yeah.
+
+[Nikita Shahu] 19:13:05
+But I guess there is also something to be said about
+
+[Nikita Shahu] 19:13:09
+About knowing any evidence, right? Like, in a lot of cases, when we do manual…
+
+[Nikita Shahu] 19:13:14
+research. We also record laws where we didn't find evidence in.
+
+[Nikita Shahu] 19:13:18
+So, for example, this is just an example about
+
+[Nikita Shahu] 19:13:22
+data protection. This is just an example. Laws exist for this. If, for example, a researcher finds that there is no such law for data protection,
+
+[Nikita Shahu] 19:13:31
+They will go to the data protection act and find that there is no such law. Like, they will also record the absence of a law.
+
+[Nikita Shahu] 19:13:39
+So, I think getting that
+
+[Nikita Shahu] 19:13:42
+is more valuable than… because it shows that you have looked over just leaving it empty, I guess.
+
+[Witada Anukoonwattaka] 19:13:47
+It's… no, no provision, sir.
+
+[Nikita Shahu] 19:13:48
+Yeah.
+
+[Nikita Shahu] 19:13:51
+Yeah.
+
+[Witada Anukoonwattaka] 19:13:51
+Because if you leave it empty, we… we don't know what does it mean. I could interpret that.
+
+[Witada Anukoonwattaka] 19:13:56
+This is priora or something.
+
+[Nikita Shahu] 19:14:00
+Yeah. Okay.
+
+[Nikita Shahu] 19:14:03
+There's one really long question which I just need a quick second to summarize.
+
+[Witada Anukoonwattaka] 19:14:12
+And that is a hard question, and thanks for sharing, again, the output templates.
+
+[Witada Anukoonwattaka] 19:14:17
+So, uh, please, the secretary, after the meeting, maybe send out an email, uh…
+
+[Nikita Shahu] 19:14:18
+Yeah.
+
+[Witada Anukoonwattaka] 19:14:24
+indicate where this…
+
+[Nikita Shahu] 19:14:25
+Yeah.
+
+[Witada Anukoonwattaka] 19:14:28
+key documents, uh…
+
+[Nikita Shahu] 19:14:31
+I can, uh, also tell you now, it's in the Knowledge Portal, and it should be in the sample kit, or one of those folders as well. So, if you don't already have access to the Knowledge Portal, please
+
+[Nikita Shahu] 19:14:42
+let us know by now, and we can give you access for it.
+
+[Nikita Shahu] 19:14:46
+Basically, yeah.
+
+[Nikita Shahu] 19:15:05
+Okay, so let's start with the first…
+
+[Nikita Shahu] 19:15:09
+half of that question. Could you clarify the expected testing and interaction workflow for the final evaluation of a prototype?
+
+[Nikita Shahu] 19:15:19
+So, specifically, will the judges evaluate our system in a document-by-document mode, where we give them where the tool is given every single URL or a PDF?
+
+[Nikita Shahu] 19:15:29
+And then it extracts the information and the score from it.
+
+[Nikita Shahu] 19:15:34
+Or are we expecting them to give a fully automated batch processing mode, where we give it all their data,
+
+[Nikita Shahu] 19:15:42
+all the files, and it gives us
+
+[Nikita Shahu] 19:15:44
+every single RDTI indicator for that particular country all at once.
+
+[Nikita Shahu] 19:15:49
+So, do we expect them to give us one by one? Like, we give it a file and it gives us an output, or…
+
+[Nikita Shahu] 19:15:55
+for one indicator or one country.
+
+[Nikita Shahu] 19:15:57
+Or do they… do we want them to batch process, where we give them all the documents,
+
+[Nikita Shahu] 19:16:03
+we have, like, the tool, and then the tool gives us all the answers all at once.
+
+[Nikita Shahu] 19:16:08
+Um, they're asking this question because they want to define the exact boundary of a human in loop.
+
+[Nikita Shahu] 19:16:14
+Uh, and front-end, and about automatic
+
+[Nikita Shahu] 19:16:18
+back-end pipeline.
+
+[Nikita Shahu] 19:16:20
+I'm not sure who to ask this question to, to be really honest. Maybe our KM colleagues could help us.
+
+[Nikita Shahu] 19:16:28
+with this particular question, yeah?
+
+[Witada Anukoonwattaka] 19:16:51
+Um, can I say something?
+
+[Witada Anukoonwattaka] 19:16:53
+when we test your…
+
+[Nikita Shahu] 19:16:53
+Yeah, go ahead.
+
+[Witada Anukoonwattaka] 19:16:56
+your own tools, right? Maybe we have to do…
+
+[Witada Anukoonwattaka] 19:17:00
+the document by document has said,
+
+[Witada Anukoonwattaka] 19:17:03
+Because you have to test whether you are specified URL.
+
+[Witada Anukoonwattaka] 19:17:07
+is of… really exist.
+
+[Witada Anukoonwattaka] 19:17:09
+And it's active or not, and we will also test whether the refer document…
+
+[Witada Anukoonwattaka] 19:17:16
+is… really exists, and what you are…
+
+[Witada Anukoonwattaka] 19:17:19
+providing the interpretation is correct based on the indicator criteria or not.
+
+[Witada Anukoonwattaka] 19:17:26
+So, I think document by document mode, if you refer to that.
+
+[Witada Anukoonwattaka] 19:17:32
+context.
+
+[Witada Anukoonwattaka] 19:17:33
+To facilitate human in love.
+
+[Witada Anukoonwattaka] 19:17:35
+is preferred.
+
+[Nikita Shahu] 19:17:38
+Okay. But if a team can do a good job with a batch processing mode, is that a limitation of any cost, or, like…
+
+[Witada Anukoonwattaka] 19:17:47
+by the end, I mean, uh, there is a state of review the products, and there is a state of after review, it is confirmed products.
+
+[Nikita Shahu] 19:17:48
+Mm-hmm.
+
+[Witada Anukoonwattaka] 19:17:55
+So that your tool has to prove it is
+
+[Witada Anukoonwattaka] 19:17:59
+end-to-end automations.
+
+[Witada Anukoonwattaka] 19:18:01
+After you have done
+
+[Nikita Shahu] 19:18:02
+Okay.
+
+[Witada Anukoonwattaka] 19:18:03
+You have passed through the process of human verification of your product first.
+
+[Nikita Shahu] 19:18:11
+Okay.
+
+[Nikita Shahu] 19:18:12
+So that is the last of our questions. We made a… made our way through all of them.
+
+[Nikita Shahu] 19:18:17
+Um, maybe I can give a final…
+
+[Nikita Shahu] 19:18:21
+Uh, I think Ajah and Tanavit has something to show for the last 10 minutes.
+
+[Nikita Shahu] 19:18:26
+If you would like to show it now, or…
+
+[Nikita Shahu] 19:18:30
+Would you like to wait a little bit longer?
+
+[Thanavit Anuwongpinit] 19:18:36
+Actually, I, uh, I defend…
+
+[Thanavit Anuwongpinit] 19:18:40
+Maybe a… maybe just a recap again? Maybe a recap.
+
+[Thanavit Anuwongpinit] 19:18:45
+ask you a need to deliver or submit to us, and the timeline.
+
+[Thanavit Anuwongpinit] 19:18:50
+Uh, for, uh…
+
+[Thanavit Anuwongpinit] 19:18:53
+for our return, and how…
+
+[Thanavit Anuwongpinit] 19:18:56
+how to submit.
+
+[Thanavit Anuwongpinit] 19:18:59
+Okay, I will share…
+
+[Thanavit Anuwongpinit] 19:19:01
+But actually, this flight that I share is
+
+[Thanavit Anuwongpinit] 19:19:06
+If… if same app.
+
+[Thanavit Anuwongpinit] 19:19:08
+I have to follow that, we…
+
+[Thanavit Anuwongpinit] 19:19:10
+provider to you in orientation, yeah, I will recap.
+
+[Thanavit Anuwongpinit] 19:19:14
+Again, in…
+
+[Thanavit Anuwongpinit] 19:19:20
+Okay, I'm going to share my slide.
+
+[Thanavit Anuwongpinit] 19:19:37
+Okay, um…
+
+[Nikita Shahu] 19:19:40
+Yeah, we can see it, yes.
+
+[Thanavit Anuwongpinit] 19:19:42
+Okay, you'll see that slide, right?
+
+[Witada Anukoonwattaka] 19:19:47
+Yes, we can.
+
+[Thanavit Anuwongpinit] 19:19:57
+Okay, um…
+
+[Thanavit Anuwongpinit] 19:20:02
+Okay, um…
+
+[Thanavit Anuwongpinit] 19:20:04
+That I said, okay, what submit means?
+
+[Thanavit Anuwongpinit] 19:20:07
+Okay, we need your fire deliverable, right? Okay, okay, let me, uh…
+
+[Thanavit Anuwongpinit] 19:20:13
+Yeah, specifically, there are five delivery, both.
+
+[Thanavit Anuwongpinit] 19:20:16
+Right? Okay, uh, four of them, you upload.
+
+[Thanavit Anuwongpinit] 19:20:20
+by the 20th of July.
+
+[Thanavit Anuwongpinit] 19:20:22
+Okay? And, uh…
+
+[Thanavit Anuwongpinit] 19:20:24
+Uh, the 20 teams.
+
+[Thanavit Anuwongpinit] 19:20:27
+that, uh, that be fillet.
+
+[Thanavit Anuwongpinit] 19:20:29
+Okay, maybe, uh, live demo on the 3rd of August.
+
+[Thanavit Anuwongpinit] 19:20:33
+Okay, um, and…
+
+[Thanavit Anuwongpinit] 19:20:37
+the key requirement that you need to deliver to us to submit on 20th July 1st,
+
+[Thanavit Anuwongpinit] 19:20:44
+And I said, uh, fourth is the functional prototype.
+
+[Thanavit Anuwongpinit] 19:20:46
+Okay, you, uh, you should submit.
+
+[Thanavit Anuwongpinit] 19:20:49
+like, the link of the… your GitHub, or your repository.
+
+[Thanavit Anuwongpinit] 19:20:57
+Okay, including the script, the API, or anything else that
+
+[Thanavit Anuwongpinit] 19:21:02
+your script, or file, or…
+
+[Thanavit Anuwongpinit] 19:21:06
+the doctor, even at 5, or anything else, okay, that…
+
+[Thanavit Anuwongpinit] 19:21:11
+make sure that we can, uh, read your README file, or you maybe…
+
+[Thanavit Anuwongpinit] 19:21:19
+maybe display in the README 5 on the MD5, okay, that… and then when…
+
+[Thanavit Anuwongpinit] 19:21:24
+We read your README file, we can, like, set up environment, or anything else.
+
+[Thanavit Anuwongpinit] 19:21:30
+Okay, and run your solution
+
+[Thanavit Anuwongpinit] 19:21:34
+life, uh, end-to-end solution.
+
+[Thanavit Anuwongpinit] 19:21:36
+Okay? Short output.
+
+[Thanavit Anuwongpinit] 19:21:39
+Okay? And the output on, yeah, maybe the… on the application, or the output,
+
+[Thanavit Anuwongpinit] 19:21:45
+Um, maybe export to CSP or DSN file or anything else.
+
+[Thanavit Anuwongpinit] 19:21:51
+And next, if the structure output 5.
+
+[Thanavit Anuwongpinit] 19:21:55
+Okay, you need to submit, uh, your…
+
+[Thanavit Anuwongpinit] 19:21:58
+fiercely and DFM find that we…
+
+[Thanavit Anuwongpinit] 19:22:02
+Uh, provide to you in KM, okay, that…
+
+[Thanavit Anuwongpinit] 19:22:07
+Uh, from this line on the orientation, okay? I think I…
+
+[Thanavit Anuwongpinit] 19:22:11
+Uh, we, uh, present that to you already, okay? What column that we…
+
+[Thanavit Anuwongpinit] 19:22:18
+what column… what the column that is, uh, optional.
+
+[Thanavit Anuwongpinit] 19:22:22
+Okay, at the different fact that we…
+
+[Thanavit Anuwongpinit] 19:22:26
+need to know from you.
+
+[Thanavit Anuwongpinit] 19:22:29
+Next is the dead.
+
+[Thanavit Anuwongpinit] 19:22:31
+Okay, if the foundation time lie, okay?
+
+[Thanavit Anuwongpinit] 19:22:34
+Uh, here is our timeline, 20th July.
+
+[Thanavit Anuwongpinit] 19:22:39
+gave the, uh, the deadline for the submission, okay? And next question…
+
+[Thanavit Anuwongpinit] 19:22:43
+The question is, okay, uh, uh, how to…
+
+[Thanavit Anuwongpinit] 19:22:46
+Uh, how you actually submit, okay? Actually, I answer to you in…
+
+[Thanavit Anuwongpinit] 19:22:52
+sum of question, then…
+
+[Thanavit Anuwongpinit] 19:22:55
+that you are asked in the live Q&A. Um, okay, I will…
+
+[Thanavit Anuwongpinit] 19:22:59
+confirm again, uh, everything, okay, that you need to submit, we, uh,
+
+[Thanavit Anuwongpinit] 19:23:04
+Everything goes through a single, uh, single online form, like, John.
+
+[Thanavit Anuwongpinit] 19:23:11
+form, okay, dark form is a form, the application form that…
+
+[Thanavit Anuwongpinit] 19:23:15
+Uh, you'll, uh, register to, uh,
+
+[Thanavit Anuwongpinit] 19:23:20
+to join this hackathon competition.
+
+[Thanavit Anuwongpinit] 19:23:22
+Okay, uh, but the…
+
+[Thanavit Anuwongpinit] 19:23:24
+the link, okay, the .form link, we will…
+
+[Thanavit Anuwongpinit] 19:23:28
+send to your letter, okay?
+
+[Thanavit Anuwongpinit] 19:23:31
+at the latest, I think maybe in…
+
+[Thanavit Anuwongpinit] 19:23:34
+Uh, in next week, okay, we will send to you a, uh,
+
+[Thanavit Anuwongpinit] 19:23:38
+you know, our email, get your email in each team, maybe the head,
+
+[Thanavit Anuwongpinit] 19:23:44
+off-team email.
+
+[Thanavit Anuwongpinit] 19:23:45
+Okay? Um…
+
+[Thanavit Anuwongpinit] 19:23:48
+And I think in detail, okay, we will…
+
+[Thanavit Anuwongpinit] 19:23:52
+Uh, we will send, uh, another detail.
+
+[Thanavit Anuwongpinit] 19:23:57
+attached with this email, okay, with the submission link to you later, okay?
+
+[Thanavit Anuwongpinit] 19:24:05
+And, uh, uh…
+
+[Thanavit Anuwongpinit] 19:24:07
+31st July, we will announce the 3D shortlist to…
+
+[Thanavit Anuwongpinit] 19:24:12
+uh, live fish.
+
+[Thanavit Anuwongpinit] 19:24:16
+on 3rd August, okay?
+
+[Thanavit Anuwongpinit] 19:24:19
+Um, I think, though.
+
+[Thanavit Anuwongpinit] 19:24:21
+5th August maybe announce the…
+
+[Thanavit Anuwongpinit] 19:24:24
+the teams, the five teams to…
+
+[Thanavit Anuwongpinit] 19:24:28
+Maybe you come to Bangkok in the finale route.
+
+[Thanavit Anuwongpinit] 19:24:32
+Yeah. Okay, I think, yeah, it's off.
+
+[Thanavit Anuwongpinit] 19:24:36
+my, uh, presentation.
+
+[Thanavit Anuwongpinit] 19:24:39
+that detail about it, how to submit, and…
+
+[Thanavit Anuwongpinit] 19:24:43
+What did, uh…
+
+[Thanavit Anuwongpinit] 19:24:44
+that need from you to submit, okay?
+
+[Thanavit Anuwongpinit] 19:24:56
+I'm not sure, after I read that, maybe have…
+
+[Thanavit Anuwongpinit] 19:24:59
+any detail for…
+
+[Thanavit Anuwongpinit] 19:25:02
+with the audience?
+
+[Witada Anukoonwattaka] 19:25:06
+Well, I think you have captured it well. Uh, let me check…
+
+[Witada Anukoonwattaka] 19:25:11
+is that there is one more question.
+
+[Witada Anukoonwattaka] 19:25:15
+in the killing thing.
+
+[Nikita Shahu] 19:25:16
+Yes, uh… okay, yes. How are we expected to measure the OCR-CER?
+
+[Nikita Shahu] 19:25:24
+If there is no manually verified ground truth text.
+
+[Nikita Shahu] 19:25:38
+I think, yeah, Kunmitada, if you can answer this.
+
+[Witada Anukoonwattaka] 19:25:40
+You…
+
+[Nikita Shahu] 19:25:42
+I'm also thinking…
+
+[Witada Anukoonwattaka] 19:25:48
+What do you mean by there is no manually verified ground code for ticks?
+
+[Nikita Shahu] 19:25:53
+So, I think there's nothing in a scenario where…
+
+[Witada Anukoonwattaka] 19:25:53
+Because…
+
+[Nikita Shahu] 19:25:56
+For example, if there is…
+
+[Nikita Shahu] 19:25:59
+If they find something that we don't have in our dataset,
+
+[Nikita Shahu] 19:26:04
+And we have not verified it and told them that this is the ground truth.
+
+[Witada Anukoonwattaka] 19:26:08
+Because you have to provide us the URL that you found, right?
+
+[Witada Anukoonwattaka] 19:26:12
+So, uh, from that…
+
+[Nikita Shahu] 19:26:12
+Yeah.
+
+[Witada Anukoonwattaka] 19:26:15
+you… we will track.
+
+[Witada Anukoonwattaka] 19:26:18
+the document that you are referring to.
+
+[Witada Anukoonwattaka] 19:26:21
+um, compare it with what you are.
+
+[Witada Anukoonwattaka] 19:26:25
+extracted from them.
+
+[Witada Anukoonwattaka] 19:26:27
+document.
+
+[Nikita Shahu] 19:26:28
+I think that, and I guess they're talking also about, like, OCR, like…
+
+[Nikita Shahu] 19:26:32
+probably reading, like, an image PDF.
+
+[Nikita Shahu] 19:26:36
+But in that case, also, they will have to do some of their own checks, as we do when we manually data collect as well.
+
+[Nikita Shahu] 19:26:44
+we translate it, we try to understand if it actually makes sense or not.
+
+[Nikita Shahu] 19:26:48
+And if it actually makes sense for the indicator itself. So before they even submit to us, if, for example, they find something that we haven't recorded, or they can't verify against our database,
+
+[Nikita Shahu] 19:26:59
+I think it requires a little bit of, like, going through it themselves as well, right?
+
+[Witada Anukoonwattaka] 19:27:05
+Yes, you have to provide us, uh…
+
+[Witada Anukoonwattaka] 19:27:09
+the inputs that you scan.
+
+[Witada Anukoonwattaka] 19:27:11
+And the extract text that you… that you did. So we will compare it, and…
+
+[Witada Anukoonwattaka] 19:27:17
+You're good. You're wrong.
+
+[Nikita Shahu] 19:27:18
+Yeah.
+
+[Witada Anukoonwattaka] 19:27:20
+y'all
+
+[Witada Anukoonwattaka] 19:27:22
+Your error rate from that.
+
+[Witada Anukoonwattaka] 19:27:24
+And you can flag it in your note columns, where, uh, this…
+
+[Witada Anukoonwattaka] 19:27:29
+OCR, yes.
+
+[Witada Anukoonwattaka] 19:27:32
+housing issue or something?
+
+[Nikita Shahu] 19:27:36
+Okay, yes.
+
+[Nikita Shahu] 19:27:39
+Um… I don't think we have any more questions in the Q&A.
+
+[Nikita Shahu] 19:27:43
+I have been asked by the admin to tell… to announce that the link to the submission portal will be sent to… sent by email to all participants around the submission deadline.
+
+[Nikita Shahu] 19:27:54
+So, um, you should have it in your inbox closest to 28th June.
+
+[Nikita Shahu] 19:27:59
+Yes. Um, I want to give…
+
+[Nikita Shahu] 19:28:03
+Uh, Dr. Vitada, Azanthanavit, and Rataphum, a minute to make any last comments? Anything you…
+
+[Nikita Shahu] 19:28:09
+I would like to show participants before the big deadline comes by.
+
+[Witada Anukoonwattaka] 19:28:15
+Uh, yeah, I just want to wish everyone
+
+[Witada Anukoonwattaka] 19:28:18
+Good luck, and uh… please send us questions in email if you…
+
+[Witada Anukoonwattaka] 19:28:25
+if you have, uh, problems or something that you think of clarity,
+
+[Witada Anukoonwattaka] 19:28:32
+Yes, and we will get back to you.
+
+[Nikita Shahu] 19:28:35
+Yeah.
+
+[Nikita Shahu] 19:28:41
+Do you have any…
+
+[Nikita Shahu] 19:28:42
+words for our participants?
+
+[Rattapoohm Parichatpreecha] 19:28:48
+Uh, yes, uh, I think that the key that is really important, and…
+
+[Rattapoohm Parichatpreecha] 19:28:53
+I think that's how we… my KMIT outside, I think maybe we…
+
+[Rattapoohm Parichatpreecha] 19:29:00
+for your submission.
+
+[Rattapoohm Parichatpreecha] 19:29:04
+very early, okay, as fast as possible, okay.
+
+[Rattapoohm Parichatpreecha] 19:29:10
+And we'll send to you again by email.
+
+[Rattapoohm Parichatpreecha] 19:29:13
+Because 20 July is just only 5 days for me, yeah.
+
+[Witada Anukoonwattaka] 19:29:18
+No.
+
+[Witada Anukoonwattaka] 19:29:20
+No, not 5 days.
+
+[Witada Anukoonwattaka] 19:29:23
+This is too, right?
+
+[Nikita Shahu] 19:29:26
+28th June is 5 days…
+
+[Rattapoohm Parichatpreecha] 19:29:31
+July or June? I'm not sure. Oh, July, it's early! Sorry! I'm confused. Okay, again, again, uh, July. Okay, next week, next week, okay. Okay.
+
+[Rattapoohm Parichatpreecha] 19:29:41
+Next week is Happy Naps Hammer.
+
+[Rattapoohm Parichatpreecha] 19:29:43
+That's a bit, okay.
+
+[Rattapoohm Parichatpreecha] 19:29:46
+20 July, not 22, okay.
+
+[Thanavit Anuwongpinit] 19:29:50
+Yeah, I think I'm…
+
+[Thanavit Anuwongpinit] 19:29:53
+Not sure how to say it.
+
+[Thanavit Anuwongpinit] 19:29:56
+Okay, I think…
+
+[Thanavit Anuwongpinit] 19:29:58
+Uh, we… I think we look for, for, uh,
+
+[Thanavit Anuwongpinit] 19:30:02
+how to stand out? Don't…
+
+[Thanavit Anuwongpinit] 19:30:05
+clear and work prototype. I think if you made your solution, uh,
+
+[Thanavit Anuwongpinit] 19:30:10
+easy to understand, easy to test and evaluate.
+
+[Thanavit Anuwongpinit] 19:30:14
+Okay, um…
+
+[Thanavit Anuwongpinit] 19:30:16
+Um, your provider, clear output.
+
+[Thanavit Anuwongpinit] 19:30:19
+didn't have the dead body, or…
+
+[Thanavit Anuwongpinit] 19:30:22
+The symbol of your setup, your inventory, I think.
+
+[Thanavit Anuwongpinit] 19:30:27
+Um, if I turn it to you to get the…
+
+[Thanavit Anuwongpinit] 19:30:30
+maybe the highest score, I think.
+
+[Thanavit Anuwongpinit] 19:30:32
+Um, uh…
+
+[Thanavit Anuwongpinit] 19:30:35
+I would say, okay, thank you for your active talent there. We look forward to seeing your…
+
+[Thanavit Anuwongpinit] 19:30:41
+your idea, your prototype,
+
+[Thanavit Anuwongpinit] 19:30:44
+to help the FCAP.
+
+[Thanavit Anuwongpinit] 19:30:48
+uphill, the…
+
+[Thanavit Anuwongpinit] 19:30:50
+the UN team, or ask them.
+
+[Thanavit Anuwongpinit] 19:30:53
+to find a name a solution for the law or the regulatory…
+
+[Thanavit Anuwongpinit] 19:30:58
+or anything else? Okay, I think I would like to…
+
+[Thanavit Anuwongpinit] 19:31:02
+Back to your all teams. Hope you enjoy this challenge, yeah.
+
+[Witada Anukoonwattaka] 19:31:07
+I think, um, what I can and I would say is important in terms of
+
+[Witada Anukoonwattaka] 19:31:13
+Uh, whenever you decide.
+
+[Witada Anukoonwattaka] 19:31:17
+You are, uh…
+
+[Witada Anukoonwattaka] 19:31:19
+your output files, your back-end files.
+
+[Witada Anukoonwattaka] 19:31:23
+always have your…
+
+[Witada Anukoonwattaka] 19:31:25
+target user in mind. You have to facilitate.
+
+[Witada Anukoonwattaka] 19:31:30
+their review.
+
+[Witada Anukoonwattaka] 19:31:31
+You have to facilitate their use, because that is…
+
+[Witada Anukoonwattaka] 19:31:37
+affecting the value of your products.
+
+[Witada Anukoonwattaka] 19:31:40
+If you mix the products,
+
+[Witada Anukoonwattaka] 19:31:43
+Excellent, but no one can easily use.
+
+[Witada Anukoonwattaka] 19:31:47
+been… useless.
+
+[Witada Anukoonwattaka] 19:31:51
+I think that's it.
+
+[Nikita Shahu] 19:31:52
+Thank you so much to the three of you for your words of wisdom. Thank you, Jung Tong, for also answering the questions that the participants had.
+
+[Nikita Shahu] 19:32:00
+I'm again going to wish you all of… all the best, and all of the luck for your tool designs, and…
+
+[Nikita Shahu] 19:32:06
+But this… and thank you for your participation and staying with us for the past two weeks.
+
+[Nikita Shahu] 19:32:09
+And we will see you guys soon, hopefully, at least by 20th July, when we see
+

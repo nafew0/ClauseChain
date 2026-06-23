@@ -43,6 +43,6 @@ def test_dummy_run_creates_csv_and_json(tmp_path) -> None:
     assert row["Mapping Rationale"]
 
     payload = json.loads(json_path.read_text(encoding="utf-8"))
-    assert payload["provider_profile"] == "cheap_default"
+    assert payload["provider_profile"] == "hybrid_accuracy"
     assert payload["metadata"]["graph_required"] is False
 

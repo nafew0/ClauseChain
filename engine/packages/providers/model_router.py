@@ -31,9 +31,30 @@ def load_model_profiles(config_path: str | Path | None = None) -> dict[str, Any]
     return _expand_env(data)
 
 
-def get_profile(name: str = "cheap_default") -> dict[str, Any]:
+def get_profile(name: str = "hybrid_accuracy") -> dict[str, Any]:
     profiles = load_model_profiles().get("profiles", {})
     if name not in profiles:
         raise KeyError(f"Unknown provider profile: {name}")
     return profiles[name]
+
+
+def resolve_llm(profile_name: str = "hybrid_accuracy", tier: str = "bulk"):
+    """Return a ready LLM for a routing tier ('bulk' | 'high_reasoning'), with fallback."""
+    from packages.providers.llm_providers import FallbackLLM, build_llm
+
+    profile = get_profile(profile_name)
+    tier_config = profile.get(tier)
+    if not tier_config:
+        raise KeyError(f"Profile {profile_name!r} has no tier {tier!r}")
+    primary = build_llm(tier_config["primary"])
+    fallback_spec = tier_config.get("fallback")
+    fallback = build_llm(fallback_spec) if fallback_spec else None
+    return FallbackLLM(primary, fallback)
+
+
+def resolve_embedding(profile_name: str = "hybrid_accuracy"):
+    """Return the embedding provider configured for a profile."""
+    from packages.providers.embedding_provider import build_embedding
+
+    return build_embedding(get_profile(profile_name).get("embedding", {}))
 

@@ -1,0 +1,23 @@
+jurisdiction: MY
+name: Malaysia
+un_name: Malaysia
+languages: { primary: en, supported: [en, ms] }
+official_sources:
+  - { name: Laws of Malaysia (AGC), domain: lom.agc.gov.my, source_type: official_statute_database, authority_rank: 100 }
+  - { name: Personal Data Protection Department, domain: pdp.gov.my, source_type: regulator_guidance, authority_rank: 60 }
+  - { name: Federal Gazette, domain: federalgazette.agc.gov.my, source_type: official_gazette, authority_rank: 100 }
+  - { name: MCMC, domain: mcmc.gov.my, source_type: sectoral_regulator, authority_rank: 60 }
+citation_patterns:
+  section: ["s. {n}", "section {n}", "Section {n}"]
+  paragraph_required: true
+connector: my_lom
+notes:
+  - "Priority economy in P2 (highest weight + hardest challenge: scanned gazettes -> OCR path, CER < 5%)."
+  - "Government procurement governed by Treasury instructions/circulars, not one act (5-Jun lesson; analogue: record subsidiary instruments)."
+known_index: data/known_index.json
+seeds: data/seeds.json
+rdtii_bindings: { pillars: [6, 7] }
+anchor_instruments:
+  - "Personal Data Protection Act 2010 (Act 709) — retention LIMIT in s.10 is NOT P7-I3; hunt minimum-retention in sectoral law (AML, companies, tax)"
+  - "Cyber Security Act 2024 (Act 854)"
+  - "Communications and Multimedia Act 1998 (gov-access hunting ground for P7-I5)"

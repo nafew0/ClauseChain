@@ -1,0 +1,22 @@
+jurisdiction: SG
+name: Singapore
+un_name: Singapore
+languages: { primary: en, supported: [en] }
+official_sources:
+  - { name: Singapore Statutes Online, domain: sso.agc.gov.sg, source_type: official_statute_database, authority_rank: 100 }
+  - { name: Personal Data Protection Commission, domain: pdpc.gov.sg, source_type: regulator_guidance, authority_rank: 60 }
+  - { name: IMDA, domain: imda.gov.sg, source_type: regulator_guidance, authority_rank: 60 }
+  - { name: Monetary Authority of Singapore, domain: mas.gov.sg, source_type: sectoral_regulator, authority_rank: 60 }
+citation_patterns:
+  section: ["s. {n}", "s {n}", "section {n}"]
+  paragraph_required: true        # always cite to s. 26(1) depth, never bare s. 26
+connector: sg_sso
+notes:
+  - "Anti-bot protection observed on sso.agc.gov.sg (1-Jun workshop) — httpx first, Playwright fallback; handling it is a scored differentiator."
+known_index: data/known_index.json     # built by scripts/build_known_index.py (master = primary)
+seeds: data/seeds.json
+rdtii_bindings: { pillars: [6, 7] }
+anchor_instruments:
+  - "Personal Data Protection Act 2012 (No. 26 of 2012) — https://sso.agc.gov.sg/Act/PDPA2012"
+  - "Cybersecurity Act 2018 — https://sso.agc.gov.sg/Act/CA2018"
+  - "Criminal Procedure Code 2010 (gov-access hunting ground for P7-I5)"

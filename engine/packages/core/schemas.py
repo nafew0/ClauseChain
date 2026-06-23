@@ -97,6 +97,11 @@ class MappedFinding(BaseModel):
     source_url: str = Field(alias="Source URL")
     confidence: float = Field(alias="Confidence", ge=0.0, le=1.0)
     notes: str | None = Field(default=None, alias="Notes")
+    # Appended-after-the-13 columns (allowed per the 15-Jun Q&A); kept after the required set.
+    coverage: str | None = Field(default=None, alias="Coverage")
+    verbatim_snippet_en: str | None = Field(default=None, alias="Verbatim Snippet (English)")
+    status: str | None = Field(default=None, alias="Status")
+    model_version: str | None = None  # JSON-only provenance (which model produced the row)
     graph_path: list[str] = Field(default_factory=list)
     verifier_risks: list[str] = Field(default_factory=list)
 

@@ -10,7 +10,13 @@ from packages.export.json_writer import write_json
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run the ClauseChain engine skeleton.")
-    parser.add_argument("--country", required=True, help="Economy code, e.g. SG, MY, AU.")
+    parser.add_argument(
+        "--country",
+        "--economy",
+        dest="country",
+        required=True,
+        help="Economy code or name, e.g. SG or Singapore. (--economy matches the organizer README.)",
+    )
     parser.add_argument("--pillar", required=True, type=int, help="RDTII pillar number, e.g. 6.")
     parser.add_argument(
         "--out",
@@ -19,8 +25,8 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--provider-profile",
-        default="cheap_default",
-        help="Provider profile from configs/models.yaml.",
+        default="hybrid_accuracy",
+        help="Provider profile from configs/models.yaml (hybrid_accuracy=Path B default, local_fallback=Path A).",
     )
     return parser.parse_args()
 
