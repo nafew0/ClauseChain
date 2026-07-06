@@ -69,3 +69,8 @@ coverage/
 # Misc
 .vercel
 .turbo
+
+# Folders
+CrawlData
+engine/data/cache/docling
+engine/data/cache/pdf_text

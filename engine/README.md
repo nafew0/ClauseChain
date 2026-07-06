@@ -61,6 +61,183 @@ outputs/demo/output.csv
 outputs/demo/output.json
 ```
 
+## PDF Preparation Utilities
+
+The engine now includes two helper scripts for preparing a scraped PDF corpus before indexing. Run these from `engine/`.
+
+### 1. Rename PDFs to a stable country-based sequence
+
+Use `scripts/rename_pdfs_sequential.py` to rename every PDF in a single folder to a stable sequence such as `singapore_01.pdf`, `singapore_02.pdf`, and so on.
+
+Example for a `country_name/pdf` layout:
+
+```bash
+uv run python scripts/rename_pdfs_sequential.py "C:/data/Singapore/pdf" --prefix singapore
+uv run python scripts/rename_pdfs_sequential.py "C:/data/Malaysia/pdf" --prefix malaysia --dry-run
+```
+
+Flags:
+
+- `folder`
+  The folder whose direct PDF children should be renamed. This script does not recurse.
+- `--prefix <name>`
+  Prefix for the renamed files. For a `country_name/pdf` layout, pass the country name explicitly so output becomes `country_01.pdf`.
+- `--start <n>`
+  Start numbering from a different index. Default is `1`.
+- `--dry-run`
+  Print the planned rename operations without changing files. Use this first on real corpora.
+
+### 2. Extract text from PDFs with PDF-text-first and PaddleOCR fallback
+
+Use `scripts/extract_pdf_text.py` to extract text from a single PDF or an entire folder tree. The script attempts embedded PDF text extraction first and automatically falls back to PaddleOCR when a page looks too sparse to trust.
+
+Install dependencies first:
+
+```bash
+uv sync
+```
+
+You also need a compatible `paddlepaddle` install for your platform. On Windows, PaddleOCR may still hit runtime issues depending on the exact Paddle/PaddleX build; the script itself already falls back page-by-page, but it cannot work around upstream runtime incompatibilities.
+
+Recommended high-accuracy run for best extraction quality:
+
+```bash
+uv run python scripts/extract_pdf_text.py "C:/data/Singapore/pdf"   --out data/cache/pdf_text   --min-direct-chars 140   --dpi 300   --ocr-lang en
+```
+
+Run on a single PDF:
+
+```bash
+uv run python scripts/extract_pdf_text.py "C:/data/Singapore/pdf/singapore_01.pdf" --out data/cache/pdf_text --min-direct-chars 140 --dpi 300 --ocr-lang en
+```
+
+What the script writes:
+
+- one `.txt` file per input PDF
+- page markers in the output such as `## Page 3 [pdf_text]` or `## Page 4 [paddleocr]` so you can see which pages required OCR
+
+Flags:
+
+- `input`
+  A single PDF file or a directory tree containing PDFs. Directory mode is recursive.
+- `--out <dir>`
+  Output directory for extracted `.txt` files. The script preserves the relative input tree under this directory.
+- `--min-direct-chars <n>`
+  Minimum amount of directly extracted page text required before the script accepts `PyMuPDF` output. If a page falls below this threshold, it is sent to PaddleOCR automatically. Higher values make fallback more aggressive and usually improve quality on messy government PDFs.
+- `--dpi <n>`
+  Render resolution used for OCR fallback pages. Higher DPI gives PaddleOCR a sharper image and usually improves recognition of small or degraded legal text, but increases runtime and memory use. `300` is the recommended high-quality setting.
+- `--ocr-lang <code>`
+  PaddleOCR language code. Use the language that matches the source documents. `en` is correct for English-only corpora; use a different code for non-English country folders.
+- `--no-angle-cls`
+  Disable PaddleOCR angle classification. Leave this off for best accuracy. Only use it when pages are consistently upright and you need extra speed.
+
+Quality defaults in the script are intentionally set to accuracy-first values now:
+
+- `--min-direct-chars 140`
+- `--dpi 300`
+- angle classification enabled
+
+These defaults favor better extraction over speed, especially on mixed text/scanned legal PDFs.
+
+### 3. Extract structure-preserving Markdown with Docling
+
+Use `scripts/extract_docling_markdown.py` when you want to inspect whether a richer parser preserves headings, lists, tables, and general document structure better than plain `.txt` extraction.
+
+Install the optional Docling stack first:
+
+```bash
+uv sync --group docling
+```
+
+Run on a folder tree:
+
+```bash
+uv run python scripts/extract_docling_markdown.py "C:/data/Singapore/pdf" --out data/cache/docling/singapore
+```
+
+Run on a single file:
+
+```bash
+uv run python scripts/extract_docling_markdown.py "C:/data/Singapore/pdf/singapore_01.pdf" --out data/cache/docling/singapore
+```
+
+What the script writes:
+
+- one `.md` file per supported input document
+- one `.json` sidecar per document by default so you can inspect Docling's structured representation
+- terminal logs as each file is processed and saved
+
+Flags:
+
+- `input`
+  A supported document file or a directory tree. The script currently accepts `.pdf`, `.docx`, `.pptx`, `.html`, `.md`, and `.txt`.
+- `--out <dir>`
+  Output directory for generated Markdown and JSON files. The relative input tree is preserved under this directory.
+- `--no-json`
+  Write only Markdown if you do not want the Docling JSON sidecar.
+
+Recommended use:
+
+- run `extract_pdf_text.py` when you want a cheap plain-text corpus for downstream parsing
+- run `extract_docling_markdown.py` on the same sample set when you want to compare structure quality before choosing the preprocessing path for the knowledge base
+
+### 4. Compare the current pipeline against olmOCR
+
+Use `scripts/compare_pdf_extractors.py` when you want a side-by-side output comparison between:
+
+- the current ClauseChain hybrid extractor (`PyMuPDF` + PaddleOCR fallback)
+- `olmOCR` Markdown output
+
+Install the optional olmOCR package first:
+
+```bash
+uv sync --group olmocr
+```
+
+This only installs the base Python package. According to the official olmOCR README, local inference requires a recent NVIDIA GPU with at least 12 GB VRAM and a clean Python 3.11 environment; remote OpenAI-compatible inference is the lighter-weight option. On Windows, you will usually want a remote server or a Linux/WSL setup for local GPU inference.
+
+Run a folder comparison:
+
+```bash
+uv run python scripts/compare_pdf_extractors.py "C:/data/Australia/pdfs" --out data/cache/pdf_compare/australia
+```
+
+Run with an external olmOCR server:
+
+```bash
+uv run python scripts/compare_pdf_extractors.py "C:/data/Australia/pdfs" --out data/cache/pdf_compare/australia --server https://your-server/v1 --olmocr-model allenai/olmOCR-2-7B-1025-FP8 --workers 1 --pages-per-group 1
+```
+
+What the script writes:
+
+- `current/*.txt` for the existing ClauseChain extractor output
+- `olmocr/*.md` for the olmOCR Markdown output
+- `reports/*.json` with per-file status, output paths, and olmOCR log path
+- `olmocr/*.olmocr.log` with the exact olmOCR command, stdout, and stderr for each PDF
+
+Flags:
+
+- `input`
+  A single PDF file or a directory tree containing PDFs.
+- `--out <dir>`
+  Root output directory for the comparison artifacts.
+- `--min-direct-chars`, `--dpi`, `--ocr-lang`, `--no-angle-cls`
+  Passed through to the current ClauseChain extractor so you can keep that side consistent with your normal runs.
+- `--olmocr-model <name>`
+  Optional model name for olmOCR, especially useful when pointing at a remote server.
+- `--server <url>`
+  Optional OpenAI-compatible olmOCR inference endpoint.
+- `--api-key <key>`
+  Optional API key for the remote olmOCR server.
+- `--workers <n>`
+  olmOCR worker count. Keep this at `1` if you want one-PDF-at-a-time behavior.
+- `--pages-per-group <n>`
+  olmOCR page grouping size. Lower values are easier to debug and usually safer on constrained hardware.
+- `--max-concurrent-requests <n>`
+  Optional remote inference concurrency limit passed through to olmOCR.
+- `--keep-olmocr-workspace`
+  Keep the raw per-file olmOCR workspace next to the copied Markdown output for debugging.
+
 If `uv` cannot write to its default cache on your machine, use:
 
 ```bash
@@ -95,7 +272,7 @@ P0 uses dummy data, so the current verifier gates are placeholders.
 ```text
 engine/
   run.py                      CLI entrypoint (--country / --economy)
-  pyproject.toml              Python project + dependencies (groups: dev, crawl, ocr)
+  pyproject.toml              Python project + dependencies (groups: dev, crawl, docling, olmocr)
   configs/
     models.yaml               model routing profiles (+ graph backend)
     graph.yaml                GraphStore backend contract (sqlite default / neo4j optional)
@@ -121,10 +298,14 @@ engine/
       model_router.py         profiles + resolve_llm()/resolve_embedding()
       llm_providers.py        OpenAI + Gemini (REST) + FallbackLLM
       embedding_provider.py   OpenAI embeddings + stub
-      ocr_provider.py         P0 placeholder (real OCR lands in P2)
+      ocr_provider.py         local PDF-text-first extractor + OCR fallback provider
   scripts/
     build_known_index.py      ESCAP files -> data/known_index.json + data/seeds.json
     eval_vs_master.py         the scoreboard (KNOWN recall + format checks)
+    extract_docling_markdown.py Docling conversion to Markdown + JSON for structure inspection
+    compare_pdf_extractors.py side-by-side current extractor vs olmOCR comparison
+    extract_pdf_text.py       PDF text extraction with automatic PaddleOCR fallback
+    rename_pdfs_sequential.py rename a folder of PDFs to country_01.pdf style names
     spike_sg_fetch.py         AI-1 spike: live SG fetch
     spike_ocr_check.py        AI-1 spike: scanned-PDF detection
     spike_providers.py        AI-2 spike: real routing (needs API keys)
@@ -268,4 +449,6 @@ uv run python run.py --country SG --pillar 6 --out outputs/sg-p6
 ```
 
 That command should produce real Singapore Pillar 6 output from official source data, with no UI dependency.
+
+
 
