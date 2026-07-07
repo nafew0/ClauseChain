@@ -75,9 +75,11 @@ indicators:
       - "'Must establish network access control POLICIES' is a rulebook, NOT infrastructure (5-Jun trap)."
       - "Encryption / network segmentation / crypto-key rules -> P7-I2 cybersecurity, NOT 6.3."
       - "Storage of a copy on rented capacity -> P6-I2; 6.3 needs a facility precondition."
+      - "Rules on ALREADY-ESTABLISHED data centres (security controls, registration) -> RECORD but score 0.00 (internal guide, 4-Jul read)."
+      - "Data-centre LICENSING regimes -> indicator 9.4, NOT 6.3."
     scoring:
-      "1": Any infrastructure requirement exists.
-      "0": None.
+      "1": Any infrastructure requirement exists (local data centre/server as a PRECONDITION of service, or transfer conditioned on infrastructure).
+      "0": None. Rules governing already-established data centres are recorded with score 0.
     example: "Vietnam: providers of websites/social networks must keep at least one local server. China ride-hailing: servers within mainland China."
 
   P6-I4:

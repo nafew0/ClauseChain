@@ -16,6 +16,14 @@
 
 > **Goal statement.** Not to pass — to win, such that no team outscores us on any block. We do that by (1) making the mandatory deliverable flawless and fully rubric-aligned, then (2) layering every optional on top behind a freeze that protects the deadline.
 
+> **⚠️ Post-4-July update (full-corpus gap analysis — `ClauseChain_Gap_Analysis_4Jul.md`; master changelog = Dev Plan §0A). Deltas that change THIS doc:**
+> - **§7.1 SCORING CORRECTED against the full RDTII guide:** 7.5 court-order test (access without independent judicial authorization = 1; court-gated = 0) · 7.2 gains a 0.5 tier (non-dedicated and/or dedicated-sectoral-only; 0 needs dedicated *horizontal*) · 7.4 gains a 0.5 tier (sector-specific only; 1 needs all-sectors) · 7.3 no-period-specified → record, score 0 · **P7 weights: 7.1=31/7.2=31/7.3=16/7.4=6/7.5=16 (%)** · 6.3 established-data-centre rules → record, score 0 (licensing → 9.4). Canonical home: DoDont §9.1.
+> - **Timeline & scope:** rebased 4 Jul — **P1′ Jul 5–9 · P2′ Jul 9–13 · P3′ + freeze Jul 16 · P5′ package Jul 16–19 · submit Jul 19** (Dev Plan §6 governs; the §11 table below and all "5 Jul freeze" mentions are historical). **Round-2 economies + bonus pillar CUT by default.**
+> - **Malaysia planted errors CONFIRMED** (1-Jun deck p5: SG 10/AU 10/**MY 20**, "error-checking AND new data collection") → the **MY error-audit pass** is scored work (Dev Plan §6 P2′); the §2/§9 "verify the 2× weighting" caveat is resolved.
+> - **CLI is NOT mandatory** (15-Jun; supersedes the 5-Jun answer still quoted in §12/§13 below — any documented, clonable interface is fine; UI required only in the Final).
+> - **Judging primarily reviews the submitted OUTPUT FILE** (15-Jun); code-running is selective → output polish outranks everything but reproducibility. Eval environment near-confirmed **CPU-only/no-GPU/no-keys/no-internet** → **Path A = clone-default** (Dev Plan §3A).
+> - **Gates additions:** dangling-reference check (cross-referenced instruments still exist/in force) in G4/G8; citation-confidence tiers `[settled]/[verify]/[verify-pinpoint]` with mandatory re-verification of pinpoint cites (from the judges' reference plugin, Claude-for-Legal SKILL.md).
+>
 > **⚠️ Post-22-June update (folds in the 11/12/15-June session notes + the Round-2 gold DB; master changelog = Dev Plan §0). Deltas that change THIS doc:**
 > - **Model routing → ACCURACY-FIRST, dual-profile (decided 23 Jun).** Our goal is best output, not the cost-efficiency sub-score. **Default = Path B** (cloud `gpt-5.4-nano`/`mini` reasoning + self-hosted Neo4j GraphRAG + local OCR + local BGE-M3 embeddings; ~cents/doc, measured). **Ship Path A** = key-free local fallback (local LLM + SQLite graph) so it runs in any sandbox. Both are `models.yaml` profiles (= the 15-pt modularity demo). Precompute & cache embeddings. Full rationale: Dev Plan §3A. *(Supersedes the cloud-default routing table in §4 below.)*
 > - **Retrieval = broad recall, NOT top-k** (12-Jun Direct-Corpus-Interaction result + Nikita 5-Jun: evidence dropped by a top-k score can't be recovered downstream). Graph expansion + broad retrieval, then gates cut.
@@ -87,7 +95,7 @@ These are the exact mistakes the RDTII team flagged in live worked examples. Eac
 We ship in concentric rings. Each ring is independently demoable and adds points without endangering the ring beneath it.
 
 ```
-RING 0 — CORE (must ship, unbeatable)        ← freeze by 5 July
+RING 0 — CORE (must ship, unbeatable)        ← freeze Jul 16 (rebased 4 Jul)
   SG + AU + MY · Pillars 6 & 7 · Zone 1 (crawl) + Zone 2 (extract/map/cite)
   Exact template output (CSV+JSON) · verbatim audit trail · OCR path · modular config
   NEW/KNOWN discovery · amendment ("Last Amended") tracking
@@ -361,20 +369,22 @@ P7-I5: { name: Government access to personal data, sources: [privacy_law, crimin
 
 **Scope exclusion (P6):** measures applying **only to government data are NOT scored** for Pillar 6.
 
+*(Corrected 4 Jul against the full RDTII guide pp.48–63 + methodology sheet — canonical wording lives in DoDont §9.1.)*
+
 | Code | Score 1 | Score 0.5 | Score 0 |
 |---|---|---|---|
-| P6-I1 | ban/local-processing covers **personal data** OR applies **horizontally**; also 1 if **≥2** such requirements on non-personal/specific data (or targeting >1 economy) | a single requirement on non-personal/specific data or one economy | transfer free of such requirements |
+| P6-I1 | ban/local-processing covers **personal data** OR applies **horizontally**; also 1 if **≥2** such requirements on non-personal/specific data | a single requirement on non-personal/specific data, a specific sector, or transfer prohibited to **one country** | transfer free of such requirements |
 | P6-I2 | mirrors 6.1: copy-stored-domestically rule covers personal data OR horizontal; or ≥2 on non-personal/specific data | single non-personal/specific-data storage rule | no local-storage requirement |
-| P6-I3 | **any** infrastructure requirement exists | — | none |
+| P6-I3 | **any** infrastructure requirement (local data centre/server as a **precondition of service**) | — | none — rules on **already-established** data centres are recorded but scored 0; DC **licensing** → 9.4 |
 | P6-I4 | conditions cover **personal data** (any coverage) OR apply **horizontally** (even non-personal) | non-personal/specific data, or sectoral only | no conditions on transfer |
 | P6-I5 | no binding data-transfer agreement (treaty DBs — **engine does not extract**) | — | ≥1 binding agreement |
 | P7-I1 | **lacks** a comprehensive DP framework | **sectoral-only** laws; or **horizontal-but-thin** (e.g. missing right-to-rectification → "not comprehensive enough" — Juntong, 5 Jun; organizers explicitly invite going deeper than the binary here) | comprehensive horizontal framework exists |
-| P7-I2 | **lacks** a dedicated cybersecurity framework (sectoral notices/scattered clauses don't count as dedicated) | — | dedicated framework exists |
-| P7-I3 | a minimum retention **period is specified** (keep ≥ X days/months/years) | — | no minimum period ("not longer than necessary" is NOT 7.3) |
-| P7-I4 | DPIA **or** DPO required (either suffices) | — | neither required |
-| P7-I5 | government access to personal data enabled/required | — | otherwise |
+| P7-I2 | **lacks** any cybersecurity framework | **non-dedicated framework** (relies on other laws for incident monitoring/detection/prevention/mitigation) **and/or dedicated but sectoral-only** | a dedicated **horizontal** framework exists |
+| P7-I3 | a minimum retention **period is specified** (keep ≥ X days/months/years) | — | no minimum period — a retention rule **without a specified period is recorded but scored 0**; "not longer than necessary" is NOT 7.3 |
+| P7-I4 | DPO (or DPO+DPIA) required in **all sectors** | **sector-specific** requirement only | neither required *(guide-only theoretical: DPIA-only = 0.25, never observed)* |
+| P7-I5 | government access to personal data possible **WITHOUT authorization of an independent judicial body** | — | otherwise — **access gated on a court order/warrant scores 0** |
 
-**Pillar-6 indicator weights** (for the dashboard + pitch math): **6.1 = 38 %** · **6.3 = 31 %** · 6.2 = 12 % · 6.4 = 12 % · 6.5 = 8 %. The two heavyweights (6.1, 6.3) are exactly the pair with the trickiest disambiguations (6.4-vs-6.1 ban, 6.2-storage-vs-6.3-infrastructure) — mapping accuracy there is worth disproportionately more.
+**Indicator weights** (for the dashboard + pitch math): **P6:** 6.1 = **38 %** · 6.3 = **31 %** · 6.2 = 12 % · 6.4 = 12 % · 6.5 = 8 %. **P7:** 7.1 = **31 %** · 7.2 = **31 %** · 7.3 = 16 % · 7.4 = 6 % · 7.5 = 16 %. The heavyweights are exactly the trickiest disambiguations (6.4-vs-6.1 ban, 6.2-storage-vs-6.3-infrastructure, the 7.1/7.2 comprehensive/dedicated tiers) — mapping accuracy there is worth disproportionately more.
 
 **Bonus completeness:** auto-check the treaty/status pages for the non-regulatory indicators (URLs listed in `Non-regulatory indicators.pdf`) so P6-I5 ships with a treaty-database citation instead of a blank.
 
@@ -459,7 +469,7 @@ These five are the human reviewers' own pre-entry check — turning them into de
 
 ## 11. Phase plan
 
-Rebased **11 June** (~5.5 weeks). **Core freezes 5 July; stretch is additive-only after that** (absolute max slide: 8 Jul, and only after applying the Dev-Plan §12 cut order). Technical workshops 11–15 June (RAG/OCR/architecture) run alongside P0 — attend and fold in learnings. **Email the Q&A questions before 15 Jun (Dev Plan §14).**
+> **⚠️ SUPERSEDED (4 Jul):** the authoritative, rebased phase plan is **Dev Plan §6** — P1′ Jul 5–9 · P2′ Jul 9–13 (incl. the MY error-audit) · P3′ + **core freeze Jul 16** · P5′ Jul 16–19 · **submit Jul 19**; Round-2 economies + bonus pillar cut. The table below is the 11-June plan, kept for the phase *content* only — its dates are historical.
 
 | Phase | Dates | Outcome | Maps to |
 |---|---|---|---|
@@ -478,7 +488,7 @@ Rebased **11 June** (~5.5 weeks). **Core freezes 5 July; stretch is additive-onl
 
 | # | Deliverable | Owner phase | Acceptance |
 |---|---|---|---|
-| 1 | Functional prototype (Task 1+2) + **Quick Start README** | P1→P5 | **CLI is mandatory** (confirmed 5 Jun): reviewer runs `python run.py --country SG --pillar 6`, gets CSV+JSON, no manual steps; works on text **and** scanned PDFs; open-source fallback switch; pinned versions. Quick-start "10 min" = runtime **after** install (setup time excluded). |
+| 1 | Functional prototype (Task 1+2) + **Quick Start README** | P1→P5 | **CLI is NOT mandatory** (15-Jun supersedes the 5-Jun answer — any documented, clonable interface; ours is a CLI anyway): reviewer runs `python run.py --country SG --pillar 6`, gets CSV+JSON, no manual steps; works on text **and** scanned PDFs; **key-free Path A default**; pinned versions; full 17-section README template (cost report, Known Limitations, `evaluate.py --sample-kit`). Quick-start "10 min" = runtime **after** install (setup time excluded). |
 | 2 | Structured output (CSV+JSON) | P1 | Validates against `OUTPUT_TEMPLATE_31MAY.xlsx` programmatically; live URLs; NEW rows present. |
 | 3 | Technical pitch deck | P5 | Problem→solution; extraction+mapping logic; **explicitly mapped to 40/30/30 and the failure-mode catches**; for non-technical + technical judges. |
 | 4 | ≤10-min screen recording | P5 | Engine processes a **scanned/image PDF**, generates correct citations, shows audit trail. |
@@ -497,7 +507,7 @@ Priority screens (the PRD's "three that win the demo," retargeted):
 4. **Source status / amendment view** — current vs superseded, "Last Amended," counter-evidence — proves we don't cite stale law.
 5. **Cross-jurisdiction comparative view** — the same indicator across SG/AU/MY side by side (a direct WTO end-user request: "run the same query across jurisdictions and give comparative analysis"). Cheap to build on top of the per-economy output; high demo value.
 
-UI must never be required for the engine to run (**the CLI is the judged artifact — confirmed required on 5 June; GUI is extra**), but it must render *real* runs.
+UI must never be required for the engine to run (**CLI not mandatory per 15-Jun, but ours is the primary interface; GUI is extra in Round 1 and required only in the Final**), but it must render *real* runs. *(4 Jul: UI screens are behind the §12 cut order — engine and output first.)*
 
 ---
 
@@ -505,7 +515,7 @@ UI must never be required for the engine to run (**the CLI is the judged artifac
 
 | Risk | Mitigation |
 |---|---|
-| Stretch work breaks the core | **Core freeze 5 July**; stretch on branches; core stays green and submittable from 5 July onward. We could submit on 5 July if needed. |
+| Stretch work breaks the core | **Core freeze Jul 16 (rebased 4 Jul)**; stretch is cut by default; anything reinstated lives on branches; core stays green and submittable from the freeze onward. |
 | Scaling to 8 economies eats the deadline | Round 1 ships SG/AU/MY + 2–3 Tier-A only; all-8 is a *finals* goal. Connector pattern = cheap proof of scale without full coverage. |
 | Hard portals (anti-bot/JS) block crawler | Playwright + per-site connectors; manual-upload fallback logged as a retrieval issue (still processes), so the e2e path never fully fails. |
 | OCR CER > 5% on bad scans | Measure per-doc; VLM repair on low-confidence regions; cite only verified spans; report CER honestly. |

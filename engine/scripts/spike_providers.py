@@ -5,11 +5,15 @@ Checks (needs OPENAI_API_KEY; GEMINI_API_KEY optional for the fallback leg):
 2. embeddings on 5 legal clauses return vectors with the configured dimensions
 3. (if GEMINI_API_KEY) the Gemini fallback path works
 
-Usage (from engine/):  uv run python scripts/spike_providers.py [--profile cheap_default]
+Usage (from engine/):  uv run python scripts/spike_providers.py [--profile hybrid_accuracy]
 """
 from __future__ import annotations
 
 import argparse
+
+from packages.core.envfile import load_env_file
+
+load_env_file()
 import os
 import sys
 from pathlib import Path
@@ -37,7 +41,7 @@ class Ping(BaseModel):
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--profile", default=os.getenv("CLAUSECHAIN_PROVIDER_PROFILE", "cheap_default"))
+    parser.add_argument("--profile", default=os.getenv("CLAUSECHAIN_PROVIDER_PROFILE", "hybrid_accuracy"))
     args = parser.parse_args()
 
     if not os.getenv("OPENAI_API_KEY"):

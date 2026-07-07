@@ -11,6 +11,13 @@
 
 > **Mental model.** Every output row answers one question: *"Does this exact, current, official, domestic legal provision satisfy this RDTII indicator's legal test — and can a lawyer verify it from the citation in seconds?"* Each DO/DON'T below removes one way that answer goes wrong.
 
+> **⚠️ Post-4-July update (full RDTII-guide re-read + gap analysis — `ClauseChain_Gap_Analysis_4Jul.md`):**
+> - **§9.1 SCORING CORRECTED (official guide pp.57–63 + methodology sheet):** **7.5 has a court-order test** (access *without* independent judicial authorization = 1; warrant/court-gated access = 0); **7.2 gains a 0.5 tier** (non-dedicated and/or dedicated sectoral-only; 0 requires a dedicated *horizontal* framework); **7.4 gains a 0.5 tier** (sector-specific only; 1 requires all-sectors DPO); 7.3 with no period specified → **record the measure, score 0**; **P7 weights added: 7.1=31% · 7.2=31% · 7.3=16% · 7.4=6% · 7.5=16%**; 6.3: rules on *already-established* data centres → record, score 0 (data-centre *licensing* → 9.4, out of P6).
+> - **Coverage rule sharpened (15-Jun):** "Horizontal" ONLY if the measure applies to **ALL** sectors — a law covering financial + banking only is **Sectoral**. Hierarchy = authorizing body, never coverage type (§7).
+> - **Citation-confidence tiering adopted** from the judges' reference plugin (Claude-for-Legal SKILL.md): `[settled]` / `[verify]` / `[verify-pinpoint]` — **pinpoint cites (article+paragraph) carry the highest fabrication risk and are ALWAYS verified against the primary source** (= G1/G2's framing); effective date ≠ enforcement date; when the law is genuinely ambiguous, say so — never paper over uncertainty (§8).
+> - **Dangling-reference check:** before any conclusion, mechanically verify that every cross-referenced instrument still exists and is in force (12-Jun Qian Xiao) → wired into G4/G8 (§12 item 8).
+> - **Malaysia contains PLANTED ERRORS (confirmed; MY weight 20 vs 10):** every MY master-DB row gets re-verified (URL live / current / article exists / mapping correct) and corrections are emitted — the error-audit pass, Dev Plan §6 P2′.
+>
 > **⚠️ Post-22-June update (12/15-June notes + Round-2 gold DB; master changelog = Dev Plan §0).**
 > - **Multilingual verbatim:** put the **original-language** text in `Verbatim Snippet`; add a **`Verbatim Snippet (English)`** column (allowed, appended after the 13). Prioritize the native-language version (most up-to-date), English as reference; flag translation/bilingual source in `Notes`. (15-Jun)
 > - **Repealed law cited as current = penalty.** Record only active laws; if you keep a repealed one, mark **`Status=repealed`**. **No-evidence → "no provision found" + cite the governing law**, never a blank row. (15-Jun)
@@ -126,7 +133,8 @@ These are the exact confusions the RDTII team flagged. Encode each as a `pillar_
 ## 7. Coverage (Horizontal vs Sectoral)
 
 **DO** classify every row: **Horizontal** (applies across all sectors) or **Sectoral** (name the sector/data category — e.g. "Financial sector", "Telecom", "Health", "Accounting records"). Coverage drives indicator **scope and scoring**.
-**DON'T** equate coverage with hierarchy — a sectoral Act and a horizontal Act can sit at the same legal rank and score the same.
+**DO** apply the strict test (15-Jun, Juntong): a measure is **Horizontal ONLY if it applies to ALL sectors** — a law covering financial + banking sectors only is **Sectoral**, however broad it feels.
+**DON'T** equate coverage with hierarchy — hierarchy depends on the **authorizing body/instrument type**; a sectoral Act and a horizontal Act sit at the same legal rank, and a horizontal law does NOT take precedence over a sectoral one of equal hierarchy.
 
 ---
 
@@ -159,24 +167,26 @@ These are the exact confusions the RDTII team flagged. Encode each as a `pillar_
 - ❌ Let the **score contradict the explanation** (e.g. score 0 while the text clearly imposes a restriction → should be ≥ 0.5/1).
 - ❌ Treat "fighting the NO" as easy — absence is *harder* to prove than presence; budget search effort accordingly.
 
-### 9.1 The official 0 / 0.5 / 1 criteria (RDTII 2.1 Guide — canonical here; mirrored in Build Guide §7.1)
+### 9.1 The official 0 / 0.5 / 1 criteria (RDTII 2.1 Guide — canonical here; mirrored in Build Guide §7.1) — **CORRECTED 4 Jul against the full guide (pp.48–63) + methodology sheet**
 
-**⚠️ Polarity (a silent score-killer): P7-I1 and P7-I2 score the *absence* of a framework** (lack = 1); **P7-I3/I4/I5 score the *presence* of requirements.** All of Pillar 6 scores presence of restrictions. Higher always = more regulatory burden. **Scope exclusion:** P6 measures applying *only to government data* are NOT scored.
+**⚠️ Polarity (a silent score-killer): P7-I1 and P7-I2 score the *absence* of a framework** (lack = 1); **P7-I3/I4/I5 score the *presence* of requirements.** All of Pillar 6 scores presence of restrictions. Higher always = more regulatory burden. **Scope exclusions:** P6 measures applying *only to government data* are NOT scored (7.3 likewise excludes government data).
 
 | Code | Score 1 | Score 0.5 | Score 0 |
 |---|---|---|---|
-| P6-I1 | ban/local-processing covers **personal data** OR applies **horizontally**; also 1 if **≥2** such requirements on non-personal/specific data (or >1 economy) | single requirement on non-personal/specific data or one economy | transfer free of such requirements |
+| P6-I1 | ban/local-processing covers **personal data** OR applies **horizontally**; also 1 if **≥2** such requirements on non-personal/specific data | single requirement on non-personal/specific data, a specific sector, or transfer prohibited to **one country** | transfer free of such requirements |
 | P6-I2 | mirrors 6.1 (personal data OR horizontal; or ≥2 non-personal/specific) | single non-personal/specific-data storage rule | no local-storage requirement |
-| P6-I3 | **any** infrastructure requirement | — | none |
-| P6-I4 | conditions cover **personal data** (any coverage) OR apply **horizontally** | non-personal/specific data or sectoral only | no conditions |
+| P6-I3 | **any** infrastructure requirement (local data centre/server as a **precondition of service**, or transfer conditioned on infrastructure) | — | none — and rules on **already-established** data centres (security controls, registration) are recorded but scored **0**; data-centre **licensing** → 9.4, not 6.3 |
+| P6-I4 | conditions cover **personal data** (any coverage) OR apply **horizontally** (even non-personal) | non-personal/specific data or sectoral only | no conditions |
 | P6-I5 | no binding data-transfer agreement (treaty DBs; not extracted) | — | ≥1 binding agreement |
 | P7-I1 | **lacks** comprehensive DP framework | **sectoral-only**; or **horizontal-but-thin** (e.g. missing rectification → "not comprehensive enough" — Juntong, 5 Jun; organizers invite going deeper than the binary) | comprehensive horizontal framework exists |
-| P7-I2 | **lacks** dedicated cybersecurity framework | — | dedicated framework exists |
-| P7-I3 | minimum retention **period specified** (keep ≥ X) | — | none |
-| P7-I4 | DPIA **or** DPO required | — | neither |
-| P7-I5 | government access enabled/required | — | otherwise |
+| P7-I2 | **lacks** any cybersecurity framework | **non-dedicated framework** (relies on other laws for incident monitoring/detection/prevention/mitigation) **and/or dedicated but sectoral-only** | dedicated **horizontal** framework exists |
+| P7-I3 | minimum retention **period specified** (keep ≥ X days/months/years) | — | none; a retention requirement **without a specified minimum period is still RECORDED but scored 0** ("not longer than necessary" is never 7.3 — guide fn.35) |
+| P7-I4 | DPO (or DPO+DPIA) required in **all sectors** | **sector-specific** DPO/DPIA requirement only | neither required *(guide-only theoretical: DPIA-only = 0.25 — never yet observed)* |
+| P7-I5 | government can access personal data **WITHOUT authorization of an independent judicial body** (no court decision/warrant/equivalent needed) | — | no such measure — **access that requires a court order scores 0** |
 
-**P6 indicator weights:** 6.1 = **38 %** · 6.3 = **31 %** · 6.2 = 12 % · 6.4 = 12 % · 6.5 = 8 % — the heavyweights are exactly the trickiest disambiguation pair (§6), so mapping accuracy there is worth disproportionately more.
+**Indicator weights:** P6 — 6.1 = **38 %** · 6.3 = **31 %** · 6.2 = 12 % · 6.4 = 12 % · 6.5 = 8 %. **P7 — 7.1 = 31 % · 7.2 = 31 % · 7.3 = 16 % · 7.4 = 6 % · 7.5 = 16 %.** In both pillars the heavyweights are exactly the trickiest disambiguations (6.1-vs-6.4, 6.2-vs-6.3, 7.1/7.2 comprehensiveness/dedication tiers), so mapping accuracy there is worth disproportionately more.
+
+**⚠️ 7.5 in practice:** the mapping question is not "can the government access data?" but "**can it do so without independent judicial authorization?**" — SG CPC s.39 (police may access without warrant) = 1-type evidence; a power exercisable *only* under a court order supports score 0. Record both, but the court-order test decides the score.
 
 ---
 
@@ -212,9 +222,10 @@ Encode these as automated gates; a row ships only when all pass (else → review
 5. **Article + paragraph + page/anchor** resolve to the quote? *(G2)*
 6. **Main rule separated** from its exceptions / approvals / thresholds? *(G5/G6)*
 7. **Coverage** (Horizontal/Sectoral) set; **domestic primary** source?
-8. **Counter-evidence** checked (amendment/repeal/superseding text)? *(G8)*
+8. **Counter-evidence** checked (amendment/repeal/superseding text)? **Including the dangling-reference check:** every instrument this row cross-references still exists and is in force? *(G8, G4)*
 9. If **no restriction** found, general governing law cited as reference basis (score 0)?
 10. **NEW/KNOWN** tag correct at (instrument+article) level?
+11. **Citation confidence tier** assigned (`[settled]` / `[verify]` / `[verify-pinpoint]`) — and every `[verify-pinpoint]` (article+paragraph) cite re-verified against the primary source before export?
 
 ---
 

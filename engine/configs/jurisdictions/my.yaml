@@ -2,22 +2,60 @@ jurisdiction: MY
 name: Malaysia
 un_name: Malaysia
 languages: { primary: en, supported: [en, ms] }
+
+whitelist_source: data/official_domains.json   # mined from ESCAP References — see sg.yaml note
 official_sources:
   - { name: Laws of Malaysia (AGC), domain: lom.agc.gov.my, source_type: official_statute_database, authority_rank: 100 }
-  - { name: Personal Data Protection Department, domain: pdp.gov.my, source_type: regulator_guidance, authority_rank: 60 }
   - { name: Federal Gazette, domain: federalgazette.agc.gov.my, source_type: official_gazette, authority_rank: 100 }
+  - { name: Personal Data Protection Department, domain: pdp.gov.my, source_type: regulator_guidance, authority_rank: 60 }
   - { name: MCMC, domain: mcmc.gov.my, source_type: sectoral_regulator, authority_rank: 60 }
+  # added 7-Jul from ESCAP-citation mining (NOTE: ESCAP cites MY regulator sites MORE than lom.agc —
+  # regulator PDFs are where their MY evidence actually lives):
+  - { name: Bank Negara Malaysia, domain: bnm.gov.my, source_type: sectoral_regulator, authority_rank: 60 }
+  - { name: Companies Commission (SSM), domain: ssm.com.my, source_type: statutory_body, authority_rank: 55 }
+  - { name: MyIPO, domain: myipo.gov.my, source_type: sectoral_regulator, authority_rank: 50 }
+  - { name: Royal Malaysian Customs, domain: customs.gov.my, source_type: sectoral_regulator, authority_rank: 50 }
+  - { name: Inland Revenue (LHDN), domain: hasil.gov.my, source_type: sectoral_regulator, authority_rank: 50 }
+  - { name: MITI, domain: miti.gov.my, source_type: ministry, authority_rank: 50 }
+  - { name: Ministry of Finance, domain: mof.gov.my, source_type: ministry, authority_rank: 50 }
+  - { name: Dept of Standards, domain: jsm.gov.my, source_type: agency, authority_rank: 40 }
+  - { name: Royal Malaysia Police (CCID), domain: ccid.rmp.gov.my, source_type: enforcement_agency, authority_rank: 40 }
+
+portal_search:
+  engine: https://lom.agc.gov.my (act search) + regulator-site search per domain above
+  method: keyword_fulltext
+  notes: "MY evidence is scattered across regulator PDFs — search BNM/MCMC/PDP sites directly, not only the statute portal."
+
 citation_patterns:
   section: ["s. {n}", "section {n}", "Section {n}"]
   paragraph_required: true
 connector: my_lom
 notes:
-  - "Priority economy in P2 (highest weight + hardest challenge: scanned gazettes -> OCR path, CER < 5%)."
-  - "Government procurement governed by Treasury instructions/circulars, not one act (5-Jun lesson; analogue: record subsidiary instruments)."
+  - "Priority economy (weight 20 vs 10) + planted-error audit pass confirmed (4-Jul gap analysis)."
+  - "Scanned gazettes -> OCR path, CER < 5%."
+  - "Government procurement governed by Treasury instructions/circulars, not one act (5-Jun lesson; record subsidiary instruments)."
+  - "ESCAP's MY rows cite 26 NON-official domains (most of any R1 economy — incl. law-firm sites) — the biggest source-upgrade opportunity of the three."
 known_index: data/known_index.json
 seeds: data/seeds.json
 rdtii_bindings: { pillars: [6, 7] }
+
 anchor_instruments:
   - "Personal Data Protection Act 2010 (Act 709) — retention LIMIT in s.10 is NOT P7-I3; hunt minimum-retention in sectoral law (AML, companies, tax)"
   - "Cyber Security Act 2024 (Act 854)"
   - "Communications and Multimedia Act 1998 (gov-access hunting ground for P7-I5)"
+
+hunt_instruments:
+  P7-I5:   # government access (warrantless-access test)
+    - "Communications and Multimedia Act 1998 (Act 588) — s. 252 interception, s. 263 licensee assistance"
+    - "Criminal Procedure Code (Act 593) — search/seizure of computerized data"
+    - "Security Offences (Special Measures) Act 2012 (SOSMA) — s. 6 interception without warrant"
+    - "Anti-Money Laundering, Anti-Terrorism Financing Act 2001 (Act 613) — examination powers"
+    - "Income Tax Act 1967 (Act 53) — DG access powers"
+  P7-I3:   # minimum retention
+    - "AMLA 2001 (Act 613) — record retention not less than 6 years"
+    - "Companies Act 2016 (Act 777) — s. 245 accounting records 7 years"
+    - "Income Tax Act 1967 — s. 82 records 7 years"
+    - "BNM AML/CFT policy documents (sectoral retention)"
+  P6-I2_I3:
+    - "BNM Outsourcing / Risk Management in Technology (RMiT) policy — data-residency conditions"
+    - "Financial Services Act 2013 (Act 758) — customer information provisions"

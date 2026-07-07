@@ -2,21 +2,62 @@ jurisdiction: SG
 name: Singapore
 un_name: Singapore
 languages: { primary: en, supported: [en] }
+
+# Whitelist policy: hand-ranked entries below + the FULL mined union in
+# data/official_domains.json (derived from ESCAP's own References — provably
+# at least as broad as their practice). Crawler accepts a domain if it is in
+# EITHER. Non-official domains are never evidence (G3) — only upgrade targets.
+whitelist_source: data/official_domains.json
 official_sources:
   - { name: Singapore Statutes Online, domain: sso.agc.gov.sg, source_type: official_statute_database, authority_rank: 100 }
-  - { name: Personal Data Protection Commission, domain: pdpc.gov.sg, source_type: regulator_guidance, authority_rank: 60 }
-  - { name: IMDA, domain: imda.gov.sg, source_type: regulator_guidance, authority_rank: 60 }
-  - { name: Monetary Authority of Singapore, domain: mas.gov.sg, source_type: sectoral_regulator, authority_rank: 60 }
+  - { name: PDPC, domain: pdpc.gov.sg, source_type: regulator_guidance, authority_rank: 60 }
+  - { name: IMDA, domain: imda.gov.sg, source_type: sectoral_regulator, authority_rank: 60 }
+  - { name: MAS, domain: mas.gov.sg, source_type: sectoral_regulator, authority_rank: 60 }
+  # added 7-Jul from ESCAP-citation mining:
+  - { name: Ministry of Trade & Industry, domain: mti.gov.sg, source_type: ministry, authority_rank: 50 }
+  - { name: Ministry of Home Affairs, domain: mha.gov.sg, source_type: ministry, authority_rank: 50 }
+  - { name: Singapore Police Force, domain: police.gov.sg, source_type: enforcement_agency, authority_rank: 40 }
+  - { name: Singapore Customs, domain: customs.gov.sg, source_type: sectoral_regulator, authority_rank: 50 }
+  - { name: IPOS, domain: ipos.gov.sg, source_type: sectoral_regulator, authority_rank: 50 }
+  - { name: Enterprise Singapore, domain: enterprisesg.gov.sg, source_type: agency, authority_rank: 40 }
+
+portal_search:            # L3 weapon: query the portal's own full-text search with rubric-cue query sets
+  engine: https://sso.agc.gov.sg/Search/Content
+  method: keyword_fulltext
+  notes: "Generate queries from pillar YAML positive_cues via bulk LLM; every hit must stay on-whitelist."
+
 citation_patterns:
   section: ["s. {n}", "s {n}", "section {n}"]
   paragraph_required: true        # always cite to s. 26(1) depth, never bare s. 26
 connector: sg_sso
 notes:
   - "Anti-bot protection observed on sso.agc.gov.sg (1-Jun workshop) — httpx first, Playwright fallback; handling it is a scored differentiator."
+  - "ESCAP's SG rows cite 15 NON-official domains (see upgrade_targets in official_domains.json) — each is a chance to upgrade a row to an official source."
 known_index: data/known_index.json     # built by scripts/build_known_index.py (master = primary)
-seeds: data/seeds.json
+seeds: data/seeds.json                 # ESCAP-provided only (provenance kept clean; our additions live below)
 rdtii_bindings: { pillars: [6, 7] }
+
 anchor_instruments:
   - "Personal Data Protection Act 2012 (No. 26 of 2012) — https://sso.agc.gov.sg/Act/PDPA2012"
   - "Cybersecurity Act 2018 — https://sso.agc.gov.sg/Act/CA2018"
   - "Criminal Procedure Code 2010 (gov-access hunting ground for P7-I5)"
+
+# Curated NEW-evidence hunting grounds (our additions beyond ESCAP's seed list;
+# every competitor has seeds.json — these are where off-list points live).
+hunt_instruments:
+  P7-I5:   # government access — the richest NEW vein (warrantless-access test)
+    - "Criminal Procedure Code 2010 (s. 39 computer access powers)"
+    - "Computer Misuse Act 1993"
+    - "Telecommunications Act 1999 (licensee obligations)"
+    - "Internal Security Act 1960"
+    - "Police Force Act 2004"
+    - "Income Tax Act 1947 (Comptroller access powers)"
+  P7-I3:   # minimum retention — lives in sectoral law
+    - "Companies Act 1967 (s. 199 accounting records, 5 years)"
+    - "Income Tax Act 1947 (record-keeping)"
+    - "MAS notices on record retention (e.g. MAS 626 AML/CFT)"
+    - "Corruption, Drug Trafficking and Other Serious Crimes (Confiscation of Benefits) Act 1992"
+  P6-I2_I3: # storage/infrastructure — sectoral localization
+    - "Banking Act 1970 (s. 47 customer information; outsourcing notices)"
+    - "MAS Technology Risk Management notices"
+    - "Healthcare Services Act 2020 (health-data rules)"

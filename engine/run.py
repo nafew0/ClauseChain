@@ -1,11 +1,15 @@
 from __future__ import annotations
 
 import argparse
+import os
 from pathlib import Path
 
+from packages.core.envfile import load_env_file
 from packages.core.orchestrator import run
 from packages.export.csv_writer import write_csv
 from packages.export.json_writer import write_json
+
+load_env_file()
 
 
 def parse_args() -> argparse.Namespace:
@@ -25,8 +29,8 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--provider-profile",
-        default="hybrid_accuracy",
-        help="Provider profile from configs/models.yaml (hybrid_accuracy=Path B default, local_fallback=Path A).",
+        default=os.getenv("CLAUSECHAIN_PROVIDER_PROFILE", "hybrid_accuracy"),
+        help="Provider profile from configs/models.yaml (hybrid_accuracy=Path B, local_fallback=Path A key-free). Env: CLAUSECHAIN_PROVIDER_PROFILE.",
     )
     return parser.parse_args()
 

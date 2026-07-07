@@ -58,3 +58,10 @@ def resolve_embedding(profile_name: str = "hybrid_accuracy"):
 
     return build_embedding(get_profile(profile_name).get("embedding", {}))
 
+
+def resolve_ocr(profile_name: str = "hybrid_accuracy"):
+    """Return the OCR engine configured for a profile (local placeholder or remote PaddleOCR)."""
+    from packages.providers.ocr_provider import build_ocr
+
+    return build_ocr(get_profile(profile_name).get("ocr", {}))
+

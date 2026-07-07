@@ -11,11 +11,13 @@ profiles:
       primary: openai:gpt-5.4-mini
       fallback: google:${GEMINI_HIGH_REASONING_MODEL:-gemini-3-flash-preview}
     embedding:
-      provider: bge_m3        # local, multilingual (unlocks TH/CN/RU/LA), free; precompute + cache
-      model: BAAI/bge-m3
-      dimensions: 1024
+      provider: ${EMBEDDING_PROVIDER:-openai}   # cloud OpenAI (decided 4 Jul); bge_m3 stays the Path A/multilingual option
+      model: ${OPENAI_EMBEDDING_MODEL:-text-embedding-3-small}
+      dimensions: 1536
     ocr:
-      provider: local         # self-hosted (cost already absorbed)
+      provider: ${OCR_PROVIDER:-local}     # set OCR_PROVIDER=remote_paddle in .env to use the PaddleOCR VM
+      endpoint: ${OCR_ENDPOINT:-http://localhost:8089}
+      api_key: ${OCR_API_KEY:-}
       model: ${LOCAL_OCR_MODEL:-local-ocr-placeholder}
     graph:
       provider: ${GRAPH_BACKEND:-sqlite}   # Path B: export GRAPH_BACKEND=neo4j (self-hosted)

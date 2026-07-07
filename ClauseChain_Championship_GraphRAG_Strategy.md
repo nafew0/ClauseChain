@@ -5,6 +5,8 @@
 This is the aggressive track. The goal is not to build a plain RAG script that finds some clauses. The goal is to show a legal intelligence engine that can discover, verify, explain, and export regulatory evidence better than a human spreadsheet workflow.
 
 > **⚠️ Post-22-June update — externally validated by the 12-June "RAG and LLMs" talk (Rathachai, KMITL).** The workshop independently presented a **GraphRAG-for-legal schema identical in spirit to ours** — `Document → Article → Paragraph → Item → Subitem` with **`AMENDS` / `REVOKE`** edges — confirming the §5 schema and the currentness/amendment story (adopt those edge types + `SUPERSEDES` / `CROSS_REFERENCES`). It also confirmed **"broad recall, NOT top-k"**: the Direct-Corpus-Interaction / semantic-similarity-bottleneck result (Li et al., arXiv:2605.05242, 2026) — *evidence dropped by a top-k similarity score can't be recovered downstream* — so graph expansion + broad retrieval beat a small top-k. **Final storage decision stands (§12): SQLite-backed `GraphStore` default, Neo4j opt-in.** Master changelog: Dev Plan §0; details in `Hackthon_Knowledge/NOTES_12June_Workshop_Corrected.md`.
+>
+> **4-Jul gap analysis:** nothing here changes. Reinforced: the SQLite default now also matches the **near-confirmed CPU-only/no-keys eval environment** (Dev Plan §0A/§3A — Path A is the clone-default); the graph's cross-reference edges additionally power the new **dangling-reference gate** (a cross-referenced instrument must still exist and be in force before a row exports — DoDont §12 item 8); and the graph's currentness path is a natural home for the **Malaysia error-audit pass** (Dev Plan §6 P2′).
 
 ## 1. Strategic Call
 

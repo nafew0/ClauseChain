@@ -32,12 +32,15 @@ class FakeLLM:
 def test_profiles_load_and_expand() -> None:
     profile = get_profile("hybrid_accuracy")  # Path B default
     assert profile["bulk"]["primary"] == "openai:gpt-5.4-nano"
-    assert profile["embedding"]["model"] == "BAAI/bge-m3"
+    # Path B embeddings = cloud OpenAI (decided 4 Jul); EMBEDDING_PROVIDER can override
+    assert profile["embedding"]["provider"] in {"openai", "bge_m3"}
+    assert profile["embedding"]["model"] in {"text-embedding-3-small", "BAAI/bge-m3"}
     assert profile["graph"]["provider"] in {"sqlite", "neo4j"}
-    # Path A fallback exists and is key-free (ollama + sqlite)
+    # Path A fallback exists and is key-free (ollama + sqlite + local bge_m3)
     fallback = get_profile("local_fallback")
     assert fallback["bulk"]["primary"].startswith("ollama:")
     assert fallback["graph"]["provider"] == "sqlite"
+    assert fallback["embedding"]["provider"] == "bge_m3"
 
 
 def test_build_llm_parses_specs() -> None:
@@ -64,5 +67,10 @@ def test_resolve_llm_and_embedding_construct_offline() -> None:
     llm = resolve_llm("hybrid_accuracy", tier="high_reasoning")
     assert isinstance(llm, FallbackLLM)
     assert llm.primary.model == "gpt-5.4-mini"
+    # Path B: cloud OpenAI embeddings (construction is offline-safe — no network until embed())
     embedder = resolve_embedding("hybrid_accuracy")
-    assert embedder.model == "BAAI/bge-m3"  # local BGE-M3, constructed without loading the model
+    assert embedder.model == "text-embedding-3-small"
+    assert embedder.dimensions == 1536
+    # Path A stays local BGE-M3, constructed without loading the model
+    fallback_embedder = resolve_embedding("local_fallback")
+    assert fallback_embedder.model == "BAAI/bge-m3"
