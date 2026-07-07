@@ -19,8 +19,9 @@ ECONOMY_NAMES = {"SG": "Singapore", "MY": "Malaysia", "AU": "Australia"}
 CODE_BY_NAME = {name.upper(): code for code, name in ECONOMY_NAMES.items()}
 ENGINE_ROOT = Path(__file__).resolve().parents[2]
 
-# P1: Singapore anchor corpus. (P2': per-pack act lists + MY/AU connectors.)
-SG_ACTS = [("PDPA2012", "No. 26 of 2012")]
+def _pack_corpus_acts(pack: dict) -> list[tuple[str, str | None]]:
+    acts = [(a["ref"], a.get("number")) for a in pack.get("corpus_acts", [])]
+    return acts or [("PDPA2012", "No. 26 of 2012")]
 
 
 def _load_yaml(rel_path: str) -> dict:
@@ -39,7 +40,7 @@ def _whitelist(pack: dict) -> set[str]:
     return domains
 
 
-def _ensure_sg_corpus(store) -> list[dict]:
+def _ensure_sg_corpus(store, pack: dict) -> list[dict]:
     from packages.retrieval.hybrid import load_corpus
 
     corpus = load_corpus(store, "Singapore")
@@ -49,15 +50,20 @@ def _ensure_sg_corpus(store) -> list[dict]:
     from packages.core.rule_units import build_rule_units
     from packages.extractors.html_sso import parse_sso_act
 
-    for act_ref, number in SG_ACTS:
+    for act_ref, number in _pack_corpus_acts(pack):
         manifest = acquire_act(act_ref)
         doc = parse_sso_act(Path(manifest["html_path"]).read_text(encoding="utf-8"),
                             manifest["url"])
-        for unit in build_rule_units(doc, economy="Singapore", act_ref=act_ref,
-                                     law_number_ref=number):
+        units = build_rule_units(doc, economy="Singapore", act_ref=act_ref,
+                                 law_number_ref=number)
+        for unit in units:
             unit.metadata["archived_copy"] = manifest["html_path"]
             unit.metadata["access_date"] = manifest["access_date"]
-            store.upsert_rule_unit(unit)
+        if hasattr(store, "upsert_rule_units"):
+            store.upsert_rule_units(units)
+        else:
+            for unit in units:
+                store.upsert_rule_unit(unit)
     return load_corpus(store, "Singapore")
 
 
@@ -146,7 +152,7 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
     rubric = _load_yaml(f"configs/rdtii/pillar_{pillar}.yaml")
     whitelist = _whitelist(pack)
     store = get_graph_store()
-    corpus = _ensure_sg_corpus(store)
+    corpus = _ensure_sg_corpus(store, pack)
 
     llm_bulk = resolve_llm(provider_profile, tier="bulk")
     llm_high = resolve_llm(provider_profile, tier="high_reasoning")

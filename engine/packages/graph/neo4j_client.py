@@ -107,6 +107,47 @@ class Neo4jGraphStore:
             )
         return f"neo4j://rule-unit/{rule_unit.id}"
 
+    def upsert_rule_units(self, rule_units: list[RuleUnit], batch_size: int = 400) -> int:
+        """Batched load via UNWIND — one round-trip per batch instead of per unit."""
+        rows = []
+        for u in rule_units:
+            rows.append({
+                "instrument_id": f"instrument:{u.economy}:{u.law_name}",
+                "section_id": f"section:{u.economy}:{u.law_name}:{u.article_section}",
+                "provision_id": f"provision:{u.id}",
+                "law_name": u.law_name, "economy": u.economy,
+                "law_number_ref": u.law_number_ref, "last_amended": u.last_amended,
+                "article_section": u.article_section, "source_url": u.source_url,
+                "location_reference": u.location_reference, "text": u.text,
+                "heading": str(u.metadata.get("heading", "")),
+                "part": str(u.metadata.get("part", "")),
+                "current_as_at": str(u.metadata.get("current_as_at") or ""),
+            })
+        with self._connect().session() as session:
+            self._ensure_schema(session)
+            for start in range(0, len(rows), batch_size):
+                session.run(
+                    """
+                    UNWIND $rows AS r
+                    MERGE (i:Instrument {id: r.instrument_id})
+                      SET i.law_name = r.law_name, i.economy = r.economy,
+                          i.law_number_ref = r.law_number_ref, i.last_amended = r.last_amended
+                    MERGE (s:Section {id: r.section_id})
+                      SET s.article_section = r.article_section, s.source_url = r.source_url
+                    MERGE (p:Provision {id: r.provision_id})
+                      SET p.text = r.text, p.economy = r.economy,
+                          p.location_reference = r.location_reference,
+                          p.source_url = r.source_url, p.article_section = r.article_section,
+                          p.law_name = r.law_name, p.heading = r.heading, p.part = r.part,
+                          p.current_as_at = r.current_as_at,
+                          p.law_number_ref = r.law_number_ref, p.last_amended = r.last_amended
+                    MERGE (i)-[:HAS_SECTION]->(s)
+                    MERGE (s)-[:HAS_PROVISION]->(p)
+                    """,
+                    rows=rows[start:start + batch_size],
+                )
+        return len(rows)
+
     def search_provisions(
         self, query: str, economy: str | None = None, limit: int = 50
     ) -> list[dict]:

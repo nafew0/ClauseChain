@@ -70,15 +70,17 @@ def main() -> int:
         if row.get("Discovery Tag") == "NEW":
             new_rows += 1
 
-        # field checks
+        # field checks (absence rows — "No provision found" — are a legitimate
+        # ESCAP pattern: score-0 with the governing law cited; skip depth/snippet checks)
+        is_absence = row.get("Verbatim Snippet", "").strip().lower().startswith("no provision found")
         if not INDICATOR_RE.match(row.get("Indicator ID", "")):
             format_failures.append(f"row {i}: bad Indicator ID {row.get('Indicator ID')!r}")
-        if not PARAGRAPH_RE.search(row.get("Article / Section", "")):
+        if not is_absence and not PARAGRAPH_RE.search(row.get("Article / Section", "")):
             format_failures.append(f"row {i}: Article/Section lacks paragraph depth "
                                    f"({row.get('Article / Section')!r}) — template demands Art. 26(2) style")
         if not row.get("Source URL", "").startswith("http"):
             format_failures.append(f"row {i}: Source URL not http(s)")
-        if len(row.get("Verbatim Snippet", "")) < 20:
+        if not is_absence and len(row.get("Verbatim Snippet", "")) < 20:
             format_failures.append(f"row {i}: Verbatim Snippet suspiciously short")
         if row.get("Discovery Tag") not in {"NEW", "KNOWN"}:
             format_failures.append(f"row {i}: Discovery Tag must be NEW or KNOWN")

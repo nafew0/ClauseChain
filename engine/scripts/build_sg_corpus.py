@@ -25,10 +25,13 @@ from packages.core.rule_units import build_rule_units  # noqa: E402
 from packages.extractors.html_sso import parse_sso_act  # noqa: E402
 from packages.graph.store import get_graph_store  # noqa: E402
 
-# (act_ref, law_number_ref) — P1 scope: PDPA for Pillar 6; the rest feed P7 later.
-DEFAULT_ACTS = [
-    ("PDPA2012", "No. 26 of 2012"),
-]
+import yaml  # noqa: E402
+
+
+def corpus_acts() -> list[tuple[str, str | None]]:
+    pack = yaml.safe_load((Path(__file__).resolve().parents[1] /
+                           "configs/jurisdictions/sg.yaml").read_text())
+    return [(a["ref"], a.get("number")) for a in pack.get("corpus_acts", [])]
 
 
 def load_act(act_ref: str, law_number_ref: str | None, stores) -> int:
@@ -41,8 +44,12 @@ def load_act(act_ref: str, law_number_ref: str | None, stores) -> int:
         unit.metadata["archived_copy"] = manifest["html_path"]
         unit.metadata["access_date"] = manifest["access_date"]
         unit.metadata["content_sha256"] = manifest["sha256"]
-        for store in stores:
-            store.upsert_rule_unit(unit)
+    for store in stores:
+        if hasattr(store, "upsert_rule_units"):   # batched (Neo4j UNWIND)
+            store.upsert_rule_units(units)
+        else:
+            for unit in units:
+                store.upsert_rule_unit(unit)
     print(f"{act_ref}: {doc.law_name!r} | current as at {doc.current_as_at} | "
           f"{len(doc.sections)} sections -> {len(units)} rule units")
     return len(units)
@@ -60,7 +67,7 @@ def main() -> int:
           else "graph backend: sqlite")
 
     total = 0
-    for act_ref, number in DEFAULT_ACTS:
+    for act_ref, number in corpus_acts():
         total += load_act(act_ref, number, stores)
 
     for store in stores:

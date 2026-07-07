@@ -24,7 +24,8 @@ import httpx
 
 PDPA_URL = "https://sso.agc.gov.sg/Act/PDPA2012"
 BASE = "https://sso.agc.gov.sg"
-POLITE_DELAY_S = 2.0
+POLITE_DELAY_S = 8.0                 # CloudFront rate-limits burst traffic — stay slow
+BLOCK_BACKOFFS_S = (45.0, 120.0)     # waits before retrying a 403/429 block
 
 _HEADERS = {
     "User-Agent": (
@@ -99,19 +100,53 @@ def save_raw(result: FetchResult, out_dir: str | Path = "data/raw/sg") -> Path:
     return path
 
 
-def fetch_act_full(act_ref: str, timeout: float = 120.0) -> FetchResult:
-    """Fetch the WHOLE act as one HTML document via the portal's print view.
+_SESSION: httpx.Client | None = None
+
+
+def _session() -> httpx.Client:
+    """One shared client (cookie jar persists across fetches — looks like a browser session)."""
+    global _SESSION
+    if _SESSION is None:
+        _SESSION = httpx.Client(headers=_HEADERS, follow_redirects=True, timeout=180.0)
+    return _SESSION
+
+
+def fetch_act_full(act_ref: str, timeout: float = 180.0) -> FetchResult:
+    """Fetch the WHOLE act as one HTML document via the portal's print view,
+    with backoff-retry when the CloudFront anti-bot blocks us (403/429).
 
     `act_ref` is the SSO act path segment, e.g. "PDPA2012", "CA2018".
     """
     url = f"{BASE}/Act/{act_ref}"
     params = {"ViewType": "Print", "PrintType": "html", "ProvIds": "all-.,toc-."}
-    with httpx.Client(headers=_HEADERS, follow_redirects=True, timeout=timeout) as client:
-        response = client.get(url, params=params)
-    return FetchResult(
-        url=url, final_url=str(response.url), status_code=response.status_code,
-        content=response.content, via="httpx-printview",
-    )
+    attempts = 1 + len(BLOCK_BACKOFFS_S)
+    result: FetchResult | None = None
+    for attempt in range(attempts):
+        response = _session().get(url, params=params)
+        result = FetchResult(
+            url=url, final_url=str(response.url), status_code=response.status_code,
+            content=response.content, via="httpx-printview",
+        )
+        if not result.looks_blocked:
+            return result
+        if attempt < len(BLOCK_BACKOFFS_S):
+            wait = BLOCK_BACKOFFS_S[attempt]
+            print(f"  [sg_sso] blocked ({result.status_code}) on {act_ref}; "
+                  f"backing off {wait:.0f}s (attempt {attempt + 1}/{attempts})")
+            time.sleep(wait)
+
+    # httpx exhausted -> real-browser fallback (defeats CloudFront fingerprinting;
+    # the anti-bot workaround is an explicitly scored differentiator, 1-Jun Q&A).
+    print(f"  [sg_sso] httpx blocked persistently on {act_ref}; trying Playwright fallback")
+    try:
+        print_url = f"{url}?ViewType=Print&PrintType=html&ProvIds=all-.%2Ctoc-."
+        pw = fetch_playwright(print_url, timeout_ms=120_000)
+        if not pw.looks_blocked and len(pw.content) > 20_000:
+            return FetchResult(url=url, final_url=pw.final_url, status_code=200,
+                               content=pw.content, via="playwright-printview")
+    except RuntimeError as error:
+        print(f"  [sg_sso] Playwright unavailable: {error}")
+    return result  # still blocked; caller raises
 
 
 def acquire_act(act_ref: str, out_dir: str | Path = "data/raw/sg") -> dict:
