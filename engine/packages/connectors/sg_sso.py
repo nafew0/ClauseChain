@@ -1,18 +1,30 @@
-"""Singapore Statutes Online (sso.agc.gov.sg) fetcher — P0 spike level.
+"""Singapore Statutes Online (sso.agc.gov.sg) connector.
 
 The 1-June workshop flagged SG as having anti-bot protection; handling it is an
 explicit scoring differentiator. Strategy: plain httpx first (cheap), Playwright
 fallback when blocked (install via the `crawl` dependency group).
+
+KEY ROUTE (discovered 7 Jul from the portal's own legis JS bundle): the statute
+pages lazy-load their body via AJAX fragments, BUT the print view returns the
+ENTIRE act as one HTML document:
+    GET /Act/{ref}?ViewType=Print&PrintType=html&ProvIds=all-.,toc-.
+This keeps us on plain httpx (no browser) for whole-act acquisition. Politeness:
+we sleep between requests and never fetch an act we already archived today.
 """
 from __future__ import annotations
 
 import hashlib
+import json
+import time
 from dataclasses import dataclass
+from datetime import date
 from pathlib import Path
 
 import httpx
 
 PDPA_URL = "https://sso.agc.gov.sg/Act/PDPA2012"
+BASE = "https://sso.agc.gov.sg"
+POLITE_DELAY_S = 2.0
 
 _HEADERS = {
     "User-Agent": (
@@ -44,6 +56,10 @@ class FetchResult:
         return self.status_code == 200 and (
             b"captcha" in sample or b"are you a robot" in sample or len(self.content) < 2000
         )
+
+    def raise_or_ok(self) -> None:
+        if self.status_code != 200:
+            raise RuntimeError(f"Fetch failed: {self.status_code} for {self.url}")
 
 
 def fetch_httpx(url: str, timeout: float = 30.0) -> FetchResult:
@@ -81,3 +97,57 @@ def save_raw(result: FetchResult, out_dir: str | Path = "data/raw/sg") -> Path:
     path = out / f"{name}.{result.sha256[:12]}.html"
     path.write_bytes(result.content)
     return path
+
+
+def fetch_act_full(act_ref: str, timeout: float = 120.0) -> FetchResult:
+    """Fetch the WHOLE act as one HTML document via the portal's print view.
+
+    `act_ref` is the SSO act path segment, e.g. "PDPA2012", "CA2018".
+    """
+    url = f"{BASE}/Act/{act_ref}"
+    params = {"ViewType": "Print", "PrintType": "html", "ProvIds": "all-.,toc-."}
+    with httpx.Client(headers=_HEADERS, follow_redirects=True, timeout=timeout) as client:
+        response = client.get(url, params=params)
+    return FetchResult(
+        url=url, final_url=str(response.url), status_code=response.status_code,
+        content=response.content, via="httpx-printview",
+    )
+
+
+def acquire_act(act_ref: str, out_dir: str | Path = "data/raw/sg") -> dict:
+    """Fetch + archive an act with provenance; cache-aware (one fetch per day per act).
+
+    Returns the manifest dict: {act_ref, url, final_url, sha256, access_date,
+    bytes, via, html_path}. The archived copy + access date satisfy the
+    link-preservation rule (DoDont §8) by construction.
+    """
+    out = Path(out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    manifest_path = out / f"{act_ref}.manifest.json"
+    if manifest_path.is_file():
+        manifest = json.loads(manifest_path.read_text())
+        if manifest.get("access_date") == date.today().isoformat() and Path(manifest["html_path"]).is_file():
+            return manifest  # already archived today — don't hammer the portal
+
+    time.sleep(POLITE_DELAY_S)
+    result = fetch_act_full(act_ref)
+    if result.looks_blocked:
+        raise RuntimeError(
+            f"sso.agc.gov.sg blocked the fetch for {act_ref} "
+            f"(status {result.status_code}) — retry later or use the Playwright fallback."
+        )
+    result.raise_or_ok()
+    html_path = out / f"{act_ref}.full.{result.sha256[:12]}.html"
+    html_path.write_bytes(result.content)
+    manifest = {
+        "act_ref": act_ref,
+        "url": result.url,
+        "final_url": result.final_url,
+        "sha256": result.sha256,
+        "access_date": date.today().isoformat(),
+        "bytes": len(result.content),
+        "via": result.via,
+        "html_path": str(html_path),
+    }
+    manifest_path.write_text(json.dumps(manifest, indent=1))
+    return manifest

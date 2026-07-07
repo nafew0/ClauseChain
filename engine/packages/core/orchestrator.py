@@ -1,79 +1,247 @@
+"""ClauseChain pipeline orchestrator — the real P1 pipeline (SG × Pillar 6 first).
+
+Stages: jurisdiction pack -> corpus (acquire+parse+graph-load, cached) ->
+per-indicator broad-recall retrieval -> LLM screen (bulk) -> LLM mapping (high)
+-> deterministic gates G1/G3/G4 -> NEW/KNOWN diff -> MappedFinding rows.
+Indicators with no surviving evidence emit an explicit "no provision found" row
+citing the governing law (never blank — 15-Jun rule).
+"""
 from __future__ import annotations
+
+import time
+from pathlib import Path
+
+import yaml
 
 from packages.core.schemas import GateResult, MappedFinding, RunEnvelope
 
-
-ECONOMY_NAMES = {
-    "SG": "Singapore",
-    "MY": "Malaysia",
-    "AU": "Australia",
-}
+ECONOMY_NAMES = {"SG": "Singapore", "MY": "Malaysia", "AU": "Australia"}
 CODE_BY_NAME = {name.upper(): code for code, name in ECONOMY_NAMES.items()}
+ENGINE_ROOT = Path(__file__).resolve().parents[2]
+
+# P1: Singapore anchor corpus. (P2': per-pack act lists + MY/AU connectors.)
+SG_ACTS = [("PDPA2012", "No. 26 of 2012")]
 
 
-def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") -> RunEnvelope:
-    """Return a deterministic dummy envelope that proves the P0 contracts."""
-    raw = country.strip().upper()
-    normalized_country = CODE_BY_NAME.get(raw, raw)  # accepts "SG" and "Singapore"
-    economy = ECONOMY_NAMES.get(normalized_country, country.strip())
+def _load_yaml(rel_path: str) -> dict:
+    return yaml.safe_load((ENGINE_ROOT / rel_path).read_text(encoding="utf-8"))
 
+
+def _whitelist(pack: dict) -> set[str]:
+    domains = {s["domain"].lower() for s in pack.get("official_sources", [])}
+    mined = pack.get("whitelist_source")
+    if mined and (ENGINE_ROOT / mined).is_file():
+        import json
+
+        data = json.loads((ENGINE_ROOT / mined).read_text())
+        for economy_block in data.get("economies", {}).values():
+            domains.update(d.lower() for d in economy_block.get("official_whitelist", {}))
+    return domains
+
+
+def _ensure_sg_corpus(store) -> list[dict]:
+    from packages.retrieval.hybrid import load_corpus
+
+    corpus = load_corpus(store, "Singapore")
+    if corpus:
+        return corpus
+    from packages.connectors.sg_sso import acquire_act
+    from packages.core.rule_units import build_rule_units
+    from packages.extractors.html_sso import parse_sso_act
+
+    for act_ref, number in SG_ACTS:
+        manifest = acquire_act(act_ref)
+        doc = parse_sso_act(Path(manifest["html_path"]).read_text(encoding="utf-8"),
+                            manifest["url"])
+        for unit in build_rule_units(doc, economy="Singapore", act_ref=act_ref,
+                                     law_number_ref=number):
+            unit.metadata["archived_copy"] = manifest["html_path"]
+            unit.metadata["access_date"] = manifest["access_date"]
+            store.upsert_rule_unit(unit)
+    return load_corpus(store, "Singapore")
+
+
+def _absence_row(economy: str, indicator_id: str, governing_law: str,
+                 source_url: str, model_version: str) -> MappedFinding:
+    return MappedFinding(
+        economy=economy,
+        law_name=governing_law,
+        indicator_id=indicator_id,
+        article_section="n/a",
+        discovery_tag="KNOWN",
+        location_reference="n/a",
+        verbatim_snippet="No provision found",
+        mapping_rationale=(
+            f"No qualifying provision found for {indicator_id} after a full-corpus sweep. "
+            "The general governing law is cited as the reference basis (score-0 pattern)."
+        ),
+        source_url=source_url,
+        confidence=0.6,
+        notes="Absence row: recorded so the indicator is never blank (15-Jun rule); "
+              "score 0 — general governing law cited as reference basis.",
+        coverage="Horizontal",
+        status="in_force",
+        model_version=model_version,
+    )
+
+
+def _stub_envelope(code: str, economy: str, pillar: int, provider_profile: str) -> RunEnvelope:
+    """Deterministic offline envelope: schema/contract tests + keyless sandboxes (no network, no LLM)."""
     finding = MappedFinding(
         economy=economy,
         law_name="Personal Data Protection Act 2012",
         law_number_ref="No. 26 of 2012",
         last_amended="2020",
-        indicator_id=f"P{pillar}-I1",
+        indicator_id=f"P{pillar}-I4" if pillar == 6 else f"P{pillar}-I1",
         article_section="s. 26(1)",
         discovery_tag="KNOWN",
-        location_reference="sso.agc.gov.sg, section 26(1)",
+        location_reference="#pr26-",
         verbatim_snippet=(
-            "An organisation shall not transfer any personal data to a country or territory "
-            "outside Singapore except in accordance with requirements prescribed under this Act."
+            "An organisation must not transfer any personal data to a country or territory "
+            "outside Singapore except in accordance with requirements prescribed under this Act"
         ),
-        mapping_rationale=(
-            "Dummy P0 row: this provision is used to prove the export contract for a "
-            "cross-border data-transfer obligation under Pillar 6."
-        ),
-        source_url="https://sso.agc.gov.sg/Act/PDPA2012",
+        mapping_rationale="Stub row (CLAUSECHAIN_PIPELINE=stub): proves the export contract offline.",
+        source_url="https://sso.agc.gov.sg/Act/PDPA2012#pr26-",
         confidence=0.99,
-        notes="P0 dummy data; replace with verified live extraction in P1.",
+        notes="Offline stub mode — no live crawling or LLM calls.",
         coverage="Horizontal",
         status="in_force",
-        model_version="p0-dummy",
-        graph_path=[
-            "Economy:Singapore",
-            "Instrument:Personal Data Protection Act 2012",
-            "Section:s. 26(1)",
-            f"Indicator:P{pillar}-I1",
-        ],
+        model_version="stub",
     )
-
-    gates = [
-        GateResult(
-            gate_id="G0",
-            status="PASS",
-            reason="P0 dummy row satisfies schema and export contract.",
-            evidence_reference="dummy://sg/pdpa/s26-1",
-        ),
-        GateResult(
-            gate_id="G4",
-            status="NOT_RUN",
-            reason="Currentness verification is not implemented in P0.",
-        ),
-    ]
-
     return RunEnvelope(
-        run_id=f"p0-{normalized_country}-p{pillar}",
-        country=normalized_country,
+        run_id=f"stub-{code.lower()}-p{pillar}",
+        country=code,
         pillar=pillar,
         provider_profile=provider_profile,
         findings=[finding],
-        gates=gates,
-        warnings=["P0 skeleton uses deterministic dummy data only."],
-        metadata={
-            "graph_required": False,
-            "live_llm_calls": False,
-            "live_ocr_calls": False,
-        },
+        gates=[GateResult(gate_id="G0", status="PASS", reason="stub mode")],
+        warnings=["CLAUSECHAIN_PIPELINE=stub: deterministic offline output."],
+        metadata={"graph_required": False, "live_llm_calls": False, "live_ocr_calls": False},
     )
 
+
+def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") -> RunEnvelope:
+    import os as _os
+
+    raw0 = country.strip().upper()
+    code0 = CODE_BY_NAME.get(raw0, raw0)
+    if _os.getenv("CLAUSECHAIN_PIPELINE", "").lower() == "stub":
+        return _stub_envelope(code0, ECONOMY_NAMES.get(code0, country.strip()), pillar, provider_profile)
+
+    from packages.discovery.diff import KnownIndex
+    from packages.graph.store import get_graph_store
+    from packages.providers.model_router import resolve_embedding, resolve_llm
+    from packages.rdtii.mapper import SCREEN_CAP_PER_INDICATOR, map_candidate, screen_candidates
+    from packages.retrieval.hybrid import EmbeddingCache, retrieve_for_indicator
+    from packages.verifier.gates import run_gates
+
+    started = time.time()
+    raw = country.strip().upper()
+    code = CODE_BY_NAME.get(raw, raw)
+    economy = ECONOMY_NAMES.get(code, country.strip())
+    if economy != "Singapore":
+        raise NotImplementedError(f"P1 covers Singapore; {economy} lands in P2'.")
+
+    pack = _load_yaml(f"configs/jurisdictions/{code.lower()}.yaml")
+    rubric = _load_yaml(f"configs/rdtii/pillar_{pillar}.yaml")
+    whitelist = _whitelist(pack)
+    store = get_graph_store()
+    corpus = _ensure_sg_corpus(store)
+
+    llm_bulk = resolve_llm(provider_profile, tier="bulk")
+    llm_high = resolve_llm(provider_profile, tier="high_reasoning")
+    embedder = resolve_embedding(provider_profile)
+    cache = EmbeddingCache(embedder, "data/cache/embeddings_sg.json")
+    known = KnownIndex()
+    model_version = f"{getattr(llm_high.primary, 'model', 'llm')}+{getattr(embedder, 'model', 'emb')}"
+
+    findings: list[MappedFinding] = []
+    gates_out: list[GateResult] = []
+    warnings: list[str] = []
+    stats = {"candidates": 0, "screened_in": 0, "mapped": 0, "gate_rejected": 0}
+
+    for indicator_id, cfg in rubric.get("indicators", {}).items():
+        if cfg.get("regulatory") is False:
+            continue  # 6.5: non-regulatory — engine does not extract
+        candidates = retrieve_for_indicator(store, cache, corpus, indicator_id, cfg, economy)
+        stats["candidates"] += len(candidates)
+        if len(candidates) > SCREEN_CAP_PER_INDICATOR:
+            warnings.append(
+                f"{indicator_id}: screened top {SCREEN_CAP_PER_INDICATOR} of "
+                f"{len(candidates)} retrieval candidates (cap logged, not silent)"
+            )
+        survivors = screen_candidates(llm_bulk, indicator_id, cfg, candidates)
+        stats["screened_in"] += len(survivors)
+
+        indicator_rows = 0
+        for candidate in survivors:
+            decision = map_candidate(llm_high, indicator_id, cfg, candidate)
+            if not decision.applies:
+                continue
+            props = candidate.props
+            gate_results, ok = run_gates(
+                snippet=decision.verbatim_snippet,
+                source_text=candidate.text,
+                source_url=props.get("source_url", ""),
+                whitelist_domains=whitelist,
+                current_as_at=props.get("current_as_at")
+                or (props.get("props") or {}).get("current_as_at"),
+            )
+            for g in gate_results:
+                g.evidence_reference = f"{indicator_id} {props.get('article_section', '')}"
+            gates_out.extend(gate_results)
+            if not ok:
+                stats["gate_rejected"] += 1
+                warnings.append(
+                    f"REJECTED by gates: {indicator_id} {props.get('article_section')} "
+                    f"({[g.gate_id for g in gate_results if g.status == 'FAIL']})"
+                )
+                continue
+            tag, why = known.tag(economy, props.get("law_name", ""),
+                                 props.get("article_section", ""))
+            findings.append(
+                MappedFinding(
+                    economy=economy,
+                    law_name=props.get("law_name", ""),
+                    law_number_ref=props.get("law_number_ref"),
+                    last_amended=props.get("last_amended"),
+                    indicator_id=indicator_id,
+                    article_section=props.get("article_section", ""),
+                    discovery_tag=tag,
+                    location_reference=props.get("location_reference", "n/a") or "n/a",
+                    verbatim_snippet=decision.verbatim_snippet,
+                    mapping_rationale=decision.rationale[:300],
+                    source_url=props.get("source_url", ""),
+                    confidence=decision.confidence,
+                    notes=f"Discovery: {why}. Modality: {decision.modality or 'n/a'}; "
+                          f"exceptions: {'; '.join(decision.exceptions) or 'none'}",
+                    coverage=(decision.coverage + (f" ({decision.sector})" if decision.sector else "")),
+                    status="in_force",
+                    model_version=model_version,
+                )
+            )
+            indicator_rows += 1
+            stats["mapped"] += 1
+
+        if indicator_rows == 0:
+            anchor_law = corpus[0]["props"].get("law_name", "Personal Data Protection Act 2012") if corpus else "Personal Data Protection Act 2012"
+            anchor_url = corpus[0]["props"].get("source_url", "https://sso.agc.gov.sg/Act/PDPA2012") if corpus else "https://sso.agc.gov.sg/Act/PDPA2012"
+            findings.append(_absence_row(economy, indicator_id, anchor_law,
+                                         anchor_url.split("#")[0], model_version))
+
+    return RunEnvelope(
+        run_id=f"p1-{code.lower()}-p{pillar}-{int(started)}",
+        country=code,
+        pillar=pillar,
+        provider_profile=provider_profile,
+        findings=findings,
+        gates=gates_out,
+        warnings=warnings,
+        metadata={
+            "corpus_provisions": len(corpus),
+            "pipeline_stats": stats,
+            "elapsed_seconds": round(time.time() - started, 1),
+            "live_llm_calls": True,
+            "graph_backend": type(store).__name__,
+        },
+    )
