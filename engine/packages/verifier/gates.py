@@ -66,6 +66,42 @@ def g4_currentness(current_as_at: str | None, status: str = "in_force") -> GateR
                           reason=f"unparseable current-version date: {current_as_at!r}")
 
 
+# Deterministic legal-fit validators (reviewer feedback, 9 Jul): G1/G3/G4 prove
+# quote/source/currentness but NOT legal fit — these lexical gates do, per indicator.
+_XBORDER = re.compile(r"outside|abroad|cross[- ]border|foreign|another country|other countr|place outside|out of", re.I)
+_TRANSFER = re.compile(r"transfer|transmit|send|disclos\w+ to .{0,40}(outside|abroad|foreign)", re.I)
+_RETAIN = re.compile(r"retain|keep|preserve|maintain|stor\w+", re.I)
+_DURATION = re.compile(r"(period of|not less than|at least|minimum of)?\s*\w*\s*(year|month|day|week)s?", re.I)
+_RECORDS = re.compile(r"record|data|document|book|information|register", re.I)
+_WARRANT = re.compile(r"warrant|court order|order of (a|the) court|judge|magistrate|judicial", re.I)
+
+
+def g7_indicator_fit(indicator_id: str, snippet: str, full_text: str, law_name: str) -> GateResult:
+    """Hard post-map legal-fit checks. FAIL = the row cannot ship; WARN = flag for review."""
+    blob = f"{snippet} {full_text[:2000]}"
+    if "bill" in re.sub(r"[^a-z ]", " ", law_name.lower()).split():
+        return GateResult(gate_id="G7", status="FAIL",
+                          reason=f"law name contains 'Bill' ({law_name[:60]}) — drafts are never recordable")
+    if indicator_id in ("P6-I1", "P6-I4"):
+        if not (_XBORDER.search(blob) and _TRANSFER.search(blob)):
+            return GateResult(gate_id="G7", status="FAIL",
+                              reason=f"{indicator_id} requires CROSS-BORDER data transfer language; "
+                                     "generic processing/disclosure does not qualify")
+    if indicator_id == "P7-I3":
+        if not (_RETAIN.search(blob) and _DURATION.search(blob) and _RECORDS.search(blob)):
+            return GateResult(gate_id="G7", status="FAIL",
+                              reason="P7-I3 requires retention verb + records/data object + a minimum duration")
+        if re.search(r"licen[cs]e|permit", snippet, re.I) and not re.search(r"record|data", snippet, re.I):
+            return GateResult(gate_id="G7", status="FAIL",
+                              reason="P7-I3: licence-duration provisions are not data retention")
+    if indicator_id == "P7-I5":
+        if _WARRANT.search(blob) and not re.search(r"without (a )?(warrant|court order)", blob, re.I):
+            return GateResult(gate_id="G7", status="WARN",
+                              reason="P7-I5: access appears COURT-GATED (warrant/judicial language) — "
+                                     "court-order test says this supports score 0; flag for legal review")
+    return GateResult(gate_id="G7", status="PASS", reason=f"{indicator_id} legal-fit checks passed")
+
+
 def g7_ban_vs_conditional(findings: list) -> tuple[list, list[GateResult]]:
     """Deterministic 6.1-vs-6.4 disambiguation (the #1 warned confusion, DoDont §6).
 

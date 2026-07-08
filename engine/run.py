@@ -49,7 +49,18 @@ def main() -> int:
     write_csv(envelope.findings, out_dir / "output.csv")
     write_json(envelope, out_dir / "output.json")
 
-    print(f"Wrote {out_dir / 'output.csv'}")
+    # Curation layer (reviewer, 9 Jul): candidates -> legal_review -> final.
+    # Only auto-clearable rows enter final_output.csv; NEW rows and flagged rows
+    # wait for Legal sign-off in legal_review.csv. output.csv = all candidates.
+    needs_review = [f for f in envelope.findings
+                    if f.discovery_tag == "NEW" or "flag" in (f.notes or "").lower()]
+    final = [f for f in envelope.findings if f not in needs_review]
+    write_csv(envelope.findings, out_dir / "candidate_rows.csv")
+    write_csv(needs_review, out_dir / "legal_review.csv")
+    write_csv(final, out_dir / "final_output.csv")
+
+    print(f"Wrote {out_dir / 'output.csv'} ({len(envelope.findings)} candidates; "
+          f"{len(final)} auto-final, {len(needs_review)} for legal review)")
     print(f"Wrote {out_dir / 'output.json'}")
     return 0
 

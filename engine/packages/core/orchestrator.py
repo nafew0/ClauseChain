@@ -166,7 +166,7 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
     llm_bulk = resolve_llm(provider_profile, tier="bulk")
     llm_high = resolve_llm(provider_profile, tier="high_reasoning")
     embedder = resolve_embedding(provider_profile)
-    cache = EmbeddingCache(embedder, "data/cache/embeddings_sg.json")
+    cache = EmbeddingCache(embedder, f"data/cache/embeddings_{code.lower()}.json")
     known = KnownIndex()
     model_version = f"{getattr(llm_high.primary, 'model', 'llm')}+{getattr(embedder, 'model', 'emb')}"
 
@@ -179,6 +179,31 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
         if cfg.get("regulatory") is False:
             continue  # 6.5: non-regulatory — engine does not extract
         candidates = retrieve_for_indicator(store, cache, corpus, indicator_id, cfg, economy)
+        # KNOWN-RECALL INJECTION (reviewer, 9 Jul): every master-known (law+section)
+        # for this economy must reach the mapper regardless of retrieval rank. Missing
+        # from the corpus entirely -> loud warning (a recall hole to fix, never silent).
+        have_ids = {c.provision_id for c in candidates}
+        from packages.discovery.diff import laws_match as _lm, section_base as _sb
+        known_rows = [r for r in known._by_economy.get(economy, [])
+                      if str(r.get("pillar")) == str(pillar)]
+        for krow in known_rows:
+            for ref in krow.get("articles", []):
+                kbase = _sb(ref)
+                if not kbase:
+                    continue
+                matches = [c for c in corpus
+                           if any(_lm(a, c["props"].get("law_name", "")) for a in krow.get("acts_norm", []))
+                           and _sb(c["props"].get("article_section", "")) == kbase]
+                if not matches:
+                    warnings.append(f"RECALL HOLE: master-known {krow.get('act','')[:40]} "
+                                    f"{ref} not in the {economy} corpus")
+                    continue
+                for m in matches:
+                    if m["provision_id"] not in have_ids:
+                        from packages.retrieval.hybrid import Candidate as _Cand
+                        candidates.append(_Cand(m["provision_id"], m["text"], m["props"],
+                                                matched_queries=["known-injection"]))
+                        have_ids.add(m["provision_id"])
         stats["candidates"] += len(candidates)
         if len(candidates) > SCREEN_CAP_PER_INDICATOR:
             warnings.append(
@@ -217,6 +242,12 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                 current_as_at=props.get("current_as_at")
                 or (props.get("props") or {}).get("current_as_at"),
             )
+            from packages.verifier.gates import g7_indicator_fit
+
+            fit = g7_indicator_fit(indicator_id, decision.verbatim_snippet,
+                                   candidate.text, props.get("law_name", ""))
+            gate_results.append(fit)
+            ok = ok and fit.status != "FAIL"
             for g in gate_results:
                 g.evidence_reference = f"{indicator_id} {props.get('article_section', '')}"
             gates_out.extend(gate_results)
