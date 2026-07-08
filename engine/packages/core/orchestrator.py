@@ -40,31 +40,40 @@ def _whitelist(pack: dict) -> set[str]:
     return domains
 
 
-def _ensure_sg_corpus(store, pack: dict) -> list[dict]:
+def _ensure_corpus(store, pack: dict, economy: str) -> list[dict]:
+    """Return the economy's provision corpus, auto-building it for SG (whose
+    connector is fully automatic). MY/AU corpora are built by their build
+    scripts (seeds-driven PDF/HTML paths); an empty corpus raises with the
+    command to run."""
     from packages.retrieval.hybrid import load_corpus
 
-    corpus = load_corpus(store, "Singapore")
+    corpus = load_corpus(store, economy)
     if corpus:
         return corpus
-    from packages.connectors.sg_sso import acquire_act
-    from packages.core.rule_units import build_rule_units
-    from packages.extractors.html_sso import parse_sso_act
+    if pack.get("connector") == "sg_sso":
+        from packages.connectors.sg_sso import acquire_act
+        from packages.core.rule_units import build_rule_units
+        from packages.extractors.html_sso import parse_sso_act
 
-    for act_ref, number in _pack_corpus_acts(pack):
-        manifest = acquire_act(act_ref)
-        doc = parse_sso_act(Path(manifest["html_path"]).read_text(encoding="utf-8"),
-                            manifest["url"])
-        units = build_rule_units(doc, economy="Singapore", act_ref=act_ref,
-                                 law_number_ref=number)
-        for unit in units:
-            unit.metadata["archived_copy"] = manifest["html_path"]
-            unit.metadata["access_date"] = manifest["access_date"]
-        if hasattr(store, "upsert_rule_units"):
-            store.upsert_rule_units(units)
-        else:
+        for act_ref, number in _pack_corpus_acts(pack):
+            manifest = acquire_act(act_ref)
+            doc = parse_sso_act(Path(manifest["html_path"]).read_text(encoding="utf-8"),
+                                manifest["url"])
+            units = build_rule_units(doc, economy=economy, act_ref=act_ref,
+                                     law_number_ref=number)
             for unit in units:
-                store.upsert_rule_unit(unit)
-    return load_corpus(store, "Singapore")
+                unit.metadata["archived_copy"] = manifest["html_path"]
+                unit.metadata["access_date"] = manifest["access_date"]
+            if hasattr(store, "upsert_rule_units"):
+                store.upsert_rule_units(units)
+            else:
+                for unit in units:
+                    store.upsert_rule_unit(unit)
+        return load_corpus(store, economy)
+    raise RuntimeError(
+        f"No corpus loaded for {economy}. Build it first, e.g.: "
+        f".venv/bin/python scripts/build_{economy[:2].lower()}_corpus.py"
+    )
 
 
 def _absence_row(economy: str, indicator_id: str, governing_law: str,
@@ -145,14 +154,14 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
     raw = country.strip().upper()
     code = CODE_BY_NAME.get(raw, raw)
     economy = ECONOMY_NAMES.get(code, country.strip())
-    if economy != "Singapore":
-        raise NotImplementedError(f"P1 covers Singapore; {economy} lands in P2'.")
+    if code not in ECONOMY_NAMES:
+        raise ValueError(f"Unknown Round-1 economy: {country!r} (SG/MY/AU)")
 
     pack = _load_yaml(f"configs/jurisdictions/{code.lower()}.yaml")
     rubric = _load_yaml(f"configs/rdtii/pillar_{pillar}.yaml")
     whitelist = _whitelist(pack)
     store = get_graph_store()
-    corpus = _ensure_sg_corpus(store, pack)
+    corpus = _ensure_corpus(store, pack, economy)
 
     llm_bulk = resolve_llm(provider_profile, tier="bulk")
     llm_high = resolve_llm(provider_profile, tier="high_reasoning")
