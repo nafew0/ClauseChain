@@ -27,6 +27,9 @@ embed = [
 graph = [
     "neo4j>=5",
 ]
+pdf-advanced = [
+    "docling>=2.111.0",
+]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]

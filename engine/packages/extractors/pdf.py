@@ -43,6 +43,45 @@ def is_scanned_pdf(file_path: str) -> bool:
     return all(p["kind"] == "image" for p in classify_pages(file_path))
 
 
+def extract_pdf_docling(file_path: str) -> list[ExtractedPage]:
+    """Layout-aware extraction via Docling (optional tier — `uv sync --group pdf-advanced`).
+
+    For COMPLEX born-digital PDFs where naive text extraction mangles reading order:
+    multi-column gazettes, dual-language files, huge consolidated volumes (Round-2
+    fixtures). Select with PDF_LAYOUT_ENGINE=docling or extract_pdf(engine=...).
+    Never the judged default — PyMuPDF stays the slim path.
+    """
+    try:
+        from docling.document_converter import DocumentConverter
+    except ImportError as error:
+        raise RuntimeError(
+            "Docling not installed — run: uv sync --group pdf-advanced"
+        ) from error
+
+    result = DocumentConverter().convert(file_path)
+    doc = result.document
+    by_page: dict[int, list[str]] = {}
+    for item, _level in doc.iterate_items():
+        text = getattr(item, "text", "") or ""
+        if not text.strip():
+            continue
+        prov = getattr(item, "prov", None)
+        page_no = prov[0].page_no if prov else 1
+        by_page.setdefault(page_no, []).append(text)
+    return [
+        ExtractedPage(
+            document_id=file_path,
+            page_number=page_no,
+            text="\n".join(chunks),
+            source_url=f"file://{file_path}",
+            location_reference=f"page {page_no}",
+            confidence=1.0,
+            metadata={"extraction": "docling_layout"},
+        )
+        for page_no, chunks in sorted(by_page.items())
+    ]
+
+
 def _native_page(file_path: str, page: "fitz.Page", page_number: int, embedded_layer: bool) -> ExtractedPage:
     return ExtractedPage(
         document_id=file_path,
@@ -58,18 +97,27 @@ def _native_page(file_path: str, page: "fitz.Page", page_number: int, embedded_l
     )
 
 
-def extract_pdf(file_path: str, ocr_engine=None) -> list[ExtractedPage]:
+def extract_pdf(file_path: str, ocr_engine=None, engine: str | None = None) -> list[ExtractedPage]:
     """Route each page: native text layer -> PyMuPDF; image-only page -> OCR engine.
+
+    `engine="docling"` (or env PDF_LAYOUT_ENGINE=docling) switches TEXT-layer docs
+    to Docling's layout-aware extraction (complex/multi-column/dual-language PDFs);
+    scanned pages still go to the OCR engine either way.
 
     `ocr_engine` may be None for text-only documents; it is REQUIRED (raises
     RuntimeError) only if an image page is actually encountered. A fully
     scanned document is sent to the OCR engine as one whole-PDF call (fast
     path); mixed documents OCR only their image pages, one page at a time.
     """
+    import os as _os
+
     classes = classify_pages(file_path)
+    engine = engine or _os.getenv("PDF_LAYOUT_ENGINE", "pymupdf")
 
     # Fast path 1: every page has a text layer -> never touches OCR.
     if all(p["kind"] == "text" for p in classes):
+        if engine == "docling":
+            return extract_pdf_docling(file_path)
         with fitz.open(file_path) as doc:
             return [
                 _native_page(file_path, doc[p["page"] - 1], p["page"], p["has_image"])
