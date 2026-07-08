@@ -30,10 +30,18 @@ def gold_act_norms() -> set[str]:
 
 
 def main() -> int:
+    import os
+
     fetch_all = "--all" in sys.argv
     manifest = json.loads(Path("data/raw/my/seeds_manifest.json").read_text())
     gold = gold_act_norms()
-    store = SqliteGraphStore()
+    from packages.graph.store import get_graph_store
+
+    primary = get_graph_store()
+    stores = [primary]
+    if (os.getenv("GRAPH_BACKEND") or "sqlite").lower() != "sqlite":
+        stores.append(SqliteGraphStore())  # Path A parity
+    print("graph:", ", ".join(type(s).__name__ for s in stores))
     ocr = resolve_ocr("hybrid_accuracy")
 
     total, loaded_acts, skipped_html = 0, 0, 0
@@ -69,13 +77,18 @@ def main() -> int:
             unit.metadata["archived_copy"] = file
             unit.metadata["access_date"] = entry.get("access_date")
             unit.metadata["inventory_url"] = url  # what ESCAP cited (audit trail)
-            store.upsert_rule_unit(unit)
+        for st in stores:
+            if hasattr(st, "upsert_rule_units"):
+                st.upsert_rule_units(units)
+            else:
+                for unit in units:
+                    st.upsert_rule_unit(unit)
         if units:
             loaded_acts += 1
             total += len(units)
             print(f"  {act_name[:58]:58s} -> {len(units):4d} units")
 
-    hits = store.search_provisions("transfer personal data outside Malaysia",
+    hits = stores[0].search_provisions("transfer personal data outside Malaysia",
                                    economy="Malaysia", limit=3)
     top = hits[0]["props"].get("article_section") if hits else None
     print(f"\nMY corpus: {loaded_acts} acts, {total} rule units "
