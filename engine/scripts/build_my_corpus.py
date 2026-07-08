@@ -49,16 +49,26 @@ def main() -> int:
         if not file.endswith(".pdf"):
             skipped_html += 1
             continue
+        # SOURCE UPGRADE (audit rule): the inventory cites non-official mirrors
+        # (e.g. mohre.um.edu.my for the PDPA — 8×). When the act number is known,
+        # cite the OFFICIAL Laws-of-Malaysia portal page instead; the mirror stays
+        # only as our archived text copy. G3 enforces this.
+        import re as _re
+
+        act_no = _re.search(r"\(Act\s+(A?\d+)\)", act_name, _re.I)
+        source_url = (f"https://lom.agc.gov.my/act-detail.php?act={act_no.group(1)}"
+                      if act_no else url)
         try:
             units = extract_act_pdf(file, economy="Malaysia", act_name=act_name,
                                     act_ref=Path(file).stem.replace("seed_", ""),
-                                    source_url=url, ocr_engine=ocr)
+                                    source_url=source_url, ocr_engine=ocr)
         except Exception as error:  # noqa: BLE001 — one bad PDF must not kill the build
             print(f"  FAILED {act_name[:50]}: {error}")
             continue
         for unit in units:
             unit.metadata["archived_copy"] = file
             unit.metadata["access_date"] = entry.get("access_date")
+            unit.metadata["inventory_url"] = url  # what ESCAP cited (audit trail)
             store.upsert_rule_unit(unit)
         if units:
             loaded_acts += 1

@@ -28,6 +28,23 @@ def section_base(article_section: str) -> str | None:
     return match.group(1) if match else None
 
 
+_STOP_TOKENS = {"act", "acts", "the", "of", "and", "a", "an", "no", "pu"}
+
+
+def law_tokens(name: str) -> set[str]:
+    """Significant tokens of a law name — robust to '(Act 709)' insertions,
+    reorderings, and filler words. 'Personal Data Protection Act (Act 709) 2010'
+    and 'personal data protection act 2010' both -> {personal,data,protection,2010,709…}."""
+    return {t for t in normalize_law(name).split() if t not in _STOP_TOKENS}
+
+
+def laws_match(gold_act_norm: str, law_name: str) -> bool:
+    gold, ours = law_tokens(gold_act_norm), law_tokens(law_name)
+    if not gold or not ours:
+        return False
+    return gold <= ours or ours <= gold
+
+
 class KnownIndex:
     def __init__(self, path: str | Path = "data/known_index.json") -> None:
         data = json.loads(Path(path).read_text())
@@ -35,12 +52,11 @@ class KnownIndex:
 
     def known_sections(self, economy: str, law_name: str) -> set[str] | None:
         """Base sections ESCAP recorded for this law, or None if the law itself is unknown."""
-        law_norm = normalize_law(law_name)
         sections: set[str] = set()
         law_known = False
         for row in self._by_economy.get(economy, []):
             for act in row.get("acts_norm", []):
-                if act and (act in law_norm or law_norm in act):
+                if act and laws_match(act, law_name):
                     law_known = True
                     for ref in row.get("articles", []):
                         base = section_base(ref)
