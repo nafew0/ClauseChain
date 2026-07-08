@@ -20,6 +20,8 @@ from packages.extractors.pdf import extract_pdf
 _SECTION_PATTERNS = [
     re.compile(r"^\s{0,6}Section\s+(\d{1,3}[A-Z]{0,2})\.?\s+(.{0,120})", re.IGNORECASE),
     re.compile(r"^\s{0,6}(\d{1,3}[A-Z]{0,2})\.\s+(.{0,120})"),
+    # AU Commonwealth compilations: "13  Interferences with privacy" (no dot, 2+ spaces)
+    re.compile(r"^\s{0,6}(\d{1,3}[A-Z]{0,2})\s{2,}(\S.{0,110})"),
 ]
 _SUBSECTION = re.compile(r"\((\d{1,2})\)\s")
 
