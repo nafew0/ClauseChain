@@ -79,6 +79,9 @@ indicators:
     positive_cues:
       - "shall appoint a data protection officer"
       - "data protection impact assessment"
+      - "designate one or more individuals to be responsible"
+      - "responsible for ensuring that the organisation complies"
+      - "compliance officer responsible for"
     exclusions:
       - "Having a privacy law in general is NOT enough — the question is the specific accountability mechanisms."
     scoring:
