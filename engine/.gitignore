@@ -8,3 +8,5 @@ data/raw/
 data/tmp/
 *.db
 
+data/cache/
+data/graph.db

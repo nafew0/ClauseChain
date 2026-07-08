@@ -66,6 +66,36 @@ def g4_currentness(current_as_at: str | None, status: str = "in_force") -> GateR
                           reason=f"unparseable current-version date: {current_as_at!r}")
 
 
+def g7_ban_vs_conditional(findings: list) -> tuple[list, list[GateResult]]:
+    """Deterministic 6.1-vs-6.4 disambiguation (the #1 warned confusion, DoDont §6).
+
+    A ban (6.1) and a conditional-flow regime (6.4) are mutually exclusive for the
+    SAME provision: if a provision maps to both, the conditional reading wins (a
+    compliance path exists, so it is not a ban) and the 6.1 row is dropped.
+    """
+    from packages.discovery.diff import normalize_law, section_base
+
+    conditional_keys = {
+        (normalize_law(f.law_name), section_base(f.article_section))
+        for f in findings if f.indicator_id == "P6-I4"
+    }
+    kept, gates = [], []
+    for f in findings:
+        key = (normalize_law(f.law_name), section_base(f.article_section))
+        if f.indicator_id == "P6-I1" and key in conditional_keys:
+            gates.append(GateResult(
+                gate_id="G7",
+                status="FAIL",
+                reason=(f"{f.law_name} {f.article_section}: also maps to P6-I4 — a provision "
+                        "with a compliance path is a CONDITIONAL regime, not a ban; "
+                        "6.1 row dropped (DoDont §6 disambiguation, applied as code)"),
+                evidence_reference=f"P6-I1 {f.article_section}",
+            ))
+            continue
+        kept.append(f)
+    return kept, gates
+
+
 def run_gates(
     snippet: str,
     source_text: str,

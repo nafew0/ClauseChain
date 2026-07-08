@@ -2,6 +2,12 @@
 
 One line per shape/routing/scope decision (Dev Plan §4). Newest first.
 
+## 2026-07-08 — SG corpus ×9 acts + scale hardening (P2' step 1)
+- **Corpus = 9 acts / 9,078 rule units** (config: sg.yaml `corpus_acts`, covers every act the SG gold cites for P6+P7 + CMA1993). Acquisition rode out SSO's IP+time-based CloudFront blocks via a 10-min background retry loop (day-cached manifests make it resumable); httpx backoff (45s/120s) + Playwright print-view fallback now in the connector.
+- **Scale regression found & fixed:** 30× corpus diluted retrieval/screen — s.26(1) survived retrieval (rank 10) but the nano screen dropped it while bank-BUSINESS-transfer rows flooded through and mini mapped them. Fixes: (1) **KNOWN-anchor bypass** — candidates matching a master-recorded (law+section) skip the screen straight to the mapper (reproducing KNOWN proves recall; never screen-droppable); (2) **rubric exclusions** for the business-transfer/domestic-disclosure traps (pillar_6.yaml — prompts inherit); (3) **G7 ban-vs-conditional gate**: same provision mapping to both P6-I1 and P6-I4 → the 6.1 row is DROPPED in deterministic code (the #1 warned confusion, DoDont §6, enforced structurally + demo-able).
+- **Provider resilience:** OpenAI retries (5s/20s) on 429/5xx/network; FallbackLLM re-raises the PRIMARY error when the fallback is unusable (a missing GEMINI_API_KEY killed a full run mid-flight).
+- **v4 run (190s):** 7 rows — 6.1 absence ✓ (gold=score 0; false s.26 "ban" row killed by G7), 6.2 CoA s.199(4) KNOWN ✓ gold + PDPA s.22A(1)/(2) NEW, 6.3 absence ✓, 6.4 s.26(1) KNOWN ✓ gold + s.15(2) NEW. **Law recall 67% (the "missing" law is the Amendment Act 2020, consolidated into our PDPA text — eval counts names), provision recall 50%, format checks all pass.** 3 NEW rows pending legal review.
+
 ## 2026-07-07 — P1 vertical slice LIVE: real SG × P6 end-to-end (dummy pipeline retired)
 - **SG acquisition WITHOUT a browser:** SSO statute pages lazy-load their body via AJAX, but the print view returns the WHOLE act in one GET (`/Act/{ref}?ViewType=Print&PrintType=html&ProvIds=all-.,toc-.` — mined from the portal's own legis JS). `acquire_act()` archives html+sha256+access-date, one fetch/day/act. Discovery: current consolidated s.26(1) says "**must not** transfer" (not the old "shall not") — G1 would catch stale quotes; gold rows must quote current text.
 - **Extractor** (`extractors/html_sso.py`): 86 sections → 308 RuleUnits at PARAGRAPH depth ("s. 26(1)"), part context, current-as-at date. Schedules (class sHdr) = P2' TODO.

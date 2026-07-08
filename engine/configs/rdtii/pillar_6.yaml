@@ -31,6 +31,7 @@ indicators:
       - "Transfer allowed if conditions are met -> that is P6-I4 (conditional flow), NOT a ban."
       - "Banking/professional secrecy or confidentiality duties are NOT transfer bans."
       - "A copy-stored-domestically rule without a transfer ban -> P6-I2."
+      - "Transfer/amalgamation of a BUSINESS, undertaking, assets or shares (e.g. bank business-transfer schemes) is NOT a data transfer — Pillar 6 concerns DATA moving across borders."
     scoring:
       "1": Covers personal data OR applies horizontally; ALSO 1 if two or more such requirements on non-personal/specific data (or targeting more than one economy).
       "0.5": A single requirement on non-personal/specific data or one economy only.
@@ -99,6 +100,8 @@ indicators:
     exclusions:
       - "If NO transfer path exists at all -> P6-I1 ban, not 6.4."
       - "If transfer stays possible once conditions are met, it is NOT a ban (never code as 6.1)."
+      - "The provision must concern DATA/personal data moving ACROSS BORDERS. Transfer of a BUSINESS/undertaking/assets/shares (e.g. Banking Act business-transfer schemes, company amalgamations) is NOT a data-transfer condition."
+      - "Disclosure of information to a DOMESTIC authority (tax, regulator, court) is not a cross-border data-flow condition (government access may be P7-I5)."
     scoring:
       "1": Conditions cover personal data (any coverage) OR apply horizontally (even non-personal data).
       "0.5": Non-personal/specific data, or sectoral only.

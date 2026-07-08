@@ -176,8 +176,23 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                 f"{indicator_id}: screened top {SCREEN_CAP_PER_INDICATOR} of "
                 f"{len(candidates)} retrieval candidates (cap logged, not silent)"
             )
-        survivors = screen_candidates(llm_bulk, indicator_id, cfg, candidates)
+        # KNOWN-anchor bypass: candidates matching a (law + section) that the master
+        # dataset itself records are human-confirmed terrain — they go straight to the
+        # mapper and must never be screen-dropped (reproducing KNOWN proves recall).
+        from packages.discovery.diff import section_base
+
+        anchors, rest = [], []
+        for candidate in candidates:
+            props = candidate.props
+            sections = known.known_sections(economy, props.get("law_name", ""))
+            base = section_base(props.get("article_section", ""))
+            if sections is not None and base and base in sections:
+                anchors.append(candidate)
+            else:
+                rest.append(candidate)
+        survivors = anchors + screen_candidates(llm_bulk, indicator_id, cfg, rest)
         stats["screened_in"] += len(survivors)
+        stats["known_anchors"] = stats.get("known_anchors", 0) + len(anchors)
 
         indicator_rows = 0
         for candidate in survivors:
@@ -229,11 +244,27 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
             indicator_rows += 1
             stats["mapped"] += 1
 
-        if indicator_rows == 0:
+        if indicator_rows == 0 and not any(f.indicator_id == indicator_id for f in findings):
             anchor_law = corpus[0]["props"].get("law_name", "Personal Data Protection Act 2012") if corpus else "Personal Data Protection Act 2012"
             anchor_url = corpus[0]["props"].get("source_url", "https://sso.agc.gov.sg/Act/PDPA2012") if corpus else "https://sso.agc.gov.sg/Act/PDPA2012"
             findings.append(_absence_row(economy, indicator_id, anchor_law,
                                          anchor_url.split("#")[0], model_version))
+
+    # Post-pass: deterministic 6.1-vs-6.4 disambiguation (drops false ban rows),
+    # then guarantee every regulatory indicator still has at least one row.
+    if pillar == 6:
+        from packages.verifier.gates import g7_ban_vs_conditional
+
+        findings, g7_gates = g7_ban_vs_conditional(findings)
+        gates_out.extend(g7_gates)
+    for indicator_id, cfg in rubric.get("indicators", {}).items():
+        if cfg.get("regulatory") is False:
+            continue
+        if not any(f.indicator_id == indicator_id for f in findings):
+            anchor_law = corpus[0]["props"].get("law_name", "Personal Data Protection Act 2012") if corpus else "Personal Data Protection Act 2012"
+            anchor_url = (corpus[0]["props"].get("source_url", "https://sso.agc.gov.sg/Act/PDPA2012") or "").split("#")[0] if corpus else "https://sso.agc.gov.sg/Act/PDPA2012"
+            findings.append(_absence_row(economy, indicator_id, anchor_law, anchor_url, model_version))
+    findings.sort(key=lambda f: f.indicator_id)
 
     return RunEnvelope(
         run_id=f"p1-{code.lower()}-p{pillar}-{int(started)}",

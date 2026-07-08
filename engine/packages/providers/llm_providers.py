@@ -28,24 +28,41 @@ class OpenAIChatProvider:
         self.timeout = timeout
         self.last_usage: dict | None = None
 
+    RETRY_BACKOFFS_S = (5.0, 20.0)   # transient 429/5xx/network retries before giving up
+
     def _call(self, prompt: str) -> str:
+        import time as _time
+
         api_key = os.getenv(self.api_key_env)
         if not api_key:
             raise RuntimeError(f"{self.api_key_env} is not set")
-        response = httpx.post(
-            "https://api.openai.com/v1/chat/completions",
-            headers={"Authorization": f"Bearer {api_key}"},
-            json={
-                "model": self.model,
-                "messages": [{"role": "user", "content": prompt}],
-                "response_format": {"type": "json_object"},
-            },
-            timeout=self.timeout,
-        )
-        response.raise_for_status()
-        payload = response.json()
-        self.last_usage = payload.get("usage")
-        return payload["choices"][0]["message"]["content"]
+        last_error: Exception | None = None
+        for attempt in range(1 + len(self.RETRY_BACKOFFS_S)):
+            try:
+                response = httpx.post(
+                    "https://api.openai.com/v1/chat/completions",
+                    headers={"Authorization": f"Bearer {api_key}"},
+                    json={
+                        "model": self.model,
+                        "messages": [{"role": "user", "content": prompt}],
+                        "response_format": {"type": "json_object"},
+                    },
+                    timeout=self.timeout,
+                )
+                if response.status_code == 429 or response.status_code >= 500:
+                    raise httpx.HTTPStatusError(
+                        f"retryable {response.status_code}", request=response.request,
+                        response=response,
+                    )
+                response.raise_for_status()
+                payload = response.json()
+                self.last_usage = payload.get("usage")
+                return payload["choices"][0]["message"]["content"]
+            except (httpx.HTTPStatusError, httpx.TransportError) as error:
+                last_error = error
+                if attempt < len(self.RETRY_BACKOFFS_S):
+                    _time.sleep(self.RETRY_BACKOFFS_S[attempt])
+        raise last_error  # type: ignore[misc]
 
     def complete(self, prompt: str, schema: type[BaseModel]) -> BaseModel:
         full_prompt = prompt + _schema_instruction(schema)
@@ -115,7 +132,11 @@ class FallbackLLM:
             if self.fallback is None:
                 raise
             print(f"[model-router] primary failed ({error!r}); using fallback", file=sys.stderr)
-            return self.fallback.complete(prompt, schema)
+            try:
+                return self.fallback.complete(prompt, schema)
+            except Exception as fallback_error:  # noqa: BLE001
+                # an unusable fallback (e.g. no API key) must not mask the real failure
+                raise error from fallback_error
 
 
 class OllamaProvider:
