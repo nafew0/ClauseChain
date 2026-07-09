@@ -156,7 +156,9 @@ def g8_counter_and_dangling(snippet: str, full_text: str, law_name: str,
     dangling = []
     for match in _CROSS_REF.finditer(full_text[:3000]):
         ref_base, other_act = match.group(1).upper(), match.group(2)
-        if other_act:  # cross-act reference — existence checked at corpus level, skip here
+        if other_act and other_act.strip().lower().startswith(("this ", "that ", "the said")):
+            other_act = None  # "of this Act" = same-act reference (re.I fooled [A-Z])
+        if other_act:  # genuine cross-act reference — checked at corpus level, skip here
             continue
         if corpus_sections and ref_base not in corpus_sections:
             dangling.append(ref_base)
