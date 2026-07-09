@@ -2,6 +2,13 @@
 
 One line per shape/routing/scope decision (Dev Plan §4). Newest first.
 
+## 2026-07-09 — P2′ CLOSED: all three economies live end-to-end
+- **Coverage:** SG 9 acts/9,078u · MY 8 acts/851u (2 via OCR VM) · AU 9 acts/9,402u (multi-volume via .../text/original/pdf/{vol}) — all in Neo4j + SQLite parity. `submission/consolidated.csv` = 67 rows (7 auto-final, rest awaiting legal review — curation layer live).
+- **Recall snapshot vs gold:** SG P6 50%→(anchors)→gold-consistent; AU P6 100/100%; MY P6 s.129(1)-(4) gold hit; AU P7 = the open front (0% provision recall, 15 RECALL HOLEs logged — gold sections vs our parse labels mismatch + Criminal Code Schedule renumbering; TOP P3 quality task). Notable NEW: TIA **s.187A** (AU metadata retention), SOCI s.12N(3), ASIO s.25(4)/s.27D(2), MY PDPA s.8, SG CPC s.34(1).
+- **Cost meter live (measured):** providers → cost.record → logs/cost_report.json per run + envelope.cost_report.
+- **Fresh-clone contract:** run.py auto-builds any economy's corpus (subprocess chain, seeds auto-fetch).
+- **P3 speed note:** dense scan is pure-python over 9.4k vecs → AU P7 run took 20 min; numpy-ize EmbeddingCache cosine (~10× cheap win).
+
 ## 2026-07-08 — SG corpus ×9 acts + scale hardening (P2' step 1)
 - **Corpus = 9 acts / 9,078 rule units** (config: sg.yaml `corpus_acts`, covers every act the SG gold cites for P6+P7 + CMA1993). Acquisition rode out SSO's IP+time-based CloudFront blocks via a 10-min background retry loop (day-cached manifests make it resumable); httpx backoff (45s/120s) + Playwright print-view fallback now in the connector.
 - **Scale regression found & fixed:** 30× corpus diluted retrieval/screen — s.26(1) survived retrieval (rank 10) but the nano screen dropped it while bank-BUSINESS-transfer rows flooded through and mini mapped them. Fixes: (1) **KNOWN-anchor bypass** — candidates matching a master-recorded (law+section) skip the screen straight to the mapper (reproducing KNOWN proves recall; never screen-droppable); (2) **rubric exclusions** for the business-transfer/domestic-disclosure traps (pillar_6.yaml — prompts inherit); (3) **G7 ban-vs-conditional gate**: same provision mapping to both P6-I1 and P6-I4 → the 6.1 row is DROPPED in deterministic code (the #1 warned confusion, DoDont §6, enforced structurally + demo-able).
