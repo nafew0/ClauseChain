@@ -51,6 +51,14 @@ def _indicator_brief(indicator_id: str, cfg: dict) -> str:
         f"INDICATOR {indicator_id} — {cfg.get('name', '')}",
         f"Legal test: {cfg.get('question', '')}",
     ]
+    if cfg.get("polarity") == "framework_absent_scores_high":
+        parts.append(
+            "EVIDENCE RULE (absence-scored indicator): applies=true when the provision "
+            "ESTABLISHES or evidences the framework (purpose/scope clause, core obligation, "
+            "or the controlling framework provision). ESCAP records the framework's existence "
+            "as the evidence row; the SCORE (not your mapping) captures absence. Do NOT reject "
+            "a provision merely because it proves the framework EXISTS."
+        )
     if cfg.get("legal_test"):
         parts.append(str(cfg["legal_test"]).strip())
     if exclusions:

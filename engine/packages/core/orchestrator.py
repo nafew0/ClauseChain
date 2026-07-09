@@ -204,8 +204,10 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                 kbase = _sb(ref)
                 if not kbase:
                     continue
+                acts_resolved = [known._resolve_alias(economy, a)
+                                 for a in krow.get("acts_norm", []) if a]
                 matches = [c for c in corpus
-                           if any(_lm(a, c["props"].get("law_name", "")) for a in krow.get("acts_norm", []))
+                           if any(_lm(a, c["props"].get("law_name", "")) for a in acts_resolved)
                            and _sb(c["props"].get("article_section", "")) == kbase]
                 if not matches:
                     hole = (f"RECALL HOLE: master-known {krow.get('act','')[:40]} "

@@ -1,0 +1,34 @@
+[
+ {
+  "run_id": "run-au-p7-1783617345",
+  "at": "2026-07-09T17:32:23.948060+00:00",
+  "models": {
+   "text-embedding-3-small": {
+    "input_tokens": 296,
+    "output_tokens": 0,
+    "calls": 31,
+    "usd": 0.0,
+    "priced": true
+   },
+   "gpt-5.4-nano": {
+    "input_tokens": 52774,
+    "output_tokens": 14166,
+    "calls": 25,
+    "usd": 0.0083,
+    "priced": true
+   },
+   "gpt-5.4-mini": {
+    "input_tokens": 444050,
+    "output_tokens": 57813,
+    "calls": 415,
+    "usd": 0.2266,
+    "priced": true
+   }
+  },
+  "total_usd": 0.2349,
+  "note": "measured from real API usage objects; prices per 1M tokens (PRICES)",
+  "economy": "Australia",
+  "pillar": 7,
+  "elapsed_seconds": 998.1
+ }
+]

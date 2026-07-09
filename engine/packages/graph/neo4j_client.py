@@ -183,6 +183,32 @@ class Neo4jGraphStore:
                 for r in records
             ]
 
+    def upsert_edges(self, edges: list[dict], batch_size: int = 500) -> int:
+        """Generic typed-edge batch: [{'src','rel','dst','src_label','dst_label','props'}].
+        Relationship types are validated against the GraphRAG §5 schema."""
+        allowed = {"CROSS_REFERENCES", "MAPS_TO", "EVIDENCED_BY", "KNOWN_AS",
+                   "NEW_RELATIVE_TO", "AMENDS", "REPEALS", "SUPERSEDES",
+                   "EXCEPTION_TO", "QUALIFIES"}
+        with self._connect().session() as session:
+            self._ensure_schema(session)
+            for rel in {e["rel"] for e in edges}:
+                if rel not in allowed:
+                    raise ValueError(f"edge type {rel!r} not in the legal-graph schema")
+                batch = [e for e in edges if e["rel"] == rel]
+                for start in range(0, len(batch), batch_size):
+                    session.run(
+                        f"""
+                        UNWIND $rows AS r
+                        MERGE (a {{id: r.src}})
+                        MERGE (b {{id: r.dst}})
+                        MERGE (a)-[rel:{rel}]->(b)
+                          SET rel += r.props
+                        """,
+                        rows=[{"src": e["src"], "dst": e["dst"], "props": e.get("props", {})}
+                              for e in batch],
+                    )
+        return len(edges)
+
     def count_nodes(self) -> int:
         with self._connect().session() as session:
             return int(session.run("MATCH (n) RETURN count(n) AS c").single()["c"])
