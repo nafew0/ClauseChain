@@ -33,7 +33,13 @@ def main() -> int:
     import os
 
     fetch_all = "--all" in sys.argv
-    manifest = json.loads(Path("data/raw/my/seeds_manifest.json").read_text())
+    manifest_path = Path("data/raw/my/seeds_manifest.json")
+    if not manifest_path.is_file():  # fresh clone: fetch the seed documents first
+        from packages.connectors.seeds_fetch import fetch_seeds
+
+        print("[seeds] no MY manifest — fetching P6/P7 seed documents (first run only)")
+        fetch_seeds("Malaysia", ("P6", "P7"))
+    manifest = json.loads(manifest_path.read_text())
     gold = gold_act_norms()
     from packages.graph.store import get_graph_store
 

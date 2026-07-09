@@ -53,22 +53,46 @@ def acquire_au_act(client, tid: str, out_dir: Path) -> dict | None:
     v = r.json()
     date = (v.get("start") or "")[:10]
     reg = v.get("registerId")
-    pdf_path = out_dir / f"{reg}.pdf"
-    if not pdf_path.is_file():
-        time.sleep(2.0)
-        pdf = client.get(f"https://www.legislation.gov.au/{tid}/{date}/{date}/text/original/pdf")
-        if pdf.status_code != 200 or pdf.content[:5] != b"%PDF-":
-            return None
-        pdf_path.write_bytes(pdf.content)
+
+    # Multi-volume compilations (e.g. TIA Act = 2 PDF volumes): volume list from
+    # the Documents set; download route = .../text/original/pdf/{vol}.
+    volumes = [0]
+    docs = client.get(f"{API}/Documents?$filter=registerId eq '{reg}'")
+    if docs.status_code == 200:
+        pdf_vols = sorted({d.get("volumeNumber", 0) for d in docs.json().get("value", [])
+                           if d.get("format") == "Pdf"})
+        if pdf_vols:
+            volumes = pdf_vols
+
+    pdf_paths: list[tuple[int, Path]] = []
+    for vol in volumes:
+        suffix = f"/{vol}" if vol else ""
+        pdf_path = out_dir / (f"{reg}_vol{vol}.pdf" if vol else f"{reg}.pdf")
+        if not pdf_path.is_file():
+            time.sleep(2.0)
+            pdf = client.get(f"https://www.legislation.gov.au/{tid}/{date}/{date}"
+                             f"/text/original/pdf{suffix}")
+            if pdf.status_code != 200 or pdf.content[:5] != b"%PDF-":
+                continue
+            pdf_path.write_bytes(pdf.content)
+        pdf_paths.append((vol, pdf_path))
+    if not pdf_paths:
+        return None
     return {"title_id": tid, "register_id": reg, "compilation_date": date,
             "name": v.get("name"), "compilation_no": v.get("compilationNumber"),
-            "pdf": str(pdf_path),
+            "pdfs": [(vol, str(p)) for vol, p in pdf_paths],
             "source_url": f"https://www.legislation.gov.au/{tid}/latest"}
 
 
 def main() -> int:
     fetch_all = "--all" in sys.argv
-    manifest = json.loads(Path("data/raw/au/seeds_manifest.json").read_text())
+    manifest_path = Path("data/raw/au/seeds_manifest.json")
+    if not manifest_path.is_file():  # fresh clone: fetch seed landing pages first
+        from packages.connectors.seeds_fetch import fetch_seeds
+
+        print("[seeds] no AU manifest — fetching P6/P7 seeds (first run only)")
+        fetch_seeds("Australia", ("P6", "P7"))
+    manifest = json.loads(manifest_path.read_text())
     gold = gold_act_norms()
     out_dir = Path("data/raw/au")
 
@@ -96,17 +120,23 @@ def main() -> int:
             if not meta:
                 print(f"  SKIP {act_name[:56]} ({tid}) — version/pdf unavailable")
                 continue
+            units = []
             try:
-                units = extract_act_pdf(meta["pdf"], economy="Australia",
-                                        act_name=meta["name"] or act_name,
-                                        act_ref=meta["register_id"],
-                                        source_url=meta["source_url"])
+                for vol, pdf in meta["pdfs"]:
+                    vol_units = extract_act_pdf(pdf, economy="Australia",
+                                                act_name=meta["name"] or act_name,
+                                                act_ref=f"{meta['register_id']}v{vol}" if vol else meta["register_id"],
+                                                source_url=meta["source_url"])
+                    if vol:
+                        for u in vol_units:
+                            u.location_reference = f"vol {vol}, {u.location_reference}"
+                    units.extend(vol_units)
             except Exception as error:  # noqa: BLE001
                 print(f"  FAILED {act_name[:50]}: {error}")
                 continue
             for unit in units:
                 unit.last_amended = meta["compilation_date"][:7]
-                unit.metadata["archived_copy"] = meta["pdf"]
+                unit.metadata["archived_copy"] = str(meta["pdfs"][0][1])
                 unit.metadata["compilation"] = meta["compilation_no"]
                 unit.metadata["current_as_at"] = meta["compilation_date"]
             for st in stores:

@@ -57,6 +57,11 @@ class OpenAIChatProvider:
                 response.raise_for_status()
                 payload = response.json()
                 self.last_usage = payload.get("usage")
+                if self.last_usage:
+                    from packages.providers import cost
+
+                    cost.record(self.model, self.last_usage.get("prompt_tokens", 0),
+                                self.last_usage.get("completion_tokens", 0))
                 return payload["choices"][0]["message"]["content"]
             except (httpx.HTTPStatusError, httpx.TransportError) as error:
                 last_error = error

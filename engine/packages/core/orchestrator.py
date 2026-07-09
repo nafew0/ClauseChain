@@ -70,8 +70,21 @@ def _ensure_corpus(store, pack: dict, economy: str) -> list[dict]:
                 for unit in units:
                     store.upsert_rule_unit(unit)
         return load_corpus(store, economy)
+    # MY/AU: auto-chain the corpus build (fresh-clone contract — one command, no
+    # manual steps). The build scripts fetch seeds themselves when missing.
+    import subprocess
+    import sys as _sys
+
+    script = ENGINE_ROOT / f"scripts/build_{economy[:2].lower()}_corpus.py"
+    if script.is_file():
+        print(f"[corpus] {economy} corpus empty — building via {script.name} (first run only)")
+        result = subprocess.run([_sys.executable, str(script)], cwd=ENGINE_ROOT)
+        if result.returncode == 0:
+            corpus = load_corpus(store, economy)
+            if corpus:
+                return corpus
     raise RuntimeError(
-        f"No corpus loaded for {economy}. Build it first, e.g.: "
+        f"No corpus loaded for {economy}. Build it manually: "
         f".venv/bin/python scripts/build_{economy[:2].lower()}_corpus.py"
     )
 
@@ -306,8 +319,13 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
             findings.append(_absence_row(economy, indicator_id, anchor_law, anchor_url, model_version))
     findings.sort(key=lambda f: f.indicator_id)
 
+    from packages.providers import cost
+
+    run_id = f"run-{code.lower()}-p{pillar}-{int(started)}"
+    cost_entry = cost.append_log(run_id, {"economy": economy, "pillar": pillar,
+                                          "elapsed_seconds": round(time.time() - started, 1)})
     return RunEnvelope(
-        run_id=f"p1-{code.lower()}-p{pillar}-{int(started)}",
+        run_id=run_id,
         country=code,
         pillar=pillar,
         provider_profile=provider_profile,
@@ -320,5 +338,6 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
             "elapsed_seconds": round(time.time() - started, 1),
             "live_llm_calls": True,
             "graph_backend": type(store).__name__,
+            "cost_report": cost_entry,
         },
     )

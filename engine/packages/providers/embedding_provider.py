@@ -45,6 +45,10 @@ class OpenAIEmbeddingProvider:
         response.raise_for_status()
         payload = response.json()
         self.last_usage = payload.get("usage")
+        if self.last_usage:
+            from packages.providers import cost
+
+            cost.record(self.model, self.last_usage.get("prompt_tokens", 0))
         ordered = sorted(payload["data"], key=lambda item: item["index"])
         return [item["embedding"] for item in ordered]
 
