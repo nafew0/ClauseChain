@@ -257,12 +257,29 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                 current_as_at=props.get("current_as_at")
                 or (props.get("props") or {}).get("current_as_at"),
             )
-            from packages.verifier.gates import g7_indicator_fit
+            from packages.verifier.gates import (citation_tier, g2_location, g5_whole_rule,
+                                                 g6_meaning_support, g7_indicator_fit,
+                                                 g8_counter_and_dangling)
 
             fit = g7_indicator_fit(indicator_id, decision.verbatim_snippet,
                                    candidate.text, props.get("law_name", ""))
-            gate_results.append(fit)
-            ok = ok and fit.status != "FAIL"
+            from packages.discovery.diff import section_base as _sb2
+
+            same_act_sections = set()
+            for c in corpus:
+                if c["props"].get("law_name") == props.get("law_name"):
+                    b = _sb2(c["props"].get("article_section", ""))
+                    if b:
+                        same_act_sections.add(b.upper())
+            gate_results.extend([
+                fit,
+                g2_location(props.get("article_section", ""), props.get("location_reference", "")),
+                g5_whole_rule(indicator_id, decision.verbatim_snippet, candidate.text),
+                g6_meaning_support(decision.rationale, decision.verbatim_snippet, candidate.text),
+                g8_counter_and_dangling(decision.verbatim_snippet, candidate.text,
+                                        props.get("law_name", ""), same_act_sections),
+            ])
+            ok = ok and all(g.status != "FAIL" for g in gate_results)
             for g in gate_results:
                 g.evidence_reference = f"{indicator_id} {props.get('article_section', '')}"
             gates_out.extend(gate_results)
@@ -294,6 +311,13 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                     coverage=(decision.coverage + (f" ({decision.sector})" if decision.sector else "")),
                     status="in_force",
                     model_version=model_version,
+                    archived_copy=props.get("archived_copy") or None,
+                    access_date=props.get("access_date") or None,
+                    ocr_quality_cer=(round(1 - props["confidence"], 4)
+                                     if props.get("confidence") not in (None, 1.0)
+                                     and str(props.get("extraction", "")).startswith("ocr") else None),
+                    citation_tier=citation_tier(props.get("article_section", "")),
+                    verifier_risks=[g.reason for g in gate_results if g.status == "WARN"],
                 )
             )
             indicator_rows += 1

@@ -104,6 +104,12 @@ class MappedFinding(BaseModel):
     model_version: str | None = None  # JSON-only provenance (which model produced the row)
     graph_path: list[str] = Field(default_factory=list)
     verifier_risks: list[str] = Field(default_factory=list)
+    # JSON-only provenance/curation fields (EUI 12-field spec + P2' envelope contract)
+    archived_copy: str | None = None
+    access_date: str | None = None
+    ocr_quality_cer: float | None = None       # None = native text (no OCR involved)
+    citation_tier: str | None = None           # [settled] / [verify] / [verify-pinpoint]
+    reviewer_decision: str = "pending"          # pending / approved / rejected (Legal HITL)
 
     model_config = ConfigDict(populate_by_name=True)
 

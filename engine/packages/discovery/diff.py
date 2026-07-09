@@ -23,9 +23,16 @@ def normalize_law(name: str) -> str:
 
 
 def section_base(article_section: str) -> str | None:
-    """'s. 26(1)' -> '26'; 'Art. 12(2)' -> '12'; 's. 48E(3)' -> '48E'."""
+    """'s. 26(1)' -> '26'; 'Art. 12(2)' -> '12'; 's. 48E(3)' -> '48E'.
+
+    Year-like refs ("reg. 2021") are Impact-prose parse artifacts, not sections."""
     match = _SECTION_BASE.search(article_section or "")
-    return match.group(1) if match else None
+    if not match:
+        return None
+    base = match.group(1)
+    if base.isdigit() and int(base) >= 1000:  # a year, not a section number
+        return None
+    return base
 
 
 _STOP_TOKENS = {"act", "acts", "the", "of", "and", "a", "an", "no", "pu"}

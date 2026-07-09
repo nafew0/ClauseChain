@@ -86,6 +86,41 @@ class EmbeddingCache:
     def embed_query(self, query: str) -> list[float]:
         return self._embedder.embed([query])[0]
 
+    def matrix(self, corpus: list[dict]):
+        """Normalized numpy matrix over the corpus vectors (built once, reused per run)."""
+        import numpy as np
+
+        key = (len(corpus), corpus[0]["provision_id"] if corpus else "",
+               corpus[-1]["provision_id"] if corpus else "")
+        if getattr(self, "_matrix_key", None) == key:
+            return self._matrix, self._matrix_rows
+        rows, vectors = [], []
+        for row in corpus:
+            vec = self.vector(row["provision_id"], row["text"])
+            if vec is not None:
+                rows.append(row)
+                vectors.append(vec)
+        matrix = np.asarray(vectors, dtype=np.float32)
+        norms = np.linalg.norm(matrix, axis=1, keepdims=True)
+        norms[norms == 0] = 1.0
+        self._matrix = matrix / norms
+        self._matrix_rows = rows
+        self._matrix_key = key
+        return self._matrix, self._matrix_rows
+
+    def dense_top(self, query: str, corpus: list[dict], limit: int, min_sim: float):
+        """[(similarity, corpus_row)] for one query — vectorized cosine."""
+        import numpy as np
+
+        matrix, rows = self.matrix(corpus)
+        if not len(rows):
+            return []
+        qvec = np.asarray(self.embed_query(query), dtype=np.float32)
+        qnorm = np.linalg.norm(qvec) or 1.0
+        sims = matrix @ (qvec / qnorm)
+        order = np.argsort(-sims)[:limit]
+        return [(float(sims[i]), rows[i]) for i in order if sims[i] >= min_sim]
+
 
 @dataclass
 class Candidate:
@@ -127,20 +162,11 @@ def retrieve_for_indicator(
             cand.sparse_score = max(cand.sparse_score, float(hit.get("score", 0.0)))
             cand.matched_queries.append(query)
 
-    # dense leg — cosine over the cached corpus vectors
+    # dense leg — vectorized cosine over the cached corpus matrix (numpy, A3)
     cache.ensure([(c["provision_id"], c["text"]) for c in corpus])
     for query in queries:
-        qvec = cache.embed_query(query)
-        scored = []
-        for row in corpus:
-            vec = cache.vector(row["provision_id"], row["text"])
-            if vec is None:
-                continue
-            sim = _cosine(qvec, vec)
-            if sim >= DENSE_MIN_SIMILARITY:
-                scored.append((sim, row))
-        scored.sort(key=lambda pair: pair[0], reverse=True)
-        for sim, row in scored[:DENSE_LIMIT_PER_QUERY]:
+        for sim, row in cache.dense_top(query, corpus, DENSE_LIMIT_PER_QUERY,
+                                        DENSE_MIN_SIMILARITY):
             cand = by_id.setdefault(
                 row["provision_id"],
                 Candidate(row["provision_id"], row["text"], row.get("props", {})),

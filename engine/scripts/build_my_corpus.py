@@ -61,8 +61,38 @@ def main() -> int:
             continue
         file = entry.get("file", "")
         if not file.endswith(".pdf"):
-            skipped_html += 1
-            continue
+            # HTML landing page (e.g. pdp.gov.my Codes of Practice): resolve to
+            # the embedded PDF on the SAME official domain and fetch it once.
+            import re as _re2
+            import time as _time2
+            from urllib.parse import urljoin, urlparse
+
+            import httpx as _httpx
+
+            resolved = None
+            try:
+                html = Path(file).read_text(encoding="utf-8", errors="ignore")
+                for link in _re2.findall(r'href="([^"]+\.pdf[^"]*)"', html, _re2.I):
+                    pdf_url = urljoin(url, link)
+                    if (urlparse(pdf_url).hostname or "") == (urlparse(url).hostname or ""):
+                        resolved = pdf_url
+                        break
+            except OSError:
+                pass
+            if not resolved:
+                skipped_html += 1
+                continue
+            pdf_file = Path(file).with_suffix(".resolved.pdf")
+            if not pdf_file.is_file():
+                _time2.sleep(2.0)
+                resp = _httpx.get(resolved, follow_redirects=True, timeout=120,
+                                  headers={"User-Agent": "Mozilla/5.0 ClauseChain-research/0.1"})
+                if resp.status_code != 200 or resp.content[:5] != b"%PDF-":
+                    skipped_html += 1
+                    continue
+                pdf_file.write_bytes(resp.content)
+            file = str(pdf_file)
+            url = resolved  # cite the official PDF we actually parsed
         # SOURCE UPGRADE (audit rule): the inventory cites non-official mirrors
         # (e.g. mohre.um.edu.my for the PDPA — 8×). When the act number is known,
         # cite the OFFICIAL Laws-of-Malaysia portal page instead; the mirror stays

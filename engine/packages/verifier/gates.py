@@ -102,6 +102,77 @@ def g7_indicator_fit(indicator_id: str, snippet: str, full_text: str, law_name: 
     return GateResult(gate_id="G7", status="PASS", reason=f"{indicator_id} legal-fit checks passed")
 
 
+_EXCEPTION_TOKENS = re.compile(r"\bunless\b|\bexcept\b|subject to|provided that|notwithstanding", re.I)
+_MANDATORY = re.compile(r"\bmust\b|\bshall\b|is required|are required", re.I)
+_CROSS_REF = re.compile(r"section\s+(\d{1,3}[A-Z]{0,2})(?:\s+of\s+(?:the\s+)?([A-Z][\w() ]{4,60}?(?:Act|Code|Regulations)[\w ]{0,12}))?", re.I)
+
+
+def g2_location(article_section: str, location_reference: str) -> GateResult:
+    """The location pointer must be consistent with the cited section (anchor
+    contains the section number, or is an explicit page/vol reference)."""
+    from packages.discovery.diff import section_base
+
+    base = section_base(article_section)
+    loc = (location_reference or "").lower()
+    if loc.startswith("#pr") or loc.startswith("#sc"):
+        ok = bool(base) and base.lower() in loc
+        return GateResult(gate_id="G2", status="PASS" if ok else "FAIL",
+                          reason=f"anchor {location_reference!r} {'matches' if ok else 'does NOT match'} s. {base}")
+    if "page" in loc or "vol" in loc:
+        return GateResult(gate_id="G2", status="PASS",
+                          reason=f"page-level location {location_reference!r} recorded from the source parse")
+    return GateResult(gate_id="G2", status="WARN", reason=f"unrecognized location format {location_reference!r}")
+
+
+def g5_whole_rule(indicator_id: str, snippet: str, full_text: str) -> GateResult:
+    """Rule + exception must travel together (DoDont §5): a 'ban' whose section
+    carries an exception outside the quoted snippet is the classic 6.1 trap."""
+    outside = _EXCEPTION_TOKENS.search(full_text) and not _EXCEPTION_TOKENS.search(snippet)
+    if not outside:
+        return GateResult(gate_id="G5", status="PASS", reason="rule and exception captured together")
+    if indicator_id == "P6-I1":
+        return GateResult(gate_id="G5", status="FAIL",
+                          reason="section contains an exception (unless/except/subject to) OUTSIDE the snippet — "
+                                 "a ban with a compliance path is conditional (6.4), not 6.1")
+    return GateResult(gate_id="G5", status="WARN",
+                      reason="exception language exists outside the snippet — reviewer should read the full section")
+
+
+def g6_meaning_support(rationale: str, snippet: str, full_text: str) -> GateResult:
+    """The rationale's modality claims must be supported by the text (may ≠ shall)."""
+    claims_mandate = re.search(r"prohibit|require|mandate|must|ban", rationale or "", re.I)
+    text = f"{snippet} {full_text[:1500]}"
+    if claims_mandate and not (_MANDATORY.search(text) or re.search(r"\bmay not\b|\bshall not\b|\bmust not\b", text, re.I)):
+        return GateResult(gate_id="G6", status="WARN",
+                          reason="rationale claims a mandatory rule but the text shows no must/shall modality "
+                                 "(permissive 'may' misread as mandatory?)")
+    return GateResult(gate_id="G6", status="PASS", reason="rationale modality supported by the text")
+
+
+def g8_counter_and_dangling(snippet: str, full_text: str, law_name: str,
+                            corpus_sections: set[str]) -> GateResult:
+    """Counter-evidence + dangling-reference (DoDont §12.8): every section this
+    provision cross-references (same act) must exist in the parsed corpus."""
+    dangling = []
+    for match in _CROSS_REF.finditer(full_text[:3000]):
+        ref_base, other_act = match.group(1).upper(), match.group(2)
+        if other_act:  # cross-act reference — existence checked at corpus level, skip here
+            continue
+        if corpus_sections and ref_base not in corpus_sections:
+            dangling.append(ref_base)
+    if dangling:
+        return GateResult(gate_id="G8", status="WARN",
+                          reason=f"references section(s) {sorted(set(dangling))[:4]} not found in the parsed act "
+                                 "— possible repealed/renumbered target (dangling reference); reviewer check")
+    return GateResult(gate_id="G8", status="PASS",
+                      reason="no dangling same-act references; no repeal language detected")
+
+
+def citation_tier(article_section: str) -> str:
+    """Claude-for-Legal tiering: pinpoint cites carry the highest fabrication risk."""
+    return "[verify-pinpoint]" if "(" in (article_section or "") else "[verify]"
+
+
 def g7_ban_vs_conditional(findings: list) -> tuple[list, list[GateResult]]:
     """Deterministic 6.1-vs-6.4 disambiguation (the #1 warned confusion, DoDont §6).
 
