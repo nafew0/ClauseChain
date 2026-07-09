@@ -30,5 +30,37 @@
   "economy": "Australia",
   "pillar": 7,
   "elapsed_seconds": 998.1
+ },
+ {
+  "run_id": "run-my-p7-1783618105",
+  "at": "2026-07-09T17:42:24.819765+00:00",
+  "models": {
+   "text-embedding-3-small": {
+    "input_tokens": 339885,
+    "output_tokens": 0,
+    "calls": 50,
+    "usd": 0.0068,
+    "priced": true
+   },
+   "gpt-5.4-nano": {
+    "input_tokens": 46016,
+    "output_tokens": 12751,
+    "calls": 25,
+    "usd": 0.0074,
+    "priced": true
+   },
+   "gpt-5.4-mini": {
+    "input_tokens": 353789,
+    "output_tokens": 42432,
+    "calls": 319,
+    "usd": 0.1733,
+    "priced": true
+   }
+  },
+  "total_usd": 0.1875,
+  "note": "measured from real API usage objects; prices per 1M tokens (PRICES)",
+  "economy": "Malaysia",
+  "pillar": 7,
+  "elapsed_seconds": 839.6
  }
 ]

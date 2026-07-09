@@ -1,0 +1,121 @@
+{
+ "economy": "Singapore",
+ "pillar": 6,
+ "run": "p1-sg-p6-1783489241",
+ "krippendorff_alpha": 1.0,
+ "indicators": {
+  "P6-I1": {
+   "deterministic": 0.0,
+   "deterministic_reason": "no qualifying measure found (absence row) -> 0",
+   "judges": [
+    {
+     "persona": "strict",
+     "score": 0.0,
+     "reason": "The only gate-verified row states \"No provision found\" for the Personal Data Protection Act 2012, so there is no plain-text evidence of a ban or local processin"
+    },
+    {
+     "persona": "ESCAP",
+     "score": 0.0,
+     "reason": "No provision found for the cited horizontal personal data law, so there is no ban or local processing requirement evidenced for this indicator."
+    },
+    {
+     "persona": "skeptical",
+     "score": 0.0,
+     "reason": "The verified evidence shows no provision in the Personal Data Protection Act 2012, so there is no identified ban or local processing requirement to score."
+    }
+   ],
+   "band": [
+    0.0,
+    0.0
+   ],
+   "spread": 0.0,
+   "flag_for_review": false,
+   "reviewer_decision": "pending"
+  },
+  "P6-I2": {
+   "deterministic": 1.0,
+   "deterministic_reason": "covers personal data / horizontal -> 1",
+   "judges": [
+    {
+     "persona": "strict",
+     "score": 1.0,
+     "reason": "The Personal Data Protection Act requires an organisation to preserve a copy of personal data, which is a local-storage requirement covering personal data."
+    },
+    {
+     "persona": "ESCAP",
+     "score": 1.0,
+     "reason": "Singapore has a horizontal personal-data preservation rule requiring organisations to keep a copy of personal data, and also a separate local-storage requiremen"
+    },
+    {
+     "persona": "skeptical",
+     "score": 1.0,
+     "reason": "There is at least one horizontal local-storage obligation for personal data (PDPA s.22A requires preserving a copy of personal data), which meets the score-1 th"
+    }
+   ],
+   "band": [
+    1.0,
+    1.0
+   ],
+   "spread": 0.0,
+   "flag_for_review": false,
+   "reviewer_decision": "pending"
+  },
+  "P6-I3": {
+   "deterministic": 0.0,
+   "deterministic_reason": "none found",
+   "judges": [
+    {
+     "persona": "strict",
+     "score": 0.0,
+     "reason": "The only gate-verified evidence says \"No provision found,\" so there is no plainly stated infrastructure requirement."
+    },
+    {
+     "persona": "ESCAP",
+     "score": 0.0,
+     "reason": "No provision found for a local data centre/server precondition or transfer conditioned on infrastructure, so there is no infrastructure requirement under P6-I3."
+    },
+    {
+     "persona": "skeptical",
+     "score": 0.0,
+     "reason": "The only gate-verified evidence says the Personal Data Protection Act 2012 contains no relevant provision, so there is no recorded infrastructure requirement or"
+    }
+   ],
+   "band": [
+    0.0,
+    0.0
+   ],
+   "spread": 0.0,
+   "flag_for_review": false,
+   "reviewer_decision": "pending"
+  },
+  "P6-I4": {
+   "deterministic": 1.0,
+   "deterministic_reason": "covers personal data / horizontal -> 1",
+   "judges": [
+    {
+     "persona": "strict",
+     "score": 1.0,
+     "reason": "The cited law imposes transfer conditions on personal data and does so horizontally, because s. 26(1) applies to any organization transferring personal data out"
+    },
+    {
+     "persona": "ESCAP",
+     "score": 1.0,
+     "reason": "Singapore\u2019s Personal Data Protection Act imposes a horizontal restriction on transferring any personal data outside Singapore, so the indicator scores 1."
+    },
+    {
+     "persona": "skeptical",
+     "score": 1.0,
+     "reason": "The evidence shows a horizontal restriction on transferring personal data abroad (PDPA s.26(1)), which fits the indicator\u2019s score-1 criterion even though there "
+    }
+   ],
+   "band": [
+    1.0,
+    1.0
+   ],
+   "spread": 0.0,
+   "flag_for_review": false,
+   "reviewer_decision": "pending"
+  }
+ },
+ "note": "AI suggestions only \u2014 every score requires human approval (reviewer_decision) before it ships."
+}
