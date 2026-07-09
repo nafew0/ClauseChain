@@ -51,12 +51,18 @@ def parse_act_text(pages: list, economy: str, act_name: str, act_ref: str,
             if not match:
                 continue
             key = _sec_sort_key(match.group(1))
-            if sections and (key <= last_key or key[0] > last_key[0] + 40):
-                continue  # non-monotonic or absurd jump = list item / page artifact
-            if not sections and key[0] == 0:
+            if sections:
+                same_base_sibling = key[0] == last_key[0] and key[1] != last_key[1]
+                if not same_base_sibling and (key <= last_key or key[0] > last_key[0] + 40):
+                    continue  # non-monotonic or absurd jump = list item / page artifact
+                # letter-suffix siblings (25 -> 25AA -> 25A) may print out of order
+                # in multi-column compilations; accept any order within one base number
+                if same_base_sibling and any(s["number"] == match.group(1) for s in sections[-6:]):
+                    continue  # exact duplicate
+            elif key[0] == 0:
                 continue
             sections.append({"number": match.group(1), "page": page_no, "line_index": index})
-            last_key = key
+            last_key = max(last_key, key)
         if len(sections) > len(best):
             best = sections
     sections = best

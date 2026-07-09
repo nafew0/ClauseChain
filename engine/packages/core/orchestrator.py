@@ -208,8 +208,10 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                            if any(_lm(a, c["props"].get("law_name", "")) for a in krow.get("acts_norm", []))
                            and _sb(c["props"].get("article_section", "")) == kbase]
                 if not matches:
-                    warnings.append(f"RECALL HOLE: master-known {krow.get('act','')[:40]} "
-                                    f"{ref} not in the {economy} corpus")
+                    hole = (f"RECALL HOLE: master-known {krow.get('act','')[:40]} "
+                            f"{ref} not in the {economy} corpus")
+                    if hole not in warnings:
+                        warnings.append(hole)
                     continue
                 for m in matches:
                     if m["provision_id"] not in have_ids:

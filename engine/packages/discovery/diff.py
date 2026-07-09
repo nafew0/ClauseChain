@@ -49,6 +49,21 @@ class KnownIndex:
     def __init__(self, path: str | Path = "data/known_index.json") -> None:
         data = json.loads(Path(path).read_text())
         self._by_economy: dict[str, list[dict]] = data.get("economies", {})
+        self._aliases: dict[str, dict[str, str]] = {}
+        try:
+            import yaml as _yaml
+            base = Path(path).resolve().parents[1] / "configs" / "jurisdictions"
+            for cc, econ in (("sg", "Singapore"), ("my", "Malaysia"), ("au", "Australia")):
+                f = base / f"{cc}.yaml"
+                if f.is_file():
+                    pack = _yaml.safe_load(f.read_text()) or {}
+                    self._aliases[econ] = {normalize_law(k): v
+                                           for k, v in (pack.get("gold_aliases") or {}).items()}
+        except Exception:
+            pass
+
+    def _resolve_alias(self, economy: str, act_norm: str) -> str:
+        return self._aliases.get(economy, {}).get(normalize_law(act_norm), act_norm)
 
     def known_sections(self, economy: str, law_name: str) -> set[str] | None:
         """Base sections ESCAP recorded for this law, or None if the law itself is unknown."""
@@ -56,6 +71,7 @@ class KnownIndex:
         law_known = False
         for row in self._by_economy.get(economy, []):
             for act in row.get("acts_norm", []):
+                act = self._resolve_alias(economy, act) if act else act
                 if act and laws_match(act, law_name):
                     law_known = True
                     for ref in row.get("articles", []):
