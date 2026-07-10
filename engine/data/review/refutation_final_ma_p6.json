@@ -1,0 +1,48 @@
+[
+ {
+  "indicator": "P6-I4",
+  "law": "Personal Data Protection Code Of Practice For Banking Sector",
+  "article": "s. 38",
+  "verdict": "RECOMMEND-KEEP",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": false,
+    "reason": "Not refuted: the cited text does support a conditional cross-border transfer regime based on adequacy approval, which fits P6-I4 rather than any listed failure "
+   },
+   {
+    "persona": "reviewer",
+    "refuted": false,
+    "reason": "The snippet does support a conditional cross-border transfer regime with an adequacy condition, so this is not one of the listed failure modes."
+   },
+   {
+    "persona": "textualist",
+    "refuted": false,
+    "reason": "The quoted text plainly establishes a conditional cross-border transfer rule with an adequacy exception, so none of the listed failure modes clearly applies."
+   }
+  ]
+ },
+ {
+  "indicator": "P6-I4",
+  "law": "Personal Data Protection Code Of Practice For Banking Sector",
+  "article": "s. 39",
+  "verdict": "RECOMMEND-KEEP",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": false,
+    "reason": "This is a conditional cross-border transfer regime, not a ban or domestic-processing rule; none of the listed failure modes clearly applies."
+   },
+   {
+    "persona": "reviewer",
+    "refuted": false,
+    "reason": "The snippet does support a conditional cross-border transfer regime, so this is not one of the listed failure modes; it is a plausible P6-style transfer provisi"
+   },
+   {
+    "persona": "textualist",
+    "refuted": false,
+    "reason": "Not refuted: the quoted text plainly establishes a conditional cross-border transfer regime (transfer abroad permitted where listed conditions are met), which m"
+   }
+  ]
+ }
+]

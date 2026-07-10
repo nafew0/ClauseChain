@@ -1,8 +1,8 @@
 {
  "economy": "Singapore",
  "pillar": 7,
- "run": "p1-sg-p7-1783513718",
- "krippendorff_alpha": 0.588,
+ "run": "run-sg-p7-1783663664",
+ "krippendorff_alpha": 0.576,
  "indicators": {
   "P7-I1": {
    "deterministic": 0.0,
@@ -10,18 +10,18 @@
    "judges": [
     {
      "persona": "strict",
-     "score": 0.5,
-     "reason": "The Personal Data Protection Act 2012 is a horizontal data protection law, but the quoted text expressly excludes personal data in records over 100 years old an"
+     "score": 0.0,
+     "reason": "The evidence shows a horizontal Personal Data Protection Act with general obligations and retention rules, which plainly indicates a comprehensive horizontal fr"
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "A comprehensive horizontal personal data protection law exists (the Personal Data Protection Act 2012), and the cited exclusions are limited carve-outs rather t"
+     "reason": "A horizontal Personal Data Protection Act exists, so this is not a lack of framework; the evidence indicates a comprehensive horizontal regime rather than secto"
     },
     {
      "persona": "skeptical",
      "score": 0.5,
-     "reason": "A horizontal personal data protection law exists, but the cited exemptions for very old records and deceased persons indicate the framework is not fully compreh"
+     "reason": "The Personal Data Protection Act 2012 is a horizontal framework, but the evidence suggests it is relatively thin and compliance-focused rather than fully compre"
     }
    ],
    "band": [
@@ -39,17 +39,17 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "The Cybersecurity Act 2018 is a dedicated cybersecurity framework and the cited provisions are horizontal, including standards, obligations, and enforcement pow"
+     "reason": "The Cybersecurity Act 2018 is a dedicated horizontal cybersecurity framework, as it expressly establishes the Act and empowers the Commissioner to oversee and p"
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "A dedicated horizontal Cybersecurity Act 2018 exists, with horizontal provisions on standards, enforcement, and remedial powers, so the economy does not fall un"
+     "reason": "Singapore has a dedicated horizontal cybersecurity framework in the Cybersecurity Act 2018, which establishes the Cyber Security Agency and sets nationwide cybe"
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "A dedicated horizontal cybersecurity framework exists: the Cybersecurity Act 2018 contains general powers, standards, and remediation provisions that apply acro"
+     "reason": "Singapore has a dedicated horizontal Cybersecurity Act 2018 that expressly establishes the Cyber Security Agency and sets out nationwide cybersecurity functions"
     }
    ],
    "band": [
@@ -67,17 +67,17 @@
     {
      "persona": "strict",
      "score": 1.0,
-     "reason": "Multiple provisions plainly specify minimum retention periods, including periods of not less than 5 years and at least 3 years, so the indicator is satisfied."
+     "reason": "Multiple provisions plainly specify minimum retention periods (e.g., not less than 5 years, 5 years, at least 5 years, and not less than 3 years), so the indica"
     },
     {
      "persona": "ESCAP",
      "score": 1.0,
-     "reason": "Multiple gate-verified provisions clearly specify minimum retention periods (e.g., not less than 5 years, at least 5 years, and not less than 3 years), so P7-I3"
+     "reason": "Multiple laws clearly specify minimum retention periods (e.g., not less than 5 years, at least 3 years), so P7-I3 is fully met."
     },
     {
      "persona": "skeptical",
      "score": 1.0,
-     "reason": "Multiple verified provisions expressly specify minimum retention periods (e.g., at least 3 or 5 years), so the indicator is clearly met."
+     "reason": "Multiple laws clearly specify minimum retention periods (e.g., 3, 5 years), so the indicator is fully met."
     }
    ],
    "band": [
@@ -94,25 +94,25 @@
    "judges": [
     {
      "persona": "strict",
-     "score": 1.0,
-     "reason": "The cited provision is horizontal and requires every organisation to designate one or more responsible individuals, which plainly satisfies an across-all-sector"
+     "score": 0.0,
+     "reason": "The cited text requires an organisation to designate a responsible individual and to act reasonably, but it does not plainly require a DPO or any DPIA, whether "
     },
     {
      "persona": "ESCAP",
-     "score": 1.0,
-     "reason": "A horizontal law requires every organisation to designate a responsible individual for compliance (DPO-equivalent) across all sectors, meeting the score 1 crite"
+     "score": 0.0,
+     "reason": "The cited law requires an organisation to designate a responsible individual and to act reasonably, but it does not expressly require a DPO or a DPIA across all"
     },
     {
      "persona": "skeptical",
-     "score": 0.5,
-     "reason": "The cited provision creates a horizontal compliance-responsibility designation, but it does not explicitly require a DPO or DPIA, so it fits only a sectorless D"
+     "score": 0.0,
+     "reason": "The cited provisions require an internal responsible individual and general reasonableness, but they do not mandate a formal DPO or DPIA across all sectors or e"
     }
    ],
    "band": [
-    0.5,
+    0.0,
     1.0
    ],
-   "spread": 0.5,
+   "spread": 1.0,
    "flag_for_review": true,
    "reviewer_decision": "pending"
   },
@@ -123,25 +123,25 @@
     {
      "persona": "strict",
      "score": 1.0,
-     "reason": "The quoted provisions expressly allow police or authorised persons to access information and search/seize materials without a warrant, and the Telecommunication"
+     "reason": "The cited Criminal Procedure Code provisions plainly allow police or authorised persons to access, inspect, and require production of data without any stated re"
     },
     {
      "persona": "ESCAP",
      "score": 1.0,
-     "reason": "The evidence includes multiple measures allowing police/authorized officials to access, inspect, search, and obtain information without a warrant or independent"
+     "reason": "The Criminal Procedure Code 2010 expressly allows police or authorised persons to access, inspect, and require production/authentication of data without any ind"
     },
     {
      "persona": "skeptical",
-     "score": 1.0,
-     "reason": "The evidence shows multiple laws letting police and related officials access, search, inspect, and decrypt information without a warrant or prior judicial autho"
+     "score": 0.5,
+     "reason": "The cited provisions give police broad access powers over data and computers, but the evidence shown does not clearly establish that all such access is availabl"
     }
    ],
    "band": [
-    1.0,
+    0.5,
     1.0
    ],
-   "spread": 0.0,
-   "flag_for_review": false,
+   "spread": 0.5,
+   "flag_for_review": true,
    "reviewer_decision": "pending"
   }
  },

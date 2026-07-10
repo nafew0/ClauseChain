@@ -1,0 +1,121 @@
+{
+ "economy": "Malaysia",
+ "pillar": 6,
+ "run": "run-my-p6-1783664898",
+ "krippendorff_alpha": 1.0,
+ "indicators": {
+  "P6-I1": {
+   "deterministic": 0.0,
+   "deterministic_reason": "no qualifying measure found (absence row) -> 0",
+   "judges": [
+    {
+     "persona": "strict",
+     "score": 0.0,
+     "reason": "The only gate-verified row states \"No provision found,\" so there is no plain textual basis for any ban or local processing requirement."
+    },
+    {
+     "persona": "ESCAP",
+     "score": 0.0,
+     "reason": "The gate-verified evidence shows no provision found in the cited horizontal law, so there is no ban or local processing requirement identified."
+    },
+    {
+     "persona": "skeptical",
+     "score": 0.0,
+     "reason": "The only gate-verified evidence says no provision was found in the cited horizontal law, so there is no verified ban or local processing requirement to score."
+    }
+   ],
+   "band": [
+    0.0,
+    0.0
+   ],
+   "spread": 0.0,
+   "flag_for_review": false,
+   "reviewer_decision": "pending"
+  },
+  "P6-I2": {
+   "deterministic": 0.0,
+   "deterministic_reason": "no qualifying measure found (absence row) -> 0",
+   "judges": [
+    {
+     "persona": "strict",
+     "score": 0.0,
+     "reason": "The only gate-verified row states \"No provision found,\" so there is no local-storage requirement."
+    },
+    {
+     "persona": "ESCAP",
+     "score": 0.0,
+     "reason": "The only gate-verified evidence states that the Income Tax Act (Act 53) 1967 has no provision found, so there is no local-storage requirement."
+    },
+    {
+     "persona": "skeptical",
+     "score": 0.0,
+     "reason": "The only gate-verified horizontal source explicitly says \"No provision found,\" so there is no evidence of any local-storage requirement."
+    }
+   ],
+   "band": [
+    0.0,
+    0.0
+   ],
+   "spread": 0.0,
+   "flag_for_review": false,
+   "reviewer_decision": "pending"
+  },
+  "P6-I3": {
+   "deterministic": 0.0,
+   "deterministic_reason": "none found",
+   "judges": [
+    {
+     "persona": "strict",
+     "score": 0.0,
+     "reason": "The only gate-verified evidence says \"No provision found,\" so no infrastructure requirement is stated."
+    },
+    {
+     "persona": "ESCAP",
+     "score": 0.0,
+     "reason": "No infrastructure requirement is evidenced; the cited law has no provision found, so score 0 applies."
+    },
+    {
+     "persona": "skeptical",
+     "score": 0.0,
+     "reason": "The only gate-verified evidence says no provision was found, so there is no identified infrastructure requirement or transfer condition to score under P6-I3."
+    }
+   ],
+   "band": [
+    0.0,
+    0.0
+   ],
+   "spread": 0.0,
+   "flag_for_review": false,
+   "reviewer_decision": "pending"
+  },
+  "P6-I4": {
+   "deterministic": 1.0,
+   "deterministic_reason": "covers personal data / horizontal -> 1",
+   "judges": [
+    {
+     "persona": "strict",
+     "score": 1.0,
+     "reason": "The cited law imposes conditions on transfers of personal data outside Malaysia, including consent and minister-specified destinations, which plainly falls unde"
+    },
+    {
+     "persona": "ESCAP",
+     "score": 1.0,
+     "reason": "Malaysia has horizontal transfer conditions for personal data under the Personal Data Protection Act (e.g., consent and minister-specified destinations), which "
+    },
+    {
+     "persona": "skeptical",
+     "score": 1.0,
+     "reason": "Malaysia\u2019s Personal Data Protection Act imposes horizontal transfer conditions on any personal data (e.g., consent or minister-specified destinations), which me"
+    }
+   ],
+   "band": [
+    1.0,
+    1.0
+   ],
+   "spread": 0.0,
+   "flag_for_review": false,
+   "reviewer_decision": "pending"
+  }
+ },
+ "note": "AI suggestions only \u2014 every score requires human approval (reviewer_decision) before it ships."
+}

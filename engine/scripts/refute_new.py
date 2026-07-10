@@ -59,7 +59,14 @@ def main() -> int:
         for row in rows:
             votes = []
             for persona in REFUTERS:
-                prompt = f"""You are {persona}. Try to REFUTE this RDTII mapping. Default to refuted=true if uncertain.
+                prompt = f"""You are {persona}. Try to REFUTE this RDTII mapping.
+
+REFUTATION STANDARD: refuted=true ONLY if you can NAME one specific failure mode from the
+list below that clearly applies to this mapping. The following are NOT refutations:
+- the snippet is part of a multi-provision obligation (neighbouring subsections complete it)
+- you would have quoted a different/better subsection of the same regime
+- the provision is real and relevant but you'd phrase the rationale differently
+Those are reviewer notes -> refuted=false with your note as the reason.
 
 {FAILURE_MODES}
 

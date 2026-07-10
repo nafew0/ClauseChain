@@ -1,0 +1,149 @@
+{
+ "economy": "Malaysia",
+ "pillar": 7,
+ "run": "run-my-p7-1783665632",
+ "krippendorff_alpha": 1.0,
+ "indicators": {
+  "P7-I1": {
+   "deterministic": 0.0,
+   "deterministic_reason": "comprehensive horizontal framework evidenced -> 0",
+   "judges": [
+    {
+     "persona": "strict",
+     "score": 0.0,
+     "reason": "The cited Personal Data Protection Act is a horizontal data protection law with general principles and transfer rules, so a comprehensive framework exists."
+    },
+    {
+     "persona": "ESCAP",
+     "score": 0.0,
+     "reason": "Malaysia has a horizontal Personal Data Protection Act (Act 709) covering personal data processing, consent, principles, and cross-border transfers, so a compre"
+    },
+    {
+     "persona": "skeptical",
+     "score": 0.0,
+     "reason": "Malaysia has a horizontal Personal Data Protection Act with general principles and consent/transfer rules, so a comprehensive legal framework exists rather than"
+    }
+   ],
+   "band": [
+    0.0,
+    0.0
+   ],
+   "spread": 0.0,
+   "flag_for_review": false,
+   "reviewer_decision": "pending"
+  },
+  "P7-I2": {
+   "deterministic": 0.0,
+   "deterministic_reason": "dedicated horizontal framework evidenced -> 0",
+   "judges": [
+    {
+     "persona": "strict",
+     "score": 0.0,
+     "reason": "The cited Cyber Security Act (Act 854) 2024 expressly states it is an Act to enhance national cyber security and includes horizontal provisions such as licensin"
+    },
+    {
+     "persona": "ESCAP",
+     "score": 0.0,
+     "reason": "The Cyber Security Act (Act 854) 2024 establishes a dedicated horizontal cybersecurity framework, including national governance, licensing, authorization, and c"
+    },
+    {
+     "persona": "skeptical",
+     "score": 0.0,
+     "reason": "The evidence shows a dedicated horizontal Cyber Security Act (Act 854) with national institutions, licensing, exercises, and broad cyber-security definitions, s"
+    }
+   ],
+   "band": [
+    0.0,
+    0.0
+   ],
+   "spread": 0.0,
+   "flag_for_review": false,
+   "reviewer_decision": "pending"
+  },
+  "P7-I3": {
+   "deterministic": 1.0,
+   "deterministic_reason": "minimum retention period(s) evidenced",
+   "judges": [
+    {
+     "persona": "strict",
+     "score": 1.0,
+     "reason": "The evidence plainly specifies minimum retention periods of seven years in multiple provisions, including seven years after the relevant end date or closure."
+    },
+    {
+     "persona": "ESCAP",
+     "score": 1.0,
+     "reason": "A minimum retention period is clearly specified in multiple laws and codes (e.g., seven years in the Income Tax Act and seven years after account closure in the"
+    },
+    {
+     "persona": "skeptical",
+     "score": 1.0,
+     "reason": "Multiple sectoral laws clearly specify minimum retention periods of seven years (and banking retention extends for a further seven years after account closure),"
+    }
+   ],
+   "band": [
+    1.0,
+    1.0
+   ],
+   "spread": 0.0,
+   "flag_for_review": false,
+   "reviewer_decision": "pending"
+  },
+  "P7-I4": {
+   "deterministic": 0.0,
+   "deterministic_reason": "no DPO/DPIA requirement found",
+   "judges": [
+    {
+     "persona": "strict",
+     "score": 0.0,
+     "reason": "The only gate-verified horizontal source states \"No provision found,\" so neither a DPO nor a DPIA requirement is established."
+    },
+    {
+     "persona": "ESCAP",
+     "score": 0.0,
+     "reason": "The only gate-verified horizontal source shows no provision for DPO or DPIA requirements, so neither is required across sectors."
+    },
+    {
+     "persona": "skeptical",
+     "score": 0.0,
+     "reason": "The only gate-verified horizontal source shows no provision found, so there is no evidence of an economy-wide or sector-specific DPO/DPIA requirement."
+    }
+   ],
+   "band": [
+    0.0,
+    0.0
+   ],
+   "spread": 0.0,
+   "flag_for_review": false,
+   "reviewer_decision": "pending"
+  },
+  "P7-I5": {
+   "deterministic": 1.0,
+   "deterministic_reason": "warrantless government access evidenced -> 1",
+   "judges": [
+    {
+     "persona": "strict",
+     "score": 1.0,
+     "reason": "The cited text plainly includes a warrantless search-and-seizure power (\u201cwithout warrant\u201d) and other access powers not limited to court orders, so the economy h"
+    },
+    {
+     "persona": "ESCAP",
+     "score": 1.0,
+     "reason": "The evidence includes at least one legal measure allowing government access to personal data without independent judicial authorization, namely warrantless sear"
+    },
+    {
+     "persona": "skeptical",
+     "score": 1.0,
+     "reason": "The economy has at least one legal measure permitting government access to personal data without independent judicial authorization, including warrantless searc"
+    }
+   ],
+   "band": [
+    1.0,
+    1.0
+   ],
+   "spread": 0.0,
+   "flag_for_review": false,
+   "reviewer_decision": "pending"
+  }
+ },
+ "note": "AI suggestions only \u2014 every score requires human approval (reviewer_decision) before it ships."
+}

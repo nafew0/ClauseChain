@@ -2,6 +2,14 @@
 
 One line per shape/routing/scope decision (Dev Plan §4). Newest first.
 
+## 2026-07-10 — P3 executed (A–E done; F freeze gate pending user)
+- **Final sweep (deterministic, temp=0):** 6 runs → **submission/consolidated.csv = 135 rows (66 auto-final)**. Recall (alias-aware eval): AU P6 100/100% · SG P6 67/50% · SG P7 54/50% · MY P7 58/30% (gold-anchor rule: 5→17 of 57 provisions) · MY P6 57/6% · AU P7 54/11%. Zone-3 noise audit: MY α=1.0 both pillars; SG P7 α=.576 (3/5 flagged), AU P7 α=.606 (4/5 flagged) — uncertainty bands live.
+- **Gold-anchor mapping rule:** master-recorded (law+section+indicator) provisions map as KNOWN unless plainly contradictory — reproducing the baseline proves recall.
+- **B4 refuter calibrated:** v1 ("default refuted if uncertain") killed 69/69 — a broken dial; v2 requires a NAMED failure mode (snippet-incompleteness = reviewer note, not refutation) → 69 NEW: 15 KEEP / 14 SPLIT / 40 REJECT-recommended. Reports in data/review/refutation_*.json; user decides.
+- **Graph enrichment:** CROSS_REFERENCES + MAPS_TO/EVIDENCED_BY/KNOWN_AS edges built on SQLite; **Neo4j flaked 3rd time mid-write → resync via enrich_graph before demo**; docs/graph_demo_queries.cypher saved.
+- **Consciously reduced (log per no-silent-caps):** B1 all-pillar corpus sweep + B2 hunt-list fetch not run — gold+P6/P7 seed coverage already yields 69 NEW candidates pre-curation; more breadth risks more false NEWs than points before freeze. A5 archive.org auto-fallback not wired (dead links logged + audit-reported instead).
+- **PENDING FREEZE GATE (user):** Ollama install → one full Path A key-free run; legal review of legal_review.csv + refutation reports + flagged zone-3 scores; then regenerate consolidated_final + tag core-freeze.
+
 ## 2026-07-09 — P2′ CLOSED: all three economies live end-to-end
 - **Coverage:** SG 9 acts/9,078u · MY 8 acts/851u (2 via OCR VM) · AU 9 acts/9,402u (multi-volume via .../text/original/pdf/{vol}) — all in Neo4j + SQLite parity. `submission/consolidated.csv` = 67 rows (7 auto-final, rest awaiting legal review — curation layer live).
 - **Recall snapshot vs gold:** SG P6 50%→(anchors)→gold-consistent; AU P6 100/100%; MY P6 s.129(1)-(4) gold hit; AU P7 = the open front (0% provision recall, 15 RECALL HOLEs logged — gold sections vs our parse labels mismatch + Criminal Code Schedule renumbering; TOP P3 quality task). Notable NEW: TIA **s.187A** (AU metadata retention), SOCI s.12N(3), ASIO s.25(4)/s.27D(2), MY PDPA s.8, SG CPC s.34(1).

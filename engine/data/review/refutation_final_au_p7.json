@@ -1,0 +1,278 @@
+[
+ {
+  "indicator": "P7-I1",
+  "law": "Privacy Act 1988",
+  "article": "s. 13(1)",
+  "verdict": "RECOMMEND-REJECT",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": true,
+    "reason": "This is a provision-defining interference with privacy, not evidence of a horizontal personal-data-protection framework for P7-I1; the snippet supports a breach"
+   },
+   {
+    "persona": "reviewer",
+    "refuted": false,
+    "reason": "Not refuted: the snippet does support a horizontal privacy/data-protection framework by defining an APP breach as an interference with privacy; this is not one "
+   },
+   {
+    "persona": "textualist",
+    "refuted": true,
+    "reason": "The snippet does not actually support the rationale: it defines when conduct is an interference with privacy, but it does not itself evidence a horizontal perso"
+   }
+  ]
+ },
+ {
+  "indicator": "P7-I2",
+  "law": "Security of Critical Infrastructure Act 2018",
+  "article": "s. 4",
+  "verdict": "RECOMMEND-REJECT",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": true,
+    "reason": "This is a provision-evidences-a-different-indicator failure: the quoted text is a generic framework for managing critical infrastructure risks, not a dedicated "
+   },
+   {
+    "persona": "reviewer",
+    "refuted": true,
+    "reason": "The snippet only states a general framework for managing critical infrastructure risks and does not itself evidence the specific cybersecurity-related obligatio"
+   },
+   {
+    "persona": "textualist",
+    "refuted": true,
+    "reason": "The snippet only says the Act creates a framework for managing risks relating to critical infrastructure; it does not plainly establish a dedicated cybersecurit"
+   }
+  ]
+ },
+ {
+  "indicator": "P7-I2",
+  "law": "Security of Critical Infrastructure Act 2018",
+  "article": "s. 30CA",
+  "verdict": "RECOMMEND-KEEP",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": false,
+    "reason": "The snippet supports a dedicated cybersecurity framework for systems of national significance, so none of the listed failure modes clearly applies."
+   },
+   {
+    "persona": "reviewer",
+    "refuted": false,
+    "reason": "The snippet supports a dedicated cybersecurity framework for systems of national significance, so this is not one of the listed failure modes; it may be a bette"
+   },
+   {
+    "persona": "textualist",
+    "refuted": false,
+    "reason": "The quoted words plainly establish a dedicated enhanced cyber security framework for systems of national significance, so no listed failure mode clearly applies"
+   }
+  ]
+ },
+ {
+  "indicator": "P7-I2",
+  "law": "Security of Critical Infrastructure Act 2018",
+  "article": "s. 30CN(1)",
+  "verdict": "SPLIT-REVIEW",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": false,
+    "reason": "The provision does support a cybersecurity preparedness obligation within the critical infrastructure regime; this is not one of the listed failure modes."
+   },
+   {
+    "persona": "reviewer",
+    "refuted": false,
+    "reason": "The provision does support a dedicated cybersecurity preparedness framework for critical infrastructure by defining cyber security exercises for systems of nati"
+   },
+   {
+    "persona": "textualist",
+    "refuted": true,
+    "reason": "The snippet does not actually support the rationale: it defines what counts as a cyber security exercise, but it does not itself impose a requirement on respons"
+   }
+  ]
+ },
+ {
+  "indicator": "P7-I2",
+  "law": "Security of Critical Infrastructure Act 2018",
+  "article": "s. 30CM(2)",
+  "verdict": "SPLIT-REVIEW",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": false,
+    "reason": "The snippet does support a cybersecurity exercise framework for critical infrastructure, so none of the listed failure modes clearly applies."
+   },
+   {
+    "persona": "reviewer",
+    "refuted": false,
+    "reason": "The snippet does support a cybersecurity exercise requirement for critical infrastructure, so this is not one of the listed failure modes; at most it may be a d"
+   },
+   {
+    "persona": "textualist",
+    "refuted": true,
+    "reason": "provision evidences a different indicator than claimed: it authorizes a cyber security exercise for a system of national significance, but the quoted words do n"
+   }
+  ]
+ },
+ {
+  "indicator": "P7-I2",
+  "law": "Security of Critical Infrastructure Act 2018",
+  "article": "s. 8G(2)",
+  "verdict": "RECOMMEND-REJECT",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": true,
+    "reason": "This snippet does not evidence a cybersecurity framework at all; it merely defines what counts as a 'relevant impact' of an incident on a critical infrastructur"
+   },
+   {
+    "persona": "reviewer",
+    "refuted": true,
+    "reason": "This is a provision-defines-an-incident-impact clause, not evidence of a dedicated cybersecurity framework or sectoral critical-infrastructure cybersecurity reg"
+   },
+   {
+    "persona": "textualist",
+    "refuted": true,
+    "reason": "The quoted text only defines what counts as a 'relevant impact' of an incident on a critical infrastructure asset; it does not plainly establish a cybersecurity"
+   }
+  ]
+ },
+ {
+  "indicator": "P7-I2",
+  "law": "Security of Critical Infrastructure Act 2018",
+  "article": "s. 35AB(10)",
+  "verdict": "SPLIT-REVIEW",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": false,
+    "reason": "The snippet does support a cyber-security incident-response constraint, and none of the listed failure modes clearly applies; at most this is a rationale/indica"
+   },
+   {
+    "persona": "reviewer",
+    "refuted": false,
+    "reason": "This is a reviewer-note case, not a clear failure mode: the provision does impose a cyber-security incident condition on ministerial authorisations, so it is no"
+   },
+   {
+    "persona": "textualist",
+    "refuted": true,
+    "reason": "wrong indicator: the quoted text is a conditional ministerial-authorisation constraint for incident response, but it does not plainly establish the claimed P7-I"
+   }
+  ]
+ },
+ {
+  "indicator": "P7-I2",
+  "law": "Security of Critical Infrastructure Act 2018",
+  "article": "s. 30CF",
+  "verdict": "RECOMMEND-REJECT",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": true,
+    "reason": "This is a provision-specific failure: the snippet only says the entity must review the plan regularly, which is a maintenance requirement, not evidence of a cyb"
+   },
+   {
+    "persona": "reviewer",
+    "refuted": true,
+    "reason": "This is a keyword/function mismatch: the quoted duty is a regular review requirement for a plan, not a cybersecurity incident-response obligation itself, so it "
+   },
+   {
+    "persona": "textualist",
+    "refuted": true,
+    "reason": "This is a provision-specific failure: the quoted words only require the entity to review the plan regularly, which is a maintenance obligation, not a cybersecur"
+   }
+  ]
+ },
+ {
+  "indicator": "P7-I2",
+  "law": "Security of Critical Infrastructure Act 2018",
+  "article": "s. 35AB(2)",
+  "verdict": "SPLIT-REVIEW",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": true,
+    "reason": "This is a provision authorizing ministerial directions for incident response, not a standalone cybersecurity incident-response framework indicator; it evidences"
+   },
+   {
+    "persona": "reviewer",
+    "refuted": false,
+    "reason": "The provision is real and relevant, but this is not a refutation under the listed failure modes; it does evidence an incident-response direction framework for c"
+   },
+   {
+    "persona": "textualist",
+    "refuted": false,
+    "reason": "The quoted text plainly establishes ministerial authorization for incident-related directions to relevant entities, so it supports a cybersecurity incident-resp"
+   }
+  ]
+ },
+ {
+  "indicator": "P7-I2",
+  "law": "Security of Critical Infrastructure Act 2018",
+  "article": "s. 35AA",
+  "verdict": "RECOMMEND-REJECT",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": true,
+    "reason": "The snippet does not actually support the claimed rationale: s.35AA is a Commonwealth incident-response power for critical infrastructure, not a cybersecurity i"
+   },
+   {
+    "persona": "reviewer",
+    "refuted": true,
+    "reason": "provision evidences a different indicator than claimed: this is an incident-response/critical-infrastructure powers regime, not a cybersecurity legal framework "
+   },
+   {
+    "persona": "textualist",
+    "refuted": true,
+    "reason": "The snippet supports a sectoral incident-response regime, but it does not plainly establish the claimed cybersecurity-related indicator; this is a provision evi"
+   }
+  ]
+ },
+ {
+  "indicator": "P7-I3",
+  "law": "Telecommunications (Interception and Access) Act 1979",
+  "article": "s. 187C(1)",
+  "verdict": "RECOMMEND-REJECT",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": true,
+    "reason": "Wrong direction: s. 187C(1) sets a maximum retention period (how long information must be kept), not a minimum retention requirement, so it cannot support P7-I3"
+   },
+   {
+    "persona": "reviewer",
+    "refuted": true,
+    "reason": "wrong direction: s. 187C(1) sets a retention limit/period for keeping information, not a minimum retention requirement, so it does not support P7-I3 as claimed."
+   },
+   {
+    "persona": "textualist",
+    "refuted": true,
+    "reason": "wrong direction: the quoted text only says the period a provider must keep information is set by the section, not that it establishes a minimum retention period"
+   }
+  ]
+ },
+ {
+  "indicator": "P7-I4",
+  "law": "Telecommunications Regulations 2021",
+  "article": "s. 18(3)",
+  "verdict": "RECOMMEND-REJECT",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": true,
+    "reason": "This is a keyword-match error: the snippet requires a completed privacy impact assessment for a specific application process, but it does not establish a genera"
+   },
+   {
+    "persona": "reviewer",
+    "refuted": true,
+    "reason": "This is a keyword-match without the legal function: the snippet is an application requirement for a sector-specific authorisation process, not a general DPIA/pr"
+   },
+   {
+    "persona": "textualist",
+    "refuted": true,
+    "reason": "The snippet does not actually support the rationale: it requires a completed privacy impact assessment for an application, but it does not plainly establish a D"
+   }
+  ]
+ }
+]

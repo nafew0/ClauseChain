@@ -1,0 +1,149 @@
+{
+ "economy": "Australia",
+ "pillar": 7,
+ "run": "run-au-p7-1783666777",
+ "krippendorff_alpha": 0.606,
+ "indicators": {
+  "P7-I1": {
+   "deterministic": 0.0,
+   "deterministic_reason": "comprehensive horizontal framework evidenced -> 0",
+   "judges": [
+    {
+     "persona": "strict",
+     "score": 0.0,
+     "reason": "The Privacy Act 1988 is a horizontal framework that expressly applies Australian Privacy Principles to APP entities, so the evidence shows a comprehensive legal"
+    },
+    {
+     "persona": "ESCAP",
+     "score": 0.0,
+     "reason": "Australia has a comprehensive horizontal privacy framework under the Privacy Act 1988 and Australian Privacy Principles, so the indicator for lack of a comprehe"
+    },
+    {
+     "persona": "skeptical",
+     "score": 0.0,
+     "reason": "The Privacy Act 1988 is a horizontal privacy framework that applies across APP entities and breaches of Australian Privacy Principles, so this is not a lack of "
+    }
+   ],
+   "band": [
+    0.0,
+    0.0
+   ],
+   "spread": 0.0,
+   "flag_for_review": false,
+   "reviewer_decision": "pending"
+  },
+  "P7-I2": {
+   "deterministic": 0.0,
+   "deterministic_reason": "dedicated horizontal framework evidenced -> 0",
+   "judges": [
+    {
+     "persona": "strict",
+     "score": 0.5,
+     "reason": "The cited Act creates a horizontal critical-infrastructure risk-management framework, but the quoted cyber provisions are expressly sectoral and limited to crit"
+    },
+    {
+     "persona": "ESCAP",
+     "score": 0.5,
+     "reason": "Australia has a dedicated cybersecurity framework only for critical infrastructure and systems of national significance under the Security of Critical Infrastru"
+    },
+    {
+     "persona": "skeptical",
+     "score": 0.5,
+     "reason": "The evidence shows a cybersecurity framework exists, but it is embedded in the Security of Critical Infrastructure Act and applies sectorally to critical infras"
+    }
+   ],
+   "band": [
+    0.0,
+    0.5
+   ],
+   "spread": 0.5,
+   "flag_for_review": true,
+   "reviewer_decision": "pending"
+  },
+  "P7-I3": {
+   "deterministic": 1.0,
+   "deterministic_reason": "minimum retention period(s) evidenced",
+   "judges": [
+    {
+     "persona": "strict",
+     "score": 0.0,
+     "reason": "The quoted text says only that the period for which information must be kept \"is:\" but does not state any minimum retention period."
+    },
+    {
+     "persona": "ESCAP",
+     "score": 0.0,
+     "reason": "The cited provision indicates a retention obligation but does not specify any minimum retention period in the evidence provided, so it scores 0 under the guide."
+    },
+    {
+     "persona": "skeptical",
+     "score": 1.0,
+     "reason": "The cited provision expressly sets a minimum retention period by specifying that records must be kept for at least the period stated in s. 187C(1), so it meets "
+    }
+   ],
+   "band": [
+    0.0,
+    1.0
+   ],
+   "spread": 1.0,
+   "flag_for_review": true,
+   "reviewer_decision": "pending"
+  },
+  "P7-I4": {
+   "deterministic": 1.0,
+   "deterministic_reason": "all-sectors DPO/DPIA evidenced",
+   "judges": [
+    {
+     "persona": "strict",
+     "score": 0.5,
+     "reason": "The quoted text plainly requires a privacy impact assessment only for Commonwealth agencies and a sector-specific telecommunications application privacy documen"
+    },
+    {
+     "persona": "ESCAP",
+     "score": 0.5,
+     "reason": "Australia has a sector-specific privacy impact assessment requirement (e.g., under the Privacy Act for Commonwealth agencies and telecommunications-related auth"
+    },
+    {
+     "persona": "skeptical",
+     "score": 0.5,
+     "reason": "The evidence shows privacy impact assessments can be required for Commonwealth agencies and certain telecommunications-related authorisations, but not across al"
+    }
+   ],
+   "band": [
+    0.5,
+    1.0
+   ],
+   "spread": 0.5,
+   "flag_for_review": true,
+   "reviewer_decision": "pending"
+  },
+  "P7-I5": {
+   "deterministic": 1.0,
+   "deterministic_reason": "warrantless government access evidenced -> 1",
+   "judges": [
+    {
+     "persona": "strict",
+     "score": 1.0,
+     "reason": "The quoted provisions plainly allow government access to personal data via warrants issued by the Attorney-General or Director-General, and the text does not re"
+    },
+    {
+     "persona": "ESCAP",
+     "score": 1.0,
+     "reason": "The evidence shows at least one measure authorizing government access to personal data without independent judicial authorization, because the Attorney-General "
+    },
+    {
+     "persona": "skeptical",
+     "score": 0.5,
+     "reason": "The cited provisions show government access powers, but the evidence is mixed and at least some access appears to require a warrant or other authorization, so t"
+    }
+   ],
+   "band": [
+    0.5,
+    1.0
+   ],
+   "spread": 0.5,
+   "flag_for_review": true,
+   "reviewer_decision": "pending"
+  }
+ },
+ "note": "AI suggestions only \u2014 every score requires human approval (reviewer_decision) before it ships."
+}
