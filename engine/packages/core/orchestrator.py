@@ -198,6 +198,7 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
         # for this economy must reach the mapper regardless of retrieval rank. Missing
         # from the corpus entirely -> loud warning (a recall hole to fix, never silent).
         have_ids = {c.provision_id for c in candidates}
+        organic_ids = set(have_ids)  # what retrieval found before injection (L2)
         from packages.discovery.diff import laws_match as _lm, section_base as _sb
         known_rows = [r for r in known._by_economy.get(economy, [])
                       if str(r.get("pillar")) == str(pillar)]
@@ -209,9 +210,17 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                     continue
                 acts_resolved = [known._resolve_alias(economy, a)
                                  for a in krow.get("acts_norm", []) if a]
+                def _base_hits(ubase: str | None) -> bool:
+                    if not ubase:
+                        return False
+                    # whole-schedule gold ref ("Sch. 2" -> "sch2") anchors every
+                    # clause of that schedule ("sch2cl5", ...)
+                    if kbase.startswith("sch") and "cl" not in kbase:
+                        return ubase == kbase or ubase.startswith(f"{kbase}cl")
+                    return ubase == kbase
                 matches = [c for c in corpus
                            if any(_lm(a, c["props"].get("law_name", "")) for a in acts_resolved)
-                           and _sb(c["props"].get("article_section", "")) == kbase]
+                           and _base_hits(_sb(c["props"].get("article_section", "")))]
                 if not matches:
                     hole = (f"RECALL HOLE: master-known {krow.get('act','')[:40]} "
                             f"{ref} not in the {economy} corpus")
@@ -227,6 +236,12 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                         candidates.append(_Cand(m["provision_id"], m["text"], m["props"],
                                                 matched_queries=["known-injection"]))
                         have_ids.add(m["provision_id"])
+        # L2 (P3.5): measurable retrieval stats — how many master-known anchors
+        # retrieval found on its own vs. how many only the injection saved.
+        stats["anchors_retrieved_organically"] = (stats.get("anchors_retrieved_organically", 0)
+                                                  + len(gold_anchor_ids & organic_ids))
+        stats["anchors_injection_saved"] = (stats.get("anchors_injection_saved", 0)
+                                            + len(gold_anchor_ids - organic_ids))
         stats["candidates"] += len(candidates)
         if len(candidates) > SCREEN_CAP_PER_INDICATOR:
             warnings.append(

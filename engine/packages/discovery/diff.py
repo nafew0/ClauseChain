@@ -13,7 +13,7 @@ import json
 import re
 from pathlib import Path
 
-_SECTION_BASE = re.compile(r"(\d+[A-Z]*)")
+_SECTION_BASE = re.compile(r"(\d+(?:\.\d+)?[A-Z]*)")
 _NON_ALNUM = re.compile(r"[^a-z0-9 ]+")
 
 
@@ -23,10 +23,19 @@ def normalize_law(name: str) -> str:
 
 
 def section_base(article_section: str) -> str | None:
-    """'s. 26(1)' -> '26'; 'Art. 12(2)' -> '12'; 's. 48E(3)' -> '48E'.
+    """'s. 26(1)' -> '26'; 'Art. 12(2)' -> '12'; 's. 48E(3)' -> '48E';
+    's. 474.17A(1)' -> '474.17A'; 'Sch 1, cl. 8(1)' -> 'sch1cl8'.
 
     Year-like refs ("reg. 2021") are Impact-prose parse artifacts, not sections."""
-    match = _SECTION_BASE.search(article_section or "")
+    ref = article_section or ""
+    # Schedule refs get their own base space — clause numbering restarts per
+    # Schedule, so "Sch 1, cl. 5" must never equal body "s. 5". A bare "Sch. 2"
+    # (whole-schedule gold ref) -> "sch2"; anchor matching treats it as a prefix.
+    sch = re.search(r"\bSch(?:edule)?\.?\s+(\d+[A-Z]*)", ref, re.I)
+    if sch:
+        cl = re.search(r"\bcl\.?\s+(\d+[A-Z]*)", ref, re.I)
+        return f"sch{sch.group(1)}" + (f"cl{cl.group(1)}" if cl else "")
+    match = _SECTION_BASE.search(ref)
     if not match:
         return None
     base = match.group(1)

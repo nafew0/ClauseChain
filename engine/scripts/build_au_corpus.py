@@ -78,7 +78,14 @@ def acquire_au_act(client, tid: str, out_dir: Path) -> dict | None:
         pdf_paths.append((vol, pdf_path))
     if not pdf_paths:
         return None
+    epub_path = out_dir / f"{reg}.epub"
+    if not epub_path.is_file():
+        time.sleep(2.0)
+        epub = client.get(f"https://www.legislation.gov.au/{tid}/{date}/{date}/text/original/epub")
+        if epub.status_code == 200 and epub.content[:2] == b"PK":
+            epub_path.write_bytes(epub.content)
     return {"title_id": tid, "register_id": reg, "compilation_date": date,
+            "epub": str(epub_path) if epub_path.is_file() else None,
             "name": v.get("name"), "compilation_no": v.get("compilationNumber"),
             "pdfs": [(vol, str(p)) for vol, p in pdf_paths],
             "source_url": f"https://www.legislation.gov.au/{tid}/latest"}
@@ -122,15 +129,25 @@ def main() -> int:
                 continue
             units = []
             try:
-                for vol, pdf in meta["pdfs"]:
-                    vol_units = extract_act_pdf(pdf, economy="Australia",
-                                                act_name=meta["name"] or act_name,
-                                                act_ref=f"{meta['register_id']}v{vol}" if vol else meta["register_id"],
-                                                source_url=meta["source_url"])
-                    if vol:
-                        for u in vol_units:
-                            u.location_reference = f"vol {vol}, {u.location_reference}"
-                    units.extend(vol_units)
+                if meta.get("epub"):
+                    # P3.5 R3/R4-lite: XHTML structure oracle + authorised-PDF alignment
+                    from packages.extractors.xhtml_au import align_to_pdf, parse_epub_act
+
+                    units = parse_epub_act(Path(meta["epub"]).read_bytes(), "Australia",
+                                           meta["name"] or act_name, meta["register_id"],
+                                           meta["source_url"])
+                    aligned, n_units = align_to_pdf(units, [p for _, p in meta["pdfs"]])
+                    print(f"    xhtml oracle: {n_units} units, {aligned} PDF-aligned")
+                if not units:  # fallback: regex parse of the authorised PDF
+                    for vol, pdf in meta["pdfs"]:
+                        vol_units = extract_act_pdf(pdf, economy="Australia",
+                                                    act_name=meta["name"] or act_name,
+                                                    act_ref=f"{meta['register_id']}v{vol}" if vol else meta["register_id"],
+                                                    source_url=meta["source_url"])
+                        if vol:
+                            for u in vol_units:
+                                u.location_reference = f"vol {vol}, {u.location_reference}"
+                        units.extend(vol_units)
             except Exception as error:  # noqa: BLE001
                 print(f"  FAILED {act_name[:50]}: {error}")
                 continue
