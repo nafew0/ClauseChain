@@ -53,9 +53,25 @@ def main() -> int:
             w = csv.DictWriter(fh, fieldnames=header)
             w.writeheader()
             w.writerows(rows_out)
+    # E4 (P3.5): the JSON artifact carries the COMPLETE per-row audit record from
+    # each run's output.json (provenance, gates, status evidence, reviewer fields) —
+    # never the CSV projection, which would silently drop JSON-only fields.
+    json_rows, json_seen = [], set()
+    for run in run_dirs:
+        env_path = run / "output.json"
+        if not env_path.is_file():
+            continue
+        env = json.loads(env_path.read_text())
+        for f in env.get("findings", []):
+            key = (f.get("Economy", f.get("economy")), f.get("Indicator ID", f.get("indicator_id")),
+                   f.get("Law Name", f.get("law_name")), f.get("Article / Section", f.get("article_section")))
+            if key in json_seen:
+                continue
+            json_seen.add(key)
+            json_rows.append(f)
     (out / "consolidated.json").write_text(json.dumps(
         {"generated": date.today().isoformat(), "runs": [str(r) for r in run_dirs],
-         "rows": all_rows}, indent=1))
+         "rows": json_rows}, indent=1))
     print(f"submission/consolidated.csv: {len(all_rows)} rows "
           f"({len(final_rows)} auto-final) from {len(run_dirs)} runs")
     return 0

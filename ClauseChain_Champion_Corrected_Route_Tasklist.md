@@ -1,6 +1,6 @@
 # ClauseChain Champion Route - Corrected Architecture and Implementation Tasklist
 
-**Status:** Execution source of truth from 10 July 2026  
+**Status:** **P3.5 QUALITY ADDENDUM (10 Jul)** — `ClauseChain_Dev_Plan_and_Task_Distribution.md` remains the sole guiding star (accepted tasks folded there, §P3.5). Triage applied (user-approved): noise audit + Neo4j demo KEPT (Neo4j = provenance/audit graph, not retrieval lift, until measured); provenance scope = source-exact snippet slicing + SHA-256 + page/anchor + access date + currentness evidence + human approval; bbox/token proof optional unless OCR. Parser claims (false s.187B, broken 474.17) user-verified against the real parser.  
 **Goal:** Champion-grade submission, with no exported row that cannot survive document-by-document review.  
 **Deadline:** Submit 19 July 2026; hard deadline 20 July 2026 Bangkok time.  
 **Scope lock:** Singapore, Australia, Malaysia; Pillars 6 and 7; evidence quality before optional features.

@@ -55,6 +55,11 @@ def main() -> int:
         if entry.get("status") != "ok":
             continue
         act_name = (entry.get("act") or "").strip()
+        # A1 (P3.5): seeds mislabel the ENACTED PDP (Amendment) Act A1727 2024 as a
+        # "Bill" — manually confirmed enacted; rename so Bill-gates don't reject it
+        # and so it never anchors rows under a Bill name.
+        if "Bill" in act_name and "A1727" in act_name:
+            act_name = "Personal Data Protection (Amendment) Act 2024 (Act A1727)"
         relevant = (str(entry.get("indicator_code", "")).startswith(("P6", "P7"))
                     or any(g in normalize_law(act_name) for g in gold))
         if not (relevant or fetch_all):

@@ -15,20 +15,49 @@ import re
 from packages.core.schemas import RuleUnit
 from packages.extractors.pdf import extract_pdf
 
-# Two observed statute layouts: "Section 22. Heading" (pdp.gov.my style) and
-# bare "22. text" (gazette style). Parsed with both; the richer result wins.
+# Observed statute layouts: "Section 22. Heading" (pdp.gov.my), bare "22. text"
+# (gazette), AU "13  Heading" (no dot), and AU Schedule decimals "474.17A  Heading".
+# Parsed with each; the richer result wins.
 _SECTION_PATTERNS = [
     re.compile(r"^\s{0,6}Section\s+(\d{1,3}[A-Z]{0,2})\.?\s+(.{0,120})", re.IGNORECASE),
+    re.compile(r"^\s{0,6}(\d{1,3}\.\d{1,2}[A-Z]{0,2})\s{2,}(\S.{0,110})"),   # 474.17A (Schedule decimals)
     re.compile(r"^\s{0,6}(\d{1,3}[A-Z]{0,2})\.\s+(.{0,120})"),
     # AU Commonwealth compilations: "13  Interferences with privacy" (no dot, 2+ spaces)
     re.compile(r"^\s{0,6}(\d{1,3}[A-Z]{0,2})\s{2,}(\S.{0,110})"),
 ]
+
+# R5 (P3.5) heading-plausibility guards — the user-verified failure modes:
+#  (a) note/body sentences: "Section 187B removes..." — heading text starting with a
+#      lowercase continuation verb is prose, not a heading;
+#  (b) page footers: "102  Telecommunications (Interception and Access) Act 1979" —
+#      heading text that is (or starts like) the act's own name is page furniture.
+_LOWERCASE_CONTINUATION = re.compile(r"^[a-z]")
+
+
+def _plausible_heading(heading_text: str, act_name: str) -> bool:
+    text = heading_text.strip()
+    if not text:
+        return True
+    if _LOWERCASE_CONTINUATION.match(text):
+        return False  # "removes...", "of this Act..." = sentence continuation, not a heading
+    from packages.discovery.diff import law_tokens
+
+    head_tokens = law_tokens(text[:80])
+    act_tokens = law_tokens(act_name)
+    # Footer test: the "heading" contains essentially the ENTIRE act title (at most
+    # one act-title token missing). Sharing common words like "personal data" is fine.
+    if len(act_tokens) >= 3 and len(act_tokens - head_tokens) <= 1:
+        return False  # running header/footer (page number + act name)
+    return True
 _SUBSECTION = re.compile(r"\((\d{1,2})\)\s")
 
 
-def _sec_sort_key(num: str) -> tuple[int, str]:
-    match = re.match(r"(\d+)([A-Z]*)", num)
-    return (int(match.group(1)), match.group(2)) if match else (0, "")
+def _sec_sort_key(num: str) -> tuple[int, int, str]:
+    """'26' -> (26,0,''); '116B' -> (116,0,'B'); '474.17A' -> (474,17,'A')."""
+    match = re.match(r"(\d+)(?:\.(\d+))?([A-Z]*)", num)
+    if not match:
+        return (0, 0, "")
+    return (int(match.group(1)), int(match.group(2) or 0), match.group(3))
 
 
 def parse_act_text(pages: list, economy: str, act_name: str, act_ref: str,
@@ -45,14 +74,18 @@ def parse_act_text(pages: list, economy: str, act_name: str, act_ref: str,
     best: list[dict] = []
     for pattern in _SECTION_PATTERNS:
         sections: list[dict] = []
-        last_key = (0, "")
+        last_key = (0, 0, "")
         for index, (page_no, line) in enumerate(lines):
             match = pattern.match(line)
             if not match:
                 continue
+            # R5 guards: prose continuations ("Section 187B removes...") and
+            # running headers/footers (page number + act name) are not headings.
+            if not _plausible_heading(match.group(2) or "", act_name):
+                continue
             key = _sec_sort_key(match.group(1))
             if sections:
-                same_base_sibling = key[0] == last_key[0] and key[1] != last_key[1]
+                same_base_sibling = key[:2] == last_key[:2] and key[2] != last_key[2]
                 if not same_base_sibling and (key <= last_key or key[0] > last_key[0] + 40):
                     continue  # non-monotonic or absurd jump = list item / page artifact
                 # letter-suffix siblings (25 -> 25AA -> 25A) may print out of order

@@ -107,7 +107,11 @@ class MappedFinding(BaseModel):
     # JSON-only provenance/curation fields (EUI 12-field spec + P2' envelope contract)
     archived_copy: str | None = None
     access_date: str | None = None
-    ocr_quality_cer: float | None = None       # None = native text (no OCR involved)
+    # R6 (P3.5): mean OCR recognition confidence is NOT a character error rate.
+    # ocr_quality_cer is populated ONLY from true CER vs human-transcribed gold.
+    mean_ocr_confidence: float | None = None   # None = native text (no OCR involved)
+    ocr_quality_cer: float | None = None       # true CER only; else None
+    status_evidence: str | None = None         # what backs the Status field (A2)
     citation_tier: str | None = None           # [settled] / [verify] / [verify-pinpoint]
     reviewer_decision: str = "pending"          # pending / approved / rejected (Legal HITL)
 

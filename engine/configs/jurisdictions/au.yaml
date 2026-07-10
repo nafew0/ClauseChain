@@ -57,3 +57,8 @@ hunt_instruments:
 gold_aliases:
   "privacy impact assessment 2020": "Privacy Act 1988"
   "telecommunications interception and access regulations 2021": "Telecommunications Regulations 2021"
+
+# A3 (P3.5): governing instrument for absence rows — never corpus[0].
+governing_instruments:
+  default: { law: "Privacy Act 1988", url: "https://www.legislation.gov.au/C2004A03712/latest" }
+  P7-I2:   { law: "Security of Critical Infrastructure Act 2018", url: "https://www.legislation.gov.au/C2018A00029/latest" }

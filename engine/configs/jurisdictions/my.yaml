@@ -59,3 +59,8 @@ hunt_instruments:
   P6-I2_I3:
     - "BNM Outsourcing / Risk Management in Technology (RMiT) policy — data-residency conditions"
     - "Financial Services Act 2013 (Act 758) — customer information provisions"
+
+# A3 (P3.5): governing instrument for absence rows — never corpus[0].
+governing_instruments:
+  default: { law: "Personal Data Protection Act 2010 (Act 709)", url: "https://lom.agc.gov.my/act-detail.php?act=709" }
+  P7-I2:   { law: "Cyber Security Act 2024 (Act 854)", url: "https://lom.agc.gov.my/act-detail.php?act=854" }

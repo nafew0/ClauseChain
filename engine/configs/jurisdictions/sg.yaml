@@ -74,3 +74,8 @@ hunt_instruments:
     - "Banking Act 1970 (s. 47 customer information; outsourcing notices)"
     - "MAS Technology Risk Management notices"
     - "Healthcare Services Act 2020 (health-data rules)"
+
+# A3 (P3.5): governing instrument for absence rows — never corpus[0].
+governing_instruments:
+  default: { law: "Personal Data Protection Act 2012", url: "https://sso.agc.gov.sg/Act/PDPA2012" }
+  P7-I2:   { law: "Cybersecurity Act 2018", url: "https://sso.agc.gov.sg/Act/CA2018" }

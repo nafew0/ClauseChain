@@ -24,6 +24,43 @@ def _normalize(text: str) -> str:
     return _WS.sub(" ", text).strip().lower()
 
 
+def source_exact_slice(snippet: str, source_text: str) -> str | None:
+    """E3-lite (P3.5): return the SOURCE's own characters for a claimed snippet.
+
+    The LLM copies quotes imperfectly (punctuation/whitespace drift). We locate the
+    snippet under normalization, then slice the ORIGINAL source text — the exported
+    quotation is constructed from stored source characters, never from LLM output.
+    """
+    if not snippet.strip():
+        return None
+    # Build normalized source with an offset map back to original indices.
+    norm_chars: list[str] = []
+    offset_map: list[int] = []
+    prev_space = True
+    for index, ch in enumerate(source_text):
+        c = unicodedata.normalize("NFKC", ch)
+        c = {"‑": "-", "–": "-", "—": "-", "‘": "'", "’": "'", "“": '"', "”": '"'}.get(c, c)
+        if c.isspace():
+            if prev_space:
+                continue
+            norm_chars.append(" ")
+            offset_map.append(index)
+            prev_space = True
+        else:
+            norm_chars.append(c.lower())
+            offset_map.append(index)
+            prev_space = False
+    norm_source = "".join(norm_chars)
+    target = _normalize(snippet)
+    pos = norm_source.find(target)
+    if pos < 0:
+        return None
+    start = offset_map[pos]
+    end_index = pos + len(target) - 1
+    end = offset_map[end_index] + 1
+    return source_text[start:end]
+
+
 def g1_span_exists(snippet: str, source_text: str) -> GateResult:
     """The quote must literally exist in the extracted source (the anti-hallucination gate)."""
     ok = bool(snippet.strip()) and _normalize(snippet) in _normalize(source_text)

@@ -178,6 +178,12 @@ Goal: **Singapore + Pillar 6, real, end-to-end, no manual steps.** No UI.
 - **Legal:** validate NEW finds; **you approve/override every Zone-3 score**; finalize QC gates; start the pitch's policy narrative.
 - **🔒 CORE FREEZE (Jul 16):** SG/AU/MY × P6+P7 is flawless and submittable. **From here everything is additive-only.** You demo a full 3-economy run with NEW rows + audit trail.
 
+### P3.5 — QUALITY ADDENDUM (adopted 10 Jul; source: `ClauseChain_Champion_Corrected_Route_Tasklist.md`, triaged)
+
+> **Accepted (execute before freeze):** R6 rename `ocr_quality_cer`→`mean_ocr_confidence` (true CER only vs human gold) · E3-lite **source-exact snippet slicing** (export the source's characters, never LLM-copied text) · A1 corpus eligibility filter (bills/agreements out of evidence; MY "Amendment Bill" manually confirmed as enacted Act → renamed, not excluded) · A2 status resolver (`in_force` only with evidence, `unverified` → review, `unknown` blocks final) · A3 absence rows = `NO_EVIDENCE_FOUND_PENDING_REVIEW` with per-economy/indicator governing instrument from config (never corpus[0]) + human approval · R5 citation grammar (decimal Schedule sections 474.17/474.17A, note-sentence false sections, page-footer headings) + V3 regression fixtures · R3/R4-lite: AU **XHTML structure oracle** from the official EPUB (same compilation), PDF stays the quotation/page authority, alignment-lite containment check · E4 consolidated JSON preserves full provenance (test-enforced) · L1 recall closure with an **adjudication file** for wrong/ambiguous gold · L2 measurable retrieval stats · L4 `reviewer_decision=approved` required for consolidated_final.
+> **Kept against the addendum's cuts (user decision):** the noise audit and the Neo4j demo — Neo4j is presented as the **provenance/audit graph** (retrieval-lift claims only if measured).
+> **Deferred to Known Limitations:** token/bbox-level CitationProof for native-text rows (OCR rows keep boxes), full XHTML↔PDF span alignment scoring, VLM repair lane (R8, disabled), Docling JSON sidecar (R7, disabled — Markdown permanently banned from the evidence path).
+
 ### P4 — Round-2 economies · **CUT (4 Jul)** · *reinstate only if the core freezes early*
 The R2 gold DB is already ingested (`data/known_index_round2.json`, 809 rows) — that plus the config-driven jurisdiction-pack design IS the finals insurance. If the core freezes before Jul 16, reinstate in this order: **bonus pillar (scores in Round 1) → Thailand → China** (multilingual proof), on branches, never touching the frozen core.
 

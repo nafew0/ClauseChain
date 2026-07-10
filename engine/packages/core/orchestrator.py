@@ -98,18 +98,20 @@ def _absence_row(economy: str, indicator_id: str, governing_law: str,
         article_section="n/a",
         discovery_tag="KNOWN",
         location_reference="n/a",
-        verbatim_snippet="No provision found",
+        verbatim_snippet="NO_EVIDENCE_FOUND_PENDING_REVIEW",
         mapping_rationale=(
             f"No qualifying provision found for {indicator_id} after a full-corpus sweep. "
-            "The general governing law is cited as the reference basis (score-0 pattern)."
+            "The configured governing law is cited as the reference basis (score-0 pattern, A3)."
         ),
         source_url=source_url,
         confidence=0.6,
-        notes="Absence row: recorded so the indicator is never blank (15-Jun rule); "
-              "score 0 — general governing law cited as reference basis.",
+        notes="Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required "
+              "before this becomes a score-0 final row (P3.5 A3).",
         coverage="Horizontal",
-        status="in_force",
+        status="unverified",
+        status_evidence="absence conclusion pending human review",
         model_version=model_version,
+        reviewer_decision="pending",
     )
 
 
@@ -297,6 +299,11 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                     f"({[g.gate_id for g in gate_results if g.status == 'FAIL']})"
                 )
                 continue
+            from packages.verifier.gates import source_exact_slice
+
+            exact = source_exact_slice(decision.verbatim_snippet, candidate.text)
+            if exact:
+                decision.verbatim_snippet = exact[:400]  # source characters, not LLM copy
             tag, why = known.tag(economy, props.get("law_name", ""),
                                  props.get("article_section", ""))
             findings.append(
@@ -316,13 +323,17 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                     notes=f"Discovery: {why}. Modality: {decision.modality or 'n/a'}; "
                           f"exceptions: {'; '.join(decision.exceptions) or 'none'}",
                     coverage=(decision.coverage + (f" ({decision.sector})" if decision.sector else "")),
-                    status="in_force",
+                    status=("in_force" if props.get("current_as_at") else "unverified"),
+                    status_evidence=(f"official portal asserts current as at {props.get('current_as_at')}"
+                                     if props.get("current_as_at") else
+                                     "no currentness assertion captured — requires human verification"),
                     model_version=model_version,
                     archived_copy=props.get("archived_copy") or None,
                     access_date=props.get("access_date") or None,
-                    ocr_quality_cer=(round(1 - props["confidence"], 4)
-                                     if props.get("confidence") not in (None, 1.0)
-                                     and str(props.get("extraction", "")).startswith("ocr") else None),
+                    mean_ocr_confidence=(round(props["confidence"], 4)
+                                         if props.get("confidence") not in (None, 1.0)
+                                         and str(props.get("extraction", "")).startswith("ocr") else None),
+                    ocr_quality_cer=None,  # true CER only vs human gold (R6)
                     citation_tier=citation_tier(props.get("article_section", "")),
                     verifier_risks=[g.reason for g in gate_results if g.status == "WARN"],
                 )
@@ -347,8 +358,10 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
         if cfg.get("regulatory") is False:
             continue
         if not any(f.indicator_id == indicator_id for f in findings):
-            anchor_law = corpus[0]["props"].get("law_name", "Personal Data Protection Act 2012") if corpus else "Personal Data Protection Act 2012"
-            anchor_url = (corpus[0]["props"].get("source_url", "https://sso.agc.gov.sg/Act/PDPA2012") or "").split("#")[0] if corpus else "https://sso.agc.gov.sg/Act/PDPA2012"
+            gov = (pack.get("governing_instruments") or {}).get(
+                indicator_id, (pack.get("governing_instruments") or {}).get("default", {}))
+            anchor_law = gov.get("law") or (corpus[0]["props"].get("law_name", "") if corpus else "")
+            anchor_url = gov.get("url") or ((corpus[0]["props"].get("source_url", "") or "").split("#")[0] if corpus else "")
             findings.append(_absence_row(economy, indicator_id, anchor_law, anchor_url, model_version))
     findings.sort(key=lambda f: f.indicator_id)
 

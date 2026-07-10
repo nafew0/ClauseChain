@@ -59,3 +59,38 @@ def test_w5_confidentiality_is_not_localization():
             "other person except as expressly provided in this Act.")
     # no cross-border transfer language -> the P6 fit gate rejects it
     assert g7_indicator_fit("P6-I1", text[:100], text, "Banking Act 1970").status == "FAIL"
+
+
+def test_e4_consolidation_preserves_provenance(tmp_path, monkeypatch):
+    """P3.5 E4: consolidated JSON must retain JSON-only provenance/reviewer fields."""
+    import csv as _csv
+    import json as _json
+    import subprocess
+    import sys as _sys
+    from pathlib import Path as _P
+
+    run = tmp_path / "run1"
+    run.mkdir()
+    finding = {"Economy": "Singapore", "Indicator ID": "P6-I4", "Law Name": "X Act",
+               "Article / Section": "s. 1(1)", "Discovery Tag": "KNOWN",
+               "Location Reference": "#pr1-", "Verbatim Snippet": "text",
+               "Mapping Rationale": "r", "Source URL": "https://x", "Confidence": 0.9,
+               "Notes": "", "archived_copy": "data/raw/x.html", "access_date": "2026-07-10",
+               "status_evidence": "portal asserts current", "reviewer_decision": "pending",
+               "citation_tier": "[verify-pinpoint]"}
+    (run / "output.json").write_text(_json.dumps({"findings": [finding]}))
+    with (run / "output.csv").open("w", newline="") as fh:
+        w = _csv.DictWriter(fh, fieldnames=[k for k in finding if k[0].isupper()])
+        w.writeheader()
+        w.writerow({k: v for k, v in finding.items() if k[0].isupper()})
+    (run / "final_output.csv").write_text((run / "output.csv").read_text())
+
+    monkeypatch.chdir(tmp_path)
+    engine_root = _P(__file__).resolve().parents[1]
+    subprocess.run([_sys.executable, str(engine_root / "scripts/consolidate_submission.py"),
+                    str(run)], check=True, cwd=tmp_path)
+    data = _json.loads((tmp_path / "submission/consolidated.json").read_text())
+    row = data["rows"][0]
+    for field in ("archived_copy", "access_date", "status_evidence",
+                  "reviewer_decision", "citation_tier"):
+        assert field in row, f"consolidation dropped {field}"
