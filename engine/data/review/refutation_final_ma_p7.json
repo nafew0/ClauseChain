@@ -1,5 +1,97 @@
 [
  {
+  "indicator": "P7-I1",
+  "law": "Personal Data Protection Act (Act 709) 2010",
+  "article": "s. 23(2)",
+  "verdict": "RECOMMEND-REJECT",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": true,
+    "reason": "This is a provision about a code of practice being assessed for adequate protection, not a substantive horizontal personal-data-protection rule itself, so the s"
+   },
+   {
+    "persona": "reviewer",
+    "refuted": false,
+    "reason": "This is a framework-setting adequacy clause for a code of practice, not a substantive cross-border transfer or other operational rule; the snippet supports the "
+   },
+   {
+    "persona": "textualist",
+    "refuted": true,
+    "reason": "The snippet does not actually support the claimed rationale: it speaks only to a code of practice offering an adequate level of protection, which is a framework"
+   }
+  ]
+ },
+ {
+  "indicator": "P7-I1",
+  "law": "Personal Data Protection Act (Act 709) 2010",
+  "article": "s. 46(1)",
+  "verdict": "SPLIT-REVIEW",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": false,
+    "reason": "This provision does not clearly fail any listed failure mode; it is a horizontal PDPA exemption power and the rationale matches that framework-existence functio"
+   },
+   {
+    "persona": "reviewer",
+    "refuted": false,
+    "reason": "This provision does not show absence of a framework; it expressly confirms a horizontal PDPA framework by empowering the Minister to exempt specified data users"
+   },
+   {
+    "persona": "textualist",
+    "refuted": true,
+    "reason": "wrong direction: the quoted text is an exemption power, not plain evidence of a horizontal personal-data-protection framework existing as such."
+   }
+  ]
+ },
+ {
+  "indicator": "P7-I1",
+  "law": "Personal Data Protection Act (Act 709) 2010",
+  "article": "s. 24(2)",
+  "verdict": "RECOMMEND-REJECT",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": true,
+    "reason": "This is a provision about approving a code of practice based on adequacy criteria, not a horizontal personal-data-protection framework itself, so the snippet do"
+   },
+   {
+    "persona": "reviewer",
+    "refuted": false,
+    "reason": "The snippet does support a horizontal personal-data-protection framework; this is a reviewer-note issue about indicator fit, not one of the listed failure modes"
+   },
+   {
+    "persona": "textualist",
+    "refuted": true,
+    "reason": "This is a provision evidences a different indicator than claimed: it speaks to the Commissioner\u2019s approval of a code of practice offering adequate protection, n"
+   }
+  ]
+ },
+ {
+  "indicator": "P7-I1",
+  "law": "Personal Data Protection Act (Act 709) 2010",
+  "article": "s. 40(2)",
+  "verdict": "RECOMMEND-KEEP",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": false,
+    "reason": "This is a horizontal personal-data-protection restriction on processing sensitive personal data, so it does support the claimed framework indicator; no listed f"
+   },
+   {
+    "persona": "reviewer",
+    "refuted": false,
+    "reason": "The snippet does support a horizontal personal-data-protection restriction on processing sensitive data, so this is not a clear failure-mode refutation; it may "
+   },
+   {
+    "persona": "textualist",
+    "refuted": false,
+    "reason": "The quoted text plainly establishes a horizontal personal-data-processing restriction with listed conditions, so it supports the claimed framework indicator rat"
+   }
+  ]
+ },
+ {
   "indicator": "P7-I2",
   "law": "Cyber Security Act (Act 854) 2024",
   "article": "s. 64",
@@ -8,40 +100,17 @@
    {
     "persona": "opposing",
     "refuted": true,
-    "reason": "The cited text is just the Act\u2019s long title/preamble, which does not itself evidence the substantive cybersecurity framework or any specific indicator; the snip"
+    "reason": "The cited text is just the Act\u2019s long title/introductory description, not operative provisions establishing a cybersecurity framework, so the snippet does not a"
    },
    {
     "persona": "reviewer",
     "refuted": false,
-    "reason": "This is not a clear failure mode from the bank: the cited text is the Act\u2019s long title/purpose, which does evidence a dedicated cybersecurity framework, so the "
+    "reason": "The snippet supports the existence of a dedicated cybersecurity framework, so this is not a clear failure-mode match; at most it is a broad rationale, not a ref"
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "The quoted text is only the Act\u2019s long title/preamble and does not itself establish the substantive cybersecurity framework claimed, so the snippet does not act"
-   }
-  ]
- },
- {
-  "indicator": "P7-I2",
-  "law": "Cyber Security Act (Act 854) 2024",
-  "article": "s. 24",
-  "verdict": "RECOMMEND-REJECT",
-  "refuter_votes": [
-   {
-    "persona": "opposing",
-    "refuted": true,
-    "reason": "This is a provision about a cyber security exercise framework, which at most evidences a specific operational activity; it does not support the claimed indicato"
-   },
-   {
-    "persona": "reviewer",
-    "refuted": true,
-    "reason": "The snippet does not actually support the rationale: a 'cyber security exercise' provision is an operational preparedness measure, not evidence of a dedicated c"
-   },
-   {
-    "persona": "textualist",
-    "refuted": true,
-    "reason": "The snippet only says \"Cyber security exercise\" and does not plainly establish the claimed indicator of a dedicated cybersecurity legal framework; this is a pro"
+    "reason": "The snippet is only the Act\u2019s long title and does not itself establish the claimed cybersecurity framework or the specific P7-I2 indicator; this is a provision-"
    }
   ]
  },
@@ -49,22 +118,22 @@
   "indicator": "P7-I2",
   "law": "Cyber Security Act (Act 854) 2024",
   "article": "s. 64(2)",
-  "verdict": "SPLIT-REVIEW",
+  "verdict": "RECOMMEND-REJECT",
   "refuter_votes": [
    {
     "persona": "opposing",
     "refuted": false,
-    "reason": "The snippet supports a horizontal cybersecurity definition and protected-state function; none of the listed failure modes clearly applies, so this is not refute"
+    "reason": "This is a definitional cybersecurity provision, not a misread of a different legal function or a failed exception; it plausibly supports a horizontal cybersecur"
    },
    {
     "persona": "reviewer",
-    "refuted": false,
-    "reason": "This is not clearly wrong under the ESCAP failure modes: the snippet is a definitional provision for cybersecurity and does support a horizontal cybersecurity-l"
+    "refuted": true,
+    "reason": "This is a keyword-match error: the quoted definition of \u201ccyber security\u201d is a general definitional clause about protection/availability/integrity, not evidence "
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "wrong direction: the quoted definition of \"cyber security\" is a protected-state definition, not a rule imposing cybersecurity obligations or a horizontal regula"
+    "reason": "provision evidences a different indicator than claimed: the quoted text is only a definitional clause for \"cyber security\" and does not plainly establish a hori"
    }
   ]
  },
@@ -77,40 +146,17 @@
    {
     "persona": "opposing",
     "refuted": false,
-    "reason": "The snippet does support a horizontal cybersecurity coordination framework for handling cyber security threats/incidents, so none of the listed failure modes cl"
+    "reason": "The snippet does support a horizontal cybersecurity coordination framework for handling cyber security threats and incidents, so none of the listed failure mode"
    },
    {
     "persona": "reviewer",
     "refuted": false,
-    "reason": "The snippet does support a horizontal cybersecurity coordination framework for handling threats/incidents, so this is not one of the listed failure modes."
+    "reason": "The snippet does support a dedicated horizontal cybersecurity coordination framework for handling threats/incidents, so this is not one of the listed failure mo"
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "provision evidences a different indicator than claimed: it creates a national cyber security system/command centre, but the quoted words do not plainly establis"
-   }
-  ]
- },
- {
-  "indicator": "P7-I2",
-  "law": "Cyber Security Act (Act 854) 2024",
-  "article": "s. 26",
-  "verdict": "RECOMMEND-REJECT",
-  "refuter_votes": [
-   {
-    "persona": "opposing",
-    "refuted": true,
-    "reason": "The snippet does not actually support the rationale: it is merely a consistency clause for directions issued under other written law, not evidence of a dedicate"
-   },
-   {
-    "persona": "reviewer",
-    "refuted": true,
-    "reason": "The snippet does not actually support the claimed indicator: it is a consistency clause for directions under other written law, not evidence of a dedicated hori"
-   },
-   {
-    "persona": "textualist",
-    "refuted": true,
-    "reason": "The snippet does not actually support the rationale: it only says directions under other written law must be consistent with a code of practice, which is a cons"
+    "reason": "provision evidences a different indicator than claimed: it creates a national cyber security system/coordination centre, but the quoted words do not plainly est"
    }
   ]
  },
@@ -118,22 +164,22 @@
   "indicator": "P7-I2",
   "law": "Cyber Security Act (Act 854) 2024",
   "article": "s. 64(4)",
-  "verdict": "SPLIT-REVIEW",
+  "verdict": "RECOMMEND-REJECT",
   "refuter_votes": [
    {
     "persona": "opposing",
     "refuted": false,
-    "reason": "The snippet does support a horizontal cybersecurity governance function (policy, strategy, monitoring), so none of the listed failure modes clearly applies."
+    "reason": "The snippet does support a horizontal national cyber security governance function; this is not a listed failure mode, and the rationale is consistent with the p"
    },
    {
     "persona": "reviewer",
-    "refuted": false,
-    "reason": "This is a real horizontal cybersecurity governance function, not a keyword-only mismatch or one of the listed failure modes; the rationale fits the provision\u2019s "
+    "refuted": true,
+    "reason": "This is a keyword-match without the legal function: s.64(4) is an internal policy/coordination mandate for a committee, not a substantive horizontal cybersecuri"
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "provision evidences a different indicator than claimed: the quoted text only states the Committee\u2019s policy/strategy/monitoring functions on national cyber secur"
+    "reason": "The snippet only describes a committee\u2019s policy-planning and monitoring functions, which is a generic governance provision and does not plainly establish the sp"
    }
   ]
  },
@@ -146,40 +192,40 @@
    {
     "persona": "opposing",
     "refuted": true,
-    "reason": "The snippet supports a sector-specific cybersecurity code of practice, but it does not support the claimed P7-I2 indicator if that indicator is about a differen"
+    "reason": "This is a provision about sector leads preparing a code of practice for cyber security governance, not a substantive cybersecurity obligation or indicator-speci"
    },
    {
     "persona": "reviewer",
     "refuted": false,
-    "reason": "The provision does support a dedicated cybersecurity framework for critical information infrastructure; this is not a clear keyword-only or function mismatch un"
+    "reason": "This is a real cybersecurity governance provision and the rationale matches its function; it is sectoral rather than horizontal, but that is a reviewer note rat"
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "The snippet supports a sector-specific code of practice, but it does not plainly establish the claimed P7-I2 indicator because the rationale relies on a broader"
+    "reason": "The snippet does not actually support the claimed P7-I2 rationale: it is a sector-specific code-of-practice requirement, not plain evidence of the indicator\u2019s b"
    }
   ]
  },
  {
   "indicator": "P7-I2",
   "law": "Cyber Security Act (Act 854) 2024",
-  "article": "s. 17",
+  "article": "s. 14",
   "verdict": "RECOMMEND-REJECT",
   "refuter_votes": [
    {
     "persona": "opposing",
     "refuted": true,
-    "reason": "This is a provision evidencing a different indicator than claimed: s.17 merely designates a national critical information infrastructure entity, which is an adm"
+    "reason": "This is a provision evidences a different indicator than claimed: a power to gather information is an enforcement/oversight tool, not itself proof of a dedicate"
    },
    {
     "persona": "reviewer",
     "refuted": true,
-    "reason": "This is a provision evidencing a different indicator than claimed: s.17 only designates critical information infrastructure entities, which is an administrative"
+    "reason": "This is a keyword-match error: a power to gather information is an enforcement/investigatory function, not evidence of a dedicated cybersecurity framework for c"
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "The snippet only shows a designation mechanism for critical information infrastructure entities; it does not plainly establish the claimed indicator of a dedica"
+    "reason": "The cited section\u2019s plain text only shows a power to gather information, which is not the same legal function as evidencing a dedicated cybersecurity framework "
    }
   ]
  },
@@ -192,17 +238,40 @@
    {
     "persona": "opposing",
     "refuted": true,
-    "reason": "The snippet only names the National Cyber Coordination and Command Centre System; that supports a coordination/command body, not necessarily the claimed dedicat"
+    "reason": "This is a provision-evidences-a-different-indicator failure: establishing a coordination centre is not the same as the claimed horizontal cybersecurity coordina"
    },
    {
     "persona": "reviewer",
-    "refuted": true,
-    "reason": "The snippet only names a National Cyber Coordination and Command Centre System; that supports a coordination body, not the specific legal function of a dedicate"
+    "refuted": false,
+    "reason": "The cited provision appears to establish a cybersecurity coordination body/system, which is a plausible horizontal cybersecurity framework; this is not one of t"
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "The snippet only names a \"National Cyber Coordination and Command Centre System\" and does not plainly establish the claimed horizontal cybersecurity framework i"
+    "reason": "The snippet only names a coordination/command centre system and does not plainly establish the claimed horizontal cybersecurity coordination framework indicator"
+   }
+  ]
+ },
+ {
+  "indicator": "P7-I2",
+  "law": "Cyber Security Act (Act 854) 2024",
+  "article": "s. 17",
+  "verdict": "SPLIT-REVIEW",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": false,
+    "reason": "This is not a refutation under the stated failure modes: the cited section appears to support the existence of a critical infrastructure cybersecurity designati"
+   },
+   {
+    "persona": "reviewer",
+    "refuted": false,
+    "reason": "The cited section appears to support the existence of a critical infrastructure cybersecurity designation framework, so this is not clearly a keyword-only or fu"
+   },
+   {
+    "persona": "textualist",
+    "refuted": true,
+    "reason": "The snippet only shows a designation mechanism for a national critical information infrastructure entity; that evidences a specific administrative designation, "
    }
   ]
  },
@@ -215,17 +284,17 @@
    {
     "persona": "opposing",
     "refuted": true,
-    "reason": "This is a wrong-direction retention rule: it sets a maximum retention period (\u201cwill be retained ... for the period ... and a further seven years\u201d), not a minimu"
+    "reason": "Wrong direction: the clause sets a retention limit/period after account closure, not a minimum retention obligation, so it does not support P7-I3 as claimed."
    },
    {
     "persona": "reviewer",
     "refuted": true,
-    "reason": "wrong direction: the clause sets a retention limit/period ('will be retained ... for ... and a further seven years'), not a minimum-retention rule requiring dat"
+    "reason": "wrong direction: the clause sets a retention limit/period after closure, not a minimum retention obligation, so it does not support P7-I3 as claimed."
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "wrong direction: the quoted text sets a retention maximum/period of retention tied to account closure, not a minimum-retention requirement."
+    "reason": "wrong direction: the quoted text sets a retention period of \"a further seven (7) years\" after closure, which is a maximum/continuing retention term, not a minim"
    }
   ]
  },
@@ -238,17 +307,17 @@
    {
     "persona": "opposing",
     "refuted": true,
-    "reason": "wrong direction: the provision imposes a retention limit of seven years after the return is furnished, not a minimum keep-at-least period for P7-I3."
+    "reason": "wrong direction: the provision imposes a retention LIMIT of seven years after filing, not a minimum retention requirement of at least seven years for P7-I3."
    },
    {
     "persona": "reviewer",
     "refuted": true,
-    "reason": "This is a wrong-direction match: the provision sets a maximum retention period (\u201cfor a period of seven years after\u201d), not a minimum keep-at-least requirement, s"
+    "reason": "wrong direction: the provision sets a maximum retention period of seven years ('for a period of seven years after'), not a minimum retention requirement of keep"
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "wrong direction: the quoted text imposes a retention limit of seven years after the return is furnished, not a minimum keep-at-least duration for P7-I3."
+    "reason": "wrong direction: the quoted text sets a retention maximum of seven years after the return is furnished, not a minimum retention period of at least seven years."
    }
   ]
  },
@@ -261,17 +330,17 @@
    {
     "persona": "opposing",
     "refuted": true,
-    "reason": "Wrong direction: the provision sets a retention LIMIT of seven years from year-end, not a minimum retention requirement, so it does not support P7-I3 as claimed"
+    "reason": "Wrong direction: the provision sets a retention limit of seven years, not a minimum retention requirement, so it does not support P7-I3 as claimed."
    },
    {
     "persona": "reviewer",
     "refuted": true,
-    "reason": "Wrong direction: the provision sets a retention LIMIT of seven years (\u201ckeep and retain ... for a period of seven years\u201d), not a minimum retention requirement, s"
+    "reason": "wrong direction: the clause sets a retention limit of seven years, not a minimum retention requirement (keep >= 7 years)."
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "wrong direction: the quoted text sets a retention minimum of seven years, which is not the P7-I3-style retention limit/no-longer-than-necessary concept."
+    "reason": "wrong direction: the quoted text sets a retention limit of seven years, not a minimum retention requirement of at least seven years."
    }
   ]
  },
@@ -284,17 +353,17 @@
    {
     "persona": "opposing",
     "refuted": true,
-    "reason": "wrong direction: the provision imposes a maximum retention period of seven years (\u201cfor a period of seven years\u201d), not a minimum retention requirement, so it doe"
+    "reason": "Wrong direction: the provision imposes a maximum retention period of seven years (\u201cfor a period of seven years\u201d), not a minimum retention requirement, so it doe"
    },
    {
     "persona": "reviewer",
     "refuted": true,
-    "reason": "wrong direction: the provision imposes a maximum retention period ('for a period of seven years'), not a minimum retention requirement, so it does not support P"
+    "reason": "wrong direction: the provision imposes a retention LIMIT of seven years, not a minimum retention period, so it does not support P7-I3 as claimed"
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "wrong direction: the quoted text imposes a maximum retention period of seven years (\u201cfor a period of seven years\u201d), not a minimum retention requirement."
+    "reason": "wrong direction: the quoted text imposes a maximum retention period of seven years, not a minimum retention requirement of at least seven years."
    }
   ]
  },
@@ -307,17 +376,17 @@
    {
     "persona": "opposing",
     "refuted": true,
-    "reason": "This is a court-gated access issue misread as warrantless: the snippet says a search may be made without warrant, but that does not by itself establish the spec"
+    "reason": "This is a court-gated access issue: the snippet expressly says search may be made without warrant, so it does not support the claimed P7-I5 rationale of access "
    },
    {
     "persona": "reviewer",
-    "refuted": true,
-    "reason": "This is a court-gated access failure mode: the snippet expressly says search may be made without warrant, so it supports warrantless government access rather th"
+    "refuted": false,
+    "reason": "The cited text appears to support warrantless search/access, so this is not a clear failure-mode refutation; it may be a valid government-access indicator even "
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "court-gated access misread as warrantless: the quoted words only say a search may be made without warrant, which does not by itself establish the broader P7-I5 "
+    "reason": "This is a court-gated access failure mode: the quoted text expressly says search may be made without warrant, so it does not support a judicial-authorization re"
    }
   ]
  },
@@ -325,22 +394,45 @@
   "indicator": "P7-I5",
   "law": "Computer Crimes Act (Act 563) 1997",
   "article": "s. 10(2)",
+  "verdict": "RECOMMEND-KEEP",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": false,
+    "reason": "The snippet supports warrantless exigent-entry/search powers, so it is not a clear failure mode from the bank; the rationale may be imperfectly phrased, but the"
+   },
+   {
+    "persona": "reviewer",
+    "refuted": false,
+    "reason": "The snippet supports a court-gated/search-warrant exception for police entry and search powers, so it is not a keyword-only mismatch or a warrantless-access mis"
+   },
+   {
+    "persona": "textualist",
+    "refuted": false,
+    "reason": "The quoted text authorizes exercise of powers in and in respect of premises, but it does not plainly establish warrantless access or negate judicial authorizati"
+   }
+  ]
+ },
+ {
+  "indicator": "P7-I5",
+  "law": "Income Tax Act (Act 53) 1967",
+  "article": "s. 274(1)",
   "verdict": "RECOMMEND-REJECT",
   "refuter_votes": [
    {
     "persona": "opposing",
     "refuted": true,
-    "reason": "court-gated access misread as warrantless: the quoted text expressly says the officer may act only \"as if\" empowered by a warrant issued under subsection (1), s"
+    "reason": "court-gated access misread as warrantless: the provision expressly gives the Director General access and search powers without any judicial authorization, so it"
    },
    {
     "persona": "reviewer",
     "refuted": true,
-    "reason": "court-gated access misread as warrantless: the text expressly says the powers are exercised \"as if\" empowered by warrant, so it does not support a claim of acce"
+    "reason": "court-gated access misread as warrantless: the provision gives the Director General access/search powers on its face, but it does not itself supply independent "
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "court-gated access misread as warrantless: the quoted text expressly says the powers are exercised \"as if\" empowered by a warrant issued under subsection (1), s"
+    "reason": "court-gated access misread as warrantless: the quoted text gives the Director General direct access/search/inspection powers and does not plainly establish any "
    }
   ]
  }

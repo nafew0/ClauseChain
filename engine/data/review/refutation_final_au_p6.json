@@ -3,22 +3,22 @@
   "indicator": "P6-I2",
   "law": "Privacy Act 1988",
   "article": "s. 20Q(3)",
-  "verdict": "RECOMMEND-REJECT",
+  "verdict": "SPLIT-REVIEW",
   "refuter_votes": [
    {
     "persona": "opposing",
-    "refuted": true,
-    "reason": "This is a generic domestic storage/localization rule with an exception for overseas storage under prescribed security requirements, so it does not support P6-I2"
+    "refuted": false,
+    "reason": "This is a domestic storage/location requirement, not a cross-border transfer rule; the snippet supports P6-I2 as claimed and does not fit any listed failure mod"
    },
    {
     "persona": "reviewer",
-    "refuted": true,
-    "reason": "lost exception: s. 20Q(3) is a storage-location rule with an exception for prescribed security requirements, not a pure domestic-storage mandate, so the rationa"
+    "refuted": false,
+    "reason": "Not refuted: the snippet does impose a domestic storage requirement for credit reporting information (with an Australia/external Territory option), so this is n"
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "wrong direction: the provision is a storage-location rule for credit reporting information, not a minimum-retention or other P6-I2 domestic-processing indicator"
+    "reason": "lost exception: the quoted words impose a storage-location rule with an exception structure, but the rationale turns it into a broader domestic-copy/storage req"
    }
   ]
  }
