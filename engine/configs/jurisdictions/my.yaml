@@ -1,4 +1,5 @@
 jurisdiction: MY
+source_format: pdf        # statute PDFs (native/OCR) -> extractors/pdf_act.py  # declaration-only (P3.6): which format extractor this pack uses
 name: Malaysia
 un_name: Malaysia
 languages: { primary: en, supported: [en, ms] }

@@ -131,7 +131,8 @@ def main() -> int:
             try:
                 if meta.get("epub"):
                     # P3.5 R3/R4-lite: XHTML structure oracle + authorised-PDF alignment
-                    from packages.extractors.xhtml_au import align_to_pdf, parse_epub_act
+                    from packages.extractors.epub_act import parse_epub_act
+                    from packages.extractors.pdf_align import align_to_pdf
 
                     units = parse_epub_act(Path(meta["epub"]).read_bytes(), "Australia",
                                            meta["name"] or act_name, meta["register_id"],

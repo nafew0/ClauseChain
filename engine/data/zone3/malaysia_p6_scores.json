@@ -1,7 +1,7 @@
 {
  "economy": "Malaysia",
  "pillar": 6,
- "run": "run-my-p6-1783664898",
+ "run": "run-my-p6-1783707018",
  "krippendorff_alpha": 1.0,
  "indicators": {
   "P6-I1": {
@@ -11,17 +11,17 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "The only gate-verified row states \"No provision found,\" so there is no plain textual basis for any ban or local processing requirement."
+     "reason": "The only gate-verified row states NO_EVIDENCE_FOUND_PENDING_REVIEW for the Personal Data Protection Act 2010, so there is no plain evidence of a ban or local pr"
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "The gate-verified evidence shows no provision found in the cited horizontal law, so there is no ban or local processing requirement identified."
+     "reason": "The provided evidence shows no verified ban or local processing requirement for transfers under the cited act, so the indicator is scored as transfer free of su"
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "The only gate-verified evidence says no provision was found in the cited horizontal law, so there is no verified ban or local processing requirement to score."
+     "reason": "The only cited instrument is marked NO_EVIDENCE_FOUND_PENDING_REVIEW, so there is no verified ban or local processing requirement to score under this indicator."
     }
    ],
    "band": [
@@ -39,17 +39,17 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "The only gate-verified row states \"No provision found,\" so there is no local-storage requirement."
+     "reason": "The only gate-verified row shows NO_EVIDENCE_FOUND_PENDING_REVIEW, so there is no plain evidence of any local storage requirement."
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "The only gate-verified evidence states that the Income Tax Act (Act 53) 1967 has no provision found, so there is no local-storage requirement."
+     "reason": "No local-storage requirement is evidenced in the provided gate-verified row, so the indicator scores 0."
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "The only gate-verified horizontal source explicitly says \"No provision found,\" so there is no evidence of any local-storage requirement."
+     "reason": "The only cited row has no evidence found, so there is no verified local-storage requirement to score."
     }
    ],
    "band": [
@@ -67,17 +67,17 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "The only gate-verified evidence says \"No provision found,\" so no infrastructure requirement is stated."
+     "reason": "The only gate-verified row shows no evidence found, so there is no plain textual basis for any infrastructure requirement."
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "No infrastructure requirement is evidenced; the cited law has no provision found, so score 0 applies."
+     "reason": "No evidence was found of any local data centre/server precondition or transfer conditioned on infrastructure; under the literal rule, score 0 applies."
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "The only gate-verified evidence says no provision was found, so there is no identified infrastructure requirement or transfer condition to score under P6-I3."
+     "reason": "The only gate-verified evidence shows no evidence found, so there is no basis to infer any local data centre/server precondition or transfer conditioned on infr"
     }
    ],
    "band": [
@@ -95,17 +95,17 @@
     {
      "persona": "strict",
      "score": 1.0,
-     "reason": "The cited law imposes conditions on transfers of personal data outside Malaysia, including consent and minister-specified destinations, which plainly falls unde"
+     "reason": "The quoted law imposes conditions on transfers of personal data outside Malaysia, including consent and minister-specified destinations, which plainly satisfies"
     },
     {
      "persona": "ESCAP",
      "score": 1.0,
-     "reason": "Malaysia has horizontal transfer conditions for personal data under the Personal Data Protection Act (e.g., consent and minister-specified destinations), which "
+     "reason": "Malaysia has horizontal transfer restrictions for personal data under PDPA s.129, including consent and minister-specified destination conditions, so the indica"
     },
     {
      "persona": "skeptical",
      "score": 1.0,
-     "reason": "Malaysia\u2019s Personal Data Protection Act imposes horizontal transfer conditions on any personal data (e.g., consent or minister-specified destinations), which me"
+     "reason": "Malaysia\u2019s horizontal Personal Data Protection Act imposes conditions on outbound transfers of personal data (e.g., consent and minister-specified destinations)"
     }
    ],
    "band": [

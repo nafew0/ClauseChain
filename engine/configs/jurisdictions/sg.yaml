@@ -1,4 +1,5 @@
 jurisdiction: SG
+source_format: sso_html   # anchored portal HTML -> extractors/html_act.py  # declaration-only (P3.6): which format extractor this pack uses
 name: Singapore
 un_name: Singapore
 languages: { primary: en, supported: [en] }

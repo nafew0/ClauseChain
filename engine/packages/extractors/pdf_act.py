@@ -1,7 +1,10 @@
-"""Generic PDF act extractor: Malaysian/Commonwealth-style statutes -> RuleUnits.
+"""Statute-PDF extractor: Commonwealth/gazette-style act PDFs -> RuleUnits, any economy.
 
 Input PDFs come from the seeds fetcher (ministry/gazette copies). Text arrives
 via the PDF router (native text layer; docling opt-in; scanned -> OCR VM).
+New economies with different section grammars pass `extra_section_patterns`
+(e.g. "Pasal N", "Статья N", "มาตรา N") and a `citation_template` ("Art. {label}")
+— defaults preserve the Commonwealth "s. N" behavior exactly.
 
 Section detection: lines starting with "N." (optionally N letters, e.g. 116B.)
 are section starts ONLY if the number is >= the previous section number
@@ -61,7 +64,9 @@ def _sec_sort_key(num: str) -> tuple[int, int, str]:
 
 
 def parse_act_text(pages: list, economy: str, act_name: str, act_ref: str,
-                   source_url: str, law_number_ref: str | None = None) -> list[RuleUnit]:
+                   source_url: str, law_number_ref: str | None = None,
+                   extra_section_patterns: list[re.Pattern] | None = None,
+                   citation_template: str = "s. {label}") -> list[RuleUnit]:
     """pages = ExtractedPage list; returns paragraph-depth RuleUnits."""
     # Build (page_number, line) stream
     lines: list[tuple[int, str]] = []
@@ -72,7 +77,7 @@ def parse_act_text(pages: list, economy: str, act_name: str, act_ref: str,
     # Pass 1: find section starts with the monotonic filter; adaptive layout —
     # both patterns are tried and the one yielding more sections wins.
     best: list[dict] = []
-    for pattern in _SECTION_PATTERNS:
+    for pattern in _SECTION_PATTERNS + (extra_section_patterns or []):
         sections: list[dict] = []
         last_key = (0, 0, "")
         for index, (page_no, line) in enumerate(lines):
@@ -129,13 +134,15 @@ def parse_act_text(pages: list, economy: str, act_name: str, act_ref: str,
         for label, text in pieces:
             if len(text) < 30:
                 continue
+            # ID SCHEME (FROZEN — stored corpora depend on this): economy[:2]
+            # gives "ma:"/"au:"; do not change without a full corpus regeneration.
             units.append(RuleUnit(
                 id=f"{economy[:2].lower()}:{act_ref}:s{label.replace('(', '-').replace(')', '')}",
                 document_id=f"{economy[:2].lower()}:{act_ref}",
                 economy=economy,
                 law_name=act_name,
                 law_number_ref=law_number_ref,
-                article_section=f"s. {label}",
+                article_section=citation_template.format(label=label),
                 text=text[:20000],
                 source_url=source_url,
                 location_reference=f"page {sec['page']}",
@@ -149,6 +156,10 @@ def parse_act_text(pages: list, economy: str, act_name: str, act_ref: str,
 
 def extract_act_pdf(pdf_path: str, economy: str, act_name: str, act_ref: str,
                     source_url: str, law_number_ref: str | None = None,
-                    ocr_engine=None) -> list[RuleUnit]:
+                    ocr_engine=None,
+                    extra_section_patterns: list[re.Pattern] | None = None,
+                    citation_template: str = "s. {label}") -> list[RuleUnit]:
     pages = extract_pdf(pdf_path, ocr_engine=ocr_engine)
-    return parse_act_text(pages, economy, act_name, act_ref, source_url, law_number_ref)
+    return parse_act_text(pages, economy, act_name, act_ref, source_url, law_number_ref,
+                          extra_section_patterns=extra_section_patterns,
+                          citation_template=citation_template)

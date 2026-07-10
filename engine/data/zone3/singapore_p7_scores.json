@@ -1,8 +1,8 @@
 {
  "economy": "Singapore",
  "pillar": 7,
- "run": "run-sg-p7-1783663664",
- "krippendorff_alpha": 0.576,
+ "run": "run-sg-p7-1783705963",
+ "krippendorff_alpha": 0.432,
  "indicators": {
   "P7-I1": {
    "deterministic": 0.0,
@@ -11,12 +11,12 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "The evidence shows a horizontal Personal Data Protection Act with general obligations and retention rules, which plainly indicates a comprehensive horizontal fr"
+     "reason": "The evidence shows a horizontal Personal Data Protection Act imposing general obligations across organisations, which plainly indicates a comprehensive horizont"
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "A horizontal Personal Data Protection Act exists, so this is not a lack of framework; the evidence indicates a comprehensive horizontal regime rather than secto"
+     "reason": "The evidence shows a horizontal Personal Data Protection Act with general obligations and governance duties, indicating a comprehensive horizontal data protecti"
     },
     {
      "persona": "skeptical",
@@ -39,17 +39,17 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "The Cybersecurity Act 2018 is a dedicated horizontal cybersecurity framework, as it expressly establishes the Act and empowers the Commissioner to oversee and p"
+     "reason": "The quoted Cybersecurity Act 2018 plainly establishes a horizontal cybersecurity framework, including an agency to oversee and promote cybersecurity of computer"
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "Singapore has a dedicated horizontal cybersecurity framework in the Cybersecurity Act 2018, which establishes the Cyber Security Agency and sets nationwide cybe"
+     "reason": "Singapore has a dedicated horizontal Cybersecurity Act 2018 establishing the Cyber Security Agency and broad cybersecurity oversight powers, so it is not merely"
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "Singapore has a dedicated horizontal Cybersecurity Act 2018 that expressly establishes the Cyber Security Agency and sets out nationwide cybersecurity functions"
+     "reason": "Singapore has a dedicated horizontal cybersecurity framework in the Cybersecurity Act 2018, which establishes the Cyber Security Agency and sets out economy-wid"
     }
    ],
    "band": [
@@ -67,17 +67,17 @@
     {
      "persona": "strict",
      "score": 1.0,
-     "reason": "Multiple provisions plainly specify minimum retention periods (e.g., not less than 5 years, 5 years, at least 5 years, and not less than 3 years), so the indica"
+     "reason": "The evidence plainly states minimum retention periods of not less than 5 years, 5 years, at least 5 years, and not less than 3 years, so the indicator is met."
     },
     {
      "persona": "ESCAP",
      "score": 1.0,
-     "reason": "Multiple laws clearly specify minimum retention periods (e.g., not less than 5 years, at least 3 years), so P7-I3 is fully met."
+     "reason": "Multiple provisions clearly specify minimum retention periods (e.g., not less than 5 years, at least 3 years), so the indicator is met."
     },
     {
      "persona": "skeptical",
      "score": 1.0,
-     "reason": "Multiple laws clearly specify minimum retention periods (e.g., 3, 5 years), so the indicator is fully met."
+     "reason": "Multiple gate-verified provisions clearly specify minimum retention periods (e.g., 5 years, 3 years, at least 5 years), so the indicator is fully met."
     }
    ],
    "band": [
@@ -94,18 +94,18 @@
    "judges": [
     {
      "persona": "strict",
-     "score": 0.0,
-     "reason": "The cited text requires an organisation to designate a responsible individual and to act reasonably, but it does not plainly require a DPO or any DPIA, whether "
+     "score": 0.5,
+     "reason": "The cited text requires every organisation to designate one or more responsible individuals, but it does not plainly require a DPO/DPIA by name or a sector-spec"
     },
     {
      "persona": "ESCAP",
-     "score": 0.0,
-     "reason": "The cited law requires an organisation to designate a responsible individual and to act reasonably, but it does not expressly require a DPO or a DPIA across all"
+     "score": 0.5,
+     "reason": "The cited law imposes a horizontal requirement to designate a responsible individual for compliance, which is functionally a DPO-type obligation across all sect"
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "The cited provisions require an internal responsible individual and general reasonableness, but they do not mandate a formal DPO or DPIA across all sectors or e"
+     "reason": "The cited provisions require an internal responsible individual and general reasonableness, but they do not mandate a formal DPO or DPIA, so the indicator shoul"
     }
    ],
    "band": [
@@ -123,17 +123,17 @@
     {
      "persona": "strict",
      "score": 1.0,
-     "reason": "The cited Criminal Procedure Code provisions plainly allow police or authorised persons to access, inspect, and require production of data without any stated re"
+     "reason": "The cited Criminal Procedure Code provisions plainly let police or authorised persons access, inspect, and require production of data by written order or direct"
     },
     {
      "persona": "ESCAP",
      "score": 1.0,
-     "reason": "The Criminal Procedure Code 2010 expressly allows police or authorised persons to access, inspect, and require production/authentication of data without any ind"
+     "reason": "The Criminal Procedure Code 2010 expressly allows police or authorised persons to access, inspect, and require production of data by written order without any i"
     },
     {
      "persona": "skeptical",
      "score": 0.5,
-     "reason": "The cited provisions give police broad access powers over data and computers, but the evidence shown does not clearly establish that all such access is availabl"
+     "reason": "The cited Criminal Procedure Code provisions let police or authorised persons access, inspect, and compel production of data by written order without a court wa"
     }
    ],
    "band": [

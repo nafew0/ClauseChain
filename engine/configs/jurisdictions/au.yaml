@@ -1,4 +1,5 @@
 jurisdiction: AU
+source_format: epub+pdf   # XHTML structure oracle + authorised-PDF pages -> extractors/epub_act.py + pdf_align.py  # declaration-only (P3.6): which format extractor this pack uses
 name: Australia
 un_name: Australia
 languages: { primary: en, supported: [en] }

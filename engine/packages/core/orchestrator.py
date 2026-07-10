@@ -53,7 +53,7 @@ def _ensure_corpus(store, pack: dict, economy: str) -> list[dict]:
     if pack.get("connector") == "sg_sso":
         from packages.connectors.sg_sso import acquire_act
         from packages.core.rule_units import build_rule_units
-        from packages.extractors.html_sso import parse_sso_act
+        from packages.extractors.html_act import parse_sso_act
 
         for act_ref, number in _pack_corpus_acts(pack):
             manifest = acquire_act(act_ref)

@@ -1,7 +1,7 @@
 {
  "economy": "Australia",
  "pillar": 6,
- "run": "run-au-p6-1783666569",
+ "run": "run-au-p6-1783708483",
  "krippendorff_alpha": 1.0,
  "indicators": {
   "P6-I1": {
@@ -11,17 +11,17 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "The only gate-verified horizontal source says \"No provision found,\" so there is no plain-text ban or local processing requirement shown."
+     "reason": "The only gate-verified row states NO_EVIDENCE_FOUND_PENDING_REVIEW for the Privacy Act 1988, so there is no plain evidence of a ban or local processing requirem"
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "The gate-verified evidence shows no provision imposing a ban or local processing requirement, so the transfer is free of such requirements."
+     "reason": "The only gate-verified row shows no evidence found for the Privacy Act 1988, so there is no verified ban or local processing requirement to score."
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "The only gate-verified evidence says no provision was found in the Telecommunications Act 1997, so there is no identified ban or local processing requirement."
+     "reason": "The only gate-verified row shows no evidence of a ban or local processing requirement, so there is insufficient basis to score this indicator above zero."
     }
    ],
    "band": [
@@ -39,17 +39,17 @@
     {
      "persona": "strict",
      "score": 1.0,
-     "reason": "The quoted provisions impose local storage/handling restrictions for personal information in the My Health Record system and credit reporting information, so th"
+     "reason": "The cited provisions impose local storage requirements for specific data types (My Health Record records and credit reporting information), including a rule tha"
     },
     {
      "persona": "ESCAP",
      "score": 1.0,
-     "reason": "The economy has multiple local-storage requirements covering personal data and sectoral data, including My Health Records records that must not be held or proce"
+     "reason": "There are multiple local-storage requirements covering personal data (e.g., My Health Records and credit reporting information), which meets the criteria for sc"
     },
     {
      "persona": "skeptical",
      "score": 1.0,
-     "reason": "There are multiple local-storage requirements covering personal data (e.g., My Health Records must not be held or processed outside Australia, and credit report"
+     "reason": "There are multiple sectoral local-storage requirements, including a personal-data restriction for My Health Records and a separate credit-reporting storage rule"
     }
    ],
    "band": [
@@ -67,17 +67,17 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "The only gate-verified evidence says \"No provision found,\" so no infrastructure requirement is stated."
+     "reason": "The only gate-verified row states NO_EVIDENCE_FOUND_PENDING_REVIEW, so there is no plain evidence of any infrastructure requirement."
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "The gate-verified evidence shows no provision in the Telecommunications Act 1997, so there is no infrastructure requirement or transfer condition tied to infras"
+     "reason": "No evidence was found of any local data centre/server precondition or transfer condition tied to infrastructure; under the guide, absence of such a requirement "
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "The only gate-verified evidence says no provision was found in the Telecommunications Act 1997, so there is no identified infrastructure requirement or transfer"
+     "reason": "No evidence was found of any local data centre/server precondition or transfer conditioned on infrastructure; absent such a requirement, the indicator should be"
     }
    ],
    "band": [
@@ -95,17 +95,17 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "The only gate-verified evidence says \"No provision found\" for the Telecommunications Act 1997, so there is no plain textual basis for any transfer condition."
+     "reason": "The only gate-verified row states NO_EVIDENCE_FOUND_PENDING_REVIEW, so there is no plain evidence of any conditions on transfer."
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "The only gate-verified horizontal source shows no provision found, so there are no conditions on transfer."
+     "reason": "No gate-verified evidence shows any conditional transfer regime in force; the provided row is marked NO_EVIDENCE_FOUND_PENDING_REVIEW, so the indicator is score"
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "The only gate-verified evidence says the Telecommunications Act 1997 has no provision found, so there is no identified condition on transfer."
+     "reason": "The only gate-verified row shows no evidence of transfer conditions, so there is no basis to assign a conditional-flow regime score above zero."
     }
    ],
    "band": [

@@ -1,7 +1,7 @@
 {
  "economy": "Malaysia",
  "pillar": 7,
- "run": "run-my-p7-1783665632",
+ "run": "run-my-p7-1783707626",
  "krippendorff_alpha": 1.0,
  "indicators": {
   "P7-I1": {
@@ -11,17 +11,17 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "The cited Personal Data Protection Act is a horizontal data protection law with general principles and transfer rules, so a comprehensive framework exists."
+     "reason": "The evidence shows a horizontal Personal Data Protection Act with general principles and access/correction rules, so a comprehensive horizontal framework exists"
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "Malaysia has a horizontal Personal Data Protection Act (Act 709) covering personal data processing, consent, principles, and cross-border transfers, so a compre"
+     "reason": "Malaysia has a comprehensive horizontal personal data protection framework in the Personal Data Protection Act 2010, including general principles, consent, acce"
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "Malaysia has a horizontal Personal Data Protection Act with general principles and consent/transfer rules, so a comprehensive legal framework exists rather than"
+     "reason": "Malaysia has a horizontal Personal Data Protection Act with core principles, access/correction rights, consent rules, and cross-border transfer provisions, so a"
     }
    ],
    "band": [
@@ -39,17 +39,17 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "The cited Cyber Security Act (Act 854) 2024 expressly states it is an Act to enhance national cyber security and includes horizontal provisions such as licensin"
+     "reason": "The quoted Cyber Security Act (Act 854) 2024 expressly establishes a national cyber security committee, agency powers, and a national cyber security system, whi"
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "The Cyber Security Act (Act 854) 2024 establishes a dedicated horizontal cybersecurity framework, including national governance, licensing, authorization, and c"
+     "reason": "A dedicated horizontal cybersecurity framework exists: the Cyber Security Act (Act 854) 2024 establishes national cyber security institutions and a national cyb"
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "The evidence shows a dedicated horizontal Cyber Security Act (Act 854) with national institutions, licensing, exercises, and broad cyber-security definitions, s"
+     "reason": "The evidence shows a dedicated horizontal Cyber Security Act establishing national cyber-security institutions, powers, and a coordination system, so this is no"
     }
    ],
    "band": [
@@ -67,17 +67,17 @@
     {
      "persona": "strict",
      "score": 1.0,
-     "reason": "The evidence plainly specifies minimum retention periods of seven years in multiple provisions, including seven years after the relevant end date or closure."
+     "reason": "The quoted provisions plainly specify minimum retention periods of seven years (and in one case seven years plus the account period), so the indicator is met."
     },
     {
      "persona": "ESCAP",
      "score": 1.0,
-     "reason": "A minimum retention period is clearly specified in multiple laws and codes (e.g., seven years in the Income Tax Act and seven years after account closure in the"
+     "reason": "A minimum retention period is clearly specified in multiple applicable provisions, including seven years in the Income Tax Act and seven years after account clo"
     },
     {
      "persona": "skeptical",
      "score": 1.0,
-     "reason": "Multiple sectoral laws clearly specify minimum retention periods of seven years (and banking retention extends for a further seven years after account closure),"
+     "reason": "The evidence clearly specifies minimum retention periods of seven years in multiple binding provisions, so the indicator meets the threshold for score 1."
     }
    ],
    "band": [
@@ -95,17 +95,17 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "The only gate-verified horizontal source states \"No provision found,\" so neither a DPO nor a DPIA requirement is established."
+     "reason": "The only gate-verified row states NO_EVIDENCE_FOUND_PENDING_REVIEW for the Income Tax Act (Act 53) 1967, so there is no quoted evidence of any DPO or DPIA requi"
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "The only gate-verified horizontal source shows no provision for DPO or DPIA requirements, so neither is required across sectors."
+     "reason": "The only gate-verified evidence is NO_EVIDENCE_FOUND_PENDING_REVIEW for a horizontal act, so there is no verified DPO or DPIA requirement across all sectors or "
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "The only gate-verified horizontal source shows no provision found, so there is no evidence of an economy-wide or sector-specific DPO/DPIA requirement."
+     "reason": "The only gate-verified row shows no evidence found for a horizontal DPIA/DPO requirement, so there is insufficient basis to assign any positive score."
     }
    ],
    "band": [
@@ -123,17 +123,17 @@
     {
      "persona": "strict",
      "score": 1.0,
-     "reason": "The cited text plainly includes a warrantless search-and-seizure power (\u201cwithout warrant\u201d) and other access powers not limited to court orders, so the economy h"
+     "reason": "The cited text plainly includes measures allowing search and seizure without warrant and officer powers to enter premises and exercise investigative powers, so "
     },
     {
      "persona": "ESCAP",
      "score": 1.0,
-     "reason": "The evidence includes at least one legal measure allowing government access to personal data without independent judicial authorization, namely warrantless sear"
+     "reason": "The cited laws include warrantless search and seizure powers (e.g., Cyber Security Act s.40 and PDPA enforcement powers), so government access to personal data "
     },
     {
      "persona": "skeptical",
      "score": 1.0,
-     "reason": "The economy has at least one legal measure permitting government access to personal data without independent judicial authorization, including warrantless searc"
+     "reason": "The cited laws expressly authorize government officers to search, seize, enter premises, and compel production of data without warrant or other independent judi"
     }
    ],
    "band": [

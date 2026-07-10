@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from packages.core.rule_units import build_rule_units
-from packages.extractors.html_sso import parse_sso_act
+from packages.extractors.html_act import parse_sso_act
 from packages.graph.sqlite_graph import SqliteGraphStore
 
 FIXTURE = Path(__file__).parent / "fixtures" / "sso_pdpa_s25_26.html"

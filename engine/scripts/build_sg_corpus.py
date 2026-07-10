@@ -22,7 +22,7 @@ import os  # noqa: E402
 
 from packages.connectors.sg_sso import acquire_act  # noqa: E402
 from packages.core.rule_units import build_rule_units  # noqa: E402
-from packages.extractors.html_sso import parse_sso_act  # noqa: E402
+from packages.extractors.html_act import parse_sso_act  # noqa: E402
 from packages.graph.store import get_graph_store  # noqa: E402
 
 import yaml  # noqa: E402

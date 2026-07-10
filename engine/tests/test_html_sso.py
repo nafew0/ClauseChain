@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from packages.extractors.html_sso import clean_text, parse_sso_act
+from packages.extractors.html_act import parse_sso_act
+from packages.extractors.textutil import clean_text
 
 FIXTURE = Path(__file__).parent / "fixtures" / "sso_pdpa_s25_26.html"
 

@@ -1,28 +1,33 @@
-"""Extractor for Singapore Statutes Online print-view HTML (whole-act documents).
+"""Anchored-HTML act extractor: portal HTML -> ActDoc (sections + subsections).
 
-Input: the archived output of `connectors.sg_sso.acquire_act` — one HTML file
-containing the full act (86 `div.prov1` section blocks for the PDPA, plus part
-headings and schedules).
-
-Structure (empirically verified on the live portal, 7 Jul 2026):
-  <td class="partHdr...">PART HEADING</td>
-  <div class="prov1">
-    <td class="prov1Hdr" id="pr26-"><span>Transfer of personal data outside Singapore</span></td>
-    <td class="prov1Txt"><strong>26.</strong>
-        <a name="pr26-ps1-"></a> ... subsection (1) text ...
-        <a name="pr26-ps2-"></a> ... subsection (2) text ...
-  Schedules use id="Sc1-..." and class="sHdr".
+Format family: statute portals that publish whole-act HTML with per-section
+containers and named subsection anchors. Each portal's markup is a profile of
+selector regexes below; the parse flow (split containers -> header/number ->
+anchor-split subsections -> Part mapping) is shared. New economies with such
+portals add a profile block + a `parse_*_act` entry point emitting `ActDoc`.
 
 Citations: section anchor = {act_url}#pr26-; subsection label = "26(1)".
 """
 from __future__ import annotations
 
-import html as html_lib
 import re
-from dataclasses import dataclass, field
 
-_TAG = re.compile(r"<[^>]+>")
-_WS = re.compile(r"[ \t\r\n   ]+")
+from packages.extractors.act_doc import ActDoc, Section, Subsection
+from packages.extractors.textutil import clean_text
+
+# Back-compat alias: the SSO parser predates the generic ActDoc contract.
+SsoActDoc = ActDoc
+
+# --- sso.agc.gov.sg portal profile (Singapore Statutes Online print view) ----
+# Empirically verified on the live portal, 7 Jul 2026. Input: the archived
+# output of `connectors.sg_sso.acquire_act` — one HTML file with the full act
+# (86 `div.prov1` section blocks for the PDPA, part headings, schedules):
+#   <td class="partHdr...">PART HEADING</td>
+#   <div class="prov1">
+#     <td class="prov1Hdr" id="pr26-"><span>Transfer of personal data...</span></td>
+#     <td class="prov1Txt"><strong>26.</strong>
+#         <a name="pr26-ps1-"></a> ... subsection (1) text ...
+#   Schedules use id="Sc1-..." and class="sHdr".
 _SECTION_SPLIT = re.compile(r'<div class="prov1">')
 _SEC_ID = re.compile(r'class="prov1Hdr"[^>]*id="((?:pr|Sc)[^"]*)"')
 _HDR_TEXT = re.compile(r'class="prov1Hdr"[^>]*>(.*?)</td>', re.DOTALL)
@@ -32,41 +37,8 @@ _PART_NO = re.compile(r'class="partNo[^"]*"[^>]*>(.*?)</td>', re.DOTALL)
 _SUB_ANCHOR = re.compile(r'<a name="((?:pr|Sc)[^"]*?ps(\d+[A-Z]*)-)"\s*>')
 _TITLE = re.compile(r"<title>([^<]*)</title>")
 _CURRENT = re.compile(r"Current version as at ([0-9]{1,2} [A-Za-z]{3} [0-9]{4})")
-
-
-def clean_text(fragment: str) -> str:
-    """Tag-strip + entity-unescape + whitespace-normalize, preserving legal characters."""
-    text = _TAG.sub(" ", fragment)
-    text = html_lib.unescape(text)
-    return _WS.sub(" ", text).strip()
-
-
-@dataclass
-class Subsection:
-    label: str          # "26(1)" — paragraph-depth citation label
-    text: str           # normalized verbatim text (includes the "(1)" marker)
-    anchor: str         # "pr26-ps1-"
-
-
-@dataclass
-class Section:
-    sec_id: str         # "pr26-" or "Sc1-..."
-    number: str         # "26" (or the schedule id for schedules)
-    heading: str
-    part: str           # e.g. "Part 6 CARE OF PERSONAL DATA" ("" if none)
-    text: str           # full normalized section text (heading excluded)
-    subsections: list[Subsection] = field(default_factory=list)
-
-    def anchor_url(self, act_url: str) -> str:
-        return f"{act_url}#{self.sec_id}"
-
-
-@dataclass
-class SsoActDoc:
-    law_name: str
-    current_as_at: str | None
-    source_url: str
-    sections: list[Section] = field(default_factory=list)
+_TITLE_SUFFIX = " - Singapore Statutes Online"
+# --- end sso.agc.gov.sg profile ----------------------------------------------
 
 
 def _parse_section(chunk: str, part: str) -> Section | None:
@@ -105,9 +77,9 @@ def _parse_section(chunk: str, part: str) -> Section | None:
                    text=full_text, subsections=subsections)
 
 
-def parse_sso_act(html: str, source_url: str) -> SsoActDoc:
+def parse_sso_act(html: str, source_url: str) -> ActDoc:
     title = _TITLE.search(html)
-    law_name = clean_text(title.group(1)).replace(" - Singapore Statutes Online", "").strip() if title else ""
+    law_name = clean_text(title.group(1)).replace(_TITLE_SUFFIX, "").strip() if title else ""
     current = _CURRENT.search(html)
 
     # Build a position -> part-heading map so each section knows its Part.
@@ -122,7 +94,7 @@ def parse_sso_act(html: str, source_url: str) -> SsoActDoc:
                 break
         part_positions.append((m.start(), f"{number} {label}".strip()))
 
-    doc = SsoActDoc(
+    doc = ActDoc(
         law_name=law_name,
         current_as_at=current.group(1) if current else None,
         source_url=source_url,

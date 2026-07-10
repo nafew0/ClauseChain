@@ -7,11 +7,11 @@ as metadata context for retrieval and mapping prompts.
 from __future__ import annotations
 
 from packages.core.schemas import RuleUnit
-from packages.extractors.html_sso import SsoActDoc
+from packages.extractors.act_doc import ActDoc
 
 
 def build_rule_units(
-    doc: SsoActDoc,
+    doc: ActDoc,
     economy: str,
     act_ref: str,
     law_number_ref: str | None = None,
