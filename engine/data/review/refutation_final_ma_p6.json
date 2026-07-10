@@ -8,17 +8,17 @@
    {
     "persona": "opposing",
     "refuted": false,
-    "reason": "Not refuted: the cited text does support a conditional cross-border transfer regime based on adequacy approval, which fits P6-I4 rather than any listed failure "
+    "reason": "Not refuted: this is a conditional cross-border transfer restriction/adequacy regime, which fits P6-I4 rather than any listed failure mode."
    },
    {
     "persona": "reviewer",
     "refuted": false,
-    "reason": "The snippet does support a conditional cross-border transfer regime with an adequacy condition, so this is not one of the listed failure modes."
+    "reason": "The snippet does support a conditional cross-border transfer regime with an adequacy requirement, so none of the listed failure modes clearly applies."
    },
    {
     "persona": "textualist",
     "refuted": false,
-    "reason": "The quoted text plainly establishes a conditional cross-border transfer rule with an adequacy exception, so none of the listed failure modes clearly applies."
+    "reason": "The quoted text plainly establishes a conditional cross-border transfer regime, so none of the listed failure modes clearly applies."
    }
   ]
  },
@@ -31,17 +31,17 @@
    {
     "persona": "opposing",
     "refuted": false,
-    "reason": "This is a conditional cross-border transfer regime, not a ban or domestic-processing rule; none of the listed failure modes clearly applies."
+    "reason": "Not refuted: the snippet is a conditional cross-border transfer rule, so it supports P6-I4 rather than any listed failure mode."
    },
    {
     "persona": "reviewer",
     "refuted": false,
-    "reason": "The snippet does support a conditional cross-border transfer regime, so this is not one of the listed failure modes; it is a plausible P6-style transfer provisi"
+    "reason": "This is a conditional cross-border transfer rule, so it supports P6-I4 rather than any listed failure mode; the rationale matches the provision\u2019s legal function"
    },
    {
     "persona": "textualist",
     "refuted": false,
-    "reason": "Not refuted: the quoted text plainly establishes a conditional cross-border transfer regime (transfer abroad permitted where listed conditions are met), which m"
+    "reason": "Not refuted: the quoted text plainly describes a conditional cross-border transfer regime, so it supports P6-I4 rather than any banned or domestic-only rule."
    }
   ]
  }

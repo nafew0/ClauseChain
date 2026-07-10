@@ -7,18 +7,18 @@
   "refuter_votes": [
    {
     "persona": "opposing",
-    "refuted": false,
-    "reason": "This is not refuted: the cited provision does support the existence of a horizontal personal-data-protection framework, so it plausibly evidences the framework-"
+    "refuted": true,
+    "reason": "This snippet merely states the Act\u2019s title and does not itself evidence any horizontal personal-data-protection rule or framework, so the rationale is unsupport"
    },
    {
     "persona": "reviewer",
     "refuted": true,
-    "reason": "This is a provision-identification clause, not substantive evidence of a horizontal personal-data-protection framework, so it does not support P7-I1."
+    "reason": "This is a provision-title/commencement clause and does not itself evidence a horizontal personal-data-protection framework, so the snippet does not actually sup"
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "The snippet only names the Act and does not plainly establish a horizontal personal-data-protection framework, so it does not support the claimed P7-I1 indicato"
+    "reason": "The snippet only names the Act and does not itself establish a horizontal personal-data-protection framework, so the rationale is unsupported by the quoted word"
    }
   ]
  },
@@ -31,17 +31,17 @@
    {
     "persona": "opposing",
     "refuted": true,
-    "reason": "This snippet only states which authority administers the Act; it does not itself evidence a horizontal personal-data-protection framework, so the rationale is u"
+    "reason": "This is a provision-evidences-a-different-indicator failure: s. 5(2) merely assigns administrative responsibility to the Commission and does not itself evidence"
    },
    {
     "persona": "reviewer",
-    "refuted": false,
-    "reason": "The snippet does support the existence of a horizontal personal-data-protection framework and does not fit any listed failure mode; it is an administrative prov"
+    "refuted": true,
+    "reason": "This is a provision evidencing a different indicator than claimed: it shows the PDPC administers the Act, but does not itself establish the horizontal personal-"
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "This snippet only states that the Commission administers the Act; it does not itself establish a horizontal personal-data-protection framework, so the rationale"
+    "reason": "The snippet only shows that the Commission administers the Act; it does not plainly establish the claimed P7-I1 indicator, so the rationale does not follow from"
    }
   ]
  },
@@ -54,17 +54,17 @@
    {
     "persona": "opposing",
     "refuted": false,
-    "reason": "This is not refuted under the listed failure modes: the snippet expressly states the Act governs collection, use, and disclosure of personal data by organisatio"
+    "reason": "The snippet supports a horizontal personal-data-protection framework in force; it is not a different failure mode from the claimed indicator, so this mapping is"
    },
    {
     "persona": "reviewer",
     "refuted": false,
-    "reason": "The snippet does support a horizontal personal-data-protection framework; this is not a listed failure mode, and the rationale matches the provision\u2019s function "
+    "reason": "The snippet supports a horizontal personal-data-protection framework governing collection, use, and disclosure by organisations; this is not one of the listed f"
    },
    {
     "persona": "textualist",
     "refuted": false,
-    "reason": "The quoted purpose clause plainly establishes a horizontal personal-data-protection framework governing collection, use, and disclosure by organisations, so it "
+    "reason": "The quoted text plainly states the Act governs collection, use, and disclosure of personal data by organisations, which supports a horizontal personal-data-prot"
    }
   ]
  },
@@ -76,18 +76,18 @@
   "refuter_votes": [
    {
     "persona": "opposing",
-    "refuted": true,
-    "reason": "This is a provision-defines-a-term snippet, not evidence of a horizontal personal-data-protection framework; it merely defines 'foreign data protection body' an"
+    "refuted": false,
+    "reason": "This is a definitional provision about regulatory authorities and foreign data protection bodies, not a substantive horizontal personal-data-protection rule; at"
    },
    {
     "persona": "reviewer",
     "refuted": true,
-    "reason": "This is a keyword-match without the legal function: the quoted definition of a \"foreign data protection body\" and \"regulatory authority\" does not itself establi"
+    "reason": "This is a keyword-match error: the snippet only defines regulatory bodies and does not itself establish a horizontal personal-data-protection framework or subst"
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "The snippet does not actually support the rationale: it only defines terms and introduces Part 3, and the quoted words do not plainly establish a horizontal per"
+    "reason": "The snippet only defines \"foreign data protection body\" and \"regulatory authority\"; it does not plainly establish a horizontal personal-data-protection framewor"
    }
   ]
  },
@@ -100,40 +100,17 @@
    {
     "persona": "opposing",
     "refuted": false,
-    "reason": "This is not refuted: the snippet does support the existence of a horizontal personal-data-protection framework by defining \u201cpersonal data\u201d under the Act, so non"
+    "reason": "This is not refuted: the snippet does support the existence of a horizontal personal-data-protection framework by defining \"personal data\" under the Act, so non"
    },
    {
     "persona": "reviewer",
     "refuted": false,
-    "reason": "This is not a failure-mode refutation: the snippet is a definitional clause for \u201cpersonal data\u201d within a horizontal Personal Data Protection Act, so it does evi"
+    "reason": "This is a definitional provision for personal data within a horizontal data-protection statute, so it supports the existence of the framework rather than any of"
    },
    {
     "persona": "textualist",
     "refuted": false,
-    "reason": "This is not refuted: the quoted text plainly defines \u201cpersonal data\u201d within a horizontal personal-data-protection statute, so it supports the claimed indicator "
-   }
-  ]
- },
- {
-  "indicator": "P7-I1",
-  "law": "Personal Data Protection Act 2012",
-  "article": "s. 14(4)",
-  "verdict": "SPLIT-REVIEW",
-  "refuter_votes": [
-   {
-    "persona": "opposing",
-    "refuted": false,
-    "reason": "This is not clearly wrong under the listed failure modes: the provision does support a horizontal personal-data consent framework, and the rationale is about fr"
-   },
-   {
-    "persona": "reviewer",
-    "refuted": false,
-    "reason": "This is a real horizontal consent provision in a personal data protection law, so it supports the claimed framework indicator; the rationale may be broad, but n"
-   },
-   {
-    "persona": "textualist",
-    "refuted": true,
-    "reason": "This is a provision about who may give consent on an individual\u2019s behalf, not a standalone horizontal framework indicator; the snippet does not itself establish"
+    "reason": "This is not clearly wrong: the quoted text is the Act\u2019s definition of \u201cpersonal data,\u201d which does support the existence of a horizontal personal-data-protection"
    }
   ]
  },
@@ -145,18 +122,41 @@
   "refuter_votes": [
    {
     "persona": "opposing",
-    "refuted": true,
-    "reason": "This is a scope/carve-out provision, not evidence of the horizontal personal-data-protection framework itself, so it supports a different indicator than claimed"
+    "refuted": false,
+    "reason": "Not refuted: this is a scope/exclusion clause within a personal data protection statute, so it still evidences a horizontal personal-data-protection framework r"
    },
    {
     "persona": "reviewer",
     "refuted": true,
-    "reason": "This is a scope/carve-out provision, not evidence of a horizontal personal-data-protection framework\u2019s operative coverage; it does not support the claimed indic"
+    "reason": "This is a provision evidencing a different indicator than claimed: it is a scope/exclusion clause, not evidence of a horizontal personal-data-protection framewo"
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "The snippet does not actually support the claimed rationale: it is a scope-exclusion/carve-out provision, not plain evidence of a horizontal personal-data-prote"
+    "reason": "The snippet does not actually support the claimed indicator: it is a scope/exclusion clause, not evidence of a horizontal personal-data-protection framework, so"
+   }
+  ]
+ },
+ {
+  "indicator": "P7-I1",
+  "law": "Personal Data Protection Act 2012",
+  "article": "s. 48I(2)",
+  "verdict": "RECOMMEND-KEEP",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": false,
+    "reason": "The snippet does support a horizontal personal-data-protection enforcement power; it is not a cross-border/localization or other mismatched function, and the ra"
+   },
+   {
+    "persona": "reviewer",
+    "refuted": false,
+    "reason": "The snippet does support a horizontal personal-data-protection enforcement power; this is not a listed failure mode, and the rationale matches the provision\u2019s f"
+   },
+   {
+    "persona": "textualist",
+    "refuted": false,
+    "reason": "The snippet does support a horizontal personal-data-protection enforcement power: it authorizes the Commission to direct an organisation to stop collecting, usi"
    }
   ]
  },
@@ -169,17 +169,17 @@
    {
     "persona": "opposing",
     "refuted": true,
-    "reason": "This is a keyword-match without the legal function: s. 4(6) is a savings/interaction-with-other-laws clause, not evidence of a horizontal personal-data-protecti"
+    "reason": "This is a supremacy/savings clause, not evidence of the existence or horizontal scope of a personal data protection framework, so it fails the claimed indicator"
    },
    {
     "persona": "reviewer",
     "refuted": true,
-    "reason": "This is a keyword-match error: s. 4(6) is a non-derogation / interaction-with-other-laws clause, not evidence of a horizontal personal-data-protection framework"
+    "reason": "This is a keyword-match error: the clause is a savings/supremacy provision preserving other laws, not a rule about the legal function of personal data protectio"
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "The snippet does not actually support the claimed rationale: it is a savings clause preserving other laws, not evidence of a horizontal personal-data-protection"
+    "reason": "The snippet is a savings/supremacy clause and does not plainly establish the claimed P7-I1 indicator; it evidences a different indicator than claimed rather tha"
    }
   ]
  },
@@ -192,17 +192,17 @@
    {
     "persona": "opposing",
     "refuted": true,
-    "reason": "This is a provision evidencing deemed consent for contract-related disclosure/use, not the existence of a horizontal personal-data-protection framework as claim"
+    "reason": "This is a provision evidencing a different indicator than claimed: it is a deemed-consent rule for contract-conclusion contexts, not evidence of the horizontal "
    },
    {
     "persona": "reviewer",
     "refuted": true,
-    "reason": "This is a keyword/function mismatch: the snippet is a deemed-consent rule for contract-conclusion disclosures, not evidence of the horizontal personal-data-prot"
+    "reason": "This is a keyword-match error: the snippet is about deemed consent for collection/use/disclosure in a contract-conclusion context, not the legal function of a h"
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "The snippet does not actually support the rationale: it is a deemed-consent rule for personal data in a contract-conclusion context, not plain evidence of the h"
+    "reason": "The snippet does not actually support the claimed rationale: it is a deemed-consent rule for a person providing personal data in a contract-conclusion context, "
    }
   ]
  },
@@ -215,40 +215,40 @@
    {
     "persona": "opposing",
     "refuted": false,
-    "reason": "This is a horizontal access-request disclosure rule in a personal data protection statute, so it supports the claimed DP framework indicator; no listed failure "
+    "reason": "This is not refuted under the stated failure modes: the snippet does support an access-request disclosure rule within a horizontal personal-data-protection regi"
    },
    {
     "persona": "reviewer",
     "refuted": false,
-    "reason": "This is a horizontal personal-data access/disclosure rule, so it supports the claimed DP framework indicator; the rationale is not a keyword-only mismatch or on"
+    "reason": "Not refuted: this is a horizontal access-request provision in a personal data protection law, and the snippet supports the access/correction framework rather th"
    },
    {
     "persona": "textualist",
     "refuted": false,
-    "reason": "The quoted text is a disclosure restriction tied to an access request, so it supports a horizontal personal-data-protection access rule; no listed failure mode "
+    "reason": "The quoted text does not plainly establish a standalone prohibition on disclosure in general; it is a subsection within an access-request regime and the rationa"
    }
   ]
  },
  {
   "indicator": "P7-I1",
   "law": "Personal Data Protection Act 2012",
-  "article": "s. 10(3)",
+  "article": "s. 16(4)",
   "verdict": "RECOMMEND-REJECT",
   "refuter_votes": [
    {
     "persona": "opposing",
-    "refuted": true,
-    "reason": "This is a confidentiality/cooperation condition, not a horizontal data-protection framework indicator; it does not evidence the existence of a general DP law an"
+    "refuted": false,
+    "reason": "This is not clearly wrong under the listed failure modes: the snippet does support a horizontal personal-data-protection obligation on withdrawal of consent, an"
    },
    {
     "persona": "reviewer",
     "refuted": true,
-    "reason": "This is a keyword/function mismatch: the provision is a conditional confidentiality/cooperation rule for disclosures to a foreign data protection body, not evid"
+    "reason": "This is a keyword-match error: s.16(4) is a consent-withdrawal/cessation rule for collection, use, and disclosure, not evidence of the absence of a legal basis "
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "The snippet is a cooperation/confidentiality condition, not a horizontal personal data protection rule; it does not plainly establish the claimed P7-I1 indicato"
+    "reason": "This is a lost-exception / wrong-direction error: the quoted text is a withdrawal-of-consent cessation rule, not a prohibition evidencing the absence of a horiz"
    }
   ]
  },
@@ -261,17 +261,17 @@
    {
     "persona": "opposing",
     "refuted": true,
-    "reason": "This snippet is a conditional pre-collection assessment requirement, not evidence of a horizontal personal-data-protection framework as claimed; it supports a s"
+    "reason": "This is a lost-exception / conditional-regime misread: s.15A(4) is not a general horizontal prohibition or standalone protection rule, but a pre-collection asse"
    },
    {
     "persona": "reviewer",
     "refuted": false,
-    "reason": "This is not a clear failure-mode match: the snippet does impose a pre-collection assessment condition on collection/use/disclosure, so it supports a horizontal "
+    "reason": "This is not clearly wrong under the listed failure modes: the provision does impose a horizontal pre-collection/use/disclosure assessment requirement, so the ra"
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "This is a provision-specific assessment condition for collecting/using/disclosing personal data, but it does not plainly establish the claimed P7-I1 horizontal "
+    "reason": "lost exception: the quoted text is a conditional permission to proceed after an adverse-effect assessment, not a plain horizontal prohibition or standalone data"
    }
   ]
  },
@@ -284,132 +284,17 @@
    {
     "persona": "opposing",
     "refuted": false,
-    "reason": "The snippet does support a horizontal personal-data-processing rule: it regulates organisations\u2019 collection/use/disclosure of personal data subject to consent o"
+    "reason": "Not refuted: this is a horizontal core consent/authorization rule for collection, use, and disclosure of personal data, which supports the claimed P7-I1 mapping"
    },
    {
     "persona": "reviewer",
     "refuted": false,
-    "reason": "This is a real horizontal personal-data-processing rule and the snippet supports the stated rationale; no listed failure mode clearly applies."
+    "reason": "This is a substantive horizontal consent/authorization rule for collection, use, and disclosure of personal data, so it supports the claimed core data-protectio"
    },
    {
     "persona": "textualist",
     "refuted": false,
-    "reason": "The quoted text plainly establishes a general horizontal personal-data rule requiring consent or legal authorization for collection/use/disclosure, so none of t"
-   }
-  ]
- },
- {
-  "indicator": "P7-I1",
-  "law": "Personal Data Protection Act 2012",
-  "article": "s. 22(2)",
-  "verdict": "RECOMMEND-KEEP",
-  "refuter_votes": [
-   {
-    "persona": "opposing",
-    "refuted": false,
-    "reason": "The snippet does support a horizontal correction right with a reasonable-grounds exception, so none of the listed failure modes clearly applies."
-   },
-   {
-    "persona": "reviewer",
-    "refuted": false,
-    "reason": "This is a real horizontal correction-right provision with a reasonable-grounds exception, so it supports P7-I1 rather than showing a keyword/function mismatch o"
-   },
-   {
-    "persona": "textualist",
-    "refuted": false,
-    "reason": "The quoted text plainly establishes a correction obligation with a reasonable-grounds exception, which supports a horizontal personal-data correction right; no "
-   }
-  ]
- },
- {
-  "indicator": "P7-I1",
-  "law": "Personal Data Protection Act 2012",
-  "article": "s. 4(3)",
-  "verdict": "SPLIT-REVIEW",
-  "refuter_votes": [
-   {
-    "persona": "opposing",
-    "refuted": false,
-    "reason": "The snippet does support a horizontal personal-data-protection obligation extending to data handled by intermediaries, so this is not a clear failure-mode match"
-   },
-   {
-    "persona": "reviewer",
-    "refuted": false,
-    "reason": "The provision does support a horizontal personal-data-protection obligation extending to data handled by intermediaries; this is not one of the listed failure m"
-   },
-   {
-    "persona": "textualist",
-    "refuted": true,
-    "reason": "The snippet does not actually support the rationale: it states an organisation has the same obligations for data processed by a data intermediary, which is a ho"
-   }
-  ]
- },
- {
-  "indicator": "P7-I1",
-  "law": "Personal Data Protection Act 2012",
-  "article": "s. 20(1)",
-  "verdict": "RECOMMEND-KEEP",
-  "refuter_votes": [
-   {
-    "persona": "opposing",
-    "refuted": false,
-    "reason": "The snippet does support a horizontal personal-data-processing obligation by requiring notice of purposes before collection; no listed failure mode clearly appl"
-   },
-   {
-    "persona": "reviewer",
-    "refuted": false,
-    "reason": "The snippet does support a horizontal personal-data-processing obligation by requiring notice of collection/use/disclosure purposes; this is not one of the list"
-   },
-   {
-    "persona": "textualist",
-    "refuted": false,
-    "reason": "The quoted text plainly imposes a notice obligation about purposes for collection/use/disclosure, which supports a horizontal personal-data-processing framework"
-   }
-  ]
- },
- {
-  "indicator": "P7-I1",
-  "law": "Personal Data Protection Act 2012",
-  "article": "s. 23",
-  "verdict": "RECOMMEND-KEEP",
-  "refuter_votes": [
-   {
-    "persona": "opposing",
-    "refuted": false,
-    "reason": "This provision is about data accuracy/completeness obligations, which is a horizontal personal-data-protection rule and does not match any listed failure mode."
-   },
-   {
-    "persona": "reviewer",
-    "refuted": false,
-    "reason": "This is not one of the listed failure modes: the snippet does impose a horizontal personal-data obligation, and the rationale treats it as framework evidence ra"
-   },
-   {
-    "persona": "textualist",
-    "refuted": false,
-    "reason": "The quoted text plainly imposes a personal-data accuracy/completeness obligation, which does support a horizontal data-protection framework; none of the listed "
-   }
-  ]
- },
- {
-  "indicator": "P7-I2",
-  "law": "Cybersecurity Act 2018",
-  "article": "s. 1(1)",
-  "verdict": "RECOMMEND-REJECT",
-  "refuter_votes": [
-   {
-    "persona": "opposing",
-    "refuted": true,
-    "reason": "This snippet only states the Act\u2019s title/identity; it does not itself evidence the existence of a substantive cybersecurity framework or any regulatory content,"
-   },
-   {
-    "persona": "reviewer",
-    "refuted": true,
-    "reason": "The snippet only states the Act\u2019s title/identity and does not itself evidence a cybersecurity framework or substantive cybersecurity obligations, so it does not"
-   },
-   {
-    "persona": "textualist",
-    "refuted": true,
-    "reason": "The snippet only states the Act\u2019s title/identity and does not itself establish any cybersecurity framework or the absence of a legal gap, so it does not support"
+    "reason": "The quoted text plainly establishes a horizontal personal-data-processing rule requiring consent or legal authorization, so none of the listed failure modes cle"
    }
   ]
  },
@@ -422,17 +307,17 @@
    {
     "persona": "opposing",
     "refuted": true,
-    "reason": "This is a provision evidencing a different indicator than claimed: it merely renames the Commissioner\u2019s office as the Cyber Security Agency of Singapore, which "
+    "reason": "The snippet does not actually support the rationale: it merely renames the Commissioner\u2019s office as the Cyber Security Agency of Singapore, which evidences an i"
    },
    {
     "persona": "reviewer",
     "refuted": true,
-    "reason": "The cited text only renames the office as the Cyber Security Agency of Singapore; it does not itself establish a horizontal cybersecurity framework, so this is "
+    "reason": "This is a provision evidences a different indicator than claimed: it merely names/renames the Commissioner\u2019s office as the Cyber Security Agency of Singapore, w"
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "The snippet only renames the office as the Cyber Security Agency of Singapore; it does not plainly establish the existence of a dedicated horizontal cybersecuri"
+    "reason": "The snippet only renames the office as the Cyber Security Agency of Singapore; it does not plainly establish the claimed horizontal cybersecurity framework, so "
    }
   ]
  },
@@ -440,22 +325,22 @@
   "indicator": "P7-I2",
   "law": "Cybersecurity Act 2018",
   "article": "s. 48(2)",
-  "verdict": "SPLIT-REVIEW",
+  "verdict": "RECOMMEND-REJECT",
   "refuter_votes": [
    {
     "persona": "opposing",
-    "refuted": false,
-    "reason": "The snippet supports a cybersecurity standards-setting power for critical infrastructure, so it is not clearly a wrong-function or wrong-direction match; at mos"
+    "refuted": true,
+    "reason": "This is a keyword-match without the legal function: s.48(2) is about standards to be maintained for specified infrastructure, not itself a cybersecurity framewo"
    },
    {
     "persona": "reviewer",
-    "refuted": false,
-    "reason": "The snippet does support a dedicated cybersecurity standards framework for critical infrastructure, so this is not a clear failure-mode mismatch; it may be a br"
+    "refuted": true,
+    "reason": "This is a keyword-match without the legal function: the quoted text is about standards to be maintained for critical infrastructure, not a provision establishin"
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "The snippet only refers to technical or other standards to be maintained for specified infrastructure; it does not plainly establish the claimed cybersecurity f"
+    "reason": "provision evidences a different indicator than claimed: the quoted text only refers to technical or other cybersecurity standards for specified infrastructure, "
    }
   ]
  },
@@ -463,45 +348,22 @@
   "indicator": "P7-I2",
   "law": "Cybersecurity Act 2018",
   "article": "s. 5(1)",
-  "verdict": "RECOMMEND-KEEP",
-  "refuter_votes": [
-   {
-    "persona": "opposing",
-    "refuted": false,
-    "reason": "Not refuted: the cited provision does evidence a dedicated horizontal cybersecurity framework by assigning the Commissioner oversight, advisory, and monitoring "
-   },
-   {
-    "persona": "reviewer",
-    "refuted": false,
-    "reason": "The snippet does support a horizontal cybersecurity function (oversee/promote/advise/monitor), so this is not a clear failure-mode match; it may be a broad-but-"
-   },
-   {
-    "persona": "textualist",
-    "refuted": false,
-    "reason": "This is not clearly refuted: the quoted text plainly establishes a cybersecurity oversight/monitoring/advisory function, which is at least consistent with a hor"
-   }
-  ]
- },
- {
-  "indicator": "P7-I2",
-  "law": "Cybersecurity Act 2018",
-  "article": "s. 14(2)",
   "verdict": "SPLIT-REVIEW",
   "refuter_votes": [
    {
     "persona": "opposing",
     "refuted": false,
-    "reason": "The snippet does support a dedicated cybersecurity framework for provider-owned critical information infrastructure by requiring detection mechanisms/processes,"
+    "reason": "The snippet does support a horizontal cybersecurity governance function (oversight, advice, monitoring), so none of the listed failure modes clearly applies; it"
    },
    {
     "persona": "reviewer",
     "refuted": false,
-    "reason": "This is not refuted by the ESCAP failure modes: the snippet does support a dedicated cybersecurity detection obligation for critical infrastructure, so it is a "
+    "reason": "The snippet supports a horizontal cybersecurity oversight/monitoring function, so it is not a clear mismatch with P7-I2; no listed failure mode clearly applies."
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "provision evidences a different indicator than claimed: the quoted text is a cybersecurity detection/incident-response obligation, not plainly a dedicated frame"
+    "reason": "provision evidences a different indicator than claimed: the quoted text shows a cybersecurity oversight/monitoring mandate, not the absence of a horizontal cybe"
    }
   ]
  },
@@ -509,22 +371,22 @@
   "indicator": "P7-I2",
   "law": "Cybersecurity Act 2018",
   "article": "s. 35A(1)",
-  "verdict": "RECOMMEND-KEEP",
+  "verdict": "SPLIT-REVIEW",
   "refuter_votes": [
    {
     "persona": "opposing",
     "refuted": false,
-    "reason": "The snippet does support a dedicated cybersecurity regulatory framework for critical infrastructure/designated entities; this is not one of the listed failure m"
+    "reason": "The snippet does support a cybersecurity regulatory framework via Commissioner-issued/approved codes and standards; this is not one of the listed failure modes."
    },
    {
     "persona": "reviewer",
-    "refuted": false,
-    "reason": "This is a plausible dedicated cybersecurity-framework provision; none of the listed failure modes clearly applies, and the rationale tracks the provision\u2019s actu"
+    "refuted": true,
+    "reason": "This is a provision evidencing a different indicator than claimed: it authorizes the Commissioner to issue or approve cybersecurity codes/standards, but it does"
    },
    {
     "persona": "textualist",
     "refuted": false,
-    "reason": "The quoted text plainly shows a cybersecurity regulatory framework (the Commissioner may issue or approve codes/standards for cybersecurity measures), so none o"
+    "reason": "The quoted text plainly authorizes the Commissioner to issue or approve cybersecurity codes/standards for specified persons, so it supports a dedicated cybersec"
    }
   ]
  },
@@ -537,17 +399,17 @@
    {
     "persona": "opposing",
     "refuted": false,
-    "reason": "The snippet does support a cybersecurity incident-response/threat-handling framework; this is not one of the listed failure modes."
+    "reason": "The snippet does support a cybersecurity incident-response direction framework for critical infrastructure; this is not one of the listed failure modes and the "
    },
    {
     "persona": "reviewer",
     "refuted": false,
-    "reason": "The snippet does support a cybersecurity incident-response/threat-handling function, so this is not one of the listed failure modes; it may be a better fit for "
+    "reason": "This is not clearly wrong: the cited text does support a cybersecurity incident-response direction power for critical infrastructure, so it evidences the claime"
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "provision evidences a different indicator than claimed: the quoted text is only about a Commissioner\u2019s direction on actions to take in response to a cybersecuri"
+    "reason": "The snippet only shows a direction about the action to be taken in relation to a cybersecurity threat; it does not plainly establish the claimed indicator of a "
    }
   ]
  },
@@ -560,63 +422,40 @@
    {
     "persona": "opposing",
     "refuted": false,
-    "reason": "The snippet does support a sectoral cybersecurity incident-notification framework for provider-owned critical information infrastructure; this is not a listed f"
+    "reason": "The snippet does support a sector-specific incident-notification duty for provider-owned critical infrastructure, so none of the listed failure modes clearly ap"
    },
    {
     "persona": "reviewer",
     "refuted": false,
-    "reason": "The snippet does support a sectoral cybersecurity incident-notification obligation, so this is not a clear failure-mode case; it may be a valid P7-I2 mapping ra"
+    "reason": "This is a dedicated incident-notification duty for provider-owned critical information infrastructure, so it supports the claimed sectoral cybersecurity reporti"
    },
    {
     "persona": "textualist",
     "refuted": false,
-    "reason": "The quoted text plainly establishes an incident-notification duty for provider-owned critical information infrastructure, so it supports a cybersecurity inciden"
+    "reason": "The quoted text plainly establishes a sector-specific incident-notification duty for provider-owned critical information infrastructure, so no listed failure mo"
    }
   ]
  },
  {
   "indicator": "P7-I2",
   "law": "Cybersecurity Act 2018",
-  "article": "s. 16I(5)",
+  "article": "s. 20(1)",
   "verdict": "RECOMMEND-REJECT",
   "refuter_votes": [
    {
     "persona": "opposing",
     "refuted": true,
-    "reason": "This is a keyword-match without the legal function: s.16I(5) is an operational duty to establish mechanisms/processes for awareness of threats and incidents, no"
+    "reason": "The snippet only shows the Commissioner may act upon receiving a qualifying threat/incident; it does not itself establish a dedicated incident-response framewor"
    },
    {
     "persona": "reviewer",
     "refuted": true,
-    "reason": "This is a keyword-match without the legal function: s.16I(5) is an internal preparedness/awareness duty for critical infrastructure operators, not a cybersecuri"
+    "reason": "The snippet only shows the Commissioner may act upon receiving a qualifying threat/incident; it does not itself establish a dedicated incident-response framewor"
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "The snippet supports a duty to establish mechanisms and processes for awareness of cybersecurity threats and incidents, but that is not itself a reporting/incid"
-   }
-  ]
- },
- {
-  "indicator": "P7-I2",
-  "law": "Cybersecurity Act 2018",
-  "article": "s. 3(2E)",
-  "verdict": "RECOMMEND-REJECT",
-  "refuter_votes": [
-   {
-    "persona": "opposing",
-    "refuted": true,
-    "reason": "This is a provision evidences a different indicator than claimed: it merely extends Part 3C to certain entities, but the rationale treats that as proof of a ded"
-   },
-   {
-    "persona": "reviewer",
-    "refuted": true,
-    "reason": "This is a keyword/function mismatch: the snippet only extends Part 3C to certain entities, which shows a sectoral applicability rule, not the substantive cybers"
-   },
-   {
-    "persona": "textualist",
-    "refuted": true,
-    "reason": "The snippet only states that Part 3C applies to certain entities; it does not itself establish any incident/security obligations or a dedicated cybersecurity fr"
+    "reason": "The snippet only says the Commissioner may exercise or authorise powers upon receiving qualifying threat/incident information; it does not plainly establish a d"
    }
   ]
  },
@@ -629,17 +468,40 @@
    {
     "persona": "opposing",
     "refuted": true,
-    "reason": "This is a provision about a Commissioner\u2019s direction to a CII owner on threat-response actions, which is a sectoral cybersecurity control, not evidence of the c"
+    "reason": "This is a keyword-match without the legal function: s.12(2)(a) is a cybersecurity-direction power about threat response, not a provision establishing the claime"
    },
    {
     "persona": "reviewer",
     "refuted": true,
-    "reason": "This is a keyword-match without the legal function: s.12(2) is an operational direction power for CII owners to take action on a cybersecurity threat, not evide"
+    "reason": "The snippet is only a sector-specific direction power about cybersecurity threat response, so it does not support the claimed P7-I2 rationale; this is a provisi"
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "The snippet only shows a power to direct an owner\u2019s actions in response to a cybersecurity threat; it does not plainly establish the claimed P7-I2 indicator of "
+    "reason": "The snippet does not actually support the rationale: it only says a direction may relate to actions to be taken by the owner in relation to a cybersecurity thre"
+   }
+  ]
+ },
+ {
+  "indicator": "P7-I2",
+  "law": "Cybersecurity Act 2018",
+  "article": "s. 19(2)",
+  "verdict": "RECOMMEND-KEEP",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": false,
+    "reason": "This is a horizontal cybersecurity incident-response power, so it does support the existence of a dedicated cybersecurity framework; no listed failure mode clea"
+   },
+   {
+    "persona": "reviewer",
+    "refuted": false,
+    "reason": "The provision does support a horizontal incident-response function by empowering an incident response officer to compel attendance and statements about a cybers"
+   },
+   {
+    "persona": "textualist",
+    "refuted": false,
+    "reason": "The quoted text plainly establishes an incident-response investigative power in a cybersecurity statute, so it supports the existence of a horizontal cybersecur"
    }
   ]
  },
@@ -652,17 +514,17 @@
    {
     "persona": "opposing",
     "refuted": true,
-    "reason": "This is a provision-specific mismatch: the snippet is about remedial directions/cessation powers, but the rationale claims it evidences a general cybersecurity "
+    "reason": "This is a keyword-match without the legal function: s.20(2) is a remedial/direction power to stop or fix harmful activity, not evidence of a dedicated incident-"
    },
    {
     "persona": "reviewer",
     "refuted": false,
-    "reason": "The snippet does support a cybersecurity incident-response power, so this is not a clear failure-mode refutation; at most it is a rationale/indicator-fit judgme"
+    "reason": "The snippet supports a cybersecurity incident-response/remedial powers framework, so this is not one of the listed failure modes; it may be a better fit for a d"
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "The snippet does not actually support the claimed rationale: it is a remedial/directive power about a person ceasing or correcting activities, not plain evidenc"
+    "reason": "The snippet does not actually support the rationale: it authorizes a person to be directed by written notice to take remedial measures or cease activities, but "
    }
   ]
  },
@@ -675,17 +537,17 @@
    {
     "persona": "opposing",
     "refuted": false,
-    "reason": "The snippet does support an incident-notification duty for critical information infrastructure, so none of the listed failure modes clearly applies."
+    "reason": "The snippet does support an incident-notification framework for critical information infrastructure, so none of the listed failure modes clearly applies."
    },
    {
     "persona": "reviewer",
     "refuted": false,
-    "reason": "The snippet does support incident notification for critical information infrastructure, so this is not a clear failure-mode refutation; at most it is a plausibl"
+    "reason": "The snippet does support a cybersecurity incident-reporting obligation for critical information infrastructure, so this is not clearly a wrong-function or unsup"
    },
    {
     "persona": "textualist",
     "refuted": false,
-    "reason": "The quoted text plainly establishes an incident-notification duty for designated providers of critical information infrastructure, so it supports a cybersecurit"
+    "reason": "The quoted text plainly establishes an incident-notification duty for critical information infrastructure, so it supports a cybersecurity incident-reporting fra"
    }
   ]
  },
@@ -697,18 +559,18 @@
   "refuter_votes": [
    {
     "persona": "opposing",
-    "refuted": true,
-    "reason": "This is a provision-specific failure: the snippet is about a designated provider\u2019s obligation to obtain a legally binding commitment from a third-party owner, w"
+    "refuted": false,
+    "reason": "The cited provision does support a sectoral cybersecurity governance obligation for critical information infrastructure; this is not one of the listed failure m"
    },
    {
     "persona": "reviewer",
     "refuted": true,
-    "reason": "This is a keyword/function mismatch: s.16E(1) is about a designated provider obtaining a legally binding commitment from a third-party owner for cybersecurity o"
+    "reason": "This is a keyword/function mismatch: s.16E(1) is an ownership/commitment requirement for third-party-owned critical information infrastructure, not evidence of "
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "provision evidences a different indicator than claimed: it is a specific obligation on a designated provider to obtain a legally binding commitment from a third"
+    "reason": "The snippet does not actually support the rationale: it only requires a legally binding commitment from the owner of third-party-owned critical information infr"
    }
   ]
  },
@@ -716,91 +578,22 @@
   "indicator": "P7-I2",
   "law": "Cybersecurity Act 2018",
   "article": "s. 16E(4)",
-  "verdict": "SPLIT-REVIEW",
-  "refuter_votes": [
-   {
-    "persona": "opposing",
-    "refuted": false,
-    "reason": "The snippet supports a cybersecurity information-furnishing power for critical information infrastructure, so it is not clearly a wrong-function or wrong-indica"
-   },
-   {
-    "persona": "reviewer",
-    "refuted": false,
-    "reason": "The snippet supports a sector-specific cybersecurity information-gathering power for critical information infrastructure, so this is not one of the listed failu"
-   },
-   {
-    "persona": "textualist",
-    "refuted": true,
-    "reason": "The snippet only shows a notice power to require a designated provider to furnish information; it does not plainly establish the claimed dedicated cybersecurity"
-   }
-  ]
- },
- {
-  "indicator": "P7-I2",
-  "law": "Cybersecurity Act 2018",
-  "article": "s. 10(1)",
   "verdict": "RECOMMEND-REJECT",
   "refuter_votes": [
    {
     "persona": "opposing",
-    "refuted": true,
-    "reason": "This is a keyword-match without the legal function: s.10(1) is a notice-based information-gathering power, not evidence of a dedicated cybersecurity framework o"
-   },
-   {
-    "persona": "reviewer",
-    "refuted": true,
-    "reason": "This is a keyword-match error: the provision is about the Commissioner\u2019s power to require furnishing of information about critical information infrastructure, n"
-   },
-   {
-    "persona": "textualist",
-    "refuted": true,
-    "reason": "wrong direction: the quoted text is a notice-based information-gathering power, not plain evidence of a dedicated cybersecurity framework or the absence of one"
-   }
-  ]
- },
- {
-  "indicator": "P7-I2",
-  "law": "Cybersecurity Act 2018",
-  "article": "s. 16J(1)",
-  "verdict": "RECOMMEND-REJECT",
-  "refuter_votes": [
-   {
-    "persona": "opposing",
-    "refuted": true,
-    "reason": "This is a keyword-match without the legal function: s.16J(1) is about obtaining a legally binding commitment from a third-party owner, not itself a dedicated cy"
-   },
-   {
-    "persona": "reviewer",
-    "refuted": true,
-    "reason": "This is a keyword-match error: s.16J(1) is about obtaining a legally binding commitment from a third-party owner for cybersecurity governance, not a sectoral cy"
-   },
-   {
-    "persona": "textualist",
-    "refuted": true,
-    "reason": "The snippet does not actually support the claimed rationale: it speaks only to a designated provider obtaining a legally binding commitment from a third-party o"
-   }
-  ]
- },
- {
-  "indicator": "P7-I2",
-  "law": "Cybersecurity Act 2018",
-  "article": "s. 16J(7)",
-  "verdict": "RECOMMEND-REJECT",
-  "refuter_votes": [
-   {
-    "persona": "opposing",
-    "refuted": true,
-    "reason": "This is a provision about the Commissioner checking conformity with prescribed cybersecurity standards for critical infrastructure, not a direct audit/enforceme"
-   },
-   {
-    "persona": "reviewer",
     "refuted": false,
-    "reason": "The provision does support a cybersecurity standard/audit enforcement function for critical infrastructure, so this is not clearly one of the listed failure mod"
+    "reason": "The snippet supports a Commissioner notice power to require furnishing information within a critical-infrastructure cybersecurity regime, so none of the listed "
+   },
+   {
+    "persona": "reviewer",
+    "refuted": true,
+    "reason": "This is a keyword-match without the legal function: s.16E(4) is a notice-based information-furnishing power for critical infrastructure oversight, not evidence "
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "The snippet does not actually support the rationale: it speaks only to ascertaining conformity with prescribed cybersecurity standards, not to directing an audi"
+    "reason": "The snippet only shows a notice-based power to require a designated provider to furnish information; it does not plainly establish the claimed indicator of a de"
    }
   ]
  },
@@ -813,17 +606,17 @@
    {
     "persona": "opposing",
     "refuted": false,
-    "reason": "The snippet does support a minimum retention obligation, so this is not refuted under the listed failure modes; at most it is a plausible P7-I3 retention mappin"
+    "reason": "The snippet supports a minimum retention obligation, so this is not refuted under the listed failure modes."
    },
    {
     "persona": "reviewer",
     "refuted": false,
-    "reason": "This is a retention-period provision, so it supports P7-I3; the rationale is not a keyword-only mismatch or other listed failure mode."
+    "reason": "This is not refuted: the provision does impose a minimum retention period for transfer pricing documentation, which fits a retention indicator rather than any l"
    },
    {
     "persona": "textualist",
     "refuted": false,
-    "reason": "The quoted text plainly establishes a minimum retention period of at least 5 years, so the claimed P7-I3 retention mapping is supported."
+    "reason": "The quoted text plainly supports a minimum retention period of at least 5 years, so the claimed P7-I3 retention mapping is not refuted on the face of the words."
    }
   ]
  },
@@ -831,22 +624,22 @@
   "indicator": "P7-I3",
   "law": "Cybersecurity Act 2018",
   "article": "s. 29(1)",
-  "verdict": "RECOMMEND-REJECT",
+  "verdict": "SPLIT-REVIEW",
   "refuter_votes": [
    {
     "persona": "opposing",
     "refuted": false,
-    "reason": "Not refuted: the snippet expressly imposes a minimum retention period (\u201cnot less than 3 years\u201d), which supports the claimed retention indicator rather than any "
+    "reason": "The snippet does support a minimum retention obligation, so this is not one of the listed failure modes; it may be a valid P7-I3 retention mapping."
    },
    {
     "persona": "reviewer",
-    "refuted": true,
-    "reason": "wrong direction: the clause is a minimum retention period ('not less than 3 years'), which supports retention, not a retention limit indicator like P7-I3."
+    "refuted": false,
+    "reason": "This is a retention-period requirement, and the snippet expressly sets a minimum retention of not less than 3 years, so it supports the claimed indicator rather"
    },
    {
     "persona": "textualist",
     "refuted": true,
-    "reason": "wrong direction: the quoted text is a minimum retention period ('not less than 3 years'), which supports retention duration, not the claimed indicator if it req"
+    "reason": "wrong direction: the quoted text is a retention minimum (\u201cnot less than 3 years\u201d), which supports minimum-retention, not a maximum-retention limit indicator lik"
    }
   ]
  },
@@ -854,22 +647,45 @@
   "indicator": "P7-I3",
   "law": "Companies Act 1967",
   "article": "s. 344H(1)",
-  "verdict": "SPLIT-REVIEW",
+  "verdict": "RECOMMEND-KEEP",
   "refuter_votes": [
    {
     "persona": "opposing",
     "refuted": false,
-    "reason": "Not refuted: the snippet does support a minimum retention period, so this is not a listed failure mode."
+    "reason": "This is a minimum retention rule, so it supports P7-I3 rather than any listed failure mode."
    },
    {
     "persona": "reviewer",
-    "refuted": true,
-    "reason": "wrong direction: this is a post-dissolution minimum retention period, not the kind of retention-limit/retention-rule function P7-I3 is meant to capture."
+    "refuted": false,
+    "reason": "This is a retention-period rule, and the cited text expressly sets a minimum 5-year retention period; no listed failure mode clearly applies."
    },
    {
     "persona": "textualist",
     "refuted": false,
-    "reason": "The quoted text plainly establishes a minimum retention period (\u201cat least 5 years\u201d), so none of the listed failure modes clearly applies."
+    "reason": "This is not refuted: the quoted text plainly establishes a minimum retention period of at least 5 years, which matches the claimed retention indicator."
+   }
+  ]
+ },
+ {
+  "indicator": "P7-I5",
+  "law": "Criminal Procedure Code 2010",
+  "article": "s. 40(2)",
+  "verdict": "RECOMMEND-REJECT",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": true,
+    "reason": "court-gated access misread as warrantless: the cited provision is a police-access power to decryption information, but the rationale claims it authorizes govern"
+   },
+   {
+    "persona": "reviewer",
+    "refuted": true,
+    "reason": "court-gated access misread as warrantless: the snippet authorizes police access to decryption information, but the rationale wrongly treats it as unrestricted g"
+   },
+   {
+    "persona": "textualist",
+    "refuted": true,
+    "reason": "court-gated access misread as warrantless: the quoted text only says police may access decryption information, and it does not plainly establish any independent"
    }
   ]
  },
@@ -877,22 +693,22 @@
   "indicator": "P7-I5",
   "law": "Criminal Procedure Code 2010",
   "article": "s. 34(1)",
-  "verdict": "RECOMMEND-REJECT",
+  "verdict": "RECOMMEND-KEEP",
   "refuter_votes": [
    {
     "persona": "opposing",
-    "refuted": true,
-    "reason": "court-gated access misread as warrantless: the provision expressly allows a police officer to search \"without a search warrant,\" so it does not evidence indepen"
+    "refuted": false,
+    "reason": "This is not refuted under the stated failure modes: the provision does authorize warrantless police search, so it supports the rationale for government access w"
    },
    {
     "persona": "reviewer",
-    "refuted": true,
-    "reason": "court-gated access misread as warrantless: the provision expressly allows search \"without a search warrant,\" so it does not support a P7-I5 rationale requiring "
+    "refuted": false,
+    "reason": "This is a court-gated access issue, but the snippet expressly allows a warrantless search by police; the rationale matches the text rather than misreading it."
    },
    {
     "persona": "textualist",
-    "refuted": true,
-    "reason": "court-gated access misread as warrantless: the quoted text expressly says the officer may search \"without a search warrant,\" so it does not support a claim of i"
+    "refuted": false,
+    "reason": "The quoted text plainly authorizes police to search without a search warrant, so it supports warrantless government access; no listed failure mode clearly appli"
    }
   ]
  }
