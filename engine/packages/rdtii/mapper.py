@@ -99,7 +99,8 @@ Return one decision per candidate, using each candidate's index number."""
     return survivors
 
 
-def map_candidate(llm_high, indicator_id: str, cfg: dict, candidate) -> MapDecision:
+def map_candidate(llm_high, indicator_id: str, cfg: dict, candidate,
+                  gold_anchor: bool = False) -> MapDecision:
     """Precise mapping of one provision to one indicator, with a verifiable quote."""
     props = candidate.props
     prompt = f"""You are a legal analyst applying the ESCAP RDTII 2.1 methodology.
@@ -107,6 +108,8 @@ def map_candidate(llm_high, indicator_id: str, cfg: dict, candidate) -> MapDecis
 {_indicator_brief(indicator_id, cfg)}
 
 {GOLDEN_RULES}
+
+{"GOLD ANCHOR: ESCAP's master dataset records THIS provision under THIS indicator (KNOWN baseline). Reproducing it proves recall — unless the text PLAINLY contradicts the legal test, set applies=true and extract the operative quote." if gold_anchor else ""}
 
 PROVISION UNDER ANALYSIS
 Law: {props.get('law_name', '')}

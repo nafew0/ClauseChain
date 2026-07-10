@@ -199,6 +199,7 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
         from packages.discovery.diff import laws_match as _lm, section_base as _sb
         known_rows = [r for r in known._by_economy.get(economy, [])
                       if str(r.get("pillar")) == str(pillar)]
+        gold_anchor_ids: set[str] = set()
         for krow in known_rows:
             for ref in krow.get("articles", []):
                 kbase = _sb(ref)
@@ -215,7 +216,10 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                     if hole not in warnings:
                         warnings.append(hole)
                     continue
+                indicator_matches = str(krow.get("indicator_code", "")) == indicator_id
                 for m in matches:
+                    if indicator_matches:
+                        gold_anchor_ids.add(m["provision_id"])
                     if m["provision_id"] not in have_ids:
                         from packages.retrieval.hybrid import Candidate as _Cand
                         candidates.append(_Cand(m["provision_id"], m["text"], m["props"],
@@ -247,7 +251,8 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
 
         indicator_rows = 0
         for candidate in survivors:
-            decision = map_candidate(llm_high, indicator_id, cfg, candidate)
+            decision = map_candidate(llm_high, indicator_id, cfg, candidate,
+                                     gold_anchor=candidate.provision_id in gold_anchor_ids)
             if not decision.applies:
                 continue
             props = candidate.props

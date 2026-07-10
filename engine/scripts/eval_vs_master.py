@@ -59,14 +59,26 @@ def main() -> int:
     new_rows = 0
     format_failures: list[str] = []
 
+    # token-set + alias-aware matching (same logic the engine uses — diff.py)
+    from packages.discovery.diff import KnownIndex, laws_match
+
+    aliases = KnownIndex(args.index)._aliases.get(args.economy, {})
+
+    def gold_match(gold_name: str, our_name: str) -> bool:
+        resolved = aliases.get(gold_name, gold_name)
+        return laws_match(resolved, our_name)
+
     for i, row in enumerate(rows, start=1):
-        law_norm = normalize_law_name(row.get("Law Name", ""))
+        law_name = row.get("Law Name", "")
+        law_norm = normalize_law_name(law_name)
         refs = [base_ref(r) for r in extract_refs(row.get("Article / Section", ""))]
-        if law_norm in known_laws:
-            matched_laws.add(law_norm)
+        for gold_name in known_laws:
+            if gold_match(gold_name, law_name):
+                matched_laws.add(gold_name)
         for article in refs:
-            if (law_norm, article) in known_provisions:
-                matched_provisions.add((law_norm, article))
+            for gold_name, gold_article in known_provisions:
+                if article == gold_article and gold_match(gold_name, law_name):
+                    matched_provisions.add((gold_name, gold_article))
         if row.get("Discovery Tag") == "NEW":
             new_rows += 1
 
