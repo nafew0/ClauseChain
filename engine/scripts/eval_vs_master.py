@@ -38,23 +38,22 @@ def main() -> int:
     known = [
         e for e in entries
         if e["source"] == "master"
-        and (e["indicator_code"] or "").startswith(f"P{args.pillar}-")
+        and re.fullmatch(rf"P{args.pillar}-I\d+", e["indicator_code"] or "")
     ]
     # a master row may pack several laws into one Act cell — match against each
     known_laws = {name for e in known for name in e.get("acts_norm", [e["act_norm"]])}
-    known_provisions = {
-        (name, base_ref(article))
-        for e in known
-        for name in e.get("acts_norm", [e["act_norm"]])
-        for article in e["articles"]
-    }
+    known_provisions = [
+        {"id": f"{i}:{article}", "laws": e.get("acts_norm", [e["act_norm"]]),
+         "article": base_ref(article), "indicator": e.get("indicator_code")}
+        for i, e in enumerate(known) for article in e["articles"]
+    ]
 
     with open(args.output, newline="", encoding="utf-8") as file:
         rows = list(csv.DictReader(file))
     rows = [r for r in rows if r.get("Economy", "").strip().lower() == args.economy.lower()
             and (r.get("Indicator ID", "").startswith(f"P{args.pillar}-"))]
 
-    matched_provisions = set()
+    matched_provisions: set[str] = set()
     matched_laws = set()
     new_rows = 0
     format_failures: list[str] = []
@@ -76,9 +75,11 @@ def main() -> int:
             if gold_match(gold_name, law_name):
                 matched_laws.add(gold_name)
         for article in refs:
-            for gold_name, gold_article in known_provisions:
-                if article == gold_article and gold_match(gold_name, law_name):
-                    matched_provisions.add((gold_name, gold_article))
+            for anchor in known_provisions:
+                if (article == anchor["article"]
+                        and row.get("Indicator ID") == anchor["indicator"]
+                        and any(gold_match(name, law_name) for name in anchor["laws"])):
+                    matched_provisions.add(anchor["id"])
         if row.get("Discovery Tag") == "NEW":
             new_rows += 1
 

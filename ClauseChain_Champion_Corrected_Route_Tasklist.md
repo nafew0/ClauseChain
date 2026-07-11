@@ -168,36 +168,36 @@ The extraction text was mostly correct. The regex statute parser was not.
 
 ### TASK E1 - Add immutable source artifacts
 
-- [ ] Add `SourceArtifact` with source URL, retrieved URL, MIME type, byte length, SHA-256, access timestamp, official domain, register/version ID, and local archived path.
-- [ ] Store authoritative status separately from domain authority.
-- [ ] Store compilation/effective/amendment dates as evidence-backed fields, not inferred strings.
-- [ ] Reject HTML error pages, login pages, and mislabeled downloads before parsing.
+- [x] Add `SourceArtifact` with source URL, retrieved URL, MIME type, byte length, SHA-256, access timestamp, official domain, register/version ID, and local archived path.
+- [x] Store authoritative status separately from domain authority.
+- [x] Store compilation/effective/amendment dates as evidence-backed fields, not inferred strings.
+- [x] Reject HTML error pages, login pages, and mislabeled downloads before parsing.
 
 **Acceptance:** every candidate and final row points to an existing `SourceArtifact` hash.
 
 ### TASK E2 - Add page and token provenance
 
-- [ ] Add `PageArtifact` with page number, width/height, route, raw text, searchable text, page image hash, and quality signals.
-- [ ] Add `TextSpan`/`OCRToken` with original text, char offsets, bbox/quad, extraction method, engine version, and confidence when applicable.
-- [ ] Preserve PyMuPDF native spans, not only page-level text.
-- [ ] Preserve OCR boxes through graph/storage/export; do not drop metadata in `SqliteGraphStore`.
+- [x] Add `PageArtifact` with page number, width/height, route, raw text, searchable text, page image hash, and quality signals.
+- [x] Add `TextSpan`/`OCRToken` with original text, char offsets, bbox/quad, extraction method, engine version, and confidence when applicable.
+- [x] Preserve PyMuPDF native spans, not only page-level text.
+- [x] Preserve OCR boxes through graph/storage/export; do not drop metadata in `SqliteGraphStore`.
 
 **Acceptance:** a selected snippet can render a page crop/highlight without rerunning extraction.
 
 ### TASK E3 - Add `CitationProof`
 
-- [ ] Include source hash, page/anchor, bbox list, token/span IDs, exact snippet, article path, and verification timestamp.
-- [ ] Construct `verbatim_snippet` by slicing stored spans/tokens.
-- [ ] Prevent an LLM-returned free-text snippet from entering export directly.
-- [ ] Store both exact original and normalised-search forms.
+- [x] Include source hash, page/anchor, bbox list, token/span IDs, exact snippet, article path, and verification timestamp.
+- [x] Construct `verbatim_snippet` by slicing stored spans/tokens.
+- [x] Prevent an LLM-returned free-text snippet from entering export directly.
+- [x] Store both exact original and normalised-search forms.
 
 **Acceptance:** changing one character in a snippet makes the proof gate fail.
 
 ### TASK E4 - Preserve provenance in final JSON
 
-- [ ] Consolidated JSON must retain archived copy, access date, source hash, extraction route, OCR metrics, graph/evidence path, all gate results, reviewer decision, and CitationProof.
-- [ ] CSV remains template-compatible; JSON carries the complete audit record.
-- [ ] Add a test that consolidating outputs cannot discard JSON-only provenance fields.
+- [x] Consolidated JSON must retain archived copy, access date, source hash, extraction route, OCR metrics, graph/evidence path, all gate results, reviewer decision, and CitationProof.
+- [x] CSV remains template-compatible; JSON carries the complete audit record.
+- [x] Add a test that consolidating outputs cannot discard JSON-only provenance fields.
 
 ---
 
@@ -205,59 +205,59 @@ The extraction text was mostly correct. The regex statute parser was not.
 
 ### TASK R1 - Replace the 25-character PDF classifier
 
-- [ ] Classify per page using text coverage, image coverage, glyph/vector characteristics, span count, Unicode quality, and section-token sanity.
-- [ ] Detect suspicious hidden OCR layers rather than trusting any text layer over 25 characters.
-- [ ] Return `NATIVE_SIMPLE`, `NATIVE_COMPLEX`, `SCANNED`, `MIXED`, or `REVIEW` with reasons.
-- [ ] Log the route decision per page.
+- [x] Classify per page using text coverage, image coverage, glyph/vector characteristics, span count, Unicode quality, and section-token sanity.
+- [x] Detect suspicious hidden OCR layers rather than trusting any text layer over 25 characters.
+- [x] Return `NATIVE_SIMPLE`, `NATIVE_COMPLEX`, `SCANNED`, `MIXED`, or `REVIEW` with reasons.
+- [x] Log the route decision per page.
 
 **Acceptance:** every benchmark page receives a stable, explainable route.
 
 ### TASK R2 - Implement native PDF span extraction
 
-- [ ] Use PyMuPDF `dict`/`rawdict` to retain blocks, lines, spans, fonts, sizes, flags, and bboxes.
-- [ ] Produce separate source-order and coordinate-order representations.
-- [ ] Identify repeating page headers/footers by geometry and frequency, not regex deletion.
-- [ ] Preserve original Unicode punctuation.
+- [x] Use PyMuPDF `dict`/`rawdict` to retain blocks, lines, spans, fonts, sizes, flags, and bboxes.
+- [x] Produce separate source-order and coordinate-order representations.
+- [x] Identify repeating page headers/footers by geometry and frequency, not regex deletion.
+- [x] Preserve original Unicode punctuation.
 
 **Acceptance:** all four AU benchmark pages reproduce every critical citation token exactly.
 
 ### TASK R3 - Implement AU structured XHTML acquisition
 
-- [ ] Extend `acquire_au_act()` to inspect the official `Documents` API formats for the chosen `registerId`.
-- [ ] Acquire the authorised PDF and official EPUB-derived XHTML for the exact same compilation.
-- [ ] Store both under one compilation/version record with their separate authority roles.
-- [ ] Parse XHTML paragraph classes, anchors, Parts, Divisions, Schedules, sections, subsections, items, notes, and endnotes.
-- [ ] Exclude TOC entries from operative provision nodes while retaining them as navigation hints.
+- [x] Extend `acquire_au_act()` to inspect the official `Documents` API formats for the chosen `registerId`.
+- [x] Acquire the authorised PDF and official EPUB-derived XHTML for the exact same compilation.
+- [x] Store both under one compilation/version record with their separate authority roles.
+- [x] Parse XHTML paragraph classes, anchors, Parts, Divisions, Schedules, sections, subsections, items, notes, and endnotes.
+- [x] Exclude TOC entries from operative provision nodes while retaining them as navigation hints.
 
 **Acceptance:** s.187A is one correct section; its note mentioning s.187B does not create a false section.
 
 ### TASK R4 - Implement source alignment
 
-- [ ] Align XHTML provision text to PDF native spans using section ID + normalised text windows.
-- [ ] Require exact original-text recovery from PDF spans for the exported snippet.
-- [ ] Record alignment score and mismatches.
-- [ ] Route unresolved alignment to human review.
+- [x] Align XHTML provision text to PDF native spans using section ID + normalised text windows.
+- [x] Require exact original-text recovery from PDF spans for the exported snippet.
+- [x] Record alignment score and mismatches.
+- [x] Route unresolved alignment to human review.
 
 **Acceptance:** each AU gold provision has an authorised-PDF page and bbox proof.
 
 ### TASK R5 - Correct legal citation grammar
 
-- [ ] Support integer sections: `33D`, `187A`, `317ZH`.
-- [ ] Support decimal Schedule sections: `474.17`, `474.17A`.
-- [ ] Support regulations, clauses, articles, Schedules, Parts, Divisions, paragraphs, subparagraphs, and Roman items.
-- [ ] Model hierarchical paths, e.g. `Schedule > s.474.17A > (1) > (c) > (iii)`.
-- [ ] Never identify a section heading from plain body text that merely says `section 187B`.
-- [ ] Never treat a page number/header/footer as a section.
+- [x] Support integer sections: `33D`, `187A`, `317ZH`.
+- [x] Support decimal Schedule sections: `474.17`, `474.17A`.
+- [x] Support regulations, clauses, articles, Schedules, Parts, Divisions, paragraphs, subparagraphs, and Roman items.
+- [x] Model hierarchical paths, e.g. `Schedule > s.474.17A > (1) > (c) > (iii)`.
+- [x] Never identify a section heading from plain body text that merely says `section 187B`.
+- [x] Never treat a page number/header/footer as a section.
 
 **Acceptance:** fixture tests cover every grammar above and have zero false section starts.
 
 ### TASK R6 - OCR route and metrics
 
-- [ ] Rename current `ocr_quality_cer` proxy to `mean_ocr_confidence`.
-- [ ] Add true CER/WER calculation against a versioned human-gold page set.
-- [ ] Add `citation_token_accuracy` and `section_structure_accuracy`.
-- [ ] Ensure Paddle returns page numbers and bboxes; block OCR citations without them.
-- [ ] Keep Tesseract fallback, but flag cross-engine citation-token disagreement.
+- [x] Rename current `ocr_quality_cer` proxy to `mean_ocr_confidence`.
+- [x] Add true CER/WER calculation against a versioned human-gold page set.
+- [x] Add `citation_token_accuracy` and `section_structure_accuracy`.
+- [x] Ensure Paddle returns page numbers and bboxes; block OCR citations without them.
+- [x] Keep Tesseract fallback, but flag cross-engine citation-token disagreement.
 
 ### TASK R7 - Conditional Docling JSON adapter
 
@@ -281,24 +281,24 @@ The extraction text was mostly correct. The regex statute parser was not.
 
 ### TASK A1 - Source-type filter before retrieval
 
-- [ ] Reject bills, drafts, consultations, international agreements, secondary commentary, company policies, and repealed instruments from the P6/P7 evidence corpus.
-- [ ] Keep rejected documents as discovery leads with explicit reason codes.
-- [ ] Remove the Malaysian Amendment Bill and RCEP agreement from final-evidence eligibility.
+- [x] Reject bills, drafts, consultations, international agreements, secondary commentary, company policies, and repealed instruments from the P6/P7 evidence corpus.
+- [x] Keep rejected documents as discovery leads with explicit reason codes.
+- [x] Remove the Malaysian Amendment Bill and RCEP agreement from final-evidence eligibility.
 
 ### TASK A2 - Version/currentness resolver
 
-- [ ] Model `draft`, `not_yet_effective`, `in_force`, `amended`, `repealed`, `superseded`, and `unknown`.
-- [ ] Store the official fact supporting the status.
-- [ ] Treat URL liveness and legal currentness as different gates.
-- [ ] Make `unknown` block final export.
-- [ ] Stop assigning `status="in_force"` unconditionally.
+- [x] Model `draft`, `not_yet_effective`, `in_force`, `amended`, `repealed`, `superseded`, and `unknown`.
+- [x] Store the official fact supporting the status.
+- [x] Treat URL liveness and legal currentness as different gates.
+- [x] Make `unknown` block final export.
+- [x] Stop assigning `status="in_force"` unconditionally.
 
 ### TASK A3 - Fix absence handling
 
-- [ ] Replace automatic score-zero rows with `NO_EVIDENCE_FOUND_PENDING_REVIEW`.
-- [ ] Configure the governing instrument per economy+indicator; never select `corpus[0]`.
-- [ ] Store a `SearchCoverageManifest`: portals, instruments, queries, dates, exclusions, and unresolved failures.
-- [ ] Require human approval before converting absence to a score-zero final row.
+- [x] Replace automatic score-zero rows with `NO_EVIDENCE_FOUND_PENDING_REVIEW`.
+- [x] Configure the governing instrument per economy+indicator; never select `corpus[0]`.
+- [x] Store a `SearchCoverageManifest`: portals, instruments, queries, dates, exclusions, and unresolved failures.
+- [x] Require human approval before converting absence to a score-zero final row.
 
 ---
 
@@ -306,33 +306,33 @@ The extraction text was mostly correct. The regex statute parser was not.
 
 ### TASK L1 - Close KNOWN recall before NEW discovery
 
-- [ ] Rebuild AU corpus with the structured-XHTML/PDF-alignment route.
-- [ ] Re-run full known-anchor evaluation for every economy+pillar.
-- [ ] Investigate every recall hole as one of: acquisition, structure, normalisation, retrieval, mapping, gold-parser error, or genuinely obsolete gold.
-- [ ] Maintain an adjudication file for gold rows that are ambiguous or wrong.
+- [x] Rebuild AU corpus with the structured-XHTML/PDF-alignment route.
+- [x] Re-run full known-anchor evaluation for every economy+pillar.
+- [x] Investigate every recall hole as one of: acquisition, structure, normalisation, retrieval, mapping, gold-parser error, or genuinely obsolete gold.
+- [x] Maintain an adjudication file for gold rows that are ambiguous or wrong.
 
 **Freeze target:** 100% of resolvable KNOWN anchors reproduced; every unresolved anchor explicitly adjudicated with evidence.
 
 ### TASK L2 - Make retrieval claims measurable
 
-- [ ] Rename “not top-k” to recall-driven retrieval.
-- [ ] Report candidate recall before LLM screening.
-- [ ] Report screen survival recall.
-- [ ] Log every cap and which known anchors would have been lost without injection.
-- [ ] Add exact section/article and defined-term queries alongside dense retrieval.
+- [x] Rename “not top-k” to recall-driven retrieval.
+- [x] Report candidate recall before LLM screening.
+- [x] Report screen survival recall.
+- [x] Log every cap and which known anchors would have been lost without injection.
+- [x] Add exact section/article and defined-term queries alongside dense retrieval.
 
 ### TASK L3 - Strengthen rule-unit construction
 
-- [ ] Carry principal rule, conditions, exceptions, notes, definitions, and cross-references as linked but separate spans.
-- [ ] Allow context to cross page boundaries.
-- [ ] Ensure the exported snippet is concise while `raw_context` contains the whole composite rule.
+- [x] Carry principal rule, conditions, exceptions, notes, definitions, and cross-references as linked but separate spans.
+- [x] Allow context to cross page boundaries.
+- [x] Ensure the exported snippet is concise while `raw_context` contains the whole composite rule.
 
 ### TASK L4 - Human review contract
 
-- [ ] Every final row has `reviewer_decision=approved`, reviewer name/role, timestamp, and optional correction note.
-- [ ] NEW rows require independent source/citation and mapping checks.
-- [ ] Zone-3 scores require explicit approval/override.
-- [ ] Pending rows cannot enter `consolidated_final.csv`.
+- [x] Every final row has `reviewer_decision=approved`, reviewer name/role, timestamp, and optional correction note.
+- [x] NEW rows require independent source/citation and mapping checks.
+- [x] Zone-3 scores require explicit approval/override.
+- [x] Pending rows cannot enter `consolidated_final.csv`.
 
 ---
 
@@ -340,9 +340,9 @@ The extraction text was mostly correct. The regex statute parser was not.
 
 ### TASK V1 - Extraction gold set
 
-- [ ] Create at least 30 manually checked pages across clean native, complex native, scanned, mixed, and multilingual documents.
+- [ ] Create at least 30 manually checked pages across clean native, complex native, scanned, mixed, and multilingual documents. *(30-page stratified draft complete; named human checking pending.)*
 - [ ] Include section numbers, decimal sections, Roman items, Schedules, exceptions, headers/footers, and cross-page provisions.
-- [ ] Version gold text and structural labels in fixtures.
+- [x] Version gold text and structural labels in fixtures.
 
 ### TASK V2 - Required metrics
 
@@ -360,21 +360,21 @@ The extraction text was mostly correct. The regex statute parser was not.
 
 ### TASK V3 - Regression fixtures from this audit
 
-- [ ] Privacy Act s.33D: preserve `(1)`, `(a)`, `(b)`, `(2)` and page 249/source PDF page 267.
-- [ ] TIA s.187A: do not create a false s.187B from Note 2.
-- [ ] Telecommunications Act s.317ZH: do not create section 102 from the printed page number.
-- [ ] Criminal Code Schedule: parse `474.17`, `474.17A`, and `(iii)` exactly.
-- [ ] OCR confidence cannot populate CER.
-- [ ] Consolidation cannot discard provenance/reviewer fields.
-- [ ] Bills and international agreements cannot become final P6/P7 evidence.
+- [x] Privacy Act s.33D: preserve `(1)`, `(a)`, `(b)`, `(2)` and page 249/source PDF page 267.
+- [x] TIA s.187A: do not create a false s.187B from Note 2.
+- [x] Telecommunications Act s.317ZH: do not create section 102 from the printed page number.
+- [x] Criminal Code Schedule: parse `474.17`, `474.17A`, and `(iii)` exactly.
+- [x] OCR confidence cannot populate CER.
+- [x] Consolidation cannot discard provenance/reviewer fields.
+- [x] Bills and international agreements cannot become final P6/P7 evidence.
 
 ### TASK V4 - Clean-machine modes
 
-- [ ] `live`: crawl official portals and use configured providers.
-- [ ] `offline-eval`: run against bundled corpus/fixtures without network.
-- [ ] `submission-replay`: deterministically regenerate final CSV/JSON from approved findings.
-- [ ] Remove or clearly isolate stub output so it cannot be mistaken for the real pipeline.
-- [ ] Pin dependencies and document model/weight requirements honestly.
+- [x] `live`: crawl official portals and use configured providers.
+- [x] `offline-eval`: run against bundled corpus/fixtures without network.
+- [x] `submission-replay`: deterministically regenerate final CSV/JSON from approved findings.
+- [x] Remove or clearly isolate stub output so it cannot be mistaken for the real pipeline.
+- [x] Pin dependencies and document model/weight requirements honestly.
 
 ---
 
@@ -457,6 +457,23 @@ ClauseChain is champion-ready only when a judge can select any submitted row and
 6. verify why it is NEW or KNOWN;
 7. see which deterministic gates passed;
 8. see that a human reviewer approved it.
+
+---
+
+## Current gate audit
+
+Tasks A1-A3, L2-L4, V3, and the V4 execution/replay infrastructure are implemented.
+The AU/SG/MY graph has been rebuilt under schema v3 and passes the independent graph
+validator. The current machine-readable audit is `engine/reports/champion_validation.json`.
+
+Champion freeze is intentionally **not** declared. Remaining gates are explicit:
+
+- the 30-page fixture is a complete stratified draft, but still needs named human
+  transcription/structure sign-off;
+- the corrected recall adjudicator reports unresolved acquisition, structure, mapping,
+  and gold-side questions requiring repair or user adjudication;
+- all candidate rows and Zone-3 scores remain pending named review;
+- `consolidated_final.csv/json` are absent because approval-only replay has not run.
 
 The winning line is:
 

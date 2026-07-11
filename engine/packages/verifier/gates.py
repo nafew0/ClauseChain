@@ -88,6 +88,9 @@ def g4_currentness(current_as_at: str | None, status: str = "in_force") -> GateR
 
     (Repeal/supersession graph checks land with G8 in P3'.)
     """
+    if status == "unknown":
+        return GateResult(gate_id="G4", status="WARN",
+                          reason="legal currentness is unknown; candidate may be reviewed but cannot be final")
     if status != "in_force":
         return GateResult(gate_id="G4", status="FAIL",
                           reason=f"instrument status is {status!r}, not in force")
@@ -248,11 +251,12 @@ def run_gates(
     source_url: str,
     whitelist_domains: set[str],
     current_as_at: str | None,
+    legal_status: str = "unknown",
 ) -> tuple[list[GateResult], bool]:
     gates = [
         g1_span_exists(snippet, source_text),
         g3_authority(source_url, whitelist_domains),
-        g4_currentness(current_as_at),
+        g4_currentness(current_as_at, legal_status),
     ]
     all_ok = all(g.status in ("PASS", "WARN") for g in gates)
     return gates, all_ok

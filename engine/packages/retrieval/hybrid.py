@@ -152,9 +152,31 @@ def retrieve_for_indicator(
     queries = build_query_pack(indicator_id, indicator_cfg)
     by_id: dict[str, Candidate] = {}
 
+    # Deterministic exact-phrase/defined-term leg.  This is deliberately
+    # independent of FTS ranking and embeddings so statutory terms cannot be
+    # lost through tokenization or semantic drift.
+    exact_phrases = [str(v).strip() for v in (
+        list(indicator_cfg.get("positive_cues", []) or [])
+        + list(indicator_cfg.get("defined_terms", []) or [])) if str(v).strip()]
+    for phrase in exact_phrases:
+        needle = phrase.casefold()
+        for row in corpus:
+            if needle not in row["text"].casefold():
+                continue
+            cand = by_id.setdefault(row["provision_id"], Candidate(
+                row["provision_id"], row["text"], row.get("props", {})))
+            cand.sparse_score = max(cand.sparse_score, 10.0)
+            cand.matched_queries.append(f"exact-phrase:{phrase}")
+
     # sparse leg — graph-backed full-text (FTS5 / Lucene), one query at a time
     for query in queries:
         for hit in store.search_provisions(query, economy=economy, limit=SPARSE_LIMIT_PER_QUERY):
+            # The FTS index intentionally retains historical/ineligible nodes for
+            # audit, but the evidence retriever must never surface them.
+            if not hit.get("props", {}).get("evidence_eligible", False):
+                continue
+            if hit.get("props", {}).get("legal_status") != "in_force":
+                continue
             cand = by_id.setdefault(
                 hit["provision_id"],
                 Candidate(hit["provision_id"], hit["text"], hit.get("props", {})),
@@ -190,13 +212,29 @@ def load_corpus(store, economy: str) -> list[dict]:
             node = store._connect().execute(
                 "SELECT props FROM nodes WHERE id = ?", (provision_id,)
             ).fetchone()
-            out.append({"provision_id": provision_id, "text": text,
-                        "props": json.loads(node[0]) if node else {}})
+            props = json.loads(node[0]) if node else {}
+            if (not props.get("evidence_eligible", False)
+                    or props.get("legal_status") != "in_force"):
+                continue
+            out.append({"provision_id": provision_id, "text": text, "props": props})
         return out
     # Neo4j
     with store._connect().session() as session:
         records = session.run(
             "MATCH (p:Provision) WHERE p.economy = $economy RETURN p", economy=economy
         )
-        return [{"provision_id": r["p"].get("id"), "text": r["p"].get("text", ""),
-                 "props": dict(r["p"])} for r in records]
+        out = []
+        for record in records:
+            node = record["p"]
+            props = dict(node)
+            try:
+                props["metadata"] = json.loads(props.get("metadata_json") or "{}")
+                props["status_evidence"] = json.loads(
+                    props.get("status_evidence_json") or "null")
+            except json.JSONDecodeError:
+                props["metadata"] = {}
+            if (props.get("evidence_eligible", False)
+                    and props.get("legal_status") == "in_force"):
+                out.append({"provision_id": node.get("id"),
+                            "text": node.get("text", ""), "props": props})
+        return out

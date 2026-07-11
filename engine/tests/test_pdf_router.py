@@ -37,6 +37,16 @@ def _make_mixed_pdf(path):
     doc.close()
 
 
+def _make_furniture_pdf(path):
+    doc = fitz.open()
+    for i in range(3):
+        page = doc.new_page()
+        page.insert_text((72, 35), "Repeated Act Header")
+        page.insert_text((72, 200), f"Section {i + 1}. Operative legal text for this page.")
+        page.insert_text((72, 810), f"Compilation page {i + 1}")
+    doc.save(str(path)); doc.close()
+
+
 class SpyOCR:
     def __init__(self):
         self.extract_calls = []
@@ -107,3 +117,20 @@ def test_mixed_pdf_ocrs_only_image_pages(tmp_path):
     assert pages[0].metadata["extraction"] == "native_text"
     assert pages[1].metadata["extraction"] == "ocr"
     assert [p.page_number for p in pages] == [1, 2]
+
+
+def test_native_preserves_both_orders_and_excludes_repeated_furniture_from_search(tmp_path):
+    pdf = tmp_path / "furniture.pdf"; _make_furniture_pdf(pdf)
+    pages = extract_pdf(str(pdf))
+    assert all(p.metadata["source_order_text"] for p in pages)
+    assert all(p.metadata["coordinate_order_text"] for p in pages)
+    assert "Repeated Act Header" in pages[0].text
+    assert "Repeated Act Header" not in pages[0].metadata["searchable_text"]
+    assert "Operative legal text" in pages[0].metadata["searchable_text"]
+    assert pages[0].metadata["repeated_furniture_span_indices"]
+
+
+def test_docling_cannot_be_enabled_as_canonical_text(tmp_path):
+    pdf = tmp_path / "native.pdf"; _make_text_pdf(pdf, pages=1)
+    with pytest.raises(RuntimeError, match="disabled"):
+        extract_pdf(str(pdf), engine="docling")

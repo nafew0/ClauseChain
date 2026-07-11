@@ -77,7 +77,14 @@ def test_e4_consolidation_preserves_provenance(tmp_path, monkeypatch):
                "Mapping Rationale": "r", "Source URL": "https://x", "Confidence": 0.9,
                "Notes": "", "archived_copy": "data/raw/x.html", "access_date": "2026-07-10",
                "status_evidence": "portal asserts current", "reviewer_decision": "pending",
-               "citation_tier": "[verify-pinpoint]"}
+               "citation_tier": "[verify-pinpoint]", "source_artifact_id": "sha256:" + "a" * 64,
+               "citation_proof": {"source_artifact_id": "sha256:" + "a" * 64,
+                    "source_sha256": "a" * 64, "page_number": 1, "anchor": None,
+                    "article_path": ["section 1", "item (1)"], "span_ids": ["span-1"],
+                    "bboxes": [[1, 2, 3, 4]], "exact_snippet": "text",
+                    "normalized_snippet": "text", "alignment_status": "exact",
+                    "alignment_score": 1.0, "gate_results": [],
+                    "verified_at": "2026-07-10T00:00:00Z"}}
     (run / "output.json").write_text(_json.dumps({"findings": [finding]}))
     with (run / "output.csv").open("w", newline="") as fh:
         w = _csv.DictWriter(fh, fieldnames=[k for k in finding if k[0].isupper()])
@@ -92,5 +99,6 @@ def test_e4_consolidation_preserves_provenance(tmp_path, monkeypatch):
     data = _json.loads((tmp_path / "submission/consolidated.json").read_text())
     row = data["rows"][0]
     for field in ("archived_copy", "access_date", "status_evidence",
-                  "reviewer_decision", "citation_tier"):
+                  "reviewer_decision", "citation_tier", "source_artifact_id",
+                  "citation_proof"):
         assert field in row, f"consolidation dropped {field}"

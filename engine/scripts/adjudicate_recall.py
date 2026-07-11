@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import csv
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -55,6 +56,10 @@ def main() -> int:
     raw = json.loads(Path("data/known_index.json").read_text())["economies"]
     store = SqliteGraphStore()
 
+    previous_path = Path("data/review/recall_adjudication.json")
+    previous = json.loads(previous_path.read_text()).get("misses", []) if previous_path.is_file() else []
+    previous_by_key = {(m.get("economy"), str(m.get("pillar")), m.get("gold_indicator"),
+                        m.get("act"), m.get("ref")): m for m in previous}
     misses = []
     stats: dict[str, dict[str, int]] = {}
     for run in run_dirs:
@@ -67,16 +72,20 @@ def main() -> int:
         def gmatch(gold_name: str, our_name: str) -> bool:
             return laws_match(aliases.get(gold_name, gold_name), our_name)
 
-        # (gold law, gold base, indicator, original ref) for this economy+pillar
+        # One anchor is one master row + reference. Composite Act cells do not
+        # encode a reliable law↔reference pairing; a Cartesian product creates
+        # false misses, so resolve each anchor against any listed instrument.
         gold = []
-        for e in raw.get(economy, []):
-            if e.get("source") != "master" or not str(e.get("indicator_code", "")).startswith(f"P{pillar}-"):
+        for row_index, e in enumerate(raw.get(economy, [])):
+            if (e.get("source") != "master"
+                    or not re.fullmatch(rf"P{pillar}-I\d+", str(e.get("indicator_code", "")))):
                 continue
-            for law in e.get("acts_norm", [e.get("act_norm")]):
-                for ref in e.get("articles", []):
-                    gold.append({"law": law, "base": base_ref(ref), "ref": ref,
-                                 "indicator": e.get("indicator_code"),
-                                 "act_display": e.get("act", law)})
+            laws = e.get("acts_norm", [e.get("act_norm")])
+            for ref in e.get("articles", []):
+                gold.append({"anchor_id": f"{row_index}:{ref}", "laws": laws,
+                             "base": base_ref(ref), "ref": ref,
+                             "indicator": e.get("indicator_code"),
+                             "act_display": e.get("act", laws[0] if laws else "")})
 
         corpus = corpus_units(store, economy)
         run_stats = {"gold": len(gold), "matched": 0, "NOT_IN_CORPUS": 0,
@@ -84,13 +93,13 @@ def main() -> int:
                      "GOLD_REF_UNPARSEABLE": 0}
         seen = set()
         for g in gold:
-            key = (g["law"], g["base"], g["indicator"])
+            key = (g["anchor_id"], g["base"], g["indicator"])
             if key in seen:
                 continue
             seen.add(key)
 
             def row_hits(row) -> bool:
-                if not gmatch(g["law"], row.get("Law Name", "")):
+                if not any(gmatch(law, row.get("Law Name", "")) for law in g["laws"]):
                     return False
                 return g["base"] in {base_ref(r) for r in extract_refs(row.get("Article / Section", ""))}
 
@@ -120,17 +129,44 @@ def main() -> int:
                 if kbase is None:
                     verdict = "GOLD_REF_UNPARSEABLE"
                 else:
-                    in_corpus = any(gmatch(g["law"], u["props"].get("law_name", ""))
+                    in_corpus = any(any(gmatch(law, u["props"].get("law_name", ""))
+                                        for law in g["laws"])
                                     and unit_hits(u) for u in corpus)
                     verdict = "IN_CORPUS_NOT_EMITTED" if in_corpus else "NOT_IN_CORPUS"
             run_stats[verdict] += 1
             emitted_under = sorted({r.get("Indicator ID") for r in same_ind}) if same_ind else []
-            misses.append({"economy": economy, "pillar": pillar, "run": str(run),
+            technical_class = verdict
+            if verdict == "NOT_IN_CORPUS":
+                law_present = any(any(gmatch(law, u["props"].get("law_name", ""))
+                                      for law in g["laws"]) for u in corpus)
+                failure_class = "STRUCTURE" if law_present else "ACQUISITION"
+            elif verdict == "IN_CORPUS_NOT_EMITTED":
+                failure_class = "MAPPING"
+            elif verdict in {"EMITTED_OTHER_INDICATOR", "GOLD_REF_UNPARSEABLE"}:
+                failure_class = "GOLD_ERROR"
+            else:
+                failure_class = "RETRIEVAL"
+            item = {"economy": economy, "pillar": pillar, "run": str(run),
                            "gold_indicator": g["indicator"], "act": g["act_display"],
-                           "ref": g["ref"], "base": g["base"], "class": verdict,
+                           "ref": g["ref"], "base": g["base"], "class": failure_class,
                            "emitted_under": emitted_under,
+                           "proposed_verdict": ({"NOT_IN_CORPUS": "REAL_MISS",
+                               "IN_CORPUS_NOT_EMITTED": "LEGAL_MAPPING_REVIEW",
+                               "EMITTED_OTHER_INDICATOR": "GOLD_AMBIGUOUS",
+                               "GOLD_REF_UNPARSEABLE": "GOLD_AMBIGUOUS"}[verdict]),
+                           "evidence": {"corpus_checked": True,
+                                        "matched_output_rows": len(same_ind),
+                                        "technical_class": technical_class,
+                                        "failure_taxonomy": failure_class},
                            "reviewer_verdict": "",  # REAL_MISS | GOLD_WRONG | GOLD_AMBIGUOUS | CORRECT_ABSTENTION
-                           "reviewer_note": ""})
+                           "reviewer_note": ""}
+            old = previous_by_key.get((economy, str(pillar), g["indicator"], g["act_display"], g["ref"]))
+            if old:
+                item["reviewer_verdict"] = old.get("reviewer_verdict", "")
+                item["reviewer_note"] = old.get("reviewer_note", "")
+                if old.get("review"):
+                    item["review"] = old["review"]
+            misses.append(item)
         stats[f"{economy} P{pillar}"] = run_stats
         print(f"{economy} P{pillar}: {run_stats}")
 

@@ -28,6 +28,39 @@ class LocalOCRPlaceholder:
         ]
 
 
+class TesseractOCR:
+    """Local OCR fallback preserving token boxes and page numbers."""
+
+    def ocr_image(self, image_bytes: bytes, page_number: int = 1,
+                  document_id: str = "image") -> ExtractedPage:
+        import io
+        import pytesseract
+        from PIL import Image
+
+        image = Image.open(io.BytesIO(image_bytes))
+        data = pytesseract.image_to_data(image, output_type=pytesseract.Output.DICT)
+        tokens = []
+        for i, raw in enumerate(data.get("text", [])):
+            text = str(raw).strip()
+            if not text:
+                continue
+            confidence = float(data["conf"][i])
+            confidence = confidence / 100 if confidence >= 0 else None
+            x, y, w, h = (float(data[k][i]) for k in ("left", "top", "width", "height"))
+            tokens.append(OCRToken(text=text, confidence=confidence,
+                                   bbox=[x, y, x + w, y + h], page_number=page_number))
+        confidences = [t.confidence for t in tokens if t.confidence is not None]
+        return ExtractedPage(document_id=document_id, page_number=page_number,
+            text=" ".join(t.text for t in tokens), source_url=f"file://{document_id}",
+            location_reference=f"page {page_number}",
+            confidence=sum(confidences) / len(confidences) if confidences else None,
+            tokens=tokens, metadata={"ocr_engine": "tesseract", "engine_version": str(pytesseract.get_tesseract_version())})
+
+    def extract(self, file_path: str) -> list[ExtractedPage]:
+        return [self.ocr_image(image, page_no, file_path)
+                for page_no, image in _rasterize(file_path)]
+
+
 def _rasterize(file_path: str, dpi: int = 200) -> Iterator[tuple[int, bytes]]:
     """Yield (page_number, PNG bytes) for a PDF, or the raw bytes for an image file."""
     path = Path(file_path)
@@ -162,6 +195,8 @@ class RemotePaddleOCR:
 
     def _page_from(self, file_path: str, page_number: int, data: dict) -> ExtractedPage:
         text, confidence, tokens = _parse_ocr_response(data)
+        for token in tokens:
+            token.page_number = page_number
         return ExtractedPage(
             document_id=file_path,
             page_number=page_number,
@@ -232,10 +267,56 @@ class RemotePaddleOCR:
         return pages
 
 
+class FallbackRemotePaddleOCR(RemotePaddleOCR):
+    """Paddle primary with boxed Tesseract fallback and citation-token comparison."""
+
+    def __init__(self, *args, fallback=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._fallback = fallback or TesseractOCR()
+
+    def extract(self, file_path: str) -> list[ExtractedPage]:
+        from packages.extractors.metrics import citation_tokens_disagree
+        try:
+            primary = super().extract(file_path)
+        except (httpx.HTTPError, OSError):
+            pages = self._fallback.extract(file_path)
+            for page in pages:
+                page.metadata["ocr_fallback_reason"] = "Paddle unavailable"
+            return pages
+        if os.getenv("OCR_VERIFY_CROSS_ENGINE", "1") != "1":
+            return primary
+        secondary = self._fallback.extract(file_path)
+        by_page = {p.page_number: p for p in secondary}
+        for page in primary:
+            other = by_page.get(page.page_number)
+            page.metadata["citation_token_disagreement"] = bool(
+                other and citation_tokens_disagree(page.text, other.text))
+            page.metadata["cross_engine"] = "tesseract"
+        return primary
+
+    def ocr_image(self, image_bytes: bytes, page_number: int = 1,
+                  document_id: str = "image") -> ExtractedPage:
+        from packages.extractors.metrics import citation_tokens_disagree
+        try:
+            primary = super().ocr_image(image_bytes, page_number, document_id)
+        except (httpx.HTTPError, OSError):
+            fallback = self._fallback.ocr_image(image_bytes, page_number, document_id)
+            fallback.metadata["ocr_fallback_reason"] = "Paddle unavailable"
+            return fallback
+        if os.getenv("OCR_VERIFY_CROSS_ENGINE", "1") == "1":
+            other = self._fallback.ocr_image(image_bytes, page_number, document_id)
+            primary.metadata["citation_token_disagreement"] = citation_tokens_disagree(
+                primary.text, other.text)
+            primary.metadata["cross_engine"] = "tesseract"
+        return primary
+
+
 def build_ocr(config: dict | None):
     """Factory keyed on the profile's ocr.provider (models.yaml) — the config-only swap."""
     config = config or {}
     provider = str(config.get("provider", "local")).strip().lower()
+    if provider in {"tesseract", "local_tesseract"}:
+        return TesseractOCR()
     if provider in {"remote_paddle", "paddle_remote", "remote"}:
         endpoint = config.get("endpoint") or os.getenv("OCR_ENDPOINT", "http://localhost:8089")
         api_key = config.get("api_key") or os.getenv("OCR_API_KEY") or None
@@ -243,7 +324,7 @@ def build_ocr(config: dict | None):
             config.get("request_format") or os.getenv("OCR_REQUEST_FORMAT") or "multipart"
         )
         lang = config.get("lang") or os.getenv("OCR_LANG") or None
-        return RemotePaddleOCR(
+        return FallbackRemotePaddleOCR(
             endpoint, api_key=api_key, request_format=request_format, lang=lang
         )
     return LocalOCRPlaceholder()

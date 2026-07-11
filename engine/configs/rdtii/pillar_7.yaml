@@ -16,6 +16,7 @@ indicator_weights: { P7-I1: 0.31, P7-I2: 0.31, P7-I3: 0.16, P7-I4: 0.06, P7-I5: 
 
 indicators:
   P7-I1:
+    defined_terms: ["personal data", "data subject"]
     methodology_number: "7.1"
     name: Lack of comprehensive legal framework for data protection
     policy_name: Lack of comprehensive legal framework for data protection
@@ -35,6 +36,7 @@ indicators:
     example: "SG PDPA 2012 (horizontal) -> score 0; sectoral-only economy -> 0.5."
 
   P7-I2:
+    defined_terms: ["critical infrastructure", "cyber security incident"]
     methodology_number: "7.2"
     name: Lack of dedicated legal framework for cybersecurity
     policy_name: Lack of dedicated legal framework for cybersecurity
@@ -51,6 +53,7 @@ indicators:
     example: "SG Cybersecurity Act 2018 (dedicated, horizontal) -> score 0; MY Cyber Security Act 854 (2024) -> 0; sector-only cyber rules with no horizontal act -> 0.5."
 
   P7-I3:
+    defined_terms: ["retain", "records"]
     methodology_number: "7.3"
     name: Minimum period of data retention requirements
     policy_name: Minimum period of data retention requirements
@@ -71,6 +74,7 @@ indicators:
     example: "Bangladesh: e-commerce transaction data retained 6 years from the transaction."
 
   P7-I4:
+    defined_terms: ["data protection officer", "impact assessment"]
     methodology_number: "7.4"
     name: DPIA / DPO requirements
     policy_name: Data Protection Impact Assessment or Data Protection Officer requirements
@@ -91,6 +95,7 @@ indicators:
     example: "SG PDPA: organisations must appoint a DPO (all sectors) -> 1. India DPDP Act 2023 s. 10: Significant Data Fiduciary must appoint DPO + run DPIA."
 
   P7-I5:
+    defined_terms: ["authorised officer", "warrant"]
     methodology_number: "7.5"
     name: Requirements to allow government access to personal data
     policy_name: Requirements to allow government access to personal data

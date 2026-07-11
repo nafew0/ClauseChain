@@ -10,6 +10,26 @@ from packages.core.schemas import RuleUnit
 from packages.extractors.act_doc import ActDoc
 
 
+def classify_rule_components(text: str) -> list[dict]:
+    """Deterministically expose linked legal context without rewriting source text."""
+    import re
+
+    patterns = (
+        ("exception", re.compile(r"\b(?:except|unless|does not apply|despite)\b", re.I)),
+        ("condition", re.compile(r"\b(?:if|where|provided that|subject to)\b", re.I)),
+        ("definition", re.compile(r"\b(?:means|includes|in this (?:Act|section))\b", re.I)),
+        ("note", re.compile(r"\bNote\s*\d*\s*[:—-]", re.I)),
+        ("cross_reference", re.compile(r"\b(?:section|subsection|paragraph|Schedule)\s+\d", re.I)),
+    )
+    components = [{"role": "principal_rule", "start": 0, "end": len(text), "text": text}]
+    for role, pattern in patterns:
+        for match in pattern.finditer(text):
+            stop = min(len(text), (text.find(".", match.start()) + 1) or len(text))
+            components.append({"role": role, "start": match.start(), "end": stop,
+                               "text": text[match.start():stop]})
+    return components
+
+
 def build_rule_units(
     doc: ActDoc,
     economy: str,
@@ -31,6 +51,7 @@ def build_rule_units(
                     last_amended=last_amended,
                     article_section=f"s. {label}",
                     text=sub.text,
+                    raw_context=section.text,
                     source_url=section.anchor_url(doc.source_url),
                     location_reference=f"#{section.sec_id}",
                     metadata={
@@ -38,6 +59,7 @@ def build_rule_units(
                         "part": section.part,
                         "section_number": section.number,
                         "current_as_at": doc.current_as_at,
+                        "rule_components": classify_rule_components(section.text),
                     },
                 )
             )

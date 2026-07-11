@@ -7,12 +7,148 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 JsonDict = dict[str, Any]
+LegalStatus = Literal[
+    "draft", "not_yet_effective", "in_force", "amended", "repealed",
+    "superseded", "unknown",
+]
+ExtractionRoute = Literal[
+    "NATIVE_SIMPLE", "NATIVE_COMPLEX", "SCANNED", "MIXED", "REVIEW",
+]
+
+
+class StatusEvidence(BaseModel):
+    status: LegalStatus
+    fact_url: str = Field(min_length=1)
+    fact_text: str = Field(min_length=1)
+    checked_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    effective_date: str | None = None
+    end_date: str | None = None
+    resolution_rule: str = Field(min_length=1)
+    conflicting: bool = False
+
+
+class SourceArtifact(BaseModel):
+    """Immutable identity and authority record for one archived source."""
+
+    id: str
+    original_url: str
+    retrieved_url: str
+    source_type: str
+    mime_type: str
+    byte_length: int = Field(ge=1)
+    sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    accessed_at: datetime
+    official_domain: str
+    official: bool
+    local_path: str
+    register_id: str | None = None
+    version_id: str | None = None
+    status_evidence: StatusEvidence
+    metadata: JsonDict = Field(default_factory=dict)
+
+    model_config = ConfigDict(frozen=True)
+
+
+class TextSpan(BaseModel):
+    id: str
+    source_artifact_id: str
+    page_number: int = Field(ge=1)
+    text: str
+    start_char: int = Field(ge=0)
+    end_char: int = Field(ge=0)
+    bbox: tuple[float, float, float, float]
+    reading_order: int = Field(ge=0)
+    extraction_method: str
+    engine_version: str
+    confidence: float | None = Field(default=None, ge=0.0, le=1.0)
+
+    model_config = ConfigDict(frozen=True)
+
+
+class PageArtifact(BaseModel):
+    id: str
+    source_artifact_id: str
+    page_number: int = Field(ge=1)
+    width: float = Field(gt=0)
+    height: float = Field(gt=0)
+    route: ExtractionRoute
+    route_reasons: list[str]
+    raw_text: str
+    searchable_text: str
+    page_image_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    span_ids: list[str]
+    quality_signals: JsonDict = Field(default_factory=dict)
+
+    model_config = ConfigDict(frozen=True)
+
+
+class CitationProof(BaseModel):
+    source_artifact_id: str
+    source_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    page_number: int | None = Field(default=None, ge=1)
+    anchor: str | None = None
+    article_path: list[str]
+    span_ids: list[str]
+    bboxes: list[tuple[float, float, float, float]]
+    exact_snippet: str
+    normalized_snippet: str
+    alignment_status: Literal["exact", "anchor", "unaligned", "ambiguous"]
+    alignment_score: float = Field(ge=0.0, le=1.0)
+    gate_results: list[JsonDict] = Field(default_factory=list)
+    verified_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class SearchCoverageManifest(BaseModel):
+    economy: str
+    indicator_id: str
+    portals: list[str]
+    instruments: list[str]
+    queries: list[str]
+    searched_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    exclusions: list[str] = Field(default_factory=list)
+    caps: list[str] = Field(default_factory=list)
+    unresolved_failures: list[str] = Field(default_factory=list)
+    # One record per governing/search instrument.  A list of names alone does
+    # not prove that each instrument was actually acquired and searched.
+    instrument_results: list[JsonDict] = Field(default_factory=list)
+    query_result_counts: dict[str, int] = Field(default_factory=dict)
+
+    @property
+    def complete(self) -> bool:
+        if not self.portals or not self.instruments or not self.queries:
+            return False
+        if self.unresolved_failures:
+            return False
+        searched = {str(r.get("instrument", "")) for r in self.instrument_results
+                    if r.get("searched") is True and r.get("source_artifact_id")}
+        return bool(searched) and all(i in searched for i in self.instruments)
+
+
+class ReviewDecision(BaseModel):
+    decision: Literal["approved", "rejected"]
+    reviewer_name: str = Field(min_length=1)
+    reviewer_role: str = Field(min_length=1)
+    reviewed_at: datetime
+    citation_checked: bool
+    mapping_checked: bool
+    status_checked: bool
+    correction_note: str | None = None
+    citation_reviewer_name: str | None = None
+    mapping_reviewer_name: str | None = None
+    status_reviewer_name: str | None = None
+
+    @property
+    def complete_approval(self) -> bool:
+        return self.decision == "approved" and all(
+            (self.citation_checked, self.mapping_checked, self.status_checked)
+        )
 
 
 class OCRToken(BaseModel):
     text: str
     confidence: float | None = Field(default=None, ge=0.0, le=1.0)
     bbox: list[float] | None = None
+    page_number: int | None = Field(default=None, ge=1)
 
 
 class SourceDocument(BaseModel):
@@ -52,6 +188,9 @@ class RuleUnit(BaseModel):
     end_char: int | None = Field(default=None, ge=0)
     extraction_confidence: float | None = Field(default=None, ge=0.0, le=1.0)
     metadata: JsonDict = Field(default_factory=dict)
+    source_artifact_id: str | None = None
+    raw_context: str | None = None
+    linked_span_ids: list[str] = Field(default_factory=list)
 
 
 class PredicateTuple(BaseModel):
@@ -100,7 +239,7 @@ class MappedFinding(BaseModel):
     # Appended-after-the-13 columns (allowed per the 15-Jun Q&A); kept after the required set.
     coverage: str | None = Field(default=None, alias="Coverage")
     verbatim_snippet_en: str | None = Field(default=None, alias="Verbatim Snippet (English)")
-    status: str | None = Field(default=None, alias="Status")
+    status: LegalStatus | None = Field(default=None, alias="Status")
     model_version: str | None = None  # JSON-only provenance (which model produced the row)
     graph_path: list[str] = Field(default_factory=list)
     verifier_risks: list[str] = Field(default_factory=list)
@@ -112,8 +251,14 @@ class MappedFinding(BaseModel):
     mean_ocr_confidence: float | None = None   # None = native text (no OCR involved)
     ocr_quality_cer: float | None = None       # true CER only; else None
     status_evidence: str | None = None         # what backs the Status field (A2)
+    status_evidence_record: StatusEvidence | None = None
     citation_tier: str | None = None           # [settled] / [verify] / [verify-pinpoint]
     reviewer_decision: str = "pending"          # pending / approved / rejected (Legal HITL)
+    source_artifact_id: str | None = None
+    citation_proof: CitationProof | None = None
+    search_coverage_manifest: SearchCoverageManifest | None = None
+    review: ReviewDecision | None = None
+    raw_context: str | None = None
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -152,4 +297,3 @@ class RunEnvelope(BaseModel):
     gates: list[GateResult] = Field(default_factory=list)
     warnings: list[str] = Field(default_factory=list)
     metadata: JsonDict = Field(default_factory=dict)
-

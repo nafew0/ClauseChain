@@ -1,7 +1,7 @@
 {
  "economy": "Australia",
  "pillar": 6,
- "run": "run-au-p6-1783708483",
+ "run": "run-au-p6-1783777145",
  "krippendorff_alpha": 1.0,
  "indicators": {
   "P6-I1": {
@@ -11,17 +11,17 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "The only gate-verified row states NO_EVIDENCE_FOUND_PENDING_REVIEW for the Privacy Act 1988, so there is no plain evidence of a ban or local processing requirem"
+     "reason": "The only gate-verified row shows no evidence found for the Privacy Act 1988, so there is no plain textual basis to find a ban or local processing requirement."
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "The only gate-verified row shows no evidence found for the Privacy Act 1988, so there is no verified ban or local processing requirement to score."
+     "reason": "The only gate-verified row shows no evidence of a ban or local processing requirement, so the transfer is treated as free of such requirements."
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "The only gate-verified row shows no evidence of a ban or local processing requirement, so there is insufficient basis to score this indicator above zero."
+     "reason": "The only cited instrument is the Privacy Act 1988, but the gate-verified evidence shows no relevant ban or local processing requirement was found, so there is i"
     }
    ],
    "band": [
@@ -38,26 +38,26 @@
    "judges": [
     {
      "persona": "strict",
-     "score": 1.0,
-     "reason": "The cited provisions impose local storage requirements for specific data types (My Health Record records and credit reporting information), including a rule tha"
+     "score": 0.5,
+     "reason": "The cited provision is a single sector-specific rule about holding and taking My Health Records outside Australia, which is a non-horizontal storage/location re"
     },
     {
      "persona": "ESCAP",
-     "score": 1.0,
-     "reason": "There are multiple local-storage requirements covering personal data (e.g., My Health Records and credit reporting information), which meets the criteria for sc"
+     "score": 0.5,
+     "reason": "The cited provision is a single sector-specific rule about taking My Health Record records outside Australia, which is a non-general storage restriction and doe"
     },
     {
      "persona": "skeptical",
-     "score": 1.0,
-     "reason": "There are multiple sectoral local-storage requirements, including a personal-data restriction for My Health Records and a separate credit-reporting storage rule"
+     "score": 0.5,
+     "reason": "The cited provision is a single sector-specific rule about taking My Health Record records outside Australia, which at most amounts to one non-personal/specific"
     }
    ],
    "band": [
     0.5,
-    1.0
+    0.5
    ],
-   "spread": 0.5,
-   "flag_for_review": true,
+   "spread": 0.0,
+   "flag_for_review": false,
    "reviewer_decision": "pending"
   },
   "P6-I3": {
@@ -67,17 +67,17 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "The only gate-verified row states NO_EVIDENCE_FOUND_PENDING_REVIEW, so there is no plain evidence of any infrastructure requirement."
+     "reason": "No evidence was found of any local data centre/server precondition or transfer condition tied to infrastructure, so the indicator is scored 0."
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "No evidence was found of any local data centre/server precondition or transfer condition tied to infrastructure; under the guide, absence of such a requirement "
+     "reason": "No evidence was found of any local data centre/server precondition or transfer condition tied to infrastructure; under the guide, rules governing already-establ"
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "No evidence was found of any local data centre/server precondition or transfer conditioned on infrastructure; absent such a requirement, the indicator should be"
+     "reason": "No gate-verified evidence shows any local data centre/server precondition or transfer conditioned on infrastructure; the only row is marked no evidence found, s"
     }
    ],
    "band": [
@@ -95,17 +95,17 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "The only gate-verified row states NO_EVIDENCE_FOUND_PENDING_REVIEW, so there is no plain evidence of any conditions on transfer."
+     "reason": "The only gate-verified row states NO_EVIDENCE_FOUND_PENDING_REVIEW for the Privacy Act 1988, so there is no verified evidence of any transfer conditions."
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "No gate-verified evidence shows any conditional transfer regime in force; the provided row is marked NO_EVIDENCE_FOUND_PENDING_REVIEW, so the indicator is score"
+     "reason": "No verified evidence of any conditional flow regime was found for this economy, so the indicator is scored as no conditions on transfer."
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "The only gate-verified row shows no evidence of transfer conditions, so there is no basis to assign a conditional-flow regime score above zero."
+     "reason": "The only gate-verified row shows no evidence found for the Privacy Act 1988, so there is no verified condition on transfer to support a higher score."
     }
    ],
    "band": [

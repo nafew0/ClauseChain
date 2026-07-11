@@ -181,8 +181,18 @@ Goal: **Singapore + Pillar 6, real, end-to-end, no manual steps.** No UI.
 ### P3.5 — QUALITY ADDENDUM (adopted 10 Jul; source: `ClauseChain_Champion_Corrected_Route_Tasklist.md`, triaged)
 
 > **Accepted (execute before freeze):** R6 rename `ocr_quality_cer`→`mean_ocr_confidence` (true CER only vs human gold) · E3-lite **source-exact snippet slicing** (export the source's characters, never LLM-copied text) · A1 corpus eligibility filter (bills/agreements out of evidence; MY "Amendment Bill" manually confirmed as enacted Act → renamed, not excluded) · A2 status resolver (`in_force` only with evidence, `unverified` → review, `unknown` blocks final) · A3 absence rows = `NO_EVIDENCE_FOUND_PENDING_REVIEW` with per-economy/indicator governing instrument from config (never corpus[0]) + human approval · R5 citation grammar (decimal Schedule sections 474.17/474.17A, note-sentence false sections, page-footer headings) + V3 regression fixtures · R3/R4-lite: AU **XHTML structure oracle** from the official EPUB (same compilation), PDF stays the quotation/page authority, alignment-lite containment check · E4 consolidated JSON preserves full provenance (test-enforced) · L1 recall closure with an **adjudication file** for wrong/ambiguous gold · L2 measurable retrieval stats · L4 `reviewer_decision=approved` required for consolidated_final.
+
+> **Champion-core remediation execution update:** Tasks 3-5 infrastructure is now
+> implemented and exercised across all six economy/pillar runs. SQLite schema v3 stores
+> full findings/proofs/coverage/reviews; authority/currentness filtering reduced Malaysia
+> to supported official instruments; AU and SG were rebuilt; the 30-page draft and static
+> review bundle were generated; and the independent validator correctly remains red until
+> recall repair/adjudication, human gold sign-off, named row decisions, Zone-3 approvals,
+> and deterministic replay are complete. The machine-readable source of current gate state
+> is `engine/reports/champion_validation.json`.
 > **Kept against the addendum's cuts (user decision):** the noise audit and the Neo4j demo — Neo4j is presented as the **provenance/audit graph** (retrieval-lift claims only if measured).
-> **Deferred to Known Limitations:** token/bbox-level CitationProof for native-text rows (OCR rows keep boxes), full XHTML↔PDF span alignment scoring, VLM repair lane (R8, disabled), Docling JSON sidecar (R7, disabled — Markdown permanently banned from the evidence path).
+> **Deferred to Known Limitations:** VLM repair lane (R8, disabled) and Docling JSON sidecar (R7, disabled — Markdown permanently banned from the evidence path). AU units that cannot recover exact authorised-PDF spans remain explicitly unaligned and are blocked from export.
+> **Champion-core Tasks 1–2 complete:** immutable evidence/CitationProof contracts · lossless schema-v2 SQLite/Neo4j storage · source/coordinate native spans · geometry/frequency furniture detection · paired AU PDF/EPUB compilation roles · semantic XHTML hierarchy · exact PDF-span alignment with unresolved rows blocked · boxed Paddle/Tesseract disagreement checks · gold-based OCR metrics. Docling and VLM remain disabled.
 
 ### P4 — Round-2 economies · **CUT (4 Jul)** · *reinstate only if the core freezes early*
 The R2 gold DB is already ingested (`data/known_index_round2.json`, 809 rows) — that plus the config-driven jurisdiction-pack design IS the finals insurance. If the core freezes before Jul 16, reinstate in this order: **bonus pillar (scores in Round 1) → Thailand → China** (multilingual proof), on branches, never touching the frozen core.

@@ -33,9 +33,9 @@ def _section(number: str, heading: str, body: str) -> str:
 
 def test_acthead5_split_and_subsection_pieces():
     html = (_head(2, "Part 1—Preliminary")
-            + _section("5", "Interpretation",
-                       "(1) In this Act, data means recorded information that has meaning. "
-                       "(2) A reference to a person includes a body corporate for all purposes."))
+            + _head(5, '<a><span class="CharSectno">5</span><span> Interpretation</span></a>')
+            + '<p class="subsection">(1) In this Act, data means recorded information that has meaning.</p>'
+            + '<p class="subsection">(2) A reference to a person includes a body corporate for all purposes.</p>')
     units = parse_epub_act(_epub(html), "Australia", "Test Act 2020", "REF", "https://x")
     labels = {u.article_section for u in units}
     assert labels == {"s. 5(1)", "s. 5(2)"}
@@ -43,6 +43,17 @@ def test_acthead5_split_and_subsection_pieces():
     assert u1.id == "au:REF:s5-1"
     assert u1.metadata["extraction"] == "xhtml_oracle"
     assert u1.metadata["heading"] == "Interpretation"
+
+
+def test_semantic_subsection_class_prevents_cross_reference_false_split():
+    html = (_head(5, '<a><span class="CharSectno">187B</span><span> Scope</span></a>')
+            + '<p class="subsection">(1) This rule applies subject to a declaration under subsection (2).</p>'
+            + '<p class="paragraph">(a) The service is a relevant service for this purpose.</p>'
+            + '<p class="subsection">(3) The decision maker must consider national security.</p>')
+    units = parse_epub_act(_epub(html), "Australia", "Test Act", "REF", "https://x")
+    assert [u.article_section for u in units] == ["s. 187B(1)", "s. 187B(3)"]
+    assert "under subsection (2)" in units[0].text
+    assert "(a) The service" in units[0].text
 
 
 def test_schedule_clause_gets_schedule_citation():
@@ -75,13 +86,38 @@ def test_schedule_resets_on_same_or_higher_heading():
     html = (_head(1, "Schedule&#xa0;2—Forms")
             + _section("3", "A schedule clause",
                        "Clause text inside schedule two with sufficient length to keep.")
-            + _head(1, "Endnotes")
+            + _head(1, "Chapter 2—Other provisions")
             + _section("7", "After the schedule",
                        "This section follows a non-schedule level-1 heading and is body text."))
     units = parse_epub_act(_epub(html), "Australia", "Test Act 2020", "REF", "https://x")
     by_no = {u.metadata["section_number"]: u for u in units}
     assert by_no["3"].article_section == "Sch 2, cl. 3"
     assert by_no["7"].article_section == "s. 7"
+
+
+def test_hierarchy_anchor_and_endnotes_are_distinguished_from_law():
+    html = (_head(1, "Chapter 2—Controls") + _head(2, "Part 3—Duties")
+            + _head(3, "Division 4—Retention")
+            + _section("12", "Keep records",
+                       "A person must keep records for seven years after the transaction.")
+            + _head(1, "Endnotes")
+            + _section("99", "Amendment history",
+                       "This endnote is navigation metadata and is not operative law."))
+    units = parse_epub_act(_epub(html), "Australia", "Test Act", "REF", "https://x")
+    assert [u.article_section for u in units] == ["s. 12"]
+    assert units[0].metadata["part"] == "Part 3—Duties"
+    assert units[0].metadata["division"] == "Division 4—Retention"
+    assert units[0].metadata["hierarchy_path"][-1] == "Keep records"
+    assert units[0].metadata["xhtml_anchor"] == "nav"
+
+
+def test_toc_is_navigation_hint_not_an_operative_unit():
+    html = ('<p class="TOC5"><span>12</span><span> Keep records</span></p>'
+            + _section("12", "Keep records",
+                       "A person must keep the official records for seven years."))
+    units = parse_epub_act(_epub(html), "Australia", "Test Act", "REF", "https://x")
+    assert len(units) == 1 and units[0].article_section == "s. 12"
+    assert units[0].metadata["toc_hint"] == "Keep records"
 
 
 def test_unit_id_contract_frozen_prefixes():

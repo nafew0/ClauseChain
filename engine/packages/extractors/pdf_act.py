@@ -17,6 +17,7 @@ import re
 
 from packages.core.schemas import RuleUnit
 from packages.extractors.pdf import extract_pdf
+from packages.core.rule_units import classify_rule_components
 
 # Observed statute layouts: "Section 22. Heading" (pdp.gov.my), bare "22. text"
 # (gazette), AU "13  Heading" (no dot), and AU Schedule decimals "474.17A  Heading".
@@ -144,12 +145,14 @@ def parse_act_text(pages: list, economy: str, act_name: str, act_ref: str,
                 law_number_ref=law_number_ref,
                 article_section=citation_template.format(label=label),
                 text=text[:20000],
+                raw_context=body[:20000],
                 source_url=source_url,
                 location_reference=f"page {sec['page']}",
                 extraction_confidence=pages[0].confidence if pages else None,
                 metadata={"section_number": number,
                           "extraction": (pages[0].metadata.get("extraction", "native_text")
-                                         if pages else "native_text")},
+                                         if pages else "native_text"),
+                          "rule_components": classify_rule_components(body[:20000])},
             ))
     return units
 

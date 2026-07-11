@@ -1,4 +1,4 @@
-"""L4 — apply the human reviewer's decisions and build the SUBMITTED final file.
+"""DEPRECATED: finalization moved to immutable named approval replay.
 
 The user records decisions in data/review/decisions.csv with columns:
   economy,indicator,law_contains,article,decision[,note]
@@ -42,6 +42,10 @@ def decide(row: dict, decisions: list[dict], auto_clear: bool) -> str:
 
 
 def main() -> int:
+    print("approve_rows.py is disabled: use scripts/submission_replay.py with "
+          "data/review/decisions.json containing named, timestamped approvals.")
+    return 2
+    # Historical implementation retained below only for migration reference.
     auto_clear = "--auto-approve-clear" in sys.argv
     run_dirs = [Path(a) for a in sys.argv[1:] if not a.startswith("--")]
     decisions = load_decisions()

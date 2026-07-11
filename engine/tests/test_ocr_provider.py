@@ -5,7 +5,9 @@ import json
 
 import httpx
 
-from packages.providers.ocr_provider import LocalOCRPlaceholder, RemotePaddleOCR, build_ocr
+from packages.core.schemas import ExtractedPage, OCRToken
+from packages.providers.ocr_provider import (FallbackRemotePaddleOCR, LocalOCRPlaceholder,
+                                             RemotePaddleOCR, TesseractOCR, build_ocr)
 
 
 CANNED = {
@@ -44,6 +46,7 @@ def test_remote_paddle_ocr_parses_pages_and_tokens(tmp_path):
     assert "shall not transfer" in page.text
     assert len(page.tokens) == 2
     assert page.tokens[0].bbox == [10.0, 10.0, 400.0, 30.0]
+    assert page.tokens[0].page_number == 1
     assert page.metadata["ocr_engine"] == "remote_paddle"
 
 
@@ -134,3 +137,44 @@ def test_build_ocr_selects_by_provider(monkeypatch):
     assert isinstance(remote, RemotePaddleOCR)
     remote_explicit = build_ocr({"provider": "remote_paddle", "endpoint": "http://other:9000/"})
     assert remote_explicit._endpoint == "http://other:9000"
+    assert isinstance(build_ocr({"provider": "tesseract"}), TesseractOCR)
+
+
+class _FallbackSpy:
+    def __init__(self, text="s. 26(1)"): self.text = text; self.calls = 0
+    def extract(self, file_path):
+        self.calls += 1
+        return [ExtractedPage(document_id=file_path, page_number=1, text=self.text,
+            source_url=f"file://{file_path}", location_reference="page 1", confidence=.8,
+            tokens=[OCRToken(text=self.text, confidence=.8, bbox=[1, 2, 3, 4], page_number=1)],
+            metadata={"ocr_engine": "tesseract"})]
+
+
+def test_remote_failure_uses_boxed_tesseract_fallback(tmp_path):
+    image = tmp_path / "scan.png"; image.write_bytes(b"image")
+    def fail(_request): raise httpx.ConnectError("offline")
+    fallback = _FallbackSpy()
+    engine = FallbackRemotePaddleOCR("http://ocr-vm", request_format="json_b64",
+        transport=httpx.MockTransport(fail), fallback=fallback)
+    pages = engine.extract(str(image))
+    assert fallback.calls == 1 and pages[0].tokens[0].bbox
+    assert pages[0].metadata["ocr_fallback_reason"] == "Paddle unavailable"
+
+
+def test_cross_engine_citation_disagreement_is_flagged(tmp_path, monkeypatch):
+    image = tmp_path / "scan.png"; image.write_bytes(b"fake-png-bytes")
+    fallback = _FallbackSpy("s. 28(1)")
+    engine = FallbackRemotePaddleOCR("http://ocr-vm", request_format="json_b64",
+        transport=_mock_transport(), fallback=fallback)
+    monkeypatch.setenv("OCR_VERIFY_CROSS_ENGINE", "1")
+    pages = engine.extract(str(image))
+    assert pages[0].metadata["citation_token_disagreement"] is True
+
+
+def test_true_ocr_metrics_are_gold_based_not_confidence():
+    from packages.extractors.metrics import (cer, citation_token_accuracy,
+                                             section_structure_accuracy, wer)
+    assert cer("section 26", "section 26") == 0
+    assert wer("one two", "one three") == .5
+    assert citation_token_accuracy("s. 26(1)", "s. 28(1)") < 1
+    assert section_structure_accuracy([["section 26"]], [["section 26"]]) == 1

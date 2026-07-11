@@ -1,0 +1,92 @@
+"""Independent machine-readable champion-gate audit. Never approves legal rows."""
+from __future__ import annotations
+
+import argparse
+import json
+import sqlite3
+import subprocess
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from packages.core.finalization import validate_final_finding  # noqa: E402
+from packages.core.schemas import MappedFinding, SourceArtifact, TextSpan  # noqa: E402
+
+
+RUNS = [f"outputs/final_{cc}_p{p}" for cc in ("si", "ma", "au") for p in (6, 7)]
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(); parser.add_argument("--skip-tests", action="store_true")
+    args = parser.parse_args(); failures: list[str] = []
+    report: dict = {"status": "FAIL", "failures": failures, "runs": {}}
+    if not args.skip_tests:
+        test = subprocess.run([sys.executable, "-m", "pytest", "-q"], capture_output=True, text=True)
+        report["tests"] = {"passed": test.returncode == 0,
+                           "summary": (test.stdout + test.stderr).strip().splitlines()[-1:]}
+        if test.returncode:
+            failures.append("automated test suite failed")
+
+    graph = subprocess.run([sys.executable, "scripts/validate_graph.py"], capture_output=True, text=True)
+    report["graph"] = json.loads(Path("reports/graph_validation.json").read_text())
+    if graph.returncode:
+        failures.append("graph validation failed")
+
+    gold_path = Path("tests/fixtures/extraction_gold_v1.json")
+    draft_path = Path("tests/fixtures/extraction_gold_v1.draft.json")
+    gold = json.loads((gold_path if gold_path.is_file() else draft_path).read_text())
+    report["extraction_gold"] = {"path": str(gold_path if gold_path.is_file() else draft_path),
+        "status": gold.get("status"), "pages": len(gold.get("pages", [])),
+        "human_checked": sum(bool(p.get("human_checked")) for p in gold.get("pages", []))}
+    if not gold_path.is_file() or report["extraction_gold"]["human_checked"] != 30:
+        failures.append("30-page extraction gold lacks named human sign-off")
+
+    for run_path in RUNS:
+        path = Path(run_path) / "output.json"
+        if not path.is_file():
+            failures.append(f"missing run {run_path}"); continue
+        env = json.loads(path.read_text()); stats = env.get("metadata", {}).get("pipeline_stats", {})
+        report["runs"][run_path] = {"candidates": len(env.get("findings", [])),
+            "warnings": len(env.get("warnings", [])), "pipeline_stats": stats}
+
+    recall_path = Path("data/review/recall_adjudication.json")
+    recall = json.loads(recall_path.read_text()) if recall_path.is_file() else {"misses": []}
+    pending_adjudications = [m for m in recall.get("misses", []) if not m.get("reviewer_verdict")]
+    report["recall"] = {"stats": recall.get("stats", {}), "misses": len(recall.get("misses", [])),
+                        "pending_adjudications": len(pending_adjudications)}
+    if pending_adjudications:
+        failures.append(f"{len(pending_adjudications)} recall misses await adjudication/repair")
+
+    candidate_path = Path("submission/consolidated.json")
+    candidates = json.loads(candidate_path.read_text()).get("rows", []) if candidate_path.is_file() else []
+    report["candidates"] = {"rows": len(candidates),
+        "pending_review": sum(r.get("reviewer_decision", "pending") != "approved" for r in candidates),
+        "complete_citation_proof": sum(bool(r.get("citation_proof")) for r in candidates),
+        "in_force": sum(r.get("Status", r.get("status")) == "in_force" for r in candidates)}
+    if report["candidates"]["pending_review"]:
+        failures.append("candidate findings still require named human decisions")
+
+    zone_pending = 0
+    for path in Path("data/zone3").glob("*_scores.json"):
+        payload = json.loads(path.read_text())
+        zone_pending += sum(v.get("reviewer_decision") != "approved"
+                            for v in payload.get("indicators", {}).values())
+    report["zone3_pending"] = zone_pending
+    if zone_pending:
+        failures.append(f"{zone_pending} Zone-3 scores await explicit approval/override")
+
+    final_json, final_csv = Path("submission/consolidated_final.json"), Path("submission/consolidated_final.csv")
+    report["final_artifacts_present"] = final_json.is_file() and final_csv.is_file()
+    if not report["final_artifacts_present"]:
+        failures.append("approval-only submission replay has not produced final artifacts")
+
+    report["status"] = "PASS" if not failures else "FAIL"
+    Path("reports").mkdir(exist_ok=True)
+    Path("reports/champion_validation.json").write_text(json.dumps(report, indent=2) + "\n")
+    print(json.dumps({"status": report["status"], "failures": failures,
+                      "candidate_rows": len(candidates)}, indent=2))
+    return 0 if not failures else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

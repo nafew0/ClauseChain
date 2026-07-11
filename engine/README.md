@@ -4,7 +4,11 @@ This is the clean Python engine for the ClauseChain Round 1 submission.
 
 It is intentionally isolated from the old Django/Next SaaS starter. The judged artifact starts here: a CLI engine that produces the required CSV and JSON outputs from legal evidence.
 
-Current status: **P0 COMPLETE (11 Jun)**. Contracts, template-exact output (verified against the official xlsx byte-for-byte), model routing with real OpenAI/Gemini providers + fallback, swappable graph store (SQLite default / Neo4j optional), the KNOWN/NEW baseline parsed from the master dataset, fetch/OCR spike scripts, and the eval scoreboard. It does not yet perform real crawling→mapping end-to-end — that is P1 (real SG/P6 by 20 Jun).
+Current status: **champion-core candidate pipeline implemented; legal freeze not yet passed**.
+The engine performs official acquisition, provenance-preserving extraction, retrieval,
+mapping, deterministic gates, static review, and approval-only replay. Run
+`scripts/champion_validate.py` for the machine-readable gate audit. A final submission
+must not be claimed while that audit reports `FAIL`.
 
 ## What This Engine Must Do
 
@@ -19,7 +23,8 @@ The final engine will:
 7. Verify exact source spans, currentness, authority, and NEW/KNOWN status.
 8. Export a template-exact `output.csv` and transparent `output.json`.
 
-The current P0 dummy run proves step 8 only.
+Stub output is test-only and watermarked `STUB-NON-SUBMITTABLE`; `run.py` rejects stub
+mode outside tests.
 
 ## Quick Start
 
@@ -29,15 +34,45 @@ Install `uv` if you do not already have it:
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-Run the skeleton:
+Create the locked environment and run the engine:
 
 ```bash
 cd engine
+uv sync --frozen --group dev
 uv run pytest
 uv run python run.py --country SG --pillar 6 --out outputs/demo
 # --economy is an alias (matches the organizer README): 
 uv run python run.py --economy Singapore --pillar 6 --out outputs/demo
 ```
+
+## Operating modes and finalization
+
+- `live`: official acquisition plus configured providers from `.env`.
+- `offline-eval`: prebuilt archives/graph plus the documented local Ollama and BGE-M3
+  weights; no official-site or cloud-provider access is required after those weights
+  are installed.
+- `submission-replay`: `scripts/submission_replay.py`, which reads immutable candidates
+  and named approvals. `run.py` can never create a final file.
+
+```bash
+# Candidate sweep (never finalizes rows)
+zsh scripts/final_sweep.sh
+
+# Recall diagnosis and static source/highlight review
+uv run python scripts/adjudicate_recall.py outputs/final_*
+uv run python scripts/build_review_bundle.py
+
+# Expected to FAIL until human/legal gates are closed
+uv run python scripts/champion_validate.py
+
+# Only after named decisions.json exists
+uv run python scripts/submission_replay.py
+uv run python scripts/validate_submission.py
+```
+
+The 30-page extraction fixture remains `extraction_gold_v1.draft.json` until a named
+human reviewer supplies the transcriptions/labels and signs every page. The benchmark
+refuses to treat draft/native-extracted text as human gold.
 
 P0 data + spike commands (run once, in this order):
 
@@ -268,4 +303,3 @@ uv run python run.py --country SG --pillar 6 --out outputs/sg-p6
 ```
 
 That command should produce real Singapore Pillar 6 output from official source data, with no UI dependency.
-

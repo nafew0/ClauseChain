@@ -1,8 +1,8 @@
 {
  "economy": "Singapore",
  "pillar": 7,
- "run": "run-sg-p7-1783705963",
- "krippendorff_alpha": 0.432,
+ "run": "run-sg-p7-1783775477",
+ "krippendorff_alpha": 0.606,
  "indicators": {
   "P7-I1": {
    "deterministic": 0.0,
@@ -11,45 +11,17 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "The evidence shows a horizontal Personal Data Protection Act imposing general obligations across organisations, which plainly indicates a comprehensive horizont"
+     "reason": "The evidence shows a horizontal Personal Data Protection Act 2012 that imposes organization-wide obligations, so a comprehensive horizontal framework exists."
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "The evidence shows a horizontal Personal Data Protection Act with general obligations and governance duties, indicating a comprehensive horizontal data protecti"
-    },
-    {
-     "persona": "skeptical",
-     "score": 0.5,
-     "reason": "The Personal Data Protection Act 2012 is a horizontal framework, but the evidence suggests it is relatively thin and compliance-focused rather than fully compre"
-    }
-   ],
-   "band": [
-    0.0,
-    0.5
-   ],
-   "spread": 0.5,
-   "flag_for_review": true,
-   "reviewer_decision": "pending"
-  },
-  "P7-I2": {
-   "deterministic": 0.0,
-   "deterministic_reason": "dedicated horizontal framework evidenced -> 0",
-   "judges": [
-    {
-     "persona": "strict",
-     "score": 0.0,
-     "reason": "The quoted Cybersecurity Act 2018 plainly establishes a horizontal cybersecurity framework, including an agency to oversee and promote cybersecurity of computer"
-    },
-    {
-     "persona": "ESCAP",
-     "score": 0.0,
-     "reason": "Singapore has a dedicated horizontal Cybersecurity Act 2018 establishing the Cyber Security Agency and broad cybersecurity oversight powers, so it is not merely"
+     "reason": "A horizontal Personal Data Protection Act exists, indicating a comprehensive legal framework for data protection rather than a sectoral-only or absent framework"
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "Singapore has a dedicated horizontal cybersecurity framework in the Cybersecurity Act 2018, which establishes the Cyber Security Agency and sets out economy-wid"
+     "reason": "The evidence shows a horizontal Personal Data Protection Act 2012 with core governance obligations, which is enough to count as a comprehensive framework rather"
     }
    ],
    "band": [
@@ -60,6 +32,34 @@
    "flag_for_review": false,
    "reviewer_decision": "pending"
   },
+  "P7-I2": {
+   "deterministic": 0.0,
+   "deterministic_reason": "dedicated horizontal framework evidenced -> 0",
+   "judges": [
+    {
+     "persona": "strict",
+     "score": 0.5,
+     "reason": "The cited provisions show a cybersecurity statute, but the quoted operative rules are directed to critical information infrastructure, providers of essential se"
+    },
+    {
+     "persona": "ESCAP",
+     "score": 0.0,
+     "reason": "Singapore has a dedicated horizontal Cybersecurity Act 2018 establishing the Cyber Security Agency and a general cybersecurity framework, so the indicator for l"
+    },
+    {
+     "persona": "skeptical",
+     "score": 0.0,
+     "reason": "Singapore has a dedicated horizontal Cybersecurity Act 2018 establishing the Cyber Security Agency and general powers for cybersecurity regulation, so this is n"
+    }
+   ],
+   "band": [
+    0.0,
+    0.5
+   ],
+   "spread": 0.5,
+   "flag_for_review": true,
+   "reviewer_decision": "pending"
+  },
   "P7-I3": {
    "deterministic": 1.0,
    "deterministic_reason": "minimum retention period(s) evidenced",
@@ -67,17 +67,17 @@
     {
      "persona": "strict",
      "score": 1.0,
-     "reason": "The evidence plainly states minimum retention periods of not less than 5 years, 5 years, at least 5 years, and not less than 3 years, so the indicator is met."
+     "reason": "The evidence plainly specifies minimum retention periods of not less than 3, 5, or at least 5 years, so the indicator is satisfied."
     },
     {
      "persona": "ESCAP",
      "score": 1.0,
-     "reason": "Multiple provisions clearly specify minimum retention periods (e.g., not less than 5 years, at least 3 years), so the indicator is met."
+     "reason": "Multiple horizontal and sectoral provisions clearly specify minimum retention periods (e.g., not less than 5 years, at least 5 years, not less than 3 years), so"
     },
     {
      "persona": "skeptical",
      "score": 1.0,
-     "reason": "Multiple gate-verified provisions clearly specify minimum retention periods (e.g., 5 years, 3 years, at least 5 years), so the indicator is fully met."
+     "reason": "Multiple horizontal provisions clearly specify minimum retention periods (e.g., not less than 5 years), so the indicator is satisfied."
     }
    ],
    "band": [
@@ -95,24 +95,24 @@
     {
      "persona": "strict",
      "score": 0.5,
-     "reason": "The cited text requires every organisation to designate one or more responsible individuals, but it does not plainly require a DPO/DPIA by name or a sector-spec"
+     "reason": "The quoted provision requires every organisation to designate responsible individual(s) for compliance, which is a horizontal DPO-type requirement, but it does "
     },
     {
      "persona": "ESCAP",
-     "score": 0.5,
-     "reason": "The cited law imposes a horizontal requirement to designate a responsible individual for compliance, which is functionally a DPO-type obligation across all sect"
+     "score": 1.0,
+     "reason": "The Personal Data Protection Act 2012 s. 11(3) imposes a horizontal requirement to designate responsible individuals for compliance across all sectors, which sa"
     },
     {
      "persona": "skeptical",
-     "score": 0.0,
-     "reason": "The cited provisions require an internal responsible individual and general reasonableness, but they do not mandate a formal DPO or DPIA, so the indicator shoul"
+     "score": 0.5,
+     "reason": "The cited provision requires a responsible individual under the Personal Data Protection Act, but it does not clearly establish a formal DPO/DPIA requirement ac"
     }
    ],
    "band": [
-    0.0,
+    0.5,
     1.0
    ],
-   "spread": 1.0,
+   "spread": 0.5,
    "flag_for_review": true,
    "reviewer_decision": "pending"
   },
@@ -123,25 +123,25 @@
     {
      "persona": "strict",
      "score": 1.0,
-     "reason": "The cited Criminal Procedure Code provisions plainly let police or authorised persons access, inspect, and require production of data by written order or direct"
+     "reason": "The cited Criminal Procedure Code provisions plainly let police or authorised persons access and inspect computers and data, and order assistance, without any s"
     },
     {
      "persona": "ESCAP",
      "score": 1.0,
-     "reason": "The Criminal Procedure Code 2010 expressly allows police or authorised persons to access, inspect, and require production of data by written order without any i"
+     "reason": "The Criminal Procedure Code expressly allows police or authorised persons to access and inspect computers and data, and to compel assistance, without any requir"
     },
     {
      "persona": "skeptical",
-     "score": 0.5,
-     "reason": "The cited Criminal Procedure Code provisions let police or authorised persons access, inspect, and compel production of data by written order without a court wa"
+     "score": 1.0,
+     "reason": "The Criminal Procedure Code expressly lets police or authorised persons access and inspect computers and obtain assistance without any indication of prior indep"
     }
    ],
    "band": [
-    0.5,
+    1.0,
     1.0
    ],
-   "spread": 0.5,
-   "flag_for_review": true,
+   "spread": 0.0,
+   "flag_for_review": false,
    "reviewer_decision": "pending"
   }
  },

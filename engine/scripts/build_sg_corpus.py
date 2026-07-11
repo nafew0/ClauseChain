@@ -19,9 +19,14 @@ from packages.core.envfile import load_env_file  # noqa: E402
 load_env_file()
 
 import os  # noqa: E402
+import hashlib  # noqa: E402
+from datetime import datetime, timezone  # noqa: E402
 
 from packages.connectors.sg_sso import acquire_act  # noqa: E402
 from packages.core.rule_units import build_rule_units  # noqa: E402
+from packages.core.evidence import source_artifact_from_file  # noqa: E402
+from packages.core.legal_controls import resolve_status  # noqa: E402
+from packages.core.schemas import TextSpan  # noqa: E402
 from packages.extractors.html_act import parse_sso_act  # noqa: E402
 from packages.graph.store import get_graph_store  # noqa: E402
 
@@ -34,17 +39,53 @@ def corpus_acts() -> list[tuple[str, str | None]]:
     return [(a["ref"], a.get("number")) for a in pack.get("corpus_acts", [])]
 
 
-def load_act(act_ref: str, law_number_ref: str | None, stores) -> int:
-    manifest = acquire_act(act_ref)
+def load_act(act_ref: str, law_number_ref: str | None, stores, generation: str) -> int:
+    cached = Path(f"data/raw/sg/{act_ref}.manifest.json")
+    manifest = __import__("json").loads(cached.read_text()) if cached.is_file() else acquire_act(act_ref)
     html = Path(manifest["html_path"]).read_text(encoding="utf-8")
     doc = parse_sso_act(html, manifest["url"])
     units = build_rule_units(doc, economy="Singapore", act_ref=act_ref,
                              law_number_ref=law_number_ref)
+    status = resolve_status(
+        fact_url=manifest["url"],
+        fact_text=f"Singapore Statutes Online current version as at {doc.current_as_at}",
+        current_as_at=doc.current_as_at,
+    )
+    raw_access = str(manifest["access_date"])
+    accessed = datetime.fromisoformat(raw_access.replace("Z", "+00:00"))
+    if accessed.tzinfo is None:
+        accessed = accessed.replace(tzinfo=timezone.utc)
+    artifact = source_artifact_from_file(
+        manifest["html_path"], original_url=manifest["url"], source_type="act",
+        status_evidence=status, accessed_at=accessed, register_id=act_ref,
+        version_id=doc.current_as_at, official_domains={"sso.agc.gov.sg"},
+        expected_mime="text/html",
+    )
+    spans = []
+    offset = 0
     for unit in units:
         unit.metadata["archived_copy"] = manifest["html_path"]
         unit.metadata["access_date"] = manifest["access_date"]
         unit.metadata["content_sha256"] = manifest["sha256"]
+        unit.metadata["legal_status"] = status.status
+        unit.metadata["evidence_eligible"] = True
+        unit.metadata["build_generation"] = generation
+        unit.metadata["status_evidence"] = status.model_dump(mode="json")
+        unit.source_artifact_id = artifact.id
+        span_id = "span:" + hashlib.sha256(
+            f"{artifact.id}:{unit.id}:{unit.text}".encode()).hexdigest()
+        spans.append(TextSpan(id=span_id, source_artifact_id=artifact.id, page_number=1,
+            text=unit.text, start_char=offset, end_char=offset + len(unit.text),
+            bbox=(0.0, 0.0, 0.0, 0.0), reading_order=len(spans),
+            extraction_method="sso_html_dom", engine_version="clausechain-html-v1"))
+        offset += len(unit.text) + 1
+        unit.linked_span_ids = [span_id]
+        # build_rule_units retains the complete parent section as raw_context.
     for store in stores:
+        if hasattr(store, "upsert_source_artifact"):
+            store.upsert_source_artifact(artifact)
+        if hasattr(store, "upsert_text_spans"):
+            store.upsert_text_spans(spans)
         if hasattr(store, "upsert_rule_units"):   # batched (Neo4j UNWIND)
             store.upsert_rule_units(units)
         else:
@@ -65,10 +106,18 @@ def main() -> int:
         stores.append(SqliteGraphStore())
     print(f"graph backend: {backend} (+ sqlite parity)" if len(stores) > 1
           else "graph backend: sqlite")
+    for store in stores:
+        if hasattr(store, "purge_ineligible_provisions"):
+            store.purge_ineligible_provisions("Singapore")
 
     total = 0
+    generation = datetime.now(timezone.utc).isoformat()
     for act_ref, number in corpus_acts():
-        total += load_act(act_ref, number, stores)
+        total += load_act(act_ref, number, stores, generation)
+
+    for store in stores:
+        if hasattr(store, "prune_economy_generation"):
+            store.prune_economy_generation("Singapore", generation)
 
     for store in stores:
         hits = store.search_provisions("transfer personal data outside Singapore",

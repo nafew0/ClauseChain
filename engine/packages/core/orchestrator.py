@@ -13,7 +13,9 @@ from pathlib import Path
 
 import yaml
 
-from packages.core.schemas import GateResult, MappedFinding, RunEnvelope
+from packages.core.citations import citation_path
+from packages.core.schemas import (CitationProof, GateResult, MappedFinding, RunEnvelope,
+                                   SearchCoverageManifest)
 
 ECONOMY_NAMES = {"SG": "Singapore", "MY": "Malaysia", "AU": "Australia"}
 CODE_BY_NAME = {name.upper(): code for code, name in ECONOMY_NAMES.items()}
@@ -50,32 +52,16 @@ def _ensure_corpus(store, pack: dict, economy: str) -> list[dict]:
     corpus = load_corpus(store, economy)
     if corpus:
         return corpus
-    if pack.get("connector") == "sg_sso":
-        from packages.connectors.sg_sso import acquire_act
-        from packages.core.rule_units import build_rule_units
-        from packages.extractors.html_act import parse_sso_act
-
-        for act_ref, number in _pack_corpus_acts(pack):
-            manifest = acquire_act(act_ref)
-            doc = parse_sso_act(Path(manifest["html_path"]).read_text(encoding="utf-8"),
-                                manifest["url"])
-            units = build_rule_units(doc, economy=economy, act_ref=act_ref,
-                                     law_number_ref=number)
-            for unit in units:
-                unit.metadata["archived_copy"] = manifest["html_path"]
-                unit.metadata["access_date"] = manifest["access_date"]
-            if hasattr(store, "upsert_rule_units"):
-                store.upsert_rule_units(units)
-            else:
-                for unit in units:
-                    store.upsert_rule_unit(unit)
-        return load_corpus(store, economy)
+    import os
+    if os.getenv("CLAUSECHAIN_OFFLINE") == "1":
+        raise RuntimeError(f"offline-eval requires a prebuilt v2 corpus for {economy}")
     # MY/AU: auto-chain the corpus build (fresh-clone contract — one command, no
     # manual steps). The build scripts fetch seeds themselves when missing.
     import subprocess
     import sys as _sys
 
-    script = ENGINE_ROOT / f"scripts/build_{economy[:2].lower()}_corpus.py"
+    script_code = {"Singapore": "sg", "Malaysia": "my", "Australia": "au"}[economy]
+    script = ENGINE_ROOT / f"scripts/build_{script_code}_corpus.py"
     if script.is_file():
         print(f"[corpus] {economy} corpus empty — building via {script.name} (first run only)")
         result = subprocess.run([_sys.executable, str(script)], cwd=ENGINE_ROOT)
@@ -90,7 +76,10 @@ def _ensure_corpus(store, pack: dict, economy: str) -> list[dict]:
 
 
 def _absence_row(economy: str, indicator_id: str, governing_law: str,
-                 source_url: str, model_version: str) -> MappedFinding:
+                 source_url: str, model_version: str,
+                 coverage: SearchCoverageManifest, governing_props: dict | None = None) -> MappedFinding:
+    governing_props = governing_props or {}
+    status_fact = governing_props.get("status_evidence") or {}
     return MappedFinding(
         economy=economy,
         law_name=governing_law,
@@ -108,10 +97,63 @@ def _absence_row(economy: str, indicator_id: str, governing_law: str,
         notes="Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required "
               "before this becomes a score-0 final row (P3.5 A3).",
         coverage="Horizontal",
-        status="unverified",
-        status_evidence="absence conclusion pending human review",
+        status=governing_props.get("legal_status", "unknown"),
+        status_evidence=(status_fact.get("fact_text") if isinstance(status_fact, dict)
+                         else "absence conclusion pending human review"),
+        status_evidence_record=status_fact if isinstance(status_fact, dict) and status_fact else None,
         model_version=model_version,
         reviewer_decision="pending",
+        search_coverage_manifest=coverage,
+        source_artifact_id=governing_props.get("source_artifact_id"),
+    )
+
+
+def _governing_props(corpus: list[dict], law_name: str) -> dict:
+    from packages.discovery.diff import laws_match
+
+    hit = next((row["props"] for row in corpus
+                if laws_match(law_name, row["props"].get("law_name", ""))), None)
+    return hit or {}
+
+
+def _coverage_manifest(economy: str, indicator_id: str, cfg: dict, pack: dict,
+                       warnings: list[str], corpus: list[dict], candidates: list | None = None
+                       ) -> SearchCoverageManifest:
+    from packages.retrieval.hybrid import build_query_pack
+
+    instruments: dict[str, dict] = {}
+    for row in corpus:
+        props = row.get("props", {})
+        law = props.get("law_name", "")
+        if law and law not in instruments:
+            instruments[law] = {
+                "instrument": law,
+                "searched": True,
+                "source_artifact_id": props.get("source_artifact_id"),
+                "legal_status": props.get("legal_status"),
+                "evidence_eligible": props.get("evidence_eligible", False),
+            }
+    queries = build_query_pack(indicator_id, cfg)
+    query_counts = {q: 0 for q in queries}
+    for candidate in candidates or []:
+        for query in set(candidate.matched_queries):
+            if query in query_counts:
+                query_counts[query] += 1
+    unresolved = [w for w in warnings if "RECALL HOLE" in w and indicator_id in w]
+    for record in instruments.values():
+        if not record["source_artifact_id"]:
+            unresolved.append(f"{record['instrument']}: missing SourceArtifact")
+    return SearchCoverageManifest(
+        economy=economy,
+        indicator_id=indicator_id,
+        portals=[s.get("name", s.get("domain", "")) for s in pack.get("official_sources", [])],
+        instruments=list(instruments),
+        queries=queries,
+        exclusions=[w for w in warnings if "INELIGIBLE" in w],
+        caps=[w for w in warnings if "screened top" in w],
+        unresolved_failures=sorted(set(unresolved)),
+        instrument_results=list(instruments.values()),
+        query_result_counts=query_counts,
     )
 
 
@@ -133,7 +175,7 @@ def _stub_envelope(code: str, economy: str, pillar: int, provider_profile: str) 
         mapping_rationale="Stub row (CLAUSECHAIN_PIPELINE=stub): proves the export contract offline.",
         source_url="https://sso.agc.gov.sg/Act/PDPA2012#pr26-",
         confidence=0.99,
-        notes="Offline stub mode — no live crawling or LLM calls.",
+        notes="STUB-NON-SUBMITTABLE: offline contract fixture; no live crawling or LLM calls.",
         coverage="Horizontal",
         status="in_force",
         model_version="stub",
@@ -156,6 +198,9 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
     raw0 = country.strip().upper()
     code0 = CODE_BY_NAME.get(raw0, raw0)
     if _os.getenv("CLAUSECHAIN_PIPELINE", "").lower() == "stub":
+        if not (_os.getenv("PYTEST_CURRENT_TEST") or
+                _os.getenv("CLAUSECHAIN_ALLOW_STUB_FOR_TESTS") == "1"):
+            raise RuntimeError("stub pipeline is test-only and cannot produce user-facing output")
         return _stub_envelope(code0, ECONOMY_NAMES.get(code0, country.strip()), pillar, provider_profile)
 
     from packages.discovery.diff import KnownIndex
@@ -188,12 +233,17 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
     findings: list[MappedFinding] = []
     gates_out: list[GateResult] = []
     warnings: list[str] = []
-    stats = {"candidates": 0, "screened_in": 0, "mapped": 0, "gate_rejected": 0}
+    stats = {"candidates": 0, "screened_in": 0, "mapped": 0, "gate_rejected": 0,
+             "by_indicator": {}}
 
     for indicator_id, cfg in rubric.get("indicators", {}).items():
         if cfg.get("regulatory") is False:
             continue  # 6.5: non-regulatory — engine does not extract
         candidates = retrieve_for_indicator(store, cache, corpus, indicator_id, cfg, economy)
+        indicator_stats = {"candidate_count": len(candidates), "resolved_known_anchors": 0,
+                           "candidate_recall": None, "screen_survival_recall": None,
+                           "mapper_survival_recall": None, "gate_survival_recall": None,
+                           "injected_anchor_count": 0, "caps": []}
         # KNOWN-RECALL INJECTION (reviewer, 9 Jul): every master-known (law+section)
         # for this economy must reach the mapper regardless of retrieval rank. Missing
         # from the corpus entirely -> loud warning (a recall hole to fix, never silent).
@@ -201,8 +251,10 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
         organic_ids = set(have_ids)  # what retrieval found before injection (L2)
         from packages.discovery.diff import laws_match as _lm, section_base as _sb
         known_rows = [r for r in known._by_economy.get(economy, [])
-                      if str(r.get("pillar")) == str(pillar)]
+                      if str(r.get("pillar")) == str(pillar)
+                      and r.get("indicator_code") == indicator_id]
         gold_anchor_ids: set[str] = set()
+        anchor_matches: dict[str, set[str]] = {}
         for krow in known_rows:
             for ref in krow.get("articles", []):
                 kbase = _sb(ref)
@@ -222,15 +274,16 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                            if any(_lm(a, c["props"].get("law_name", "")) for a in acts_resolved)
                            and _base_hits(_sb(c["props"].get("article_section", "")))]
                 if not matches:
-                    hole = (f"RECALL HOLE: master-known {krow.get('act','')[:40]} "
+                    hole = (f"RECALL HOLE {indicator_id}: master-known {krow.get('act','')[:40]} "
                             f"{ref} not in the {economy} corpus")
                     if hole not in warnings:
                         warnings.append(hole)
                     continue
-                indicator_matches = str(krow.get("indicator_code", "")) == indicator_id
+                anchor_key = f"{krow.get('act_norm', krow.get('act', ''))}|{ref}|{indicator_id}"
+                anchor_matches.setdefault(anchor_key, set()).update(
+                    m["provision_id"] for m in matches)
                 for m in matches:
-                    if indicator_matches:
-                        gold_anchor_ids.add(m["provision_id"])
+                    gold_anchor_ids.add(m["provision_id"])
                     if m["provision_id"] not in have_ids:
                         from packages.retrieval.hybrid import Candidate as _Cand
                         candidates.append(_Cand(m["provision_id"], m["text"], m["props"],
@@ -238,16 +291,24 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                         have_ids.add(m["provision_id"])
         # L2 (P3.5): measurable retrieval stats — how many master-known anchors
         # retrieval found on its own vs. how many only the injection saved.
+        organic_anchor_count = sum(bool(ids & organic_ids) for ids in anchor_matches.values())
+        injected_anchor_count = len(anchor_matches) - organic_anchor_count
         stats["anchors_retrieved_organically"] = (stats.get("anchors_retrieved_organically", 0)
-                                                  + len(gold_anchor_ids & organic_ids))
+                                                  + organic_anchor_count)
         stats["anchors_injection_saved"] = (stats.get("anchors_injection_saved", 0)
-                                            + len(gold_anchor_ids - organic_ids))
+                                            + injected_anchor_count)
+        indicator_stats["resolved_known_anchors"] = len(anchor_matches)
+        indicator_stats["candidate_recall"] = (organic_anchor_count / len(anchor_matches)
+                                                 if anchor_matches else None)
+        indicator_stats["injected_anchor_count"] = injected_anchor_count
         stats["candidates"] += len(candidates)
         if len(candidates) > SCREEN_CAP_PER_INDICATOR:
             warnings.append(
                 f"{indicator_id}: screened top {SCREEN_CAP_PER_INDICATOR} of "
                 f"{len(candidates)} retrieval candidates (cap logged, not silent)"
             )
+            indicator_stats["caps"].append({"stage": "screen", "limit": SCREEN_CAP_PER_INDICATOR,
+                                             "input_count": len(candidates)})
         # KNOWN-anchor bypass: candidates matching a (law + section) that the master
         # dataset itself records are human-confirmed terrain — they go straight to the
         # mapper and must never be screen-dropped (reproducing KNOWN proves recall).
@@ -263,15 +324,23 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
             else:
                 rest.append(candidate)
         survivors = anchors + screen_candidates(llm_bulk, indicator_id, cfg, rest)
+        survivor_ids = {c.provision_id for c in survivors}
+        indicator_stats["screen_survival_recall"] = (
+            sum(bool(ids & survivor_ids) for ids in anchor_matches.values()) / len(anchor_matches)
+            if anchor_matches else None)
         stats["screened_in"] += len(survivors)
         stats["known_anchors"] = stats.get("known_anchors", 0) + len(anchors)
 
         indicator_rows = 0
+        mapped_anchor_ids: set[str] = set()
+        passed_anchor_ids: set[str] = set()
         for candidate in survivors:
             decision = map_candidate(llm_high, indicator_id, cfg, candidate,
                                      gold_anchor=candidate.provision_id in gold_anchor_ids)
             if not decision.applies:
                 continue
+            if candidate.provision_id in gold_anchor_ids:
+                mapped_anchor_ids.add(candidate.provision_id)
             props = candidate.props
             gate_results, ok = run_gates(
                 snippet=decision.verbatim_snippet,
@@ -280,6 +349,7 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                 whitelist_domains=whitelist,
                 current_as_at=props.get("current_as_at")
                 or (props.get("props") or {}).get("current_as_at"),
+                legal_status=props.get("legal_status", "unknown"),
             )
             from packages.verifier.gates import (citation_tier, g2_location, g5_whole_rule,
                                                  g6_meaning_support, g7_indicator_fit,
@@ -314,6 +384,18 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                     f"({[g.gate_id for g in gate_results if g.status == 'FAIL']})"
                 )
                 continue
+            if economy == "Australia" and props.get("pdf_alignment") != "exact":
+                stats["gate_rejected"] += 1
+                warnings.append(
+                    f"REJECTED unaligned AU evidence: {indicator_id} {props.get('article_section')}"
+                )
+                continue
+            if props.get("ocr_citation_disagreement"):
+                stats["gate_rejected"] += 1
+                warnings.append(
+                    f"REJECTED OCR citation-token disagreement: {indicator_id} {props.get('article_section')}"
+                )
+                continue
             from packages.verifier.gates import source_exact_slice
 
             exact = source_exact_slice(decision.verbatim_snippet, candidate.text)
@@ -321,6 +403,30 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                 decision.verbatim_snippet = exact[:400]  # source characters, not LLM copy
             tag, why = known.tag(economy, props.get("law_name", ""),
                                  props.get("article_section", ""))
+            status = props.get("legal_status") or "unknown"
+            status_fact = props.get("status_evidence") or {}
+            loc = props.get("location_reference", "")
+            import re as _re3
+            page_match = _re3.search(r"page\s+(\d+)", loc, _re3.I)
+            source_hash = props.get("content_sha256") or ""
+            proof = None
+            if source_hash and props.get("source_artifact_id"):
+                proof = CitationProof(
+                    source_artifact_id=props["source_artifact_id"], source_sha256=source_hash,
+                    page_number=int(page_match.group(1)) if page_match else None,
+                    anchor=loc if loc.startswith("#") else None,
+                    article_path=citation_path(props.get("article_section", "")),
+                    span_ids=props.get("linked_span_ids") or [],
+                    bboxes=(props.get("metadata", {}).get("pdf_span_boxes", []) or
+                            props.get("metadata", {}).get("citation_span_boxes", [])),
+                    exact_snippet=decision.verbatim_snippet,
+                    normalized_snippet=" ".join(decision.verbatim_snippet.split()).lower(),
+                    alignment_status=("exact" if props.get("pdf_alignment") == "exact" else
+                                      "anchor" if loc.startswith("#") else "unaligned"),
+                    alignment_score=float(props.get("alignment_score") or
+                                          (1.0 if loc.startswith("#") else 0.0)),
+                    gate_results=[g.model_dump(mode="json") for g in gate_results],
+                )
             findings.append(
                 MappedFinding(
                     economy=economy,
@@ -338,10 +444,10 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                     notes=f"Discovery: {why}. Modality: {decision.modality or 'n/a'}; "
                           f"exceptions: {'; '.join(decision.exceptions) or 'none'}",
                     coverage=(decision.coverage + (f" ({decision.sector})" if decision.sector else "")),
-                    status=("in_force" if props.get("current_as_at") else "unverified"),
-                    status_evidence=(f"official portal asserts current as at {props.get('current_as_at')}"
-                                     if props.get("current_as_at") else
-                                     "no currentness assertion captured — requires human verification"),
+                    status=status,
+                    status_evidence=(status_fact.get("fact_text") if isinstance(status_fact, dict)
+                                     else str(status_fact or "no currentness assertion captured")),
+                    status_evidence_record=(status_fact if isinstance(status_fact, dict) and status_fact else None),
                     model_version=model_version,
                     archived_copy=props.get("archived_copy") or None,
                     access_date=props.get("access_date") or None,
@@ -351,16 +457,34 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                     ocr_quality_cer=None,  # true CER only vs human gold (R6)
                     citation_tier=citation_tier(props.get("article_section", "")),
                     verifier_risks=[g.reason for g in gate_results if g.status == "WARN"],
+                    source_artifact_id=props.get("source_artifact_id"),
+                    citation_proof=proof,
+                    raw_context=props.get("raw_context") or candidate.text,
                 )
             )
+            if candidate.provision_id in gold_anchor_ids:
+                passed_anchor_ids.add(candidate.provision_id)
             indicator_rows += 1
             stats["mapped"] += 1
 
+        indicator_stats["mapper_survival_recall"] = (
+            sum(bool(ids & mapped_anchor_ids) for ids in anchor_matches.values()) / len(anchor_matches)
+            if anchor_matches else None)
+        indicator_stats["gate_survival_recall"] = (
+            sum(bool(ids & passed_anchor_ids) for ids in anchor_matches.values()) / len(anchor_matches)
+            if anchor_matches else None)
+        stats["by_indicator"][indicator_id] = indicator_stats
+
         if indicator_rows == 0 and not any(f.indicator_id == indicator_id for f in findings):
-            anchor_law = corpus[0]["props"].get("law_name", "Personal Data Protection Act 2012") if corpus else "Personal Data Protection Act 2012"
-            anchor_url = corpus[0]["props"].get("source_url", "https://sso.agc.gov.sg/Act/PDPA2012") if corpus else "https://sso.agc.gov.sg/Act/PDPA2012"
-            findings.append(_absence_row(economy, indicator_id, anchor_law,
-                                         anchor_url.split("#")[0], model_version))
+            gov = (pack.get("governing_instruments") or {}).get(
+                indicator_id, (pack.get("governing_instruments") or {}).get("default", {}))
+            if not gov.get("law") or not gov.get("url"):
+                raise RuntimeError(f"No governing instrument configured for {economy} {indicator_id}")
+            findings.append(_absence_row(
+                economy, indicator_id, gov["law"], gov["url"], model_version,
+                _coverage_manifest(economy, indicator_id, cfg, pack, warnings, corpus, candidates),
+                _governing_props(corpus, gov["law"]),
+            ))
 
     # Post-pass: deterministic 6.1-vs-6.4 disambiguation (drops false ban rows),
     # then guarantee every regulatory indicator still has at least one row.
@@ -375,14 +499,22 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
         if not any(f.indicator_id == indicator_id for f in findings):
             gov = (pack.get("governing_instruments") or {}).get(
                 indicator_id, (pack.get("governing_instruments") or {}).get("default", {}))
-            anchor_law = gov.get("law") or (corpus[0]["props"].get("law_name", "") if corpus else "")
-            anchor_url = gov.get("url") or ((corpus[0]["props"].get("source_url", "") or "").split("#")[0] if corpus else "")
-            findings.append(_absence_row(economy, indicator_id, anchor_law, anchor_url, model_version))
+            if not gov.get("law") or not gov.get("url"):
+                raise RuntimeError(f"No governing instrument configured for {economy} {indicator_id}")
+            findings.append(_absence_row(
+                economy, indicator_id, gov["law"], gov["url"], model_version,
+                _coverage_manifest(economy, indicator_id, cfg, pack, warnings, corpus, []),
+                _governing_props(corpus, gov["law"]),
+            ))
     findings.sort(key=lambda f: f.indicator_id)
 
     from packages.providers import cost
 
     run_id = f"run-{code.lower()}-p{pillar}-{int(started)}"
+    from packages.core.finalization import finding_key
+    if hasattr(store, "upsert_finding"):
+        for finding in findings:
+            store.upsert_finding(finding_key(finding), run_id, finding)
     cost_entry = cost.append_log(run_id, {"economy": economy, "pillar": pillar,
                                           "elapsed_seconds": round(time.time() - started, 1)})
     return RunEnvelope(
