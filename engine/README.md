@@ -181,11 +181,25 @@ Current routing:
 | Final dense retrieval | `text-embedding-3-large` |
 | Cheap dev/testing | `text-embedding-3-small` |
 | Query expansion / keyword generation | `gpt-5.4-nano` or Gemini |
-| Candidate reranking | `gpt-5.4-nano` first; `gpt-5.4-mini` for hard cases |
-| Final legal mapping / rationale | `gpt-5.4-mini` / Gemini high reasoning |
+| Candidate screening | `gpt-5.4-nano` in compact groups |
+| Legal mapping / rationale | `gpt-5.4-nano` first |
+| Hard-case adjudication | `gpt-5.4-mini` only after a recorded deterministic escalation |
 | Embedding fallback experiment | `gemini-embedding-001` |
 
 Rule: embeddings use embedding models, not chat/reasoning models.
+
+Mapping prompts use stable per-indicator `prompt_cache_key` values. OpenAI prompt
+caching is automatic when the shared exact prefix is long enough; measured cached
+tokens and model-route counts are written to the run cost report. For a non-interactive
+final sweep, enable the OpenAI Batch API (50% lower token prices; completion may take
+up to 24 hours):
+
+```bash
+CLAUSECHAIN_OPENAI_BATCH=1 zsh scripts/final_sweep.sh
+```
+
+Do not enable Batch for the live demo. The normal path is synchronous. Batch results
+are restored by `custom_id`, schema-validated, and then pass the identical gates.
 
 ## Environment
 

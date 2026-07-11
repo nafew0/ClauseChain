@@ -7,7 +7,10 @@ profiles:
     bulk:                     # query expansion / rerank / cheap classification
       primary: openai:gpt-5.4-nano
       fallback: google:${GEMINI_BULK_MODEL:-gemini-3-flash-preview}
-    high_reasoning:           # predicate extraction + RDTII mapping + rationale
+    high_reasoning:           # default legal mapping/refutation: nano-first
+      primary: openai:gpt-5.4-nano
+      fallback: google:${GEMINI_BULK_MODEL:-gemini-3-flash-preview}
+    legal_escalation:         # mini only for deterministic ambiguity/failure cases
       primary: openai:gpt-5.4-mini
       fallback: google:${GEMINI_HIGH_REASONING_MODEL:-gemini-3-flash-preview}
     embedding:
@@ -27,6 +30,8 @@ profiles:
     bulk:
       primary: ollama:${OLLAMA_BULK_MODEL:-qwen2.5:7b}
     high_reasoning:
+      primary: ollama:${OLLAMA_REASONING_MODEL:-qwen2.5:7b}
+    legal_escalation:
       primary: ollama:${OLLAMA_REASONING_MODEL:-qwen2.5:7b}
     embedding:
       provider: bge_m3

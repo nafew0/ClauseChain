@@ -6,7 +6,9 @@ Every mapping decision returns a verbatim snippet that MUST later pass G1
 """
 from __future__ import annotations
 
-from pydantic import BaseModel, Field
+import re
+
+from pydantic import BaseModel, Field, PrivateAttr
 
 SCREEN_BATCH_SIZE = 12
 SCREEN_CAP_PER_INDICATOR = 60   # logged, not silent (envelope warning)
@@ -42,6 +44,53 @@ class MapDecision(BaseModel):
     action: str | None = None
     conditions: list[str] = Field(default_factory=list)
     exceptions: list[str] = Field(default_factory=list)
+    _model_route: str = PrivateAttr(default="nano")
+    _escalation_reasons: list[str] = PrivateAttr(default_factory=list)
+
+
+def _complete(llm, prompt: str, schema: type[BaseModel], cache_key: str):
+    """Use cache routing when supported; retain simple fake/local providers."""
+    try:
+        return llm.complete(prompt, schema, prompt_cache_key=cache_key)
+    except TypeError as error:
+        if "prompt_cache_key" not in str(error):
+            raise
+        return llm.complete(prompt, schema)
+
+
+def _snippet_locatable(snippet: str, source: str) -> bool:
+    if not snippet:
+        return False
+    if snippet in source:
+        return True
+    norm = lambda value: re.sub(r"\s+", " ", value).strip().casefold()
+    return norm(snippet) in norm(source)
+
+
+def escalation_reasons(decision: MapDecision, indicator_id: str, candidate,
+                       gold_anchor: bool = False) -> list[str]:
+    """Deterministic mini boundary: only material ambiguity or malformed evidence."""
+    reasons: list[str] = []
+    text = candidate.text.casefold()
+    if gold_anchor and not decision.applies:
+        reasons.append("known-anchor-rejected")
+    if decision.applies and not _snippet_locatable(decision.verbatim_snippet, candidate.text):
+        reasons.append("snippet-not-source-locatable")
+    if decision.applies and decision.confidence < 0.72:
+        reasons.append("low-confidence-positive")
+    if gold_anchor and decision.applies and decision.confidence < 0.80:
+        reasons.append("low-confidence-known-anchor")
+
+    # These are the two distinctions where a cheap classifier error can reverse
+    # the legal effect and therefore merits the expensive second look.
+    conditional_terms = (" unless ", " except ", "subject to", "provided that")
+    if indicator_id in {"6.1", "6.4", "P6-I1", "P6-I4"} and decision.applies:
+        if any(term in f" {text} " for term in conditional_terms):
+            reasons.append("ban-vs-condition-ambiguity")
+    if indicator_id in {"7.5", "P7-I5"} and decision.applies:
+        if any(term in text for term in ("warrant", "court order", "judicial", "without consent")):
+            reasons.append("judicial-access-ambiguity")
+    return reasons
 
 
 def _indicator_brief(indicator_id: str, cfg: dict) -> str:
@@ -92,18 +141,18 @@ CANDIDATES:
 {listing}
 
 Return one decision per candidate, using each candidate's index number."""
-        result = llm_bulk.complete(prompt, ScreenBatch)
+        result = _complete(llm_bulk, prompt, ScreenBatch,
+                           f"clausechain:screen:v2:{indicator_id}")
         for decision in result.decisions:
             if decision.relevant and 0 <= decision.candidate_index < len(batch):
                 survivors.append(batch[decision.candidate_index])
     return survivors
 
 
-def map_candidate(llm_high, indicator_id: str, cfg: dict, candidate,
-                  gold_anchor: bool = False) -> MapDecision:
-    """Precise mapping of one provision to one indicator, with a verifiable quote."""
+def _mapping_prompt(indicator_id: str, cfg: dict, candidate,
+                    gold_anchor: bool = False) -> str:
     props = candidate.props
-    prompt = f"""You are a legal analyst applying the ESCAP RDTII 2.1 methodology.
+    return f"""You are a legal analyst applying the ESCAP RDTII 2.1 methodology.
 
 {_indicator_brief(indicator_id, cfg)}
 
@@ -129,4 +178,74 @@ TASK
 5. coverage: "Horizontal" ONLY if it applies to ALL sectors; otherwise "Sectoral" + sector.
 6. confidence 0-1. If the exception ("unless/except") changes the legal effect, account for it:
    a rule with a compliance path is conditional (6.4-type), not a ban (6.1-type)."""
-    return llm_high.complete(prompt, MapDecision)
+
+
+def map_candidate(llm_primary, indicator_id: str, cfg: dict, candidate,
+                  gold_anchor: bool = False, llm_escalation=None) -> MapDecision:
+    """Nano-first mapping; mini is restricted to deterministic escalation cases."""
+    prompt = _mapping_prompt(indicator_id, cfg, candidate, gold_anchor)
+    decision = _complete(llm_primary, prompt, MapDecision,
+                         f"clausechain:map:v3:{indicator_id}")
+    reasons = escalation_reasons(decision, indicator_id, candidate, gold_anchor)
+    decision._model_route = "nano"
+    decision._escalation_reasons = reasons
+    if reasons and llm_escalation is not None:
+        escalation_prompt = f"""{prompt}
+
+SECOND-PASS REVIEW
+A cheaper model returned this provisional decision:
+{decision.model_dump_json()}
+Escalation reasons: {', '.join(reasons)}.
+Independently correct the decision. Do not defer to the provisional answer."""
+        decision = _complete(llm_escalation, escalation_prompt, MapDecision,
+                             f"clausechain:legal-escalation:v1:{indicator_id}")
+        decision._model_route = "mini-escalation"
+        decision._escalation_reasons = reasons
+    return decision
+
+
+def map_candidates(llm_primary, indicator_id: str, cfg: dict, candidates: list,
+                   gold_anchor_ids: set[str], llm_escalation=None) -> list[MapDecision]:
+    """Map an indicator pool together so final sweeps can use the 50%-off Batch API."""
+    if not candidates:
+        return []
+    prompts = [_mapping_prompt(indicator_id, cfg, candidate,
+                               candidate.provision_id in gold_anchor_ids)
+               for candidate in candidates]
+    keys = [f"clausechain:map:v3:{indicator_id}"] * len(prompts)
+    if hasattr(llm_primary, "complete_many"):
+        decisions = llm_primary.complete_many(prompts, MapDecision, prompt_cache_keys=keys)
+    else:
+        decisions = [_complete(llm_primary, prompt, MapDecision, key)
+                     for prompt, key in zip(prompts, keys, strict=True)]
+
+    escalation_indexes: list[int] = []
+    escalation_prompts: list[str] = []
+    reasons_by_index: dict[int, list[str]] = {}
+    for index, (candidate, decision, prompt) in enumerate(
+            zip(candidates, decisions, prompts, strict=True)):
+        reasons = escalation_reasons(
+            decision, indicator_id, candidate, candidate.provision_id in gold_anchor_ids)
+        decision._model_route = "nano"
+        decision._escalation_reasons = reasons
+        if reasons and llm_escalation is not None:
+            escalation_indexes.append(index)
+            reasons_by_index[index] = reasons
+            escalation_prompts.append(
+                f"{prompt}\n\nSECOND-PASS REVIEW\nA cheaper model returned this provisional "
+                f"decision:\n{decision.model_dump_json()}\nEscalation reasons: "
+                f"{', '.join(reasons)}.\nIndependently correct the decision. Do not defer "
+                "to the provisional answer.")
+    if escalation_prompts:
+        escalation_keys = [f"clausechain:legal-escalation:v1:{indicator_id}"] * len(escalation_prompts)
+        if hasattr(llm_escalation, "complete_many"):
+            reviewed = llm_escalation.complete_many(
+                escalation_prompts, MapDecision, prompt_cache_keys=escalation_keys)
+        else:
+            reviewed = [_complete(llm_escalation, prompt, MapDecision, key)
+                        for prompt, key in zip(escalation_prompts, escalation_keys, strict=True)]
+        for index, decision in zip(escalation_indexes, reviewed, strict=True):
+            decision._model_route = "mini-escalation"
+            decision._escalation_reasons = reasons_by_index[index]
+            decisions[index] = decision
+    return decisions

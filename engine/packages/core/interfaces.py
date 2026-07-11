@@ -8,7 +8,8 @@ from packages.core.schemas import ExtractedPage, RuleUnit
 
 
 class LLMProvider(Protocol):
-    def complete(self, prompt: str, schema: type[BaseModel]) -> BaseModel: ...
+    def complete(self, prompt: str, schema: type[BaseModel], *,
+                 prompt_cache_key: str | None = None) -> BaseModel: ...
 
 
 class EmbeddingProvider(Protocol):
@@ -32,4 +33,3 @@ class GraphStore(Protocol):
         separate system, so it swaps with the backend.
         """
         ...
-

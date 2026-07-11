@@ -206,7 +206,7 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
     from packages.discovery.diff import KnownIndex
     from packages.graph.store import get_graph_store
     from packages.providers.model_router import resolve_embedding, resolve_llm
-    from packages.rdtii.mapper import SCREEN_CAP_PER_INDICATOR, map_candidate, screen_candidates
+    from packages.rdtii.mapper import SCREEN_CAP_PER_INDICATOR, map_candidates, screen_candidates
     from packages.retrieval.hybrid import EmbeddingCache, retrieve_for_indicator
     from packages.verifier.gates import run_gates
 
@@ -225,15 +225,19 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
 
     llm_bulk = resolve_llm(provider_profile, tier="bulk")
     llm_high = resolve_llm(provider_profile, tier="high_reasoning")
+    llm_escalation = resolve_llm(provider_profile, tier="legal_escalation")
     embedder = resolve_embedding(provider_profile)
     cache = EmbeddingCache(embedder, f"data/cache/embeddings_{code.lower()}.json")
     known = KnownIndex()
-    model_version = f"{getattr(llm_high.primary, 'model', 'llm')}+{getattr(embedder, 'model', 'emb')}"
+    model_version = (f"{getattr(llm_high.primary, 'model', 'llm')}"
+                     f"/escalate:{getattr(llm_escalation.primary, 'model', 'llm')}"
+                     f"+{getattr(embedder, 'model', 'emb')}")
 
     findings: list[MappedFinding] = []
     gates_out: list[GateResult] = []
     warnings: list[str] = []
     stats = {"candidates": 0, "screened_in": 0, "mapped": 0, "gate_rejected": 0,
+             "nano_mappings": 0, "mini_escalations": 0, "escalation_reasons": {},
              "by_indicator": {}}
 
     for indicator_id, cfg in rubric.get("indicators", {}).items():
@@ -334,9 +338,18 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
         indicator_rows = 0
         mapped_anchor_ids: set[str] = set()
         passed_anchor_ids: set[str] = set()
-        for candidate in survivors:
-            decision = map_candidate(llm_high, indicator_id, cfg, candidate,
-                                     gold_anchor=candidate.provision_id in gold_anchor_ids)
+        mapping_decisions = map_candidates(
+            llm_high, indicator_id, cfg, survivors, gold_anchor_ids,
+            llm_escalation=llm_escalation,
+        )
+        for candidate, decision in zip(survivors, mapping_decisions, strict=True):
+            if decision._model_route == "mini-escalation":
+                stats["mini_escalations"] += 1
+                for reason in decision._escalation_reasons:
+                    stats["escalation_reasons"][reason] = (
+                        stats["escalation_reasons"].get(reason, 0) + 1)
+            else:
+                stats["nano_mappings"] += 1
             if not decision.applies:
                 continue
             if candidate.provision_id in gold_anchor_ids:

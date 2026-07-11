@@ -11,18 +11,24 @@ from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
-PRICES = {  # per 1M tokens: (input, output)
-    "gpt-5.4-nano": (0.05, 0.40),
-    "gpt-5.4-mini": (0.25, 2.00),
-    "text-embedding-3-small": (0.02, 0.0),
+PRICES = {  # standard per 1M tokens: (input, cached input, output), Jul 2026
+    "gpt-5.4-nano": (0.20, 0.02, 1.25),
+    "gpt-5.4-mini": (0.75, 0.075, 4.50),
+    "text-embedding-3-small": (0.02, 0.02, 0.0),
 }
 
-_USAGE: dict[str, dict] = defaultdict(lambda: {"input_tokens": 0, "output_tokens": 0, "calls": 0})
+_USAGE: dict[str, dict] = defaultdict(lambda: {
+    "input_tokens": 0, "cached_input_tokens": 0, "output_tokens": 0, "calls": 0,
+})
 
 
-def record(model: str, input_tokens: int, output_tokens: int = 0) -> None:
+def record(model: str, input_tokens: int, output_tokens: int = 0,
+           cached_input_tokens: int = 0, *, batch: bool = False) -> None:
+    if batch:
+        model = f"{model} [batch]"
     entry = _USAGE[model]
     entry["input_tokens"] += int(input_tokens or 0)
+    entry["cached_input_tokens"] += int(cached_input_tokens or 0)
     entry["output_tokens"] += int(output_tokens or 0)
     entry["calls"] += 1
 
@@ -35,9 +41,15 @@ def report() -> dict:
     models = {}
     total = 0.0
     for model, u in _USAGE.items():
-        pin, pout = PRICES.get(model, (0.0, 0.0))
-        cost = u["input_tokens"] / 1e6 * pin + u["output_tokens"] / 1e6 * pout
-        models[model] = {**u, "usd": round(cost, 4), "priced": model in PRICES}
+        base_model = model.removesuffix(" [batch]")
+        pin, pcached, pout = PRICES.get(base_model, (0.0, 0.0, 0.0))
+        if model.endswith(" [batch]"):
+            pin, pcached, pout = pin / 2, pcached / 2, pout / 2
+        cached = min(u["cached_input_tokens"], u["input_tokens"])
+        uncached = u["input_tokens"] - cached
+        cost = (uncached / 1e6 * pin + cached / 1e6 * pcached
+                + u["output_tokens"] / 1e6 * pout)
+        models[model] = {**u, "usd": round(cost, 4), "priced": base_model in PRICES}
         total += cost
     return {"models": models, "total_usd": round(total, 4),
             "note": "measured from real API usage objects; prices per 1M tokens (PRICES)"}

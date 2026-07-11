@@ -66,7 +66,9 @@ def test_fallback_raises_without_fallback() -> None:
 def test_resolve_llm_and_embedding_construct_offline() -> None:
     llm = resolve_llm("hybrid_accuracy", tier="high_reasoning")
     assert isinstance(llm, FallbackLLM)
-    assert llm.primary.model == "gpt-5.4-mini"
+    assert llm.primary.model == "gpt-5.4-nano"
+    escalation = resolve_llm("hybrid_accuracy", tier="legal_escalation")
+    assert escalation.primary.model == "gpt-5.4-mini"
     # Path B: cloud OpenAI embeddings (construction is offline-safe — no network until embed())
     embedder = resolve_embedding("hybrid_accuracy")
     assert embedder.model == "text-embedding-3-small"

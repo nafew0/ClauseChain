@@ -39,7 +39,7 @@ def get_profile(name: str = "hybrid_accuracy") -> dict[str, Any]:
 
 
 def resolve_llm(profile_name: str = "hybrid_accuracy", tier: str = "bulk"):
-    """Return a ready LLM for a routing tier ('bulk' | 'high_reasoning'), with fallback."""
+    """Return an LLM for bulk, nano-first legal, or mini escalation work."""
     from packages.providers.llm_providers import FallbackLLM, build_llm
 
     profile = get_profile(profile_name)
@@ -64,4 +64,3 @@ def resolve_ocr(profile_name: str = "hybrid_accuracy"):
     from packages.providers.ocr_provider import build_ocr
 
     return build_ocr(get_profile(profile_name).get("ocr", {}))
-
