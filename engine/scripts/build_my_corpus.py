@@ -19,9 +19,9 @@ from packages.core.envfile import load_env_file  # noqa: E402
 
 load_env_file()
 
-from packages.discovery.diff import normalize_law  # noqa: E402
+from packages.discovery.diff import laws_match, normalize_law  # noqa: E402
 from packages.core.evidence import source_artifact_from_file  # noqa: E402
-from packages.core.legal_controls import evidence_eligibility, resolve_status  # noqa: E402
+from packages.core.legal_controls import content_eligibility, evidence_eligibility, resolve_status  # noqa: E402
 from packages.extractors.pdf import extract_pdf, materialize_page_evidence  # noqa: E402
 from packages.extractors.pdf_act import parse_act_text  # noqa: E402
 from packages.graph.sqlite_graph import SqliteGraphStore  # noqa: E402
@@ -33,11 +33,18 @@ def gold_act_norms() -> set[str]:
     return {a for r in rows if r.get("pillar") in ("6", "7") for a in r.get("acts_norm", [])}
 
 
+def is_relevant_act(entry: dict, act_name: str, gold: set[str]) -> bool:
+    return (str(entry.get("indicator_code", "")).startswith(("P6", "P7"))
+            or any(laws_match(gold_name, act_name) for gold_name in gold))
+
+
 def main() -> int:
     import os
     import yaml
 
     fetch_all = "--all" in sys.argv
+    only_act = next((arg.split("=", 1)[1] for arg in sys.argv
+                     if arg.startswith("--only-act=")), None)
     manifest_path = Path("data/raw/my/seeds_manifest.json")
     if not manifest_path.is_file():  # fresh clone: fetch the seed documents first
         from packages.connectors.seeds_fetch import fetch_seeds
@@ -75,8 +82,9 @@ def main() -> int:
         # and so it never anchors rows under a Bill name.
         if "Bill" in act_name and "A1727" in act_name:
             act_name = "Personal Data Protection (Amendment) Act 2024 (Act A1727)"
-        relevant = (str(entry.get("indicator_code", "")).startswith(("P6", "P7"))
-                    or any(g in normalize_law(act_name) for g in gold))
+        if only_act and only_act.casefold() not in act_name.casefold():
+            continue
+        relevant = is_relevant_act(entry, act_name, gold)
         if not (relevant or fetch_all):
             continue
         file = entry.get("file", "")
@@ -176,6 +184,16 @@ def main() -> int:
             continue
         try:
             pages = extract_pdf(file, ocr_engine=ocr)
+            content_ok, content_reason = content_eligibility([p.text for p in pages])
+            if not content_ok:
+                for st in stores:
+                    if hasattr(st, "add_discovery_lead"):
+                        st.add_discovery_lead(
+                            f"my:{Path(file).stem}", content_reason or "INELIGIBLE_CONTENT",
+                            {"name": act_name, "url": url, "file": file},
+                        )
+                print(f"  INELIGIBLE {act_name[:52]}: {content_reason}")
+                continue
             page_artifacts, text_spans = materialize_page_evidence(pages, artifact.id)
             units = parse_act_text(pages, economy="Malaysia", act_name=act_name,
                                    act_ref=Path(file).stem.replace("seed_", ""),
@@ -221,12 +239,17 @@ def main() -> int:
             total += len(units)
             print(f"  {act_name[:58]:58s} -> {len(units):4d} units")
 
-    if build_complete:
+    # Derived provisions from a prior generation must never remain active merely
+    # because a current acquisition failed. The failure is retained in the lead
+    # registry and recall report; stale evidence is removed from the judged corpus.
+    if not only_act:
         for st in stores:
             if hasattr(st, "prune_economy_generation"):
                 st.prune_economy_generation("Malaysia", generation)
-    else:
-        print("MY prune skipped: at least one eligible source failed; prior generation retained")
+    if only_act:
+        print(f"MY targeted rebuild: {only_act}; economy-wide generation prune not run")
+    elif not build_complete:
+        print("MY rebuild incomplete: unresolved acquisitions recorded; stale generation pruned")
 
     hits = stores[0].search_provisions("transfer personal data outside Malaysia",
                                    economy="Malaysia", limit=3)

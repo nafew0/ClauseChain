@@ -34,7 +34,7 @@ from packages.core.envfile import load_env_file  # noqa: E402
 
 load_env_file()
 
-from packages.discovery.diff import KnownIndex, laws_match, section_base  # noqa: E402
+from packages.discovery.diff import KnownIndex, laws_match, section_base, section_matches  # noqa: E402
 from packages.graph.sqlite_graph import SqliteGraphStore  # noqa: E402
 from packages.ingest.known_index import base_ref, extract_refs  # noqa: E402
 
@@ -101,7 +101,8 @@ def main() -> int:
             def row_hits(row) -> bool:
                 if not any(gmatch(law, row.get("Law Name", "")) for law in g["laws"]):
                     return False
-                return g["base"] in {base_ref(r) for r in extract_refs(row.get("Article / Section", ""))}
+                return section_matches(section_base(g["ref"]),
+                                       section_base(row.get("Article / Section", "")))
 
             same_ind = [r for r in rows if row_hits(r)
                         and r.get("Indicator ID", "").startswith(f"P{pillar}-")]
@@ -120,11 +121,7 @@ def main() -> int:
 
                 def unit_hits(u) -> bool:
                     ub = section_base(u["props"].get("article_section", ""))
-                    if ub is None:
-                        return False
-                    if kbase.startswith("sch") and "cl" not in kbase:
-                        return ub == kbase or ub.startswith(f"{kbase}cl")
-                    return ub == kbase
+                    return section_matches(kbase, ub)
 
                 if kbase is None:
                     verdict = "GOLD_REF_UNPARSEABLE"

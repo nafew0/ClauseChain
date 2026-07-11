@@ -8,7 +8,7 @@ import pytest
 from packages.core.citations import citation_path
 from packages.core.evidence import SourceValidationError, source_artifact_from_file, verify_artifact
 from packages.core.finalization import FinalizationError, validate_final_finding
-from packages.core.legal_controls import evidence_eligibility, resolve_status
+from packages.core.legal_controls import content_eligibility, evidence_eligibility, resolve_status
 from packages.core.schemas import (CitationProof, MappedFinding, ReviewDecision, RuleUnit,
                                    SearchCoverageManifest, StatusEvidence)
 from packages.extractors.pdf import extract_pdf, materialize_page_evidence
@@ -205,3 +205,32 @@ def test_defined_term_exact_leg_survives_without_sparse_or_dense_hits():
         {"defined_terms": ["authorised officer"]}, "Australia")
     assert [h.provision_id for h in hits] == ["p1"]
     assert hits[0].matched_queries == ["exact-phrase:authorised officer"]
+
+
+def test_repeated_draft_watermark_is_content_ineligible():
+    pages = ["Section 1\nDRAFT\noperative text"] * 8 + ["final-looking page"] * 2
+    assert content_eligibility(pages) == (False, "BILL_OR_DRAFT_CONTENT")
+    assert content_eligibility(["The history mentions a draft bill once.", "Section 2"])[0]
+
+
+def test_my_builder_matches_gold_title_despite_inserted_act_number():
+    from scripts.build_my_corpus import is_relevant_act
+
+    assert is_relevant_act(
+        {"indicator_code": None}, "Criminal Procedure Code (Act 593) 2018",
+        {"criminal procedure code 2018"},
+    )
+
+
+def test_pdf_validation_allows_nul_padding_but_not_trailing_payload():
+    from packages.core.evidence import SourceValidationError, validate_source_bytes
+
+    valid = b"%PDF-1.7\nobject data\n%%EOF" + (b"\x00" * 5000)
+    assert validate_source_bytes(valid, "application/pdf") == "application/pdf"
+    prefix = b"%PDF-1.7\nobject data\n%%EOF" + (b"\x00" * 5000)
+    offset_marked = prefix + str(len(prefix)).encode()
+    assert validate_source_bytes(offset_marked, "application/pdf") == "application/pdf"
+    with pytest.raises(SourceValidationError, match="non-padding"):
+        validate_source_bytes(valid + b"appended payload", "application/pdf")
+    with pytest.raises(SourceValidationError, match="non-padding"):
+        validate_source_bytes(valid + b"1234", "application/pdf")

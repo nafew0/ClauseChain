@@ -6,6 +6,7 @@ these are the exact failures the judges showed teams missing.
 from __future__ import annotations
 
 from packages.core.schemas import MappedFinding
+from packages.discovery.diff import section_matches
 from packages.verifier.gates import (g1_span_exists, g5_whole_rule, g7_ban_vs_conditional,
                                      g7_indicator_fit)
 
@@ -44,6 +45,12 @@ def test_w4_style_business_transfer_never_a_data_transfer():
     text = ("The transferor must transfer the whole or any part of its business to the "
             "transferee under a scheme approved by the Minister.")
     assert g7_indicator_fit("P6-I4", text[:120], text, "Banking Act 1970").status == "FAIL"
+
+
+def test_gold_parent_code_clause_matches_nested_provision_only():
+    assert section_matches("3", "3.5.14")
+    assert section_matches("4.10", "4.10.3")
+    assert not section_matches("3", "30.1")
 
 
 def test_bill_as_measure_hard_fails():

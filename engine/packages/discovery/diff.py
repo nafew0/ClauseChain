@@ -13,7 +13,7 @@ import json
 import re
 from pathlib import Path
 
-_SECTION_BASE = re.compile(r"(\d+(?:\.\d+)?[A-Z]*)")
+_SECTION_BASE = re.compile(r"(\d+(?:\.\d+){0,2}[A-Z]*)")
 _NON_ALNUM = re.compile(r"[^a-z0-9 ]+")
 
 
@@ -42,6 +42,16 @@ def section_base(article_section: str) -> str | None:
     if base.isdigit() and int(base) >= 1000:  # a year, not a section number
         return None
     return base
+
+
+def section_matches(gold_base: str | None, candidate_base: str | None) -> bool:
+    """Exact statute match, plus parent→child matching for official code clauses."""
+    if not gold_base or not candidate_base:
+        return False
+    if gold_base.startswith("sch"):
+        return candidate_base == gold_base or (
+            "cl" not in gold_base and candidate_base.startswith(f"{gold_base}cl"))
+    return candidate_base == gold_base or candidate_base.startswith(f"{gold_base}.")
 
 
 _STOP_TOKENS = {"act", "acts", "the", "of", "and", "a", "an", "no", "pu"}
@@ -102,7 +112,7 @@ class KnownIndex:
         base = section_base(article_section)
         if sections is None:
             return "NEW", f"instrument not in the master dataset for {economy}"
-        if base and base in sections:
+        if base and any(section_matches(known, base) for known in sections):
             return "KNOWN", f"master dataset already records s. {base} of this law"
         return "NEW", (
             f"instrument is known but s. {base} is not among its recorded provisions "

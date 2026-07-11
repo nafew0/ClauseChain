@@ -18,17 +18,17 @@
   },
   "Malaysia P6": {
    "gold": 19,
-   "matched": 0,
-   "NOT_IN_CORPUS": 9,
-   "IN_CORPUS_NOT_EMITTED": 10,
-   "EMITTED_OTHER_INDICATOR": 0,
+   "matched": 2,
+   "NOT_IN_CORPUS": 5,
+   "IN_CORPUS_NOT_EMITTED": 11,
+   "EMITTED_OTHER_INDICATOR": 1,
    "GOLD_REF_UNPARSEABLE": 0
   },
   "Malaysia P7": {
    "gold": 26,
-   "matched": 1,
-   "NOT_IN_CORPUS": 22,
-   "IN_CORPUS_NOT_EMITTED": 3,
+   "matched": 3,
+   "NOT_IN_CORPUS": 5,
+   "IN_CORPUS_NOT_EMITTED": 18,
    "EMITTED_OTHER_INDICATOR": 0,
    "GOLD_REF_UNPARSEABLE": 0
   },
@@ -178,14 +178,16 @@
    "act": "Personal Data Protection Act (Act 709) 2010;\n\nPersonal Data Protection\n(Amendment) Bill (Act A1727) 2024;\n\nPersonal Data Protection Code of Practice For Banking Sector And Financial Institutions 2017",
    "ref": "s. 129",
    "base": "s. 129",
-   "class": "STRUCTURE",
-   "emitted_under": [],
-   "proposed_verdict": "REAL_MISS",
+   "class": "GOLD_ERROR",
+   "emitted_under": [
+    "P6-I4"
+   ],
+   "proposed_verdict": "GOLD_AMBIGUOUS",
    "evidence": {
     "corpus_checked": true,
-    "matched_output_rows": 0,
-    "technical_class": "NOT_IN_CORPUS",
-    "failure_taxonomy": "STRUCTURE"
+    "matched_output_rows": 2,
+    "technical_class": "EMITTED_OTHER_INDICATOR",
+    "failure_taxonomy": "GOLD_ERROR"
    },
    "reviewer_verdict": "",
    "reviewer_note": ""
@@ -198,14 +200,14 @@
    "act": "Personal Data Protection Code of Practice For Banking Sector And Financial Institutions 2017",
    "ref": "s. 3",
    "base": "s. 3",
-   "class": "STRUCTURE",
+   "class": "MAPPING",
    "emitted_under": [],
-   "proposed_verdict": "REAL_MISS",
+   "proposed_verdict": "LEGAL_MAPPING_REVIEW",
    "evidence": {
     "corpus_checked": true,
     "matched_output_rows": 0,
-    "technical_class": "NOT_IN_CORPUS",
-    "failure_taxonomy": "STRUCTURE"
+    "technical_class": "IN_CORPUS_NOT_EMITTED",
+    "failure_taxonomy": "MAPPING"
    },
    "reviewer_verdict": "",
    "reviewer_note": ""
@@ -235,26 +237,6 @@
    "pillar": "6",
    "run": "outputs/final_ma_p6",
    "gold_indicator": "P6-I2",
-   "act": "Services Tax Act (Act 807) 2018",
-   "ref": "s. 24",
-   "base": "s. 24",
-   "class": "ACQUISITION",
-   "emitted_under": [],
-   "proposed_verdict": "REAL_MISS",
-   "evidence": {
-    "corpus_checked": true,
-    "matched_output_rows": 0,
-    "technical_class": "NOT_IN_CORPUS",
-    "failure_taxonomy": "ACQUISITION"
-   },
-   "reviewer_verdict": "",
-   "reviewer_note": ""
-  },
-  {
-   "economy": "Malaysia",
-   "pillar": "6",
-   "run": "outputs/final_ma_p6",
-   "gold_indicator": "P6-I2",
    "act": "Income Tax Act (Act 53) 1967",
    "ref": "s. 82",
    "base": "s. 82",
@@ -266,26 +248,6 @@
     "matched_output_rows": 0,
     "technical_class": "NOT_IN_CORPUS",
     "failure_taxonomy": "ACQUISITION"
-   },
-   "reviewer_verdict": "",
-   "reviewer_note": ""
-  },
-  {
-   "economy": "Malaysia",
-   "pillar": "6",
-   "run": "outputs/final_ma_p6",
-   "gold_indicator": "P6-I4",
-   "act": "Personal Data Protection Act (Act 709) 2010;\n\nPersonal Data Protection\n(Amendment) Bill (Act A1727) 2024",
-   "ref": "s. 129",
-   "base": "s. 129",
-   "class": "STRUCTURE",
-   "emitted_under": [],
-   "proposed_verdict": "REAL_MISS",
-   "evidence": {
-    "corpus_checked": true,
-    "matched_output_rows": 0,
-    "technical_class": "NOT_IN_CORPUS",
-    "failure_taxonomy": "STRUCTURE"
    },
    "reviewer_verdict": "",
    "reviewer_note": ""
@@ -418,14 +380,14 @@
    "act": "Personal Data Protection Code of Practice For Banking Sector And Financial Institutions 2017",
    "ref": "s. 1",
    "base": "s. 1",
-   "class": "STRUCTURE",
+   "class": "MAPPING",
    "emitted_under": [],
-   "proposed_verdict": "REAL_MISS",
+   "proposed_verdict": "LEGAL_MAPPING_REVIEW",
    "evidence": {
     "corpus_checked": true,
     "matched_output_rows": 0,
-    "technical_class": "NOT_IN_CORPUS",
-    "failure_taxonomy": "STRUCTURE"
+    "technical_class": "IN_CORPUS_NOT_EMITTED",
+    "failure_taxonomy": "MAPPING"
    },
    "reviewer_verdict": "",
    "reviewer_note": ""
@@ -478,14 +440,14 @@
    "act": "Personal Data Protection Code of Practice for Licensees Under the Communications and Multimedia (Act 1998) of 2017",
    "ref": "s. 4",
    "base": "s. 4",
-   "class": "STRUCTURE",
+   "class": "ACQUISITION",
    "emitted_under": [],
    "proposed_verdict": "REAL_MISS",
    "evidence": {
     "corpus_checked": true,
     "matched_output_rows": 0,
     "technical_class": "NOT_IN_CORPUS",
-    "failure_taxonomy": "STRUCTURE"
+    "failure_taxonomy": "ACQUISITION"
    },
    "reviewer_verdict": "",
    "reviewer_note": ""
@@ -498,34 +460,14 @@
    "act": "Personal Data Protection Code of Practice for Licensees Under the Communications and Multimedia (Act 1998) of 2017",
    "ref": "s. 3",
    "base": "s. 3",
-   "class": "MAPPING",
+   "class": "ACQUISITION",
    "emitted_under": [],
-   "proposed_verdict": "LEGAL_MAPPING_REVIEW",
+   "proposed_verdict": "REAL_MISS",
    "evidence": {
     "corpus_checked": true,
     "matched_output_rows": 0,
-    "technical_class": "IN_CORPUS_NOT_EMITTED",
-    "failure_taxonomy": "MAPPING"
-   },
-   "reviewer_verdict": "",
-   "reviewer_note": ""
-  },
-  {
-   "economy": "Malaysia",
-   "pillar": "7",
-   "run": "outputs/final_ma_p7",
-   "gold_indicator": "P7-I1",
-   "act": "Personal Data Protection Act (Act 709) 2010;\n\nPersonal Data Protection\n(Amendment) Bill (Act A1727) 2024",
-   "ref": "s. 12b",
-   "base": "s. 12b",
-   "class": "MAPPING",
-   "emitted_under": [],
-   "proposed_verdict": "LEGAL_MAPPING_REVIEW",
-   "evidence": {
-    "corpus_checked": true,
-    "matched_output_rows": 0,
-    "technical_class": "IN_CORPUS_NOT_EMITTED",
-    "failure_taxonomy": "MAPPING"
+    "technical_class": "NOT_IN_CORPUS",
+    "failure_taxonomy": "ACQUISITION"
    },
    "reviewer_verdict": "",
    "reviewer_note": ""
@@ -538,14 +480,14 @@
    "act": "Computer Crimes Act (Act 563) 1997;\n\nCyber Security Act (Act 854) 2024",
    "ref": "s. 15",
    "base": "s. 15",
-   "class": "ACQUISITION",
+   "class": "MAPPING",
    "emitted_under": [],
-   "proposed_verdict": "REAL_MISS",
+   "proposed_verdict": "LEGAL_MAPPING_REVIEW",
    "evidence": {
     "corpus_checked": true,
     "matched_output_rows": 0,
-    "technical_class": "NOT_IN_CORPUS",
-    "failure_taxonomy": "ACQUISITION"
+    "technical_class": "IN_CORPUS_NOT_EMITTED",
+    "failure_taxonomy": "MAPPING"
    },
    "reviewer_verdict": "",
    "reviewer_note": ""
@@ -558,14 +500,14 @@
    "act": "Computer Crimes Act (Act 563) 1997;\n\nCyber Security Act (Act 854) 2024",
    "ref": "s. 27",
    "base": "s. 27",
-   "class": "ACQUISITION",
+   "class": "MAPPING",
    "emitted_under": [],
-   "proposed_verdict": "REAL_MISS",
+   "proposed_verdict": "LEGAL_MAPPING_REVIEW",
    "evidence": {
     "corpus_checked": true,
     "matched_output_rows": 0,
-    "technical_class": "NOT_IN_CORPUS",
-    "failure_taxonomy": "ACQUISITION"
+    "technical_class": "IN_CORPUS_NOT_EMITTED",
+    "failure_taxonomy": "MAPPING"
    },
    "reviewer_verdict": "",
    "reviewer_note": ""
@@ -578,14 +520,14 @@
    "act": "Computer Crimes Act (Act 563) 1997;\n\nCyber Security Act (Act 854) 2024",
    "ref": "s. 36",
    "base": "s. 36",
-   "class": "ACQUISITION",
+   "class": "MAPPING",
    "emitted_under": [],
-   "proposed_verdict": "REAL_MISS",
+   "proposed_verdict": "LEGAL_MAPPING_REVIEW",
    "evidence": {
     "corpus_checked": true,
     "matched_output_rows": 0,
-    "technical_class": "NOT_IN_CORPUS",
-    "failure_taxonomy": "ACQUISITION"
+    "technical_class": "IN_CORPUS_NOT_EMITTED",
+    "failure_taxonomy": "MAPPING"
    },
    "reviewer_verdict": "",
    "reviewer_note": ""
@@ -598,14 +540,14 @@
    "act": "Personal Data Protection Code of Practice for Licensees Under the Communications and Multimedia (Act 1998) of 2017",
    "ref": "s. 5",
    "base": "s. 5",
-   "class": "STRUCTURE",
+   "class": "ACQUISITION",
    "emitted_under": [],
    "proposed_verdict": "REAL_MISS",
    "evidence": {
     "corpus_checked": true,
     "matched_output_rows": 0,
     "technical_class": "NOT_IN_CORPUS",
-    "failure_taxonomy": "STRUCTURE"
+    "failure_taxonomy": "ACQUISITION"
    },
    "reviewer_verdict": "",
    "reviewer_note": ""
@@ -618,14 +560,14 @@
    "act": "Personal Data Protection Code of Practice For Banking Sector And Financial Institutions 2017",
    "ref": "s. 3",
    "base": "s. 3",
-   "class": "STRUCTURE",
+   "class": "MAPPING",
    "emitted_under": [],
-   "proposed_verdict": "REAL_MISS",
+   "proposed_verdict": "LEGAL_MAPPING_REVIEW",
    "evidence": {
     "corpus_checked": true,
     "matched_output_rows": 0,
-    "technical_class": "NOT_IN_CORPUS",
-    "failure_taxonomy": "STRUCTURE"
+    "technical_class": "IN_CORPUS_NOT_EMITTED",
+    "failure_taxonomy": "MAPPING"
    },
    "reviewer_verdict": "",
    "reviewer_note": ""
@@ -638,14 +580,14 @@
    "act": "Services Tax Act (Act 807) 2018",
    "ref": "s. 24",
    "base": "s. 24",
-   "class": "ACQUISITION",
+   "class": "MAPPING",
    "emitted_under": [],
-   "proposed_verdict": "REAL_MISS",
+   "proposed_verdict": "LEGAL_MAPPING_REVIEW",
    "evidence": {
     "corpus_checked": true,
     "matched_output_rows": 0,
-    "technical_class": "NOT_IN_CORPUS",
-    "failure_taxonomy": "ACQUISITION"
+    "technical_class": "IN_CORPUS_NOT_EMITTED",
+    "failure_taxonomy": "MAPPING"
    },
    "reviewer_verdict": "",
    "reviewer_note": ""
@@ -666,26 +608,6 @@
     "matched_output_rows": 0,
     "technical_class": "NOT_IN_CORPUS",
     "failure_taxonomy": "ACQUISITION"
-   },
-   "reviewer_verdict": "",
-   "reviewer_note": ""
-  },
-  {
-   "economy": "Malaysia",
-   "pillar": "7",
-   "run": "outputs/final_ma_p7",
-   "gold_indicator": "P7-I4",
-   "act": "Personal Data Protection Act (Act 709) 2010;\n\nPersonal Data Protection\n(Amendment) Bill (Act A1727) 2024",
-   "ref": "s. 12a(1)",
-   "base": "s. 12a",
-   "class": "MAPPING",
-   "emitted_under": [],
-   "proposed_verdict": "LEGAL_MAPPING_REVIEW",
-   "evidence": {
-    "corpus_checked": true,
-    "matched_output_rows": 0,
-    "technical_class": "IN_CORPUS_NOT_EMITTED",
-    "failure_taxonomy": "MAPPING"
    },
    "reviewer_verdict": "",
    "reviewer_note": ""
@@ -718,14 +640,14 @@
    "act": "Personal Data Protection Act (Act 709) 2010;\n\nPersonal Data Protection\n(Amendment) Bill (Act A1727) 2024",
    "ref": "s. 121",
    "base": "s. 121",
-   "class": "STRUCTURE",
+   "class": "MAPPING",
    "emitted_under": [],
-   "proposed_verdict": "REAL_MISS",
+   "proposed_verdict": "LEGAL_MAPPING_REVIEW",
    "evidence": {
     "corpus_checked": true,
     "matched_output_rows": 0,
-    "technical_class": "NOT_IN_CORPUS",
-    "failure_taxonomy": "STRUCTURE"
+    "technical_class": "IN_CORPUS_NOT_EMITTED",
+    "failure_taxonomy": "MAPPING"
    },
    "reviewer_verdict": "",
    "reviewer_note": ""
@@ -738,14 +660,14 @@
    "act": "Personal Data Protection Act (Act 709) 2010;\n\nPersonal Data Protection\n(Amendment) Bill (Act A1727) 2024",
    "ref": "s. 112",
    "base": "s. 112",
-   "class": "STRUCTURE",
+   "class": "MAPPING",
    "emitted_under": [],
-   "proposed_verdict": "REAL_MISS",
+   "proposed_verdict": "LEGAL_MAPPING_REVIEW",
    "evidence": {
     "corpus_checked": true,
     "matched_output_rows": 0,
-    "technical_class": "NOT_IN_CORPUS",
-    "failure_taxonomy": "STRUCTURE"
+    "technical_class": "IN_CORPUS_NOT_EMITTED",
+    "failure_taxonomy": "MAPPING"
    },
    "reviewer_verdict": "",
    "reviewer_note": ""
@@ -758,14 +680,14 @@
    "act": "Personal Data Protection Act (Act 709) 2010;\n\nPersonal Data Protection\n(Amendment) Bill (Act A1727) 2024",
    "ref": "s. 113",
    "base": "s. 113",
-   "class": "STRUCTURE",
+   "class": "MAPPING",
    "emitted_under": [],
-   "proposed_verdict": "REAL_MISS",
+   "proposed_verdict": "LEGAL_MAPPING_REVIEW",
    "evidence": {
     "corpus_checked": true,
     "matched_output_rows": 0,
-    "technical_class": "NOT_IN_CORPUS",
-    "failure_taxonomy": "STRUCTURE"
+    "technical_class": "IN_CORPUS_NOT_EMITTED",
+    "failure_taxonomy": "MAPPING"
    },
    "reviewer_verdict": "",
    "reviewer_note": ""
@@ -778,14 +700,14 @@
    "act": "Personal Data Protection Act (Act 709) 2010;\n\nPersonal Data Protection\n(Amendment) Bill (Act A1727) 2024",
    "ref": "s. 114",
    "base": "s. 114",
-   "class": "STRUCTURE",
+   "class": "MAPPING",
    "emitted_under": [],
-   "proposed_verdict": "REAL_MISS",
+   "proposed_verdict": "LEGAL_MAPPING_REVIEW",
    "evidence": {
     "corpus_checked": true,
     "matched_output_rows": 0,
-    "technical_class": "NOT_IN_CORPUS",
-    "failure_taxonomy": "STRUCTURE"
+    "technical_class": "IN_CORPUS_NOT_EMITTED",
+    "failure_taxonomy": "MAPPING"
    },
    "reviewer_verdict": "",
    "reviewer_note": ""
@@ -798,14 +720,14 @@
    "act": "Personal Data Protection Code of Practice for Licensees Under the Communications and Multimedia (Act 1998) of 2017",
    "ref": "s. 7",
    "base": "s. 7",
-   "class": "STRUCTURE",
+   "class": "ACQUISITION",
    "emitted_under": [],
    "proposed_verdict": "REAL_MISS",
    "evidence": {
     "corpus_checked": true,
     "matched_output_rows": 0,
     "technical_class": "NOT_IN_CORPUS",
-    "failure_taxonomy": "STRUCTURE"
+    "failure_taxonomy": "ACQUISITION"
    },
    "reviewer_verdict": "",
    "reviewer_note": ""
@@ -818,14 +740,14 @@
    "act": "Personal Data Protection Code of Practice For Banking Sector And Financial Institutions 2017",
    "ref": "s. 3",
    "base": "s. 3",
-   "class": "STRUCTURE",
+   "class": "MAPPING",
    "emitted_under": [],
-   "proposed_verdict": "REAL_MISS",
+   "proposed_verdict": "LEGAL_MAPPING_REVIEW",
    "evidence": {
     "corpus_checked": true,
     "matched_output_rows": 0,
-    "technical_class": "NOT_IN_CORPUS",
-    "failure_taxonomy": "STRUCTURE"
+    "technical_class": "IN_CORPUS_NOT_EMITTED",
+    "failure_taxonomy": "MAPPING"
    },
    "reviewer_verdict": "",
    "reviewer_note": ""
@@ -838,14 +760,14 @@
    "act": "Cyber Security Act (Act 854) 2024",
    "ref": "s. 46",
    "base": "s. 46",
-   "class": "ACQUISITION",
+   "class": "MAPPING",
    "emitted_under": [],
-   "proposed_verdict": "REAL_MISS",
+   "proposed_verdict": "LEGAL_MAPPING_REVIEW",
    "evidence": {
     "corpus_checked": true,
     "matched_output_rows": 0,
-    "technical_class": "NOT_IN_CORPUS",
-    "failure_taxonomy": "ACQUISITION"
+    "technical_class": "IN_CORPUS_NOT_EMITTED",
+    "failure_taxonomy": "MAPPING"
    },
    "reviewer_verdict": "",
    "reviewer_note": ""
@@ -858,14 +780,14 @@
    "act": "Cyber Security Act (Act 854) 2024",
    "ref": "s. 4",
    "base": "s. 4",
-   "class": "ACQUISITION",
+   "class": "MAPPING",
    "emitted_under": [],
-   "proposed_verdict": "REAL_MISS",
+   "proposed_verdict": "LEGAL_MAPPING_REVIEW",
    "evidence": {
     "corpus_checked": true,
     "matched_output_rows": 0,
-    "technical_class": "NOT_IN_CORPUS",
-    "failure_taxonomy": "ACQUISITION"
+    "technical_class": "IN_CORPUS_NOT_EMITTED",
+    "failure_taxonomy": "MAPPING"
    },
    "reviewer_verdict": "",
    "reviewer_note": ""
@@ -878,14 +800,14 @@
    "act": "Cyber Security Act (Act 854) 2024",
    "ref": "s. 38",
    "base": "s. 38",
-   "class": "ACQUISITION",
+   "class": "MAPPING",
    "emitted_under": [],
-   "proposed_verdict": "REAL_MISS",
+   "proposed_verdict": "LEGAL_MAPPING_REVIEW",
    "evidence": {
     "corpus_checked": true,
     "matched_output_rows": 0,
-    "technical_class": "NOT_IN_CORPUS",
-    "failure_taxonomy": "ACQUISITION"
+    "technical_class": "IN_CORPUS_NOT_EMITTED",
+    "failure_taxonomy": "MAPPING"
    },
    "reviewer_verdict": "",
    "reviewer_note": ""
@@ -898,14 +820,14 @@
    "act": "Cyber Security Act (Act 854) 2024",
    "ref": "s. 39",
    "base": "s. 39",
-   "class": "ACQUISITION",
+   "class": "MAPPING",
    "emitted_under": [],
-   "proposed_verdict": "REAL_MISS",
+   "proposed_verdict": "LEGAL_MAPPING_REVIEW",
    "evidence": {
     "corpus_checked": true,
     "matched_output_rows": 0,
-    "technical_class": "NOT_IN_CORPUS",
-    "failure_taxonomy": "ACQUISITION"
+    "technical_class": "IN_CORPUS_NOT_EMITTED",
+    "failure_taxonomy": "MAPPING"
    },
    "reviewer_verdict": "",
    "reviewer_note": ""
@@ -918,14 +840,14 @@
    "act": "Cyber Security Act (Act 854) 2024",
    "ref": "s. 40",
    "base": "s. 40",
-   "class": "ACQUISITION",
+   "class": "MAPPING",
    "emitted_under": [],
-   "proposed_verdict": "REAL_MISS",
+   "proposed_verdict": "LEGAL_MAPPING_REVIEW",
    "evidence": {
     "corpus_checked": true,
     "matched_output_rows": 0,
-    "technical_class": "NOT_IN_CORPUS",
-    "failure_taxonomy": "ACQUISITION"
+    "technical_class": "IN_CORPUS_NOT_EMITTED",
+    "failure_taxonomy": "MAPPING"
    },
    "reviewer_verdict": "",
    "reviewer_note": ""
@@ -938,14 +860,14 @@
    "act": "Security Offences (Special Measures) Act (Act 747) 2012",
    "ref": "s. 6(3)",
    "base": "s. 6",
-   "class": "ACQUISITION",
+   "class": "MAPPING",
    "emitted_under": [],
-   "proposed_verdict": "REAL_MISS",
+   "proposed_verdict": "LEGAL_MAPPING_REVIEW",
    "evidence": {
     "corpus_checked": true,
     "matched_output_rows": 0,
-    "technical_class": "NOT_IN_CORPUS",
-    "failure_taxonomy": "ACQUISITION"
+    "technical_class": "IN_CORPUS_NOT_EMITTED",
+    "failure_taxonomy": "MAPPING"
    },
    "reviewer_verdict": "",
    "reviewer_note": ""
@@ -958,14 +880,14 @@
    "act": "Security Offences (Special Measures) Act (Act 747) 2012",
    "ref": "s. 6(7)",
    "base": "s. 6",
-   "class": "ACQUISITION",
+   "class": "MAPPING",
    "emitted_under": [],
-   "proposed_verdict": "REAL_MISS",
+   "proposed_verdict": "LEGAL_MAPPING_REVIEW",
    "evidence": {
     "corpus_checked": true,
     "matched_output_rows": 0,
-    "technical_class": "NOT_IN_CORPUS",
-    "failure_taxonomy": "ACQUISITION"
+    "technical_class": "IN_CORPUS_NOT_EMITTED",
+    "failure_taxonomy": "MAPPING"
    },
    "reviewer_verdict": "",
    "reviewer_note": ""

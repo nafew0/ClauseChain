@@ -24,7 +24,8 @@ from packages.core.rule_units import classify_rule_components
 # Parsed with each; the richer result wins.
 _SECTION_PATTERNS = [
     re.compile(r"^\s{0,6}Section\s+(\d{1,3}[A-Z]{0,2})\.?\s+(.{0,120})", re.IGNORECASE),
-    re.compile(r"^\s{0,6}(\d{1,3}\.\d{1,2}[A-Z]{0,2})\s{2,}(\S.{0,110})"),   # 474.17A (Schedule decimals)
+    # Schedule decimals (474.17A) and official-code hierarchy (3.5.14).
+    re.compile(r"^\s{0,6}(\d{1,3}(?:\.\d{1,2}){1,2}[A-Z]{0,2})\s+(\S.{0,110})"),
     re.compile(r"^\s{0,6}(\d{1,3}[A-Z]{0,2})\.\s+(.{0,120})"),
     # AU Commonwealth compilations: "13  Interferences with privacy" (no dot, 2+ spaces)
     re.compile(r"^\s{0,6}(\d{1,3}[A-Z]{0,2})\s{2,}(\S.{0,110})"),
@@ -56,12 +57,13 @@ def _plausible_heading(heading_text: str, act_name: str) -> bool:
 _SUBSECTION = re.compile(r"\((\d{1,2})\)\s")
 
 
-def _sec_sort_key(num: str) -> tuple[int, int, str]:
-    """'26' -> (26,0,''); '116B' -> (116,0,'B'); '474.17A' -> (474,17,'A')."""
-    match = re.match(r"(\d+)(?:\.(\d+))?([A-Z]*)", num)
+def _sec_sort_key(num: str) -> tuple[int, int, int, str]:
+    """Sortable body/schedule/code path, including nested clause 4.10.3."""
+    match = re.fullmatch(r"(\d+)(?:\.(\d+))?(?:\.(\d+))?([A-Z]*)", num)
     if not match:
-        return (0, 0, "")
-    return (int(match.group(1)), int(match.group(2) or 0), match.group(3))
+        return (0, -1, -1, "")
+    return (int(match.group(1)), int(match.group(2) or -1),
+            int(match.group(3) or -1), match.group(4))
 
 
 def parse_act_text(pages: list, economy: str, act_name: str, act_ref: str,
@@ -75,12 +77,22 @@ def parse_act_text(pages: list, economy: str, act_name: str, act_ref: str,
         for line in page.text.splitlines():
             lines.append((page.page_number, line))
 
+    # Consolidated Acts commonly put a complete numbered table of contents before
+    # the enacting text. Feeding both copies to the monotonic parser makes the TOC
+    # win and causes the real provisions (including gaps not printed in the TOC
+    # extract) to be rejected as backwards duplicates. Start at the formal long
+    # title when present; non-Act instruments/codes without that marker are unchanged.
+    enactment_starts = [i for i, (_, line) in enumerate(lines)
+                        if re.match(r"^\s*An Act to\b", line, re.I)]
+    if enactment_starts:
+        lines = lines[enactment_starts[-1]:]
+
     # Pass 1: find section starts with the monotonic filter; adaptive layout —
     # both patterns are tried and the one yielding more sections wins.
     best: list[dict] = []
     for pattern in _SECTION_PATTERNS + (extra_section_patterns or []):
         sections: list[dict] = []
-        last_key = (0, 0, "")
+        last_key = (0, -1, -1, "")
         for index, (page_no, line) in enumerate(lines):
             match = pattern.match(line)
             if not match:
@@ -91,7 +103,7 @@ def parse_act_text(pages: list, economy: str, act_name: str, act_ref: str,
                 continue
             key = _sec_sort_key(match.group(1))
             if sections:
-                same_base_sibling = key[:2] == last_key[:2] and key[2] != last_key[2]
+                same_base_sibling = key[:-1] == last_key[:-1] and key[-1] != last_key[-1]
                 if not same_base_sibling and (key <= last_key or key[0] > last_key[0] + 40):
                     continue  # non-monotonic or absurd jump = list item / page artifact
                 # letter-suffix siblings (25 -> 25AA -> 25A) may print out of order

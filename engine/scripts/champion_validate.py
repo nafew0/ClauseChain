@@ -10,6 +10,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from packages.core.finalization import validate_final_finding  # noqa: E402
+from packages.core.corpus_fingerprint import corpus_fingerprint  # noqa: E402
 from packages.core.schemas import MappedFinding, SourceArtifact, TextSpan  # noqa: E402
 
 
@@ -32,6 +33,24 @@ def main() -> int:
     if graph.returncode:
         failures.append("graph validation failed")
 
+    from packages.graph.sqlite_graph import SqliteGraphStore
+    from packages.retrieval.hybrid import load_corpus
+
+    store = SqliteGraphStore()
+    for run_path in RUNS:
+        path = Path(run_path) / "output.json"
+        if not path.is_file():
+            continue
+        envelope = json.loads(path.read_text())
+        economy = ({"SG": "Singapore", "MY": "Malaysia", "AU": "Australia"}
+                   .get(str(envelope.get("country", "")).upper(), envelope.get("country")))
+        expected = corpus_fingerprint(load_corpus(store, economy))
+        recorded = (envelope.get("metadata") or {}).get("corpus_fingerprint")
+        if recorded != expected:
+            report["runs"].setdefault(run_path, {})["corpus_fingerprint"] = {
+                "recorded": recorded, "current": expected, "status": "STALE"}
+            failures.append(f"{run_path} is stale against the current evidence corpus")
+
     gold_path = Path("tests/fixtures/extraction_gold_v1.json")
     draft_path = Path("tests/fixtures/extraction_gold_v1.draft.json")
     gold = json.loads((gold_path if gold_path.is_file() else draft_path).read_text())
@@ -46,8 +65,9 @@ def main() -> int:
         if not path.is_file():
             failures.append(f"missing run {run_path}"); continue
         env = json.loads(path.read_text()); stats = env.get("metadata", {}).get("pipeline_stats", {})
-        report["runs"][run_path] = {"candidates": len(env.get("findings", [])),
-            "warnings": len(env.get("warnings", [])), "pipeline_stats": stats}
+        report["runs"].setdefault(run_path, {}).update({
+            "candidates": len(env.get("findings", [])),
+            "warnings": len(env.get("warnings", [])), "pipeline_stats": stats})
 
     recall_path = Path("data/review/recall_adjudication.json")
     recall = json.loads(recall_path.read_text()) if recall_path.is_file() else {"misses": []}

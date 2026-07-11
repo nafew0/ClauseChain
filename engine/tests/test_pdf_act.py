@@ -54,6 +54,29 @@ def test_monotonic_filter_kills_list_numbers():
     assert numbers == {"5", "6"}
 
 
+def test_table_of_contents_cannot_shadow_real_sections():
+    text = """TABLE OF CONTENTS
+1. Short title
+24. Duty to keep records
+95. Savings
+LAWS OF MALAYSIA
+SERVICE TAX ACT 2018
+An Act to provide for the charging and collecting of service tax.
+1. Short title and commencement
+(1) This Act may be cited as the Service Tax Act 2018.
+24. Duty to keep records
+(1) Every taxable person shall keep complete and true records of all transactions.
+(2) The records shall be preserved for seven years in Malaysia unless otherwise approved.
+25. Taxable period
+(1) The taxable period shall be prescribed by the Minister.
+"""
+    units = parse_act_text([_page(1, text)], "Malaysia", "Service Tax Act 2018",
+                           "Act807", "https://x")
+    labels = {u.article_section for u in units}
+    assert "s. 24(1)" in labels and "s. 24(2)" in labels
+    assert all("TABLE OF CONTENTS" not in u.text for u in units)
+
+
 # --- V3 regression fixtures (P3.5 addendum; user-verified failure modes) ---
 
 TIA_NOTE_TRAP = """187A  Service providers must keep information and documents
@@ -104,3 +127,17 @@ def test_v3_schedule_decimal_sections_parse():
     assert any(l.startswith("s. 474.17(") or l == "s. 474.17" for l in labels)
     numbers = {u.metadata["section_number"] for u in units}
     assert "474.17" in numbers and "474.17A" in numbers
+
+
+def test_official_code_nested_decimal_clauses_parse_as_hierarchy():
+    code = """3.5 RETENTION PRINCIPLE
+3.5.1 Data Users shall retain personal data only for as long as necessary.
+3.5.2 Records required by law may be retained for seven years.
+4.10 TRANSFER OF PERSONAL DATA ABROAD
+4.10.1 A Data User shall not transfer personal data outside Malaysia unless permitted.
+4.10.2 A transfer may occur where the Data Subject has consented.
+"""
+    units = parse_act_text([_page(40, code)], "Malaysia", "Banking Code 2017",
+                           "bank-code", "https://x")
+    labels = {u.article_section for u in units}
+    assert {"s. 3.5.1", "s. 3.5.2", "s. 4.10.1", "s. 4.10.2"} <= labels

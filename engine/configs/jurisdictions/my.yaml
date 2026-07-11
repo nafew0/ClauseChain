@@ -22,6 +22,7 @@ official_sources:
   - { name: Ministry of Finance, domain: mof.gov.my, source_type: ministry, authority_rank: 50 }
   - { name: Dept of Standards, domain: jsm.gov.my, source_type: agency, authority_rank: 40 }
   - { name: Royal Malaysia Police (CCID), domain: ccid.rmp.gov.my, source_type: enforcement_agency, authority_rank: 40 }
+  - { name: National Cyber Security Agency, domain: nacsa.gov.my, source_type: official_statute_database, authority_rank: 100 }
 
 portal_search:
   engine: https://lom.agc.gov.my (act search) + regulator-site search per domain above
@@ -70,11 +71,37 @@ governing_instruments:
 # A2: explicit official currentness facts. Absence from this registry means
 # `unknown` and blocks retrieval/export; a live URL alone is never a status fact.
 status_assertions:
+  "709":
+    status: in_force
+    fact_url: "https://www.pdp.gov.my/ppdpv1/en/akta/pdp-act-2010-en/"
+    fact_text: "The current official Personal Data Protection Commissioner legislation directory publishes the Personal Data Protection Act 2010 (Act 709), its operative regulations, current amendments and enforcement materials."
+    quotation_url: "https://www.pdp.gov.my/ppdpv1/wp-content/uploads/2024/07/UNDANG-UNDANG-MALAYSIA_AKTA_PERLINDUNGAN_DATA_PERIBADI_2010_709_MALAY_AND-ENG_V2022.pdf"
   A1727:
     status: in_force
     fact_url: "https://www.pdp.gov.my/ppdpv1/wp-content/uploads/2024/12/PENETAPAN-TARIKH-PERMULAAN-KUAT-KUASA.pdf"
     fact_text: "Federal Gazette P.U. (B) 522 appoints commencement dates of 1 January, 1 April and 1 June 2025 for every section of Act A1727."
     effective_date: "2025-06-01"
+  "854":
+    status: in_force
+    fact_url: "https://nacsa.gov.my/act854.php"
+    fact_text: "NACSA states that Act 854 was gazetted on 26 June 2024 and came into operation on 26 August 2024."
+    effective_date: "2024-08-26"
+    quotation_url: "https://lom.agc.gov.my/ilims/upload/portal/akta/outputaktap/2177706_BI/Act%20854.pdf"
+  "593":
+    status: in_force
+    fact_url: "https://lom.agc.gov.my/act-detail.php?language=BI&act=593"
+    fact_text: "The current official Laws of Malaysia register publishes the Criminal Procedure Code (Act 593) and its subsidiary legislation."
+    quotation_url: "https://lom.agc.gov.my/ilims/upload/portal/akta/outputaktap/605_BI/ACT%20593%20(2).pdf"
+  "747":
+    status: in_force
+    fact_url: "https://lom.agc.gov.my/act-detail.php?language=BI&act=747"
+    fact_text: "The current official Laws of Malaysia register publishes the Security Offences (Special Measures) Act 2012 (Act 747) and its subsidiary legislation."
+    quotation_url: "https://lom.agc.gov.my/ilims/upload/portal/akta/outputaktap/20120622_747_BI_Act%20747%20BI.pdf"
+  "563":
+    status: in_force
+    fact_url: "https://lom.agc.gov.my/act-detail.php?language=BI&act=563"
+    fact_text: "The current official Laws of Malaysia register publishes the Computer Crimes Act 1997 (Act 563) and its subsidiary legislation."
+    quotation_url: "https://lom.agc.gov.my/ilims/upload/portal/akta/outputaktap/575_BI/ACT%20563%20-%20WARTA%20ASAL.pdf"
   "53":
     status: in_force
     fact_url: "https://www.hasil.gov.my/en/legislation/act/"

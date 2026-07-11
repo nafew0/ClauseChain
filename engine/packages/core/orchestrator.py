@@ -204,6 +204,7 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
         return _stub_envelope(code0, ECONOMY_NAMES.get(code0, country.strip()), pillar, provider_profile)
 
     from packages.discovery.diff import KnownIndex
+    from packages.core.corpus_fingerprint import corpus_fingerprint
     from packages.graph.store import get_graph_store
     from packages.providers.model_router import resolve_embedding, resolve_llm
     from packages.rdtii.mapper import SCREEN_CAP_PER_INDICATOR, map_candidates, screen_candidates
@@ -253,7 +254,8 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
         # from the corpus entirely -> loud warning (a recall hole to fix, never silent).
         have_ids = {c.provision_id for c in candidates}
         organic_ids = set(have_ids)  # what retrieval found before injection (L2)
-        from packages.discovery.diff import laws_match as _lm, section_base as _sb
+        from packages.discovery.diff import (laws_match as _lm, section_base as _sb,
+                                             section_matches as _section_matches)
         known_rows = [r for r in known._by_economy.get(economy, [])
                       if str(r.get("pillar")) == str(pillar)
                       and r.get("indicator_code") == indicator_id]
@@ -267,13 +269,7 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                 acts_resolved = [known._resolve_alias(economy, a)
                                  for a in krow.get("acts_norm", []) if a]
                 def _base_hits(ubase: str | None) -> bool:
-                    if not ubase:
-                        return False
-                    # whole-schedule gold ref ("Sch. 2" -> "sch2") anchors every
-                    # clause of that schedule ("sch2cl5", ...)
-                    if kbase.startswith("sch") and "cl" not in kbase:
-                        return ubase == kbase or ubase.startswith(f"{kbase}cl")
-                    return ubase == kbase
+                    return _section_matches(kbase, ubase)
                 matches = [c for c in corpus
                            if any(_lm(a, c["props"].get("law_name", "")) for a in acts_resolved)
                            and _base_hits(_sb(c["props"].get("article_section", "")))]
@@ -323,7 +319,8 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
             props = candidate.props
             sections = known.known_sections(economy, props.get("law_name", ""))
             base = section_base(props.get("article_section", ""))
-            if sections is not None and base and base in sections:
+            if sections is not None and base and any(
+                    _section_matches(known_base, base) for known_base in sections):
                 anchors.append(candidate)
             else:
                 rest.append(candidate)
@@ -540,6 +537,7 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
         warnings=warnings,
         metadata={
             "corpus_provisions": len(corpus),
+            "corpus_fingerprint": corpus_fingerprint(corpus),
             "pipeline_stats": stats,
             "elapsed_seconds": round(time.time() - started, 1),
             "live_llm_calls": True,

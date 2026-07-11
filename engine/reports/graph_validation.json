@@ -3,9 +3,9 @@
   "provisions": {
     "Singapore": 9078,
     "Australia": 14073,
-    "Malaysia": 153
+    "Malaysia": 1204
   },
-  "source_artifacts": 39,
+  "source_artifacts": 43,
   "schema_version": 3,
   "errors": []
 }

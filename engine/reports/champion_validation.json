@@ -1,14 +1,25 @@
 {
   "status": "FAIL",
   "failures": [
+    "outputs/final_si_p6 is stale against the current evidence corpus",
+    "outputs/final_si_p7 is stale against the current evidence corpus",
+    "outputs/final_ma_p6 is stale against the current evidence corpus",
+    "outputs/final_ma_p7 is stale against the current evidence corpus",
+    "outputs/final_au_p6 is stale against the current evidence corpus",
+    "outputs/final_au_p7 is stale against the current evidence corpus",
     "30-page extraction gold lacks named human sign-off",
-    "59 recall misses await adjudication/repair",
+    "55 recall misses await adjudication/repair",
     "candidate findings still require named human decisions",
     "27 Zone-3 scores await explicit approval/override",
     "approval-only submission replay has not produced final artifacts"
   ],
   "runs": {
     "outputs/final_si_p6": {
+      "corpus_fingerprint": {
+        "recorded": null,
+        "current": "1413cd36988ea85b4cde7692f26dec77c79e883fb6afda7ca026e671f435df3f",
+        "status": "STALE"
+      },
       "candidates": 6,
       "warnings": 7,
       "pipeline_stats": {
@@ -88,6 +99,11 @@
       }
     },
     "outputs/final_si_p7": {
+      "corpus_fingerprint": {
+        "recorded": null,
+        "current": "1413cd36988ea85b4cde7692f26dec77c79e883fb6afda7ca026e671f435df3f",
+        "status": "STALE"
+      },
       "candidates": 47,
       "warnings": 12,
       "pipeline_stats": {
@@ -183,48 +199,61 @@
       }
     },
     "outputs/final_ma_p6": {
-      "candidates": 5,
-      "warnings": 42,
+      "corpus_fingerprint": {
+        "recorded": null,
+        "current": "1ae9f88a809b9cc57d3227eaa07685a5d87f8bc89a731d23e5682a8155876ba8",
+        "status": "STALE"
+      },
+      "candidates": 7,
+      "warnings": 25,
       "pipeline_stats": {
-        "candidates": 310,
-        "screened_in": 103,
-        "mapped": 2,
-        "gate_rejected": 6,
+        "candidates": 515,
+        "screened_in": 115,
+        "mapped": 6,
+        "gate_rejected": 14,
+        "nano_mappings": 50,
+        "mini_escalations": 65,
+        "escalation_reasons": {
+          "ban-vs-condition-ambiguity": 10,
+          "known-anchor-rejected": 46,
+          "low-confidence-known-anchor": 9,
+          "low-confidence-positive": 4
+        },
         "by_indicator": {
           "P6-I1": {
-            "candidate_count": 74,
-            "resolved_known_anchors": 11,
-            "candidate_recall": 0.9090909090909091,
-            "screen_survival_recall": 1.0,
-            "mapper_survival_recall": 0.0,
-            "gate_survival_recall": 0.0,
-            "injected_anchor_count": 1,
-            "caps": [
-              {
-                "stage": "screen",
-                "limit": 60,
-                "input_count": 78
-              }
-            ]
-          },
-          "P6-I2": {
-            "candidate_count": 75,
-            "resolved_known_anchors": 1,
+            "candidate_count": 120,
+            "resolved_known_anchors": 3,
             "candidate_recall": 1.0,
             "screen_survival_recall": 1.0,
-            "mapper_survival_recall": 0.0,
-            "gate_survival_recall": 0.0,
+            "mapper_survival_recall": 0.3333333333333333,
+            "gate_survival_recall": 0.3333333333333333,
             "injected_anchor_count": 0,
             "caps": [
               {
                 "stage": "screen",
                 "limit": 60,
-                "input_count": 78
+                "input_count": 132
+              }
+            ]
+          },
+          "P6-I2": {
+            "candidate_count": 120,
+            "resolved_known_anchors": 2,
+            "candidate_recall": 0.5,
+            "screen_survival_recall": 1.0,
+            "mapper_survival_recall": 0.5,
+            "gate_survival_recall": 0.5,
+            "injected_anchor_count": 1,
+            "caps": [
+              {
+                "stage": "screen",
+                "limit": 60,
+                "input_count": 124
               }
             ]
           },
           "P6-I3": {
-            "candidate_count": 68,
+            "candidate_count": 120,
             "resolved_known_anchors": 0,
             "candidate_recall": null,
             "screen_survival_recall": null,
@@ -235,33 +264,38 @@
               {
                 "stage": "screen",
                 "limit": 60,
-                "input_count": 71
+                "input_count": 120
               }
             ]
           },
           "P6-I4": {
-            "candidate_count": 78,
-            "resolved_known_anchors": 18,
-            "candidate_recall": 0.7222222222222222,
+            "candidate_count": 120,
+            "resolved_known_anchors": 7,
+            "candidate_recall": 1.0,
             "screen_survival_recall": 1.0,
-            "mapper_survival_recall": 0.2222222222222222,
-            "gate_survival_recall": 0.0,
-            "injected_anchor_count": 5,
+            "mapper_survival_recall": 0.8571428571428571,
+            "gate_survival_recall": 0.14285714285714285,
+            "injected_anchor_count": 0,
             "caps": [
               {
                 "stage": "screen",
                 "limit": 60,
-                "input_count": 83
+                "input_count": 139
               }
             ]
           }
         },
-        "anchors_retrieved_organically": 24,
-        "anchors_injection_saved": 6,
-        "known_anchors": 100
+        "anchors_retrieved_organically": 11,
+        "anchors_injection_saved": 1,
+        "known_anchors": 109
       }
     },
     "outputs/final_ma_p7": {
+      "corpus_fingerprint": {
+        "recorded": null,
+        "current": "1ae9f88a809b9cc57d3227eaa07685a5d87f8bc89a731d23e5682a8155876ba8",
+        "status": "STALE"
+      },
       "candidates": 20,
       "warnings": 152,
       "pipeline_stats": {
@@ -357,6 +391,11 @@
       }
     },
     "outputs/final_au_p6": {
+      "corpus_fingerprint": {
+        "recorded": null,
+        "current": "b3e0276efc3af57f2e800397e07d6ebc03b5b675bdf5a35cffcb14ced39986f6",
+        "status": "STALE"
+      },
       "candidates": 4,
       "warnings": 12,
       "pipeline_stats": {
@@ -436,6 +475,11 @@
       }
     },
     "outputs/final_au_p7": {
+      "corpus_fingerprint": {
+        "recorded": null,
+        "current": "b3e0276efc3af57f2e800397e07d6ebc03b5b675bdf5a35cffcb14ced39986f6",
+        "status": "STALE"
+      },
       "candidates": 16,
       "warnings": 47,
       "pipeline_stats": {
@@ -536,9 +580,9 @@
     "provisions": {
       "Singapore": 9078,
       "Australia": 14073,
-      "Malaysia": 153
+      "Malaysia": 1204
     },
-    "source_artifacts": 39,
+    "source_artifacts": 43,
     "schema_version": 3,
     "errors": []
   },
@@ -568,17 +612,17 @@
       },
       "Malaysia P6": {
         "gold": 19,
-        "matched": 0,
-        "NOT_IN_CORPUS": 9,
-        "IN_CORPUS_NOT_EMITTED": 10,
-        "EMITTED_OTHER_INDICATOR": 0,
+        "matched": 2,
+        "NOT_IN_CORPUS": 5,
+        "IN_CORPUS_NOT_EMITTED": 11,
+        "EMITTED_OTHER_INDICATOR": 1,
         "GOLD_REF_UNPARSEABLE": 0
       },
       "Malaysia P7": {
         "gold": 26,
-        "matched": 1,
-        "NOT_IN_CORPUS": 22,
-        "IN_CORPUS_NOT_EMITTED": 3,
+        "matched": 3,
+        "NOT_IN_CORPUS": 5,
+        "IN_CORPUS_NOT_EMITTED": 18,
         "EMITTED_OTHER_INDICATOR": 0,
         "GOLD_REF_UNPARSEABLE": 0
       },
@@ -599,8 +643,8 @@
         "GOLD_REF_UNPARSEABLE": 1
       }
     },
-    "misses": 59,
-    "pending_adjudications": 59
+    "misses": 55,
+    "pending_adjudications": 55
   },
   "candidates": {
     "rows": 98,

@@ -37,6 +37,19 @@ def evidence_eligibility(law_name: str, source_type: str = "statute",
     return True, None
 
 
+def content_eligibility(page_texts: list[str]) -> tuple[bool, str | None]:
+    """Reject documents whose contents—not merely filenames—identify them as drafts."""
+    if not page_texts:
+        return False, "EMPTY_DOCUMENT"
+    draft_pages = sum(bool(re.search(r"(?im)^\s*(?:exposure\s+)?draft\s*$", text))
+                      for text in page_texts)
+    # A repeated page watermark is decisive. A single occurrence can be a quoted
+    # amendment history or contents entry and therefore is not enough by itself.
+    if draft_pages >= 2 and draft_pages / len(page_texts) >= 0.10:
+        return False, "BILL_OR_DRAFT_CONTENT"
+    return True, None
+
+
 def resolve_status(*, fact_url: str, fact_text: str, current_as_at: str | None = None,
                    effective_date: str | None = None, end_date: str | None = None,
                    explicit_status: LegalStatus | None = None) -> StatusEvidence:

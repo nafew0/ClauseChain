@@ -23,8 +23,20 @@ def validate_source_bytes(data: bytes, expected_mime: str | None = None) -> str:
             raise SourceValidationError("download is an HTML error/login page")
         detected = "text/html"
     elif data.startswith(b"%PDF-"):
-        if b"%%EOF" not in data[-4096:]:
+        eof = data.rfind(b"%%EOF")
+        if eof < 0:
             raise SourceValidationError("PDF has no terminal EOF marker")
+        trailing = data[eof + len(b"%%EOF"):]
+        suffix = trailing.strip(b"\x00\t\n\r\f ")
+        # Some AGC-generated PDFs preallocate NUL padding and finish with the
+        # byte offset of that decimal marker. Accept only a self-verifying offset,
+        # never an arbitrary numeric or executable trailing payload.
+        offset_marker_ok = False
+        if suffix.isdigit():
+            marker_index = data.rfind(suffix)
+            offset_marker_ok = marker_index >= eof and int(suffix) == marker_index
+        if suffix and not offset_marker_ok:
+            raise SourceValidationError("PDF has non-padding data after terminal EOF marker")
         detected = "application/pdf"
     elif data.startswith(b"PK"):
         detected = "application/epub+zip"
