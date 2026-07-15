@@ -1,0 +1,117 @@
+[
+ {
+  "indicator": "P7-I2",
+  "law": "Security of Critical Infrastructure Act 2018",
+  "article": "s. 3",
+  "verdict": "RECOMMEND-KEEP",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": false,
+    "reason": "The snippet describes the Act\u2019s object to impose enhanced cybersecurity obligations for systems of national significance, which supports the claimed indicator a"
+   },
+   {
+    "persona": "reviewer",
+    "refuted": false,
+    "reason": "The snippet describes the Act\u2019s purpose to impose enhanced cybersecurity obligations for systems of national significance (including preparedness and response),"
+   },
+   {
+    "persona": "textualist",
+    "refuted": false,
+    "reason": "The quoted text plainly describes an object of imposing enhanced cybersecurity obligations for systems of national significance to improve preparedness and resp"
+   }
+  ]
+ },
+ {
+  "indicator": "P7-I2",
+  "law": "Security of Critical Infrastructure Act 2018",
+  "article": "s. 30CB(1)",
+  "verdict": "SPLIT-REVIEW",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": false,
+    "reason": "The snippet clearly supports a conditional determination by the Secretary that incident response planning obligations apply to a responsible entity for a system"
+   },
+   {
+    "persona": "reviewer",
+    "refuted": true,
+    "reason": "The snippet is a keyword/authority match for \u201cincident response planning\u201d but it does not evidence the claimed legal function as a conditional applicability tri"
+   },
+   {
+    "persona": "textualist",
+    "refuted": false,
+    "reason": "The snippet plainly establishes a Secretary power to determine that incident response planning obligations apply to a responsible entity for a system of nationa"
+   }
+  ]
+ },
+ {
+  "indicator": "P7-I3",
+  "law": "My Health Records Act 2012",
+  "article": "s. 17(2)",
+  "verdict": "RECOMMEND-KEEP",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": false,
+    "reason": "The snippet supports a retention-duration obligation on the System Operator (it is about ensuring records are retained for a specified period), so it does not c"
+   },
+   {
+    "persona": "reviewer",
+    "refuted": false,
+    "reason": "The snippet supports a retention-duration obligation for the System Operator (it is not merely a keyword match), and the claimed rationale aligns with the legal"
+   },
+   {
+    "persona": "textualist",
+    "refuted": false,
+    "reason": "The quoted text only states that the System Operator must ensure retention for a period, but it does not plainly establish the specific minimum-duration indicat"
+   }
+  ]
+ },
+ {
+  "indicator": "P7-I5",
+  "law": "Telecommunications Act 1997",
+  "article": "s. 545(1)",
+  "verdict": "RECOMMEND-REJECT",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": true,
+    "reason": "The snippet is about physical search and seizure powers (search person/clothing/property and seize things) rather than authorizing access to personal data, so i"
+   },
+   {
+    "persona": "reviewer",
+    "refuted": true,
+    "reason": "Keyword match without the legal FUNCTION: the cited power is an inspector\u2019s search-and-seizure of a person/property (enforcement procedure), not a data-access/l"
+   },
+   {
+    "persona": "textualist",
+    "refuted": false,
+    "reason": "The snippet plainly authorizes an inspector to search and seize items without a warrant in circumstances of seriousness and urgency, which supports the claimed "
+   }
+  ]
+ },
+ {
+  "indicator": "P7-I5",
+  "law": "Telecommunications Act 1997",
+  "article": "s. 545(2)",
+  "verdict": "RECOMMEND-REJECT",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": true,
+    "reason": "The snippet\u2019s wording (\u201cwithout the authority of a warrant issued under Division 3\u201d) is about acting without a warrant, not about permitting warrantless access "
+   },
+   {
+    "persona": "reviewer",
+    "refuted": true,
+    "reason": "The snippet\u2019s function is \u201centry/search/seizure without a warrant\u201d (warrantless access), but the rationale claims it is \u201cwhen no warrant is required\u201d for urgent"
+   },
+   {
+    "persona": "textualist",
+    "refuted": true,
+    "reason": "The snippet only states access is taken \u201cwithout the authority of a warrant issued under Division 3,\u201d but it does not plainly establish the claimed function of "
+   }
+  ]
+ }
+]

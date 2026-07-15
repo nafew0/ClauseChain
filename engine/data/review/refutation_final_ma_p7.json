@@ -1,0 +1,117 @@
+[
+ {
+  "indicator": "P7-I1",
+  "law": "Personal Data Protection Act (Act 709) 2010",
+  "article": "s. 8",
+  "verdict": "RECOMMEND-REJECT",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": true,
+    "reason": "The snippet is a domestic disclosure-purpose limitation tied to consent, but it does not clearly evidence the specific \u201cP7-I1 comprehensive framework\u201d indicator"
+   },
+   {
+    "persona": "reviewer",
+    "refuted": true,
+    "reason": "Keyword match without the legal FUNCTION: the snippet is a domestic disclosure-purpose limitation tied to data-subject consent, but the claimed \u201ccomprehensive f"
+   },
+   {
+    "persona": "textualist",
+    "refuted": false,
+    "reason": "The quoted text plainly establishes a consent requirement and a purpose-limitation on disclosure of personal data (subject to section 39), which supports the cl"
+   }
+  ]
+ },
+ {
+  "indicator": "P7-I2",
+  "law": "Cyber Security Act (Act 854) 2024",
+  "article": "s. 11(1)",
+  "verdict": "SPLIT-REVIEW",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": false,
+    "reason": "The quoted s. 11(1) expressly mandates establishing and maintaining a national cyber security system to deal with cyber security threats and incidents, which su"
+   },
+   {
+    "persona": "reviewer",
+    "refuted": true,
+    "reason": "Keyword match without the legal FUNCTION: the cited duty to establish/maintain a national coordination/command centre system is an institutional cyber-security "
+   },
+   {
+    "persona": "textualist",
+    "refuted": false,
+    "reason": "The quoted text plainly establishes a national cyber security system for dealing with threats and incidents, so it supports the claimed indicator/rationale rath"
+   }
+  ]
+ },
+ {
+  "indicator": "P7-I2",
+  "law": "Cyber Security Act (Act 854) 2024",
+  "article": "s. 35(4)",
+  "verdict": "RECOMMEND-REJECT",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": true,
+    "reason": "The snippet supports issuing directives to respond/recover after a cyber incident, but it does not evidence the specific indicator P7-I2 as claimed (it is about"
+   },
+   {
+    "persona": "reviewer",
+    "refuted": true,
+    "reason": "Keyword match without the legal FUNCTION: the provision authorizes a directive to a specific national critical information infrastructure entity to respond/reco"
+   },
+   {
+    "persona": "textualist",
+    "refuted": false,
+    "reason": "The snippet plainly supports the claimed indicator: it authorizes the Chief Executive, after notification of a cyber security incident, to issue directives to t"
+   }
+  ]
+ },
+ {
+  "indicator": "P7-I3",
+  "law": "Cyber Security Act (Act 854) 2024",
+  "article": "s. 32(2)",
+  "verdict": "RECOMMEND-REJECT",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": true,
+    "reason": "The snippet supports a minimum retention period for records of a cyber security service, but the claimed indicator P7-I3 is framed as a general \u201cminimum data re"
+   },
+   {
+    "persona": "reviewer",
+    "refuted": true,
+    "reason": "Keyword match without the legal FUNCTION: the text is a minimum retention period for records of a cyber security service, but the mapping treats it as a general"
+   },
+   {
+    "persona": "textualist",
+    "refuted": false,
+    "reason": "The snippet plainly establishes a minimum retention period (\u201cnot less than six years\u201d) tied to the provision of the cyber security service, which matches the cl"
+   }
+  ]
+ },
+ {
+  "indicator": "P7-I5",
+  "law": "Services Tax Act (Act 807) 2018",
+  "article": "s. 61",
+  "verdict": "RECOMMEND-REJECT",
+  "refuter_votes": [
+   {
+    "persona": "opposing",
+    "refuted": true,
+    "reason": "The snippet is about a service tax officer\u2019s powers to enter/search/seize premises \u201cin the same manner as if\u2026 by a warrant,\u201d i.e., it does not clearly authorize"
+   },
+   {
+    "persona": "reviewer",
+    "refuted": true,
+    "reason": "Keyword match without the legal FUNCTION: the quoted text concerns a tax officer\u2019s authority to exercise search/seizure powers (warrant substitution/administrat"
+   },
+   {
+    "persona": "textualist",
+    "refuted": false,
+    "reason": "The quoted text plainly authorizes a senior service tax officer to exercise section 60 powers (including entry/search-type powers) without a warrant, so the sni"
+   }
+  ]
+ }
+]

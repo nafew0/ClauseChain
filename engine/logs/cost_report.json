@@ -1469,5 +1469,180 @@
   "economy": "Singapore",
   "pillar": 6,
   "elapsed_seconds": 132.1
+ },
+ {
+  "run_id": "run-sg-p7-1784117934",
+  "at": "2026-07-15T12:27:52.911962+00:00",
+  "models": {
+   "text-embedding-3-small": {
+    "input_tokens": 296,
+    "cached_input_tokens": 0,
+    "output_tokens": 0,
+    "calls": 31,
+    "usd": 0.0,
+    "priced": true
+   },
+   "gpt-5.4-nano": {
+    "input_tokens": 223085,
+    "cached_input_tokens": 0,
+    "output_tokens": 33152,
+    "calls": 170,
+    "usd": 0.0861,
+    "priced": true
+   },
+   "gpt-5.4-mini": {
+    "input_tokens": 66763,
+    "cached_input_tokens": 0,
+    "output_tokens": 8599,
+    "calls": 49,
+    "usd": 0.0888,
+    "priced": true
+   }
+  },
+  "total_usd": 0.1748,
+  "note": "measured from real API usage objects; prices per 1M tokens (PRICES)",
+  "economy": "Singapore",
+  "pillar": 7,
+  "elapsed_seconds": 538.4
+ },
+ {
+  "run_id": "run-my-p6-1784118473",
+  "at": "2026-07-15T12:30:35.017570+00:00",
+  "models": {
+   "text-embedding-3-small": {
+    "input_tokens": 157,
+    "cached_input_tokens": 0,
+    "output_tokens": 0,
+    "calls": 23,
+    "usd": 0.0,
+    "priced": true
+   },
+   "gpt-5.4-nano": {
+    "input_tokens": 64714,
+    "cached_input_tokens": 0,
+    "output_tokens": 12104,
+    "calls": 43,
+    "usd": 0.0281,
+    "priced": true
+   },
+   "gpt-5.4-mini": {
+    "input_tokens": 20372,
+    "cached_input_tokens": 0,
+    "output_tokens": 2486,
+    "calls": 15,
+    "usd": 0.0265,
+    "priced": true
+   }
+  },
+  "total_usd": 0.0545,
+  "note": "measured from real API usage objects; prices per 1M tokens (PRICES)",
+  "economy": "Malaysia",
+  "pillar": 6,
+  "elapsed_seconds": 161.6
+ },
+ {
+  "run_id": "run-my-p7-1784118635",
+  "at": "2026-07-15T12:42:32.761541+00:00",
+  "models": {
+   "text-embedding-3-small": {
+    "input_tokens": 296,
+    "cached_input_tokens": 0,
+    "output_tokens": 0,
+    "calls": 31,
+    "usd": 0.0,
+    "priced": true
+   },
+   "gpt-5.4-nano": {
+    "input_tokens": 256610,
+    "cached_input_tokens": 0,
+    "output_tokens": 34873,
+    "calls": 204,
+    "usd": 0.0949,
+    "priced": true
+   },
+   "gpt-5.4-mini": {
+    "input_tokens": 126888,
+    "cached_input_tokens": 1280,
+    "output_tokens": 15650,
+    "calls": 95,
+    "usd": 0.1647,
+    "priced": true
+   }
+  },
+  "total_usd": 0.2596,
+  "note": "measured from real API usage objects; prices per 1M tokens (PRICES)",
+  "economy": "Malaysia",
+  "pillar": 7,
+  "elapsed_seconds": 717.5
+ },
+ {
+  "run_id": "run-au-p6-1784119353",
+  "at": "2026-07-15T16:21:05.865703+00:00",
+  "models": {
+   "text-embedding-3-small": {
+    "input_tokens": 157,
+    "cached_input_tokens": 0,
+    "output_tokens": 0,
+    "calls": 23,
+    "usd": 0.0,
+    "priced": true
+   },
+   "gpt-5.4-nano": {
+    "input_tokens": 54321,
+    "cached_input_tokens": 0,
+    "output_tokens": 11606,
+    "calls": 33,
+    "usd": 0.0254,
+    "priced": true
+   },
+   "gpt-5.4-mini": {
+    "input_tokens": 8769,
+    "cached_input_tokens": 0,
+    "output_tokens": 1061,
+    "calls": 7,
+    "usd": 0.0114,
+    "priced": true
+   }
+  },
+  "total_usd": 0.0367,
+  "note": "measured from real API usage objects; prices per 1M tokens (PRICES)",
+  "economy": "Australia",
+  "pillar": 6,
+  "elapsed_seconds": 13112.8
+ },
+ {
+  "run_id": "run-au-p7-1784132466",
+  "at": "2026-07-15T16:29:05.473324+00:00",
+  "models": {
+   "text-embedding-3-small": {
+    "input_tokens": 296,
+    "cached_input_tokens": 0,
+    "output_tokens": 0,
+    "calls": 31,
+    "usd": 0.0,
+    "priced": true
+   },
+   "gpt-5.4-nano": {
+    "input_tokens": 182030,
+    "cached_input_tokens": 0,
+    "output_tokens": 30191,
+    "calls": 138,
+    "usd": 0.0741,
+    "priced": true
+   },
+   "gpt-5.4-mini": {
+    "input_tokens": 51670,
+    "cached_input_tokens": 0,
+    "output_tokens": 6530,
+    "calls": 38,
+    "usd": 0.0681,
+    "priced": true
+   }
+  },
+  "total_usd": 0.1423,
+  "note": "measured from real API usage objects; prices per 1M tokens (PRICES)",
+  "economy": "Australia",
+  "pillar": 7,
+  "elapsed_seconds": 478.6
  }
 ]

@@ -10,16 +10,19 @@
   "runs": {
     "outputs/final_si_p6": {
       "candidates": 4,
-      "warnings": 6,
+      "warnings": 7,
       "pipeline_stats": {
-        "candidates": 480,
-        "screened_in": 4,
-        "mapped": 0,
-        "gate_rejected": 1,
+        "candidates": 484,
+        "screened_in": 8,
+        "mapped": 1,
+        "gate_rejected": 3,
         "nano_mappings": 3,
-        "mini_escalations": 1,
+        "mini_escalations": 5,
         "escalation_reasons": {
-          "low-confidence-positive": 1
+          "low-confidence-positive": 2,
+          "ban-vs-condition-ambiguity": 2,
+          "low-confidence-known-anchor": 1,
+          "known-anchor-rejected": 1
         },
         "by_indicator": {
           "P6-I1": {
@@ -72,24 +75,24 @@
           },
           "P6-I4": {
             "candidate_count": 120,
-            "resolved_known_anchors": 0,
-            "candidate_recall": null,
-            "screen_survival_recall": null,
-            "mapper_survival_recall": null,
-            "gate_survival_recall": null,
-            "injected_anchor_count": 0,
+            "resolved_known_anchors": 1,
+            "candidate_recall": 0.0,
+            "screen_survival_recall": 1.0,
+            "mapper_survival_recall": 1.0,
+            "gate_survival_recall": 1.0,
+            "injected_anchor_count": 1,
             "caps": [
               {
                 "stage": "screen",
                 "limit": 60,
-                "input_count": 120
+                "input_count": 124
               }
             ]
           }
         },
         "anchors_retrieved_organically": 0,
-        "anchors_injection_saved": 0,
-        "known_anchors": 0,
+        "anchors_injection_saved": 1,
+        "known_anchors": 4,
         "curation": {
           "excluded_count": 0,
           "excluded": []
@@ -97,20 +100,20 @@
       }
     },
     "outputs/final_si_p7": {
-      "candidates": 28,
-      "warnings": 10,
+      "candidates": 30,
+      "warnings": 13,
       "pipeline_stats": {
         "candidates": 625,
-        "screened_in": 125,
-        "mapped": 57,
-        "gate_rejected": 5,
-        "nano_mappings": 77,
-        "mini_escalations": 48,
+        "screened_in": 145,
+        "mapped": 59,
+        "gate_rejected": 8,
+        "nano_mappings": 96,
+        "mini_escalations": 49,
         "escalation_reasons": {
-          "low-confidence-positive": 7,
-          "known-anchor-rejected": 30,
-          "low-confidence-known-anchor": 11,
-          "snippet-not-source-locatable": 4,
+          "low-confidence-positive": 9,
+          "known-anchor-rejected": 31,
+          "low-confidence-known-anchor": 10,
+          "snippet-not-source-locatable": 3,
           "judicial-access-ambiguity": 3
         },
         "by_indicator": {
@@ -203,9 +206,43 @@
           "excluded": [
             {
               "economy": "Singapore",
+              "indicator_id": "P7-I1",
+              "law_name": "Personal Data Protection Act 2012",
+              "article_section": "s. 13",
+              "reason": "redundant NEW evidence after precision curation; retained at most 1 functionally distinct provisions for this law/indicator",
+              "legal_function": "framework",
+              "confidence": 0.78,
+              "verifier_risks": []
+            },
+            {
+              "economy": "Singapore",
+              "indicator_id": "P7-I1",
+              "law_name": "Personal Data Protection Act 2012",
+              "article_section": "s. 21(1)",
+              "reason": "redundant NEW evidence after precision curation; retained at most 1 functionally distinct provisions for this law/indicator",
+              "legal_function": "framework",
+              "confidence": 0.72,
+              "verifier_risks": [
+                "exception language exists outside the snippet \u2014 reviewer should read the full section"
+              ]
+            },
+            {
+              "economy": "Singapore",
               "indicator_id": "P7-I2",
               "law_name": "Cybersecurity Act 2018",
               "article_section": "s. 5(1)",
+              "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
+              "legal_function": "framework",
+              "confidence": 0.78,
+              "verifier_risks": [
+                "rationale claims a mandatory rule but the text shows no must/shall modality (permissive 'may' misread as mandatory?)"
+              ]
+            },
+            {
+              "economy": "Singapore",
+              "indicator_id": "P7-I2",
+              "law_name": "Cybersecurity Act 2018",
+              "article_section": "s. 17E(1)",
               "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
               "legal_function": "framework",
               "confidence": 0.78,
@@ -225,7 +262,7 @@
               "economy": "Singapore",
               "indicator_id": "P7-I2",
               "law_name": "Cybersecurity Act 2018",
-              "article_section": "s. 35A(1)",
+              "article_section": "s. 17(1)",
               "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
               "legal_function": "framework",
               "confidence": 0.78,
@@ -235,7 +272,7 @@
               "economy": "Singapore",
               "indicator_id": "P7-I2",
               "law_name": "Cybersecurity Act 2018",
-              "article_section": "s. 17(1)",
+              "article_section": "s. 14(1)",
               "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
               "legal_function": "framework",
               "confidence": 0.86,
@@ -245,43 +282,33 @@
               "economy": "Singapore",
               "indicator_id": "P7-I2",
               "law_name": "Cybersecurity Act 2018",
-              "article_section": "s. 15(5)",
-              "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
-              "legal_function": "framework",
-              "confidence": 0.78,
-              "verifier_risks": []
-            },
-            {
-              "economy": "Singapore",
-              "indicator_id": "P7-I2",
-              "law_name": "Cybersecurity Act 2018",
-              "article_section": "s. 16G(2)",
-              "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
-              "legal_function": "framework",
-              "confidence": 0.78,
-              "verifier_risks": [
-                "rationale claims a mandatory rule but the text shows no must/shall modality (permissive 'may' misread as mandatory?)"
-              ]
-            },
-            {
-              "economy": "Singapore",
-              "indicator_id": "P7-I2",
-              "law_name": "Cybersecurity Act 2018",
-              "article_section": "s. 14(1)",
-              "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
-              "legal_function": "framework",
-              "confidence": 0.78,
-              "verifier_risks": []
-            },
-            {
-              "economy": "Singapore",
-              "indicator_id": "P7-I2",
-              "law_name": "Cybersecurity Act 2018",
               "article_section": "s. 20(1)",
               "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
               "legal_function": "framework",
-              "confidence": 0.78,
+              "confidence": 0.86,
               "verifier_risks": []
+            },
+            {
+              "economy": "Singapore",
+              "indicator_id": "P7-I2",
+              "law_name": "Cybersecurity Act 2018",
+              "article_section": "s. 19(1)",
+              "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
+              "legal_function": "framework",
+              "confidence": 0.86,
+              "verifier_risks": []
+            },
+            {
+              "economy": "Singapore",
+              "indicator_id": "P7-I2",
+              "law_name": "Cybersecurity Act 2018",
+              "article_section": "s. 17E(2)",
+              "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
+              "legal_function": "framework",
+              "confidence": 0.74,
+              "verifier_risks": [
+                "rationale claims a mandatory rule but the text shows no must/shall modality (permissive 'may' misread as mandatory?)"
+              ]
             },
             {
               "economy": "Singapore",
@@ -300,7 +327,7 @@
               "article_section": "s. 17F(2)",
               "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
               "legal_function": "framework",
-              "confidence": 0.78,
+              "confidence": 0.72,
               "verifier_risks": []
             },
             {
@@ -311,7 +338,9 @@
               "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
               "legal_function": "framework",
               "confidence": 0.78,
-              "verifier_risks": []
+              "verifier_risks": [
+                "rationale claims a mandatory rule but the text shows no must/shall modality (permissive 'may' misread as mandatory?)"
+              ]
             },
             {
               "economy": "Singapore",
@@ -329,6 +358,16 @@
               "economy": "Singapore",
               "indicator_id": "P7-I2",
               "law_name": "Cybersecurity Act 2018",
+              "article_section": "s. 16I(1)",
+              "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
+              "legal_function": "framework",
+              "confidence": 0.78,
+              "verifier_risks": []
+            },
+            {
+              "economy": "Singapore",
+              "indicator_id": "P7-I2",
+              "law_name": "Cybersecurity Act 2018",
               "article_section": "s. 16F(1)",
               "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
               "legal_function": "framework",
@@ -339,21 +378,13 @@
               "economy": "Singapore",
               "indicator_id": "P7-I2",
               "law_name": "Cybersecurity Act 2018",
-              "article_section": "s. 16I(5)",
+              "article_section": "s. 19(2)",
               "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
               "legal_function": "framework",
-              "confidence": 0.74,
-              "verifier_risks": []
-            },
-            {
-              "economy": "Singapore",
-              "indicator_id": "P7-I2",
-              "law_name": "Cybersecurity Act 2018",
-              "article_section": "s. 16H(1)",
-              "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
-              "legal_function": "framework",
-              "confidence": 0.74,
-              "verifier_risks": []
+              "confidence": 0.78,
+              "verifier_risks": [
+                "rationale claims a mandatory rule but the text shows no must/shall modality (permissive 'may' misread as mandatory?)"
+              ]
             },
             {
               "economy": "Singapore",
@@ -384,7 +415,7 @@
               "article_section": "s. 17F(1)",
               "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
               "legal_function": "framework",
-              "confidence": 0.78,
+              "confidence": 0.86,
               "verifier_risks": []
             },
             {
@@ -428,30 +459,8 @@
               "article_section": "s. 16E(1)",
               "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
               "legal_function": "framework",
-              "confidence": 0.78,
+              "confidence": 0.74,
               "verifier_risks": []
-            },
-            {
-              "economy": "Singapore",
-              "indicator_id": "P7-I2",
-              "law_name": "Cybersecurity Act 2018",
-              "article_section": "s. 15(6)",
-              "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
-              "legal_function": "framework",
-              "confidence": 0.78,
-              "verifier_risks": []
-            },
-            {
-              "economy": "Singapore",
-              "indicator_id": "P7-I2",
-              "law_name": "Cybersecurity Act 2018",
-              "article_section": "s. 10(1)",
-              "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
-              "legal_function": "framework",
-              "confidence": 0.78,
-              "verifier_risks": [
-                "rationale claims a mandatory rule but the text shows no must/shall modality (permissive 'may' misread as mandatory?)"
-              ]
             },
             {
               "economy": "Singapore",
@@ -499,12 +508,12 @@
               "economy": "Singapore",
               "indicator_id": "P7-I5",
               "law_name": "Criminal Procedure Code 2010",
-              "article_section": "s. 77(1)",
+              "article_section": "s. 40(2)",
               "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
               "legal_function": "framework",
-              "confidence": 0.93,
+              "confidence": 0.74,
               "verifier_risks": [
-                "P7-I5: access appears COURT-GATED (warrant/judicial language) \u2014 court-order test says this supports score 0; flag for legal review"
+                "rationale claims a mandatory rule but the text shows no must/shall modality (permissive 'may' misread as mandatory?)"
               ]
             }
           ]
@@ -516,15 +525,13 @@
       "warnings": 13,
       "pipeline_stats": {
         "candidates": 486,
-        "screened_in": 21,
-        "mapped": 6,
+        "screened_in": 23,
+        "mapped": 7,
         "gate_rejected": 4,
-        "nano_mappings": 3,
-        "mini_escalations": 18,
+        "nano_mappings": 8,
+        "mini_escalations": 15,
         "escalation_reasons": {
-          "ban-vs-condition-ambiguity": 8,
-          "low-confidence-positive": 1,
-          "low-confidence-known-anchor": 2,
+          "ban-vs-condition-ambiguity": 7,
           "known-anchor-rejected": 8
         },
         "by_indicator": {
@@ -603,20 +610,20 @@
       }
     },
     "outputs/final_ma_p7": {
-      "candidates": 52,
+      "candidates": 47,
       "warnings": 9,
       "pipeline_stats": {
         "candidates": 666,
-        "screened_in": 172,
-        "mapped": 71,
+        "screened_in": 179,
+        "mapped": 66,
         "gate_rejected": 1,
-        "nano_mappings": 79,
-        "mini_escalations": 93,
+        "nano_mappings": 84,
+        "mini_escalations": 95,
         "escalation_reasons": {
-          "known-anchor-rejected": 82,
-          "low-confidence-known-anchor": 6,
-          "low-confidence-positive": 3,
-          "judicial-access-ambiguity": 2
+          "known-anchor-rejected": 83,
+          "low-confidence-known-anchor": 5,
+          "low-confidence-positive": 4,
+          "judicial-access-ambiguity": 3
         },
         "by_indicator": {
           "P7-I1": {
@@ -640,8 +647,8 @@
             "resolved_known_anchors": 3,
             "candidate_recall": 1.0,
             "screen_survival_recall": 1.0,
-            "mapper_survival_recall": 0.6666666666666666,
-            "gate_survival_recall": 0.6666666666666666,
+            "mapper_survival_recall": 1.0,
+            "gate_survival_recall": 1.0,
             "injected_anchor_count": 0,
             "caps": [
               {
@@ -708,6 +715,19 @@
           "excluded": [
             {
               "economy": "Malaysia",
+              "indicator_id": "P7-I1",
+              "law_name": "Personal Data Protection Act (Act 709) 2010",
+              "article_section": "s. 7(1)",
+              "reason": "redundant NEW evidence after precision curation; retained at most 1 functionally distinct provisions for this law/indicator",
+              "legal_function": "framework",
+              "confidence": 0.78,
+              "verifier_risks": [
+                "no current-version assertion found on the source page",
+                "exception language exists outside the snippet \u2014 reviewer should read the full section"
+              ]
+            },
+            {
+              "economy": "Malaysia",
               "indicator_id": "P7-I2",
               "law_name": "Cyber Security Act (Act 854) 2024",
               "article_section": "s. 63(2)",
@@ -749,7 +769,7 @@
               "article_section": "s. 26",
               "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
               "legal_function": "framework",
-              "confidence": 0.74,
+              "confidence": 0.78,
               "verifier_risks": [
                 "no current-version assertion found on the source page"
               ]
@@ -761,7 +781,7 @@
               "article_section": "s. 22(5)",
               "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
               "legal_function": "framework",
-              "confidence": 0.74,
+              "confidence": 0.78,
               "verifier_risks": [
                 "no current-version assertion found on the source page"
               ]
@@ -774,18 +794,6 @@
               "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
               "legal_function": "framework",
               "confidence": 0.74,
-              "verifier_risks": [
-                "no current-version assertion found on the source page"
-              ]
-            },
-            {
-              "economy": "Malaysia",
-              "indicator_id": "P7-I2",
-              "law_name": "Cyber Security Act (Act 854) 2024",
-              "article_section": "s. 24(2)",
-              "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
-              "legal_function": "framework",
-              "confidence": 0.78,
               "verifier_risks": [
                 "no current-version assertion found on the source page"
               ]
@@ -845,9 +853,10 @@
               "article_section": "s. 21(4)",
               "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
               "legal_function": "framework",
-              "confidence": 0.72,
+              "confidence": 0.91,
               "verifier_risks": [
-                "no current-version assertion found on the source page"
+                "no current-version assertion found on the source page",
+                "exception language exists outside the snippet \u2014 reviewer should read the full section"
               ]
             },
             {
@@ -878,18 +887,6 @@
               "economy": "Malaysia",
               "indicator_id": "P7-I2",
               "law_name": "Cyber Security Act (Act 854) 2024",
-              "article_section": "s. 24(3)",
-              "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
-              "legal_function": "framework",
-              "confidence": 0.72,
-              "verifier_risks": [
-                "no current-version assertion found on the source page"
-              ]
-            },
-            {
-              "economy": "Malaysia",
-              "indicator_id": "P7-I2",
-              "law_name": "Cyber Security Act (Act 854) 2024",
               "article_section": "s. 21(3)",
               "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
               "legal_function": "framework",
@@ -905,7 +902,7 @@
               "article_section": "s. 16",
               "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
               "legal_function": "framework",
-              "confidence": 0.78,
+              "confidence": 0.74,
               "verifier_risks": [
                 "no current-version assertion found on the source page"
               ]
@@ -929,7 +926,7 @@
               "article_section": "s. 20(3)",
               "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
               "legal_function": "framework",
-              "confidence": 0.74,
+              "confidence": 0.78,
               "verifier_risks": [
                 "no current-version assertion found on the source page"
               ]
@@ -941,9 +938,22 @@
               "article_section": "s. 18(4)",
               "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
               "legal_function": "framework",
-              "confidence": 0.78,
+              "confidence": 0.74,
               "verifier_risks": [
                 "no current-version assertion found on the source page"
+              ]
+            },
+            {
+              "economy": "Malaysia",
+              "indicator_id": "P7-I2",
+              "law_name": "Cyber Security Act (Act 854) 2024",
+              "article_section": "s. 21(2)",
+              "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
+              "legal_function": "framework",
+              "confidence": 0.78,
+              "verifier_risks": [
+                "no current-version assertion found on the source page",
+                "exception language exists outside the snippet \u2014 reviewer should read the full section"
               ]
             }
           ]
@@ -952,18 +962,18 @@
     },
     "outputs/final_au_p6": {
       "candidates": 4,
-      "warnings": 8,
+      "warnings": 12,
       "pipeline_stats": {
         "candidates": 485,
-        "screened_in": 10,
-        "mapped": 1,
-        "gate_rejected": 4,
+        "screened_in": 13,
+        "mapped": 0,
+        "gate_rejected": 8,
         "nano_mappings": 6,
-        "mini_escalations": 4,
+        "mini_escalations": 7,
         "escalation_reasons": {
-          "low-confidence-positive": 1,
           "low-confidence-known-anchor": 1,
-          "known-anchor-rejected": 3
+          "known-anchor-rejected": 3,
+          "low-confidence-positive": 3
         },
         "by_indicator": {
           "P6-I1": {
@@ -988,7 +998,7 @@
             "candidate_recall": 0.0,
             "screen_survival_recall": 1.0,
             "mapper_survival_recall": 1.0,
-            "gate_survival_recall": 1.0,
+            "gate_survival_recall": 0.0,
             "injected_anchor_count": 1,
             "caps": [
               {
@@ -1041,18 +1051,18 @@
       }
     },
     "outputs/final_au_p7": {
-      "candidates": 11,
+      "candidates": 9,
       "warnings": 33,
       "pipeline_stats": {
         "candidates": 623,
-        "screened_in": 123,
-        "mapped": 18,
+        "screened_in": 113,
+        "mapped": 15,
         "gate_rejected": 28,
-        "nano_mappings": 82,
-        "mini_escalations": 41,
+        "nano_mappings": 75,
+        "mini_escalations": 38,
         "escalation_reasons": {
           "snippet-not-source-locatable": 3,
-          "low-confidence-positive": 12,
+          "low-confidence-positive": 9,
           "known-anchor-rejected": 24,
           "low-confidence-known-anchor": 3,
           "judicial-access-ambiguity": 4
@@ -1128,7 +1138,7 @@
             "candidate_recall": 0.5,
             "screen_survival_recall": 1.0,
             "mapper_survival_recall": 0.75,
-            "gate_survival_recall": 0.5,
+            "gate_survival_recall": 0.25,
             "injected_anchor_count": 2,
             "caps": [
               {
@@ -1143,7 +1153,7 @@
         "anchors_injection_saved": 2,
         "known_anchors": 27,
         "curation": {
-          "excluded_count": 8,
+          "excluded_count": 7,
           "excluded": [
             {
               "economy": "Australia",
@@ -1161,7 +1171,7 @@
               "economy": "Australia",
               "indicator_id": "P7-I2",
               "law_name": "Security of Critical Infrastructure Act 2018",
-              "article_section": "s. 30CM(2)",
+              "article_section": "s. 30CU(1)",
               "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
               "legal_function": "framework",
               "confidence": 0.78,
@@ -1173,10 +1183,10 @@
               "economy": "Australia",
               "indicator_id": "P7-I2",
               "law_name": "Security of Critical Infrastructure Act 2018",
-              "article_section": "s. 30CU(1)",
+              "article_section": "s. 30CN(1)",
               "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
               "legal_function": "framework",
-              "confidence": 0.78,
+              "confidence": 0.91,
               "verifier_risks": [
                 "rationale claims a mandatory rule but the text shows no must/shall modality (permissive 'may' misread as mandatory?)"
               ]
@@ -1209,16 +1219,6 @@
               "economy": "Australia",
               "indicator_id": "P7-I2",
               "law_name": "Security of Critical Infrastructure Act 2018",
-              "article_section": "s. 30CB(1)",
-              "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
-              "legal_function": "framework",
-              "confidence": 0.78,
-              "verifier_risks": []
-            },
-            {
-              "economy": "Australia",
-              "indicator_id": "P7-I2",
-              "law_name": "Security of Critical Infrastructure Act 2018",
               "article_section": "s. 30CY(1)",
               "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
               "legal_function": "framework",
@@ -1234,7 +1234,7 @@
               "article_section": "s. 35BH(1)",
               "reason": "redundant NEW evidence after precision curation; retained at most 2 functionally distinct provisions for this law/indicator",
               "legal_function": "framework",
-              "confidence": 0.74,
+              "confidence": 0.72,
               "verifier_risks": []
             }
           ]
@@ -1245,7 +1245,7 @@
   "tests": {
     "passed": true,
     "summary": [
-      "106 passed, 5 warnings in 21.57s"
+      "107 passed, 5 warnings in 20.67s"
     ]
   },
   "graph": {
@@ -1269,8 +1269,8 @@
     "stats": {
       "Singapore P6": {
         "gold": 1,
-        "matched": 0,
-        "NOT_IN_CORPUS": 1,
+        "matched": 1,
+        "NOT_IN_CORPUS": 0,
         "IN_CORPUS_NOT_EMITTED": 0,
         "EMITTED_OTHER_INDICATOR": 0,
         "GOLD_REF_UNPARSEABLE": 0
@@ -1293,25 +1293,25 @@
       },
       "Malaysia P7": {
         "gold": 12,
-        "matched": 6,
+        "matched": 7,
         "NOT_IN_CORPUS": 3,
-        "IN_CORPUS_NOT_EMITTED": 2,
+        "IN_CORPUS_NOT_EMITTED": 1,
         "EMITTED_OTHER_INDICATOR": 1,
         "GOLD_REF_UNPARSEABLE": 0
       },
       "Australia P6": {
         "gold": 1,
-        "matched": 1,
+        "matched": 0,
         "NOT_IN_CORPUS": 0,
-        "IN_CORPUS_NOT_EMITTED": 0,
+        "IN_CORPUS_NOT_EMITTED": 1,
         "EMITTED_OTHER_INDICATOR": 0,
         "GOLD_REF_UNPARSEABLE": 0
       },
       "Australia P7": {
         "gold": 4,
-        "matched": 2,
+        "matched": 1,
         "NOT_IN_CORPUS": 0,
-        "IN_CORPUS_NOT_EMITTED": 2,
+        "IN_CORPUS_NOT_EMITTED": 3,
         "EMITTED_OTHER_INDICATOR": 0,
         "GOLD_REF_UNPARSEABLE": 0
       }
@@ -1320,12 +1320,12 @@
     "pending_adjudications": 17
   },
   "candidates": {
-    "rows": 107,
-    "pending_review": 107,
-    "citation_proof_rows": 95,
+    "rows": 102,
+    "pending_review": 102,
+    "citation_proof_rows": 90,
     "absence_manifest_rows": 12,
-    "complete_evidence_contract": 107,
-    "in_force": 107
+    "complete_evidence_contract": 102,
+    "in_force": 102
   },
   "zone3_pending": 27,
   "final_artifacts_present": false
