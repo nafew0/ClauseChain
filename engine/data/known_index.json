@@ -1031,7 +1031,9 @@
             "reason": "nearby prose does not satisfy the P7-I5 anchor predicate",
             "context": "The Surveillance Legislation Amendment (Identify and Disrupt) Act extends the nation's surveillance capabilities, to disrupt data (Section 6), takeover data (Schedule 3) and monitor network activity (Schedule 2).",
             "laws_norm": [
-              "surveillance legislation amendment identify and disrupt act 2021"
+              "surveillance legislation amendment identify and disrupt act 2021",
+              "australian security intelligence organisation act 1979",
+              "data availability and transparency act 2022"
             ]
           },
           {
@@ -1040,7 +1042,9 @@
             "reason": "nearby prose does not satisfy the P7-I5 anchor predicate",
             "context": "The Surveillance Legislation Amendment (Identify and Disrupt) Act extends the nation's surveillance capabilities, to disrupt data (Section 6), takeover data (Schedule 3) and monitor network activity (Schedule 2).",
             "laws_norm": [
-              "surveillance legislation amendment identify and disrupt act 2021"
+              "surveillance legislation amendment identify and disrupt act 2021",
+              "australian security intelligence organisation act 1979",
+              "data availability and transparency act 2022"
             ]
           },
           {
@@ -1049,7 +1053,9 @@
             "reason": "nearby prose does not satisfy the P7-I5 anchor predicate",
             "context": "The Surveillance Legislation Amendment (Identify and Disrupt) Act extends the nation's surveillance capabilities, to disrupt data (Section 6), takeover data (Schedule 3) and monitor network activity (Schedule 2).",
             "laws_norm": [
-              "surveillance legislation amendment identify and disrupt act 2021"
+              "surveillance legislation amendment identify and disrupt act 2021",
+              "australian security intelligence organisation act 1979",
+              "data availability and transparency act 2022"
             ]
           }
         ],
@@ -1083,7 +1089,8 @@
             "reason": "master score/polarity does not expect a positive row",
             "context": "The Copyright Act contains safe harbour protections (under Division 2AA) for service providers defined under section 116ABA, including a carriage service provider, an organisation assisting persons with a disability, the body administering a library/an archives/a key cultural institution/an educational institution.",
             "laws_norm": [
-              "copyright amendment service providers bill 2017"
+              "copyright amendment service providers bill 2017",
+              "the copyright act 1968 no 54"
             ]
           }
         ],
@@ -1118,7 +1125,9 @@
             "reason": "positive master prose and indicator predicate support an operative anchor",
             "context": "The Criminal Code Amendment (Sharing of Abhorrent Violent Material) Act 2019, which was enacted in the wake of the Christchurch attack on 2019, subjects Internet service providers and content providers to criminal penalties for the failure to report or remove \"abhorrent violent material\" that the providers have reasonable grounds to believe records or streams abhorrent violent conduct in Australia (Section 434.33-34).",
             "laws_norm": [
-              "criminal code amendment sharing of abhorrent violent material act 2019"
+              "criminal code amendment sharing of abhorrent violent material act 2019",
+              "online safety act 2021",
+              "online safety basic online safety expectations determination 2022"
             ]
           }
         ],
@@ -6274,7 +6283,8 @@
             "reason": "reference appears in definition/meaning context",
             "context": "Section 11a: Defines \"low value goods\" and outlines the imposition of sales tax.",
             "laws_norm": [
-              "sales tax amendment act act a1671 2022"
+              "sales tax amendment act act a1671 2022",
+              "customs prohibition of imports order p u a 117 2023"
             ]
           },
           {
@@ -7730,7 +7740,9 @@
             "reason": "positive master prose and indicator predicate support an operative anchor",
             "context": "Besides, according to Rule 23(1A), using obligatory language \"shall be in English\" — on all applicants for all documents making up a patent application.",
             "laws_norm": [
-              "patent amendment act 2017"
+              "patent amendment act 2017",
+              "patents act 1994",
+              "patent rules"
             ]
           }
         ],
@@ -7786,7 +7798,8 @@
             "reason": "master score/polarity does not expect a positive row",
             "context": "Civil proceedings may be brought in the court by the proprietor of a patent in respect of any act alleged to infringe the patent (Section 67).",
             "laws_norm": [
-              "patent amendment act 2017"
+              "patent amendment act 2017",
+              "patents act 1994"
             ]
           }
         ],
@@ -8342,7 +8355,8 @@
             "reason": "positive master prose and indicator predicate support an operative anchor",
             "context": "According to Section 26, an organisation may only transfer personal data outside Singapore if it has taken appropriate steps to ensure that:",
             "laws_norm": [
-              "personal data protection amendment act 2020"
+              "personal data protection amendment act 2020",
+              "personal data protection act 2012"
             ]
           }
         ],
@@ -8452,7 +8466,8 @@
             "reason": "master score/polarity does not expect a positive row",
             "context": "Section 25 of the PDPA requires an organisation to cease retaining its documents containing personal data, or remove the means by which the personal data can be associated with particular individuals, as soon as it is reasonable to assume that the purpose for which that personal data was collected is no longer being served by retention of the personal data, and retent",
             "laws_norm": [
-              "personal data protection amendment act 2020"
+              "personal data protection amendment act 2020",
+              "personal data protection act 2012"
             ]
           }
         ],

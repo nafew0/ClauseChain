@@ -9366,7 +9366,8 @@
             "reason": "positive master prose and indicator predicate support an operative anchor",
             "context": "A concerpt of claiming priority, Article 30 of Law Number 65 of 2024 which is the Third Amendment to Law Number 13 of 2016 on Patents, an applicant who wishes to claim priority under the Paris Convention must file the patent in Indonesia within 12 months of the original filing date in another country.",
             "laws_norm": [
-              "patent law no 65 on the third amendment to the patent law no 13 2024"
+              "patent law no 65 on the third amendment to the patent law no 13 2024",
+              "law no 13 on patent 2016"
             ]
           }
         ],
@@ -9460,7 +9461,8 @@
             "reason": "master score/polarity does not expect a positive row",
             "context": "The provisions regarding Compulsory Licenses are regulated under Articles 81 to 107 of Law Number 13 Year 2016 on Patents.",
             "laws_norm": [
-              "patent law no 65 on the third amendment to the patent law no 13 2024"
+              "patent law no 65 on the third amendment to the patent law no 13 2024",
+              "law no 13 on patent 2016"
             ]
           },
           {
@@ -10956,7 +10958,9 @@
             "reason": "nearby prose does not satisfy the P6-I4 anchor predicate",
             "context": "5 of 2020 on Private Electronic System Operators (“Regulation 5”) implements Government Regulation No.",
             "laws_norm": [
-              "minister of communication and informatics regulation no 10 on the amendment to minister of communication and informatics regulation no 5 of 2020 on private electronic system operators 2021"
+              "minister of communication and informatics regulation no 10 on the amendment to minister of communication and informatics regulation no 5 of 2020 on private electronic system operators 2021",
+              "regulation of the government of the republic of indonesia no 71 on the provision of electronic system and transaction 2019",
+              "regulation of the minister of communication and informatics of the republic of indonesia no 5 on private electronic system operators 2020"
             ]
           }
         ],
@@ -11787,7 +11791,8 @@
             "reason": "nearby prose does not satisfy the P7-I3 anchor predicate",
             "context": "- Article 15(1) of the ITE Law requires electronic system providers to maintain the availability, integrity, and confidentiality of electronic information and records.",
             "laws_norm": [
-              "law no 1 on the second amendment to law no 11 of 2008 on electronic information and transactions 2024"
+              "law no 1 on the second amendment to law no 11 of 2008 on electronic information and transactions 2024",
+              "law no 11 on information and electronic transactions 2008"
             ]
           },
           {
@@ -16880,7 +16885,9 @@
             "reason": "master score/polarity does not expect a positive row",
             "context": "According to the Telecommunications Law, any domestic and foreign individual, legal entity or organization wishing to establish a telecommunication enterprise shall apply for establishment and registration to the concerned organization as defined in the Law on Investment Promotion, the Law on Enterprise, and other relevant laws of Lao PDR (Article 24 Application for the Establishment of a Telecommunication Enterprise).",
             "laws_norm": [
-              "law on investment promotion act 2010 no 14 na amendment in 2016"
+              "law on investment promotion act 2010 no 14 na amendment in 2016",
+              "law on investment promotion act no 14 na 2010",
+              "decree on approval the list of controlled and concession businesses 2019"
             ]
           },
           {
@@ -16889,7 +16896,9 @@
             "reason": "master score/polarity does not expect a positive row",
             "context": "Under the Investment Promotion Act, both domestic and foreign investors have the right to invest in all investment sectors, including telecommunications, and areas which are not prohibited by the law of the Lao PDR (Articles 67.1 and 3).",
             "laws_norm": [
-              "law on investment promotion act 2010 no 14 na amendment in 2016"
+              "law on investment promotion act 2010 no 14 na amendment in 2016",
+              "law on investment promotion act no 14 na 2010",
+              "decree on approval the list of controlled and concession businesses 2019"
             ]
           }
         ],
@@ -18635,7 +18644,9 @@
             "reason": "positive master prose and indicator predicate support an operative anchor",
             "context": "Specifically, Article 50 (Voluntary Conformity Assessments) of the Standard Law (Amended) outlines that conformity assessment for technical regulations (e.g., products affecting safety) should be conducted by government conformity assessment bodies or accredited third-party entities.",
             "laws_norm": [
-              "standard law amended no 49 na 2014"
+              "standard law amended no 49 na 2014",
+              "decree on the implementation of the law on standardization no 234 2012",
+              "asean sectoral mra for electrical and electronic equipment asean ee mra 2002"
             ]
           },
           {
@@ -18719,7 +18730,8 @@
             "reason": "positive master prose and indicator predicate support an operative anchor",
             "context": "Article 8 (Types of Lao Standards) of the Standard Law (Amended) lists categories of products subject to Lao standards, including products, goods, services, and environmental standards​.",
             "laws_norm": [
-              "standard law amended no 49 na 2014"
+              "standard law amended no 49 na 2014",
+              "decree on the implementation of the law on standardization no 234 2012"
             ]
           },
           {
@@ -18763,7 +18775,8 @@
             "reason": "positive master prose and indicator predicate support an operative anchor",
             "context": "Specifically, Article 65 (Accreditation) of the Standard Law (Amended) mandates that testing centers and laboratories must be accredited and recognized by both domestic and foreign accredited bodies.",
             "laws_norm": [
-              "standard law amended no 49 na 2014"
+              "standard law amended no 49 na 2014",
+              "decree on the implementation of the law on standardization no 234 2012"
             ]
           },
           {
@@ -18812,7 +18825,8 @@
             "reason": "master score/polarity does not expect a positive row",
             "context": "Article 29 of the Standard Law (Amended) mentions that any technical regulations, including those potentially related to encryption, must align with international agreements and treaties to which Lao PDR is a party, such as WTO’s Agreement on Technical Barriers to Trade and ASEAN guidelines​.",
             "laws_norm": [
-              "standard law amended no 49 na 2014"
+              "standard law amended no 49 na 2014",
+              "decree on the implementation of the law on standardization no 234 2012"
             ]
           },
           {
@@ -18931,7 +18945,8 @@
             "reason": "positive master prose and indicator predicate support an operative anchor",
             "context": "Lao PDR Law on Payment System, Article 9 mandates for a Local Bank Account: Online payment services must utilize local bank accounts for processing payments, including both receipt and disbursement.",
             "laws_norm": [
-              "law on payment system amendment no 45 na 2023"
+              "law on payment system amendment no 45 na 2023",
+              "decision on electronic signatures no 1101 mpt 2020"
             ]
           },
           {
@@ -19388,7 +19403,8 @@
             "reason": "positive master prose and indicator predicate support an operative anchor",
             "context": "An Amendment of Law on Customs 2020 introduces a de minimis threshold for goods exempt from customs duties is set at 1,500,000 LAK (around 150 USD) (amended Article 94 Exemption of Customs Duties).",
             "laws_norm": [
-              "the law of customs amendment no 81 na 2020"
+              "the law of customs amendment no 81 na 2020",
+              "decree on the implementation of the customs law no 362 pmo 2007"
             ]
           }
         ],
@@ -19424,7 +19440,8 @@
             "reason": "master score/polarity does not expect a positive row",
             "context": "Article 9 of the Law of Customs (Amendment), customs duties apply to all categories of physical goods or non-commercial goods imported into or exported out of Lao PDR, as defined by the Tariff Nomenclature of Lao PDR.",
             "laws_norm": [
-              "the law of customs amendment no 81 na 2020"
+              "the law of customs amendment no 81 na 2020",
+              "decree on the implementation of the customs law no 362 pmo 2007"
             ]
           },
           {

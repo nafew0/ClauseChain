@@ -106,7 +106,17 @@ def _law_hints(context: str, act_cell: str) -> list[str]:
     if not candidates:
         return []
     best = max(score for score, _ in candidates)
-    return [norm for score, norm in candidates if score == best]
+    hints = [norm for score, norm in candidates if score == best]
+    # An Amendment Act's provisions live in the CONSOLIDATED principal act —
+    # the amendment never exists as a corpus law on its own. If every resolved
+    # hint is an amendment instrument, retain the principal act(s) from the
+    # same cell too, or the anchor can never match anything (the s. 26 trap:
+    # "PDPA 2012; PDPA (Amendment) Act 2020" bound s. 26 to the amendment only).
+    if all(re.search(r"\bamend", hint) for hint in hints):
+        principals = [normalize_law_name(act) for act in split_act_names(act_cell)
+                      if not re.search(r"\bamend", normalize_law_name(act))]
+        hints.extend(p for p in principals if p and p not in hints)
+    return hints
 
 
 def _indicator_context_fit(indicator: str | None, context: str) -> bool:

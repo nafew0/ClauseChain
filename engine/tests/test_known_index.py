@@ -79,8 +79,13 @@ def test_combined_act_reference_gets_nearby_instrument_hint() -> None:
     by_ref = {m["ref"]: m for m in mentions}
     assert by_ref["s. 25A"]["laws_norm"] == [
         normalize_law_name("Australian Security Intelligence Organisation Act 1979")]
-    assert by_ref["Sch. 3"]["laws_norm"] == [
-        normalize_law_name("Surveillance Legislation Amendment (Identify and Disrupt) Act 2021")]
+    # amendment-first, principal appended (consolidation fallback, 15 Jul): the
+    # corpus holds consolidated acts, so an amendment-only binding never matches.
+    sch3 = by_ref["Sch. 3"]["laws_norm"]
+    assert sch3[0] == normalize_law_name(
+        "Surveillance Legislation Amendment (Identify and Disrupt) Act 2021")
+    assert normalize_law_name(
+        "Australian Security Intelligence Organisation Act 1979") in sch3
 
 
 def test_law_hint_prefers_specific_instrument_over_shared_name_prefix() -> None:
@@ -100,3 +105,18 @@ def test_conditional_transfer_if_colon_is_an_operative_anchor() -> None:
     mention = classify_ref_mentions(
         impact, "Personal Data Protection Act 2010", "P6-I4", "1")[0]
     assert mention["role"] == "operative"
+
+
+def test_amendment_only_hint_retains_principal_act():
+    """The s. 26 trap (15 Jul regression): an anchor bound ONLY to an Amendment
+    Act can never match the corpus — amendments consolidate into the principal.
+    """
+    from packages.ingest.known_index import classify_ref_mentions
+
+    cell = "Personal Data Protection Act 2012;\n\nPersonal Data Protection (Amendment) Act 2020"
+    prose = ("s. 26 provides that an organisation must not transfer personal data outside "
+             "Singapore except in accordance with prescribed requirements. This section was "
+             "updated by the Personal Data Protection (Amendment) Act 2020.")
+    mentions = classify_ref_mentions(prose, cell, "P6-I4", "1")
+    anchor = next(m for m in mentions if m["ref"] == "s. 26")
+    assert "personal data protection act 2012" in anchor["laws_norm"], anchor["laws_norm"]

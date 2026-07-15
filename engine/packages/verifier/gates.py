@@ -125,7 +125,13 @@ _DOMESTIC_LOCATION = re.compile(
     re.I,
 )
 _PROHIBITION = re.compile(r"\b(?:must not|shall not|may not|is prohibited|are prohibited|prohibit(?:s|ed)?)\b", re.I)
-_CONDITION = re.compile(r"\b(?:if|unless|only if|consent|adequacy|adequate|approval|condition|safeguard|contract)\b", re.I)
+# Statutory conditional vocabulary. Real acts phrase the condition as
+# "except in accordance with requirements prescribed" (SG PDPA s. 26(1)) at
+# least as often as the textbook "unless" — both families must count.
+_CONDITION = re.compile(
+    r"\b(?:if|unless|only if|consent|adequacy|adequate|approval|condition|safeguard"
+    r"|contract|except|subject to|in accordance with|prescribed|standard of protection)\b",
+    re.I)
 _MINIMUM_DUTY = re.compile(r"\b(?:must|shall|required to|not less than|at least|minimum(?: period)? of)\b", re.I)
 _RETENTION_CEILING = re.compile(r"\b(?:need only|may (?:retain|keep)|up to|not more than|no longer than|maximum(?: period)? of)\b", re.I)
 _WARRANT = re.compile(r"warrant|court order|order of (a|the) court|judge|magistrate|judicial", re.I)
