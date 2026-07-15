@@ -27,6 +27,7 @@ class OpenAIChatProvider:
         self.api_key_env = api_key_env
         self.timeout = timeout
         self.last_usage: dict | None = None
+        self._batch_available: bool | None = None
 
     RETRY_BACKOFFS_S = (5.0, 20.0)   # transient 429/5xx/network retries before giving up
 
@@ -95,9 +96,13 @@ class OpenAIChatProvider:
                       prompt_cache_keys: list[str] | None = None) -> list[BaseModel]:
         """Use OpenAI Batch when explicitly enabled; otherwise preserve live latency."""
         keys = prompt_cache_keys or [None] * len(prompts)
-        if os.getenv("CLAUSECHAIN_OPENAI_BATCH") != "1" or len(prompts) < 2:
+        def synchronous() -> list[BaseModel]:
             return [self.complete(p, schema, prompt_cache_key=k)
                     for p, k in zip(prompts, keys, strict=True)]
+
+        if (os.getenv("CLAUSECHAIN_OPENAI_BATCH") != "1" or len(prompts) < 2
+                or self._batch_available is False):
+            return synchronous()
 
         import time as _time
 
@@ -124,13 +129,24 @@ class OpenAIChatProvider:
             files={"file": ("clausechain-batch.jsonl", content, "application/jsonl")},
             timeout=self.timeout,
         )
+        if upload.status_code in {401, 403, 404}:
+            self._batch_available = False
+            print(f"[model-router] OpenAI Batch/Files unavailable ({upload.status_code}); "
+                  "using the same model synchronously", file=sys.stderr)
+            return synchronous()
         upload.raise_for_status()
+        self._batch_available = True
         created = httpx.post(
             "https://api.openai.com/v1/batches", headers=headers,
             json={"input_file_id": upload.json()["id"],
                   "endpoint": "/v1/chat/completions", "completion_window": "24h",
                   "metadata": {"project": "clausechain"}}, timeout=self.timeout,
         )
+        if created.status_code in {401, 403, 404}:
+            self._batch_available = False
+            print(f"[model-router] OpenAI Batch unavailable ({created.status_code}); "
+                  "using the same model synchronously", file=sys.stderr)
+            return synchronous()
         created.raise_for_status()
         batch_id = created.json()["id"]
         poll_seconds = float(os.getenv("CLAUSECHAIN_BATCH_POLL_SECONDS", "15"))

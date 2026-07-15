@@ -25,6 +25,7 @@ def main() -> int:
     artifacts = {r[0]: SourceArtifact.model_validate_json(r[1])
                  for r in conn.execute("SELECT id,payload FROM source_artifacts")}
     cards, decisions = [], []
+    expected_assets: set[Path] = set()
     for i, finding in enumerate(findings, 1):
         key = finding_key(finding); proof = finding.citation_proof; artifact = artifacts.get(finding.source_artifact_id or "")
         image_rel = None
@@ -35,7 +36,10 @@ def main() -> int:
                 for box in proof.bboxes:
                     shape.draw_rect(fitz.Rect(box)); shape.finish(color=(1, 0, 0), width=1.5)
                 shape.commit()
-                image_rel = f"assets/{key}.png"; page.get_pixmap(matrix=fitz.Matrix(1.4, 1.4)).save(out / image_rel)
+                image_rel = f"assets/{key}.png"
+                image_path = out / image_rel
+                expected_assets.add(image_path)
+                page.get_pixmap(matrix=fitz.Matrix(1.4, 1.4)).save(image_path)
         status = finding.status_evidence_record.model_dump(mode="json") if finding.status_evidence_record else None
         gates = proof.gate_results if proof else []
         coverage = (finding.search_coverage_manifest.model_dump(mode="json")
@@ -61,6 +65,12 @@ def main() -> int:
         "img{max-width:100%;border:1px solid #999}blockquote{background:#f5f5f5;padding:16px}pre{white-space:pre-wrap}</style>"
         + "".join(cards), encoding="utf-8")
     (out / "decisions.template.json").write_text(json.dumps(decisions, indent=2) + "\n")
+    # Review images are a derived, content-addressed cache. Remove images that
+    # no longer correspond to the current candidate set while leaving any
+    # non-generated files in the assets directory untouched.
+    for image_path in assets.glob("*.png"):
+        if image_path not in expected_assets:
+            image_path.unlink()
     print(f"review bundle: {len(findings)} rows -> {out / 'index.html'}")
     return 0
 

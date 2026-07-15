@@ -250,7 +250,7 @@
         "coverage": "Horizontal",
         "impact": "Under the Corporations Act 2001, any company registered outside Australia that meets the definition of a \"foreign company\" must register with the Australian Securities and Investments Commission (ASIC) to operate in Australia. Under section 3.7 on \"registered office\",Foreign companies must have a registered office in Australia, open and staffed from at least 10 am to 12 pm and 2 pm to 4 pm on business days, or provide notice of alternative hours.",
         "articles": [
-          "s. 3"
+          "s. 3.7"
         ],
         "timeframe": "Since June 2001, last amended in October 2024",
         "references": [
@@ -846,7 +846,7 @@
         "coverage": "Internet and Internet host services",
         "impact": "The Criminal Code Amendment (Sharing of Abhorrent Violent Material) Act 2019, which was enacted in the wake of the Christchurch attack on 2019, subjects Internet service providers and content providers to criminal penalties for the failure to report or remove \"abhorrent violent material\" that the providers have reasonable grounds to believe records or streams abhorrent violent conduct in Australia (Section 434.33-34).\n\nThe Online Safety Act 2021 has significant implications for online service providers because it makes them more accountable for the online safety of the people who use their service. The Act gives eSafety substantial new powers to protect all Australians across most online platforms and forums where people can experience harm. The Act also requires industry to develop new codes to regulate illegal and restricted content. This refers to the most seriously harmful material, such as videos showing sexual abuse of children or acts of terrorism, through to content that is inappropriate for children, such as high impact violence and nudity. If the harmful content or post is not removed within 24 hours, a fine of up to 500 penalty units will be applied — for individuals, up to $111,000 and for organisations up to $555,000.\n\nThe Basic Online Safety Expectations 2022 (BOSE) is a mechanism for the Commonwealth Government to “articulate its expectations of online services providers, on behalf of the community, to improve protections for users” and that “service providers are best placed to identify emerging forms of harmful end-user conduct or material, and choose the best way to address them on their service, in the most responsive way”. The BOSE establishes a higher standard for online service providers, designed to ensure that certain online service providers prioritise online safety by imposing on them minimum standards for pre-emptive and preventative action to minimise harm that can occur via their online services, such as cyber-bullying or exposure to illegal or restricted material.",
         "articles": [
-          "s. 434"
+          "s. 434.33"
         ],
         "timeframe": "Since April 2019;\n\nSince July 2021, last amended in October 2024;\n\nSince 2022",
         "references": [
@@ -868,8 +868,9 @@
         "coverage": "SIM Card",
         "impact": "Telecommunication companies must identify their customer when that customer wants to activate a prepaid mobile service (Section 4.2). To activate a new prepaid mobile service, customers need to give their telecommunication company their name, date of birth and home address (or business name and address if acting on behalf of a business) (Section 4.3). Proof of ID is also necessary (Section 1.8).",
         "articles": [
-          "s. 4",
-          "s. 1"
+          "s. 4.2",
+          "s. 4.3",
+          "s. 1.8"
         ],
         "timeframe": "Since April 2017",
         "references": [
@@ -891,7 +892,7 @@
         "coverage": "Horizontal",
         "impact": "The Criminal Code Amendment (Sharing of Abhorrent Violent Material) Act 2019, subjects internet service providers, hosting and content providers to criminal penalties for the failure to report or remove \"abhorrent violent material\" that the providers have reasonable grounds to believe records or streams abhorrent violent conduct in Australia (Section 434.33-34).\n\nThe two key offences are:\n\n- Failure to report—an offence for internet service providers, hosting and content providers that fail to notify the Australian Federal Police (AFP) within a reasonable time about material relating to abhorrent violent conduct occurring in Australia. A defence is available if the service provider can show that they had reasonable grounds to believe the AFP was already aware of the details of the material.\n\n- Failure to remove—offences for content service and hosting services that fail to remove access to abhorrent violent material expeditiously where that material is reasonably capable of being accessed within Australia. The Act provides a range of defences to this offence. For example, in circumstances where it relates to law enforcement purposes, news and current affairs, public policy advocacy and research purposes.",
         "articles": [
-          "s. 434"
+          "s. 434.33"
         ],
         "timeframe": "Since April 2019",
         "references": [
@@ -915,7 +916,7 @@
         "impact": "It is prohibited for Internet service providers (ISPs)  and telecommunications services providers, acting on their own, to monitor and disclose the content of communications without the customer’s consent under the Telecommunications (Interception and Access) Act 1979 (Section 7). Such entities may monitor communications under the Telecommunications and Other Legislation Amendment (Assistance and Access) Act 2018 when required to assist certain law enforcement or national security agencies in carrying out their duties. The entities are also able to, but not required to, monitor their networks to carry out \"network protection duties.\" \n\nAlthough there is no general monitoring requirement on telecommunications and Internet service providers, the Criminal Code Amendment (Sharing of Abhorrent Violent Conduct) Act 2019 provides that \"[a] person commits an offence if:\n(a)  the person provides a hosting service; and\n(b)  material is hosted on the hosting service; and\n(c)  the material is abhorrent violent material; and\n(d)  the person does not expeditiously cease hosting the material (Section 474.34(5)). \n\nAlthough the Act does not impose a duty to monitor content, as for \"abhorrent violent conduct\", it implies that Internet hosts need to put reasonable efforts to monitor and disable such materials.",
         "articles": [
           "s. 7",
-          "s. 474"
+          "s. 474.34(5)"
         ],
         "timeframe": "Since October 1979, last amended in October 2024; \n\nSince December 2018, last amended in September 2021",
         "references": [
@@ -2109,7 +2110,8 @@
         "coverage": "Broadcasting Service",
         "impact": "Foreign companies are entitled to acquire only up to a 30% equity stake in broadcasting services. \n\nThe Malaysian Communications and Multimedia Commission Licensing Guidebook 2023 issued under the Malaysian Communications and Multimedia Commission Licensing Guidebook 2023. Clase 2 of the Malaysian Communications and Multimedia Commission Licensing Guidebook 2023 addresses Eligibility of persons applying for license. The following persons or classes of persons shall be ineligible to apply for an individual licence a) A foreign company as defined under the Companies Act 2016 [Act 777]; b) An individual or a sole proprietorship; c) A partnership; and d) Such other persons or classes of persons as may be decided by the Minister from time to time (Clause 2.1 Individual license). The following persons or classes of persons shall be ineligible to be registered as a class licensee: a) A foreign individual who is not a permanent resident; and b) A foreign company as defined under the Companies Act 2016. It should be noted that in the case of class licences, the Minister may, for good cause or as the public interest may require, permit either of the above to apply to be registered as a class licensee (Clause 2.2 Class license).",
         "articles": [
-          "cl. 2"
+          "cl. 2.1",
+          "cl. 2.2"
         ],
         "timeframe": "Since April 1999, last amended in 2005;\n\nSince April 2023",
         "references": [
@@ -2291,7 +2293,7 @@
           "s. 561",
           "s. 562",
           "s. 567",
-          "s. 2"
+          "s. 2.1"
         ],
         "timeframe": "Since September 2016, last amended in July 2019;\n\nSince April 2023",
         "references": [
@@ -2579,10 +2581,10 @@
         "coverage": "Telecommunication sector",
         "impact": "Operators with both revenues and total assets in a fiscal year exceeding RM3 billion (Section 2.1) respectively are subject to full accounting separation obligations while operators with either or both revenues and total assets below RM3 billion respectively are subjected to simplified accounting separation obligations.\n\nThe Malaysian Communications and Multimedia Commission (MCMC) mandates that all telecommunications operators implement Accounting Separation (AS) to ensure transparency in the financial interactions (Section 1.1) between different services and business units. Operators are required to submit Regulatory Financial Statements (RFS) annually. Operators must categorize costs (direct, directly attributable, indirectly attributable) and attribute them to services based on the principle of cost causation. They must also use transfer charges (market prices or cost-plus capital) to account for internal transactions between business units. (Section 5.4 and Section 6.1). \n\nThere is no formal requirement for functional separation under the Communications and Multimedia Act 1998 (CMA) or MCMC guidelines. Functional separation would typically involve structural changes to separate the operational management of network facilities and services from retail or competitive service units.",
         "articles": [
-          "s. 2",
-          "s. 1",
-          "s. 5",
-          "s. 6"
+          "s. 2.1",
+          "s. 1.1",
+          "s. 5.4",
+          "s. 6.1"
         ],
         "timeframe": "Since April 1999, last amended in 2005;\n\nSince 2016",
         "references": [
@@ -2605,8 +2607,10 @@
         "coverage": "Network Facilities Provider (NFP), Network Service Provider (NSP)",
         "impact": "Malaysia applies strict licensing schemes in certain areas, such as Network Facilities Providers (NFP) and Network Service Providers (NSP), where foreign equity is capped at 70%. Additionally, there may be minimum capital requirements and mandatory performance criteria for providers seeking these licenses. For Application Service Providers (ASP), which do not own underlying transmission infrastructure, Malaysia allows 100% foreign equity participation and applies no strict licensing requirements, making this a more liberalized category in the telecom sector.\n\nMalaysian Communications and Multimedia Commission MCMC Licensing Guidebook 2023\nSection 2.1(a) Eligibility of Persons Applying for Licence outlines that the following persons or classes of persons shall be ineligible to apply for an individual licence: a) A foreign company as defined under the Companies Act 2016.\n \nIndividual Licence:\n- Section 2.1 Eligibility of Persons Applying for Individual Licence. Specifies who is eligible to apply for an individual licence, including the requirement for Bumiputera shareholding. Individual Licence is detailed in Section 3:\nApplications require:\n\t• Paid-up capital of RM2,000,000 for network facilities/service licences.\n\t• Paid-up capital of RM500,000 for content applications services licences.\n\t• Minimum Bumiputera shareholding of 30%.\n\t• Application fee: RM10,000 per licence.\n\t• Application process:\n\t• Detailed business plan, technical descriptions, and financial viability documents.\n\t• Rollout plans for service deployment (e.g., infrastructure, operations, marketing).\n\n- Section 2.2: Details the eligibility criteria for class licence registration.\nClass Licence details are covered in Section 4:\n\t• Registration rather than application, with fewer capital and procedural requirements.\n\t• Targeted at limited-scope services or specific niche markets.\nFees and Rebates are in Section 5\n\t• Class licence registration fee: RM2,500.\n\t• Renewal fees: RM25,000 per licence for individual licences.\nWith Exemptions for Internet content applications (e.g., general web hosting or user-generated content platforms) are often exempt unless they specifically provide regulated services.",
         "articles": [
-          "s. 2",
+          "s. 2.1(a)",
+          "s. 2.1",
           "s. 3",
+          "s. 2.2",
           "s. 4",
           "s. 5"
         ],
@@ -2702,7 +2706,7 @@
         "coverage": "Financial service",
         "impact": "In the Personal Data Protection Code of Practice for the Banking and Financial Sector (2017), relevant local processing requirements are outlined underSection 3.1.1. Data users (banks and financial institutions) must process (e.g., to collect, use, modify, store and/or dispose of) personal data only with consent from the data subject, except in cases of legal necessity. Banks must take practical steps to secure personal data, which includes storing data locally in secure systems and preventing unauthorized access or loss (Security Principle Section 3.1.4).",
         "articles": [
-          "s. 3"
+          "s. 3.1.4"
         ],
         "timeframe": "Since January 2017",
         "references": [
@@ -2725,7 +2729,8 @@
         "coverage": "Horizontal",
         "impact": "The Personal Data Protection Code of Practice for Licensees Under the Communications and Multimedia (Act 1998) provides rules for handling personal data in the communications sector:\n- Local Processing Requirements:\n\t• General Principle (Section 3.1): Personal data must be processed within Malaysia with proper consent from data subjects unless otherwise legally required.\n\t• Security Principle (Section 3.4): Communications licensees must ensure that secure systems are in place for storing and processing personal data, which includes local data storage and restricting unauthorized access.",
         "articles": [
-          "s. 3"
+          "s. 3.1",
+          "s. 3.4"
         ],
         "timeframe": "Since November 2013, last amended in 2024;\n\nSince November 2017",
         "references": [
@@ -2817,9 +2822,9 @@
           "s. 129",
           "s. 6",
           "s. 9",
-          "s. 3",
-          "s. 4",
-          "s. 1",
+          "s. 3.1.5",
+          "s. 4.11",
+          "s. 1.1(38)",
           "Sch. 1"
         ],
         "timeframe": "Since November 2013, last amended in 2024; \n\nSince July 2024",
@@ -2842,8 +2847,8 @@
         "coverage": "Financial service",
         "impact": "In the Personal Data Protection Code of Practice for the Banking and Financial Sector (2017), the conditions for Transfer in Schedule 1 (Rights of Data Subjects), Section 1.1: Any cross-border transfer must ensure compliance with the PDPA’s principles, particularly related to the security of data, and must have written agreements with third-party data processors abroad. Transfer of Personal Data Abroad (Section 4.10)  prohibits the transfer of personal data abroad unless the recipient country ensures adequate protection under similar data protection laws or explicit consent from the data subject is obtained. \n\nSection 4.10 (Transfer of Personal Data Abroad)  provides that the Act prohibits the transfer of personal data outside of Malaysia unless the transfer is to a country with sufficient data protection laws, as specified by the Minister in a Government Gazette, which will be based on the Commissioner’s recommendation to the Minister.",
         "articles": [
-          "s. 1",
-          "s. 4",
+          "s. 1.1",
+          "s. 4.10",
           "Sch. 1"
         ],
         "timeframe": "Since January 2017",
@@ -2866,8 +2871,8 @@
         "coverage": "Horizontal",
         "impact": "Personal Data Protection Code of Practice for Licensees Under the Communications and Multimedia (Act 1998) of 2017\n- Transfer of Personal Data Abroad (Section 4.7): Licensees may not transfer personal data abroad unless the receiving country provides an adequate level of protection, or specific consent is obtained from the data subject.\n- Third-Party Service Providers (Section 3.2(ii)): If personal data is transferred to third parties outside Malaysia (e.g., for marketing or debt collection), the service provider must comply with the same standards as the local data user, ensuring equivalent data protection abroad",
         "articles": [
-          "s. 4",
-          "s. 3"
+          "s. 4.7",
+          "s. 3.2(ii)"
         ],
         "timeframe": "Since November 2017",
         "references": [
@@ -2914,12 +2919,12 @@
         "coverage": "Financial service",
         "impact": "Personal Data Protection Code of Practice for the Banking and Financial Sector 2017\n\n- Article 3.1: Data Collection and Use: Banks must collect personal data only for purposes directly related to their operational functions, such as account management, financial transactions, and compliance with regulatory requirements. Explicit consent from the customer is mandatory before data collection.\n- Article 4.1: Security of Personal Data. Banking institutions must implement technical safeguards, such as encryption and firewalls, and organizational measures, including restricted access, to ensure data protection. Regular audits and security reviews are required to address evolving threats.\n- Article 5.1: Retention and Disposal of Data. Personal data must not be retained longer than necessary. The retention period should align with legal or regulatory requirements (e.g., Anti-Money Laundering laws). Secure deletion and destruction processes must be in place when data is no longer needed.\n- Article 6.2: Data Subject Access and Correction\nCustomers have the right to:\n\t• Request access to their data.\n\t• Request corrections to inaccuracies in their data.\n\t• Banks must respond within a reasonable timeframe and may charge reasonable fees for processing such requests.\n- Article 7.2: Sharing Data with Third Parties. Personal data may only be disclosed to third parties (e.g., credit reporting agencies, payment processors) with the customer’s consent or as required by law. Agreements with third parties must ensure compliance with equivalent data protection standards.\n- Article 8.3: Data Breach Reporting. Banks are required to notify the relevant authorities and affected individuals in the event of a significant data breach impacting personal data.",
         "articles": [
-          "Art. 3",
-          "Art. 4",
-          "Art. 5",
-          "Art. 6",
-          "Art. 7",
-          "Art. 8"
+          "Art. 3.1",
+          "Art. 4.1",
+          "Art. 5.1",
+          "Art. 6.2",
+          "Art. 7.2",
+          "Art. 8.3"
         ],
         "timeframe": "Since January 2017",
         "references": [
@@ -2941,14 +2946,14 @@
         "coverage": "Horizontal",
         "impact": "Personal Data Protection Code of Practice for Licensees under the Communications and Multimedia (Act 1998) 2017\n\n- Article 3.2: Notice and Choice Principle - Licensees must provide clear and accessible notices to individuals regarding the purpose of data collection, retention periods, and customer rights. Individuals must be given the choice to consent to or refuse data collection.\n- Article 4.1: Limitation of Use - Personal data can only be processed for purposes that the individual has been explicitly informed of during collection, such as service provision, billing, and fraud prevention.\n- Article 5.1: Security Measures -Communication service providers must ensure the confidentiality of customers’ data through the implementation of cybersecurity protocols. Measures such as encryption, user authentication, and intrusion detection systems are mandated.\n- Article 6.3: Data Retention - Personal data must be stored only for as long as required for operational, billing, or legal purposes. After the purpose is fulfilled, data must be permanently deleted or anonymized to prevent misuse.\n- Article 7.2: Data Access and Accuracy\nCustomers have the right to:\n\t• Request access to their personal data stored by the licensee.\n\t• Rectify incorrect or outdated information.\n\t• Licensees must facilitate these requests promptly, barring legal exceptions.\n- Article 8.1: Domestic Data Transfers - Personal data shared with third parties within Malaysia must adhere to the same security and privacy standards as required by the PDPA. Agreements with third parties (e.g., contractors, service providers) must enforce compliance with this code.\n- Article 9.1: Cross-Border Data Restrictions. Although primarily related to international transfers, this article emphasizes that all personal data must be processed domestically unless explicit customer consent is obtained for cross-border processing.\n- Article 10.3: Breach Notification. Licensees must promptly notify affected customers and relevant regulators of any data breach compromising personal information.",
         "articles": [
-          "Art. 3",
-          "Art. 4",
-          "Art. 5",
-          "Art. 6",
-          "Art. 7",
-          "Art. 8",
-          "Art. 9",
-          "Art. 10"
+          "Art. 3.2",
+          "Art. 4.1",
+          "Art. 5.1",
+          "Art. 6.3",
+          "Art. 7.2",
+          "Art. 8.1",
+          "Art. 9.1",
+          "Art. 10.3"
         ],
         "timeframe": "Since November 2017",
         "references": [
@@ -3018,7 +3023,8 @@
         "coverage": "Communications Sector",
         "impact": "The Code of Practice for Licensees Under the Communications and Multimedia (Act 1998) 2017 also highlights the retention principle, specifying that personal data should be kept only as long as necessary for its intended purpose (Section 5.5). After the purpose has been fulfilled, data must be securely destroyed or deleted (Section 5.0).",
         "articles": [
-          "s. 5"
+          "s. 5.5",
+          "s. 5.0"
         ],
         "timeframe": "Since November 2017",
         "references": [
@@ -3040,7 +3046,9 @@
         "coverage": "Financial service",
         "impact": "In the Personal Data Protection Code of Practice for the Banking and Financial Sector (2017), Section 3.5 prescribes retention principle. Personal data should not be kept longer than necessary for the purpose it was collected. The Act also provides that upon the purpose being fulfilled, Data Users are required to permanently destroy/delete the personal data. This requirement applies to both physical and electronic copies of documents containing personal data.\n\nAccording to the Bank DP Guide, personal data in the banking sector may be retained for a period of seven years from the date of closure or termination of accounts or facilities Section (Section 3.5.4 and 3.5.5). In certain circumstances, personal data may be retained beyond seven years if required by law or regulatory bodies, such as Bank Negara Malaysia. Upon the fulfillment of the purpose for which personal data was collected, the data must be permanently deleted or destroyed as per Section 3.5.9.",
         "articles": [
-          "s. 3"
+          "s. 3.5",
+          "s. 3.5.4",
+          "s. 3.5.9"
         ],
         "timeframe": "Since January 2017",
         "references": [
@@ -3158,7 +3166,7 @@
         "coverage": "Communications Sector",
         "impact": "As part of the broader legal and regulatory framework, law enforcement agencies and investigative authorities can request access to personal data under certain circumstances, as outlined in related sector-specific guidelines and laws such as the Communications and Multimedia Act 1998 (Section 7.4) applies when personal data is processed for the apprehension or prosecution of offenders, or when required for the assessment or collection of any tax or duty.",
         "articles": [
-          "s. 7"
+          "s. 7.4"
         ],
         "timeframe": "Since November 2017",
         "references": [
@@ -3180,7 +3188,7 @@
         "coverage": "Financial service",
         "impact": "The Banking and Financial Sector guidelines (Section 3.7.4) includes provisions for processing data for tax assessment or legal obligations, allowing such access without prior notice to the individual.",
         "articles": [
-          "s. 3"
+          "s. 3.7.4"
         ],
         "timeframe": "Since January 2017",
         "references": [
@@ -3299,7 +3307,7 @@
         "coverage": "Internet Service Providers",
         "impact": "According to Part 5 (Specific online guidelines), clause 5.2.1 of the The Malaysian Communications and Multimedia Content Code 2022 states that subjects providing access to any Content but have neither control over the  composition of such Content nor any knowledge of such Content is deemed an innocent carrier for the purposes of this Code. An innocent carrier is not responsible for the Content provided. This Code shall apply to all content, including both online and offline, made available in the Content industry in the networked medium and as defined in this Code and under the Communications and Multimedia Act 1998 (Part 1 Introduction, Clause 4, and Part 5 Specific online guidelines, Clause 1).",
         "articles": [
-          "cl. 5",
+          "cl. 5.2.1",
           "cl. 4",
           "cl. 1"
         ],
@@ -3348,9 +3356,12 @@
         "coverage": "Sim Card",
         "impact": "There is an identity requirement for using a SIM card in Malaysia. The Malaysian Communications And Multimedia Commission (MCMC) issued Guidelines on Registration of End-Users of Prepaid Public Cellular Services (MCMC/G/01/17) 2017 effective June 2017 that requires verification against the original identification for prepaid SIM card registration (Section 4.2 confirms that the guideline is not retrospective as it will not affect existing Individual customers who have registered for more than five SIM cards prior to). This applies to all users regardless of their nationality (Malaysian or Non-Malaysian) including Malaysian citizens/permanent residents, foreigners (workers or students), and tourists. The documents required for registration (in Section 3) include:\n1. Malaysian MyKad issued by National Registration Department\n2. Malaysian Permanent Residents MyPR card issued by National Registration Department\n3. Malaysian Armed Forces MyTentera card issued by National Registration Department\n4. Foreigners Passport, Work Permit Identification cards & Student Identification cards\n5. Other documents issued by the National Registration Department (“NRD”) and Immigration Department of Malaysia (“IDM”)\n6. Temporary Identity Card (MyKas); IMM 13 (limited to the state of Sabah and Wilayah Persekutuan Labuan only and verification is required from IDM prior to activation of services by Service Provider)\n\nSection 2.1. A Service Provider who provides Prepaid Service is required to register its Endusers.\nSection 2.2. A Service Provider shall not provide any Prepaid Service to any End-user who fails to register with the Service Provider.\nSection 4.1 A Service Provider shall not register any new Individual customer for more than five (5) SIM cards per customer.\nSection 4.3. There is no limitation on the number of SIM cards’ registration for Business Entities.",
         "articles": [
-          "s. 4",
+          "s. 4.2",
           "s. 3",
-          "s. 2"
+          "s. 2.1",
+          "s. 2.2",
+          "s. 4.1",
+          "s. 4.3"
         ],
         "timeframe": "Since June 2017",
         "references": [
@@ -3372,7 +3383,8 @@
         "coverage": "Internet Service Providers",
         "impact": "Article 5.3.4 of the Malaysian Communications and Multimedia Content Code 2022 states that Online Content providers are committed toward taking a responsible approach to the  provision of Content by implementing reasonable, practicable and proportionate measures and  to provide a response mechanism in cases where prohibited material or activity is identified. Article 5.7.3 states that IASP should inform its subscriber to take down the prohibited Content within a period of 2 working days from the time of notification; prescribe a period within which its subscriber is to remove the prohibited Content, ranging from 1 to 24 hours from the time of  notification; and  If the subscriber does not remove such prohibited Content within the  prescribed period, the IASP shall be entitled to suspend or terminate the subscribers’ access account.",
         "articles": [
-          "Art. 5"
+          "Art. 5.3.4",
+          "Art. 5.7.3"
         ],
         "timeframe": "Since May 2022",
         "references": [
@@ -3442,7 +3454,8 @@
         "coverage": "Internet Service Providers",
         "impact": "The Malaysian Communications and Multimedia Content Code regulates that both the Internet Access Service Provider (IASP) and Internet content Hosting Provider (IHC) to remove prohibited content, ranging from 1 to 24 hours from the time of notification. The prohibited content include menace content that leads public disorder, threat to national security or public safety, and bad language which is the  language that is contrary to audience expectation.\n\n- Section 7.1.1 of IASP - Internet Access Service Providers: ISPs are permitted to block or remove access to prohibited content after being notified by the Complaints Bureau. ISPs have the right to withdraw access when a subscriber provides content that contravenes Malaysian law or the Content Code. This can include commercial web content if it is deemed illegal.\n- Section 7.2.2 of OCA - Online Content Aggregators: Aggregators must comply with the complaints procedure and can remove prohibited content, including any commercial content that violates the guidelines or the law, within a specified time frame",
         "articles": [
-          "s. 7"
+          "s. 7.1.1",
+          "s. 7.2.2"
         ],
         "timeframe": "Since May 2022",
         "references": [
@@ -3464,8 +3477,10 @@
         "coverage": "Internet Service Providers",
         "impact": "The Malaysian Communications and Multimedia Content Code regulates in detail about both electronic and non-electronic  advertisement in Malaysia. The Code include a list of unacceptable products and services such as slimming products, fire crackers, and marriage agencies, amongst others.\n\n- Section 4.2 emphasizes the legality of advertisements, stating that advertisers are responsible for ensuring that their advertisements comply with Malaysian laws, particularly in how products and services are promoted online. The advertising content must adhere to all legal requirements and ethical codes established by professional bodies.\n- Section 4.14 prohibits advertisements that promote unacceptable products or services, including those that are illegal under Malaysian law. This implies that any commercial web content that advertises prohibited items may be subject to removal or blocking \n- Section 6.1 highlights the impracticality of monitoring all online user activity, but it does specify that Internet Access Service Providers (IASPs) must comply with the terms and conditions regarding the prohibition of illegal content. They have the authority to block or remove such content when notified, particularly through a complaint-driven process.\n- Section 6.4 outlines the ethical responsibilities of content providers, recommending that users control the content they access online through tools like content filters, which ISPs may facilitate but are not required to enforce proactively.",
         "articles": [
-          "s. 4",
-          "s. 6"
+          "s. 4.2",
+          "s. 4.14",
+          "s. 6.1",
+          "s. 6.4"
         ],
         "timeframe": "Since May 2022",
         "references": [
@@ -3497,8 +3512,10 @@
           "s. 129",
           "s. 130",
           "s. 131",
-          "s. 2",
+          "s. 2.1(a)",
+          "s. 2.1",
           "s. 3",
+          "s. 2.2",
           "s. 4",
           "s. 5"
         ],
@@ -3522,8 +3539,12 @@
         "coverage": "Internet Messaging and Social Media Service Providers",
         "impact": "The Information Paper on Regulatory Framework for Internet Messaging and Social Media Service Providers (August 2024) outlines specific licensing requirements for various online service providers under the Communications and Multimedia Act 1998 (CMA 1998). Key sections relevant to social media platforms, VPNs, and cloud services include:\n\n- Section 4.1: Social media service providers with over 8 million users in Malaysia must apply for an Application Service Provider Class Licence (ASP (C)) under the CMA 1998.\n- Section 4.7: The paper explicitly defines social media services as applications enabling users to create, upload, share, or modify content. This applies to a broad range of services, including VPNs and cloud service providers.\n- Section 4.13: Cloud service providers are regulated under a similar licensing framework, following a “light-touch” regulatory approach that allows innovation while maintaining oversight.\n- Section 4.17: Licensed providers must comply with obligations under Section 263 of the CMA 1998, ensuring that they prevent their services from being used in illegal activities and provide assistance to law enforcement.\n-Section 4.21: The validity period for the class licence is one (1) year from the registration date and the Service Providers need to re-apply every year provided they meet the threshold of having eight (8) million or more users in Malaysia.\n\nThese sections demonstrate that social media platforms, VPNs, and cloud services are required to be licensed, and failure to do so by January 1, 2025, will result in penalties under Section 126 of the Communications and Multimedia Act.",
         "articles": [
-          "s. 4",
+          "s. 4.1",
+          "s. 4.7",
+          "s. 4.13",
+          "s. 4.17",
           "s. 263",
+          "s. 4.21",
           "s. 126"
         ],
         "timeframe": "Since August 2024",
@@ -3886,7 +3907,8 @@
         "coverage": "Distributive trade activities",
         "impact": "The Guideline on Foreign Participation in the Distributive Trade Services Malaysia 2020: If an e-commerce business involves, sectors such as logistics, telecommunications, or digital payments, foreign equity restrictions applicable to those sectors may apply. For instance, logistics operations may fall under distributive trade regulations, which can impose some limitations on foreign equity. In distributive trade, foreign equity is limited to 70% for hypermarkets, and smaller retail formats, like convenience stores, may have stricter 30% caps (Section 6.2.3). While logistics is not directly categorized under retail or wholesale, if a logistics company is involved in distributive trade activities (e.g., warehousing, delivery of retail goods), it may need to comply with these sectoral restrictions. \n\nSpecifically, hypermarket means a self-service distribution store with a sales floor area of 5,000 square meters or more, selling a wide variety of mainly consumer goods, comprising a combination of food and non-food products and in different forms of packaging (Section 6.1).",
         "articles": [
-          "s. 6"
+          "s. 6.2.3",
+          "s. 6.1"
         ],
         "timeframe": "Since 2020",
         "references": [
@@ -4035,7 +4057,7 @@
         "coverage": "Electronic Money",
         "impact": "The  Bank Negara Malaysia (BNM) Policy Document on Electronic Money 2022 outlines several operational requirements for e-money issuers. The Electronic Money outlines a requirement for an approval from BNM for increasing wallet limits beyond RM5,000 or altering e-money product functionalities (specified in Section 20.8). Although not explicitly mentioning a ceilings on the maximum amount that can be paid via electronic payment methods, the ceiling on the e-wallet has a similar effect.",
         "articles": [
-          "s. 20"
+          "s. 20.8"
         ],
         "timeframe": "Since March 2013;\n\nSince December 2022",
         "references": [
@@ -5538,7 +5560,8 @@
         "impact": "In Telecommunication Act 1999, Section 26 prohibits exclusive agreements between developers, landowners, or occupiers and telecommunication providers that would restrict access to infrastructure by other licensees, ensuring that telecommunication facilities can be shared among different service providers.\n\nUnder the Code of Practice for Competition, IMDA will require sharing of any Telecommunication Infrastructure or Media Resource that it determines is Critical Support Infrastructure or an Essential Resource (Section 7). The Critical Support Infrastructure or an Essential Resource is based on the criteria, such as when telecommunication infrastructure is not fully utilised, and an new entrant would neither be able to replicate the telecommunication infrastructure (Section 7.3.1).",
         "articles": [
           "s. 26",
-          "s. 7"
+          "s. 7",
+          "s. 7.3.1"
         ],
         "timeframe": "Since December 1999 last amened in December 2021;\n\nSince 2022",
         "references": [
@@ -5603,8 +5626,8 @@
         "coverage": "Telecommunications sector",
         "impact": "Accounting separation is required for the application of dominant licensees and their related companies. Under section 2.3 of the Converged Code, a licensee will be classified as ‘dominant’ if it is licensed to operate facilities that are sufficiently costly or difficult to replicate such that requiring new entrants to do so would create a significant barrier to rapid and successful entry into the telecommunication and (or) media market in Singapore by an efficient competitor; or if it has the ability to exercise significant market power in any market in Singapore in which it provides telecommunication or broadcasting services. \n\nThe Telecom Competition Code Section 8.1.4.1.3 requires these operators to separate their financial accounts for different services to prevent cross-subsidization and to enhance cost transparency. Accounting separation involves the preparation of separate financial statements for different segments of the business, such as wholesale and retail operations.\n\nAccounting separation is a tool available to the regulator, but are not applied by default.Section 8.1.4.1.3 of the Telecom and Media Competition Code prohibits a Telecommunication Licensee with significant market power from abusing its dominant position by engaging in cross-subsidisation. It does result in a default requirement for operators to separate their financial accounts for different services. A Telecommunication Licensee found to have contravened Section 8.1.4.1.3 of the Telecom and Media Competition Code will be subject to remedial actions by the IMDA, and accounting separation is one of such actions that IMDA can consider imposing.\n\nAccounting Separation Guidelines has been enacted.\n\nSingapore does not mandate functional separation (the operational division between retail and wholesale units) for SMP operators.",
         "articles": [
-          "s. 2",
-          "s. 8"
+          "s. 2.3",
+          "s. 8.1.4"
         ],
         "timeframe": "Since December 1999 last amened in December 2021;\n\nSince 2022",
         "references": [

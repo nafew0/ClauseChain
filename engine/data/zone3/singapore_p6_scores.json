@@ -1,7 +1,7 @@
 {
  "economy": "Singapore",
  "pillar": 6,
- "run": "run-sg-p6-1783775148",
+ "run": "run-sg-p6-1783836936",
  "krippendorff_alpha": 1.0,
  "indicators": {
   "P6-I1": {
@@ -11,17 +11,17 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "The only gate-verified row shows no evidence found for the Personal Data Protection Act 2012, so there is no plain textual basis for a ban or local processing r"
+     "reason": "No evidence was found that the Personal Data Protection Act 2012 imposes ban and local processing requirements for personal data or applies such requirements ho"
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "The only gate-verified row shows no evidence found for the Personal Data Protection Act 2012, so there is no verified ban or local processing requirement to sco"
+     "reason": "No gate-verified evidence was found that the economy has any ban and local processing requirements for personal data or non-personal/specific data under RDTII 2"
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "The only cited instrument has no verified evidence of a ban or local processing requirement, so there is insufficient basis to score any restriction."
+     "reason": "No verified evidence was found that the economy imposes any ban or local processing requirement on personal data (or any horizontal/local-processing requirement"
     }
    ],
    "band": [
@@ -39,17 +39,17 @@
     {
      "persona": "strict",
      "score": 1.0,
-     "reason": "The evidence includes a personal-data preservation requirement and a separate rule requiring accounting/other records kept outside Singapore to also be kept in "
+     "reason": "The cited provisions require accounting/corporate records to be kept at a place in Singapore (either at the registered office or another place in Singapore), wh"
     },
     {
      "persona": "ESCAP",
      "score": 1.0,
-     "reason": "The economy has a local-storage requirement for personal data under the PDPA and an additional company-records rule requiring accounting records kept outside Si"
+     "reason": "The Companies Act 1967 requires accounting/corporate records to be kept at the company\u2019s registered office or another place in Singapore (s.199(3)) and, if kept"
     },
     {
      "persona": "skeptical",
      "score": 1.0,
-     "reason": "The economy has a personal-data local storage requirement under the PDPA, and it also has a separate company-records rule requiring certain records to be kept i"
+     "reason": "The Companies Act requires accounting/corporate records to be kept in Singapore (either at the registered office or another place in Singapore, and if kept abro"
     }
    ],
    "band": [
@@ -67,17 +67,17 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "The only gate-verified row states NO_EVIDENCE_FOUND_PENDING_REVIEW, so there is no plain textual evidence of any infrastructure requirement."
+     "reason": "No evidence was found that any infrastructure requirement (e.g., local data centre/server as a precondition or transfer conditioned on infrastructure) exists in"
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "No evidence was found of any infrastructure requirement as a precondition of service or transfer; under the guide, rules governing already-established data cent"
+     "reason": "No gate-verified evidence was found that any infrastructure requirement (e.g., local data centre/server as a precondition or transfer conditioned on infrastruct"
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "The only cited law has no verified evidence of any local data centre/server precondition or transfer conditioned on infrastructure, so the infrastructure requir"
+     "reason": "No gate-verified evidence was found showing any infrastructure requirement (e.g., local data centre/server as a precondition or transfer conditioned on infrastr"
     }
    ],
    "band": [
@@ -89,31 +89,31 @@
    "reviewer_decision": "pending"
   },
   "P6-I4": {
-   "deterministic": 0.5,
-   "deterministic_reason": "sectoral/specific-data measure(s) only -> 0.5",
+   "deterministic": 1.0,
+   "deterministic_reason": "covers personal data / horizontal -> 1",
    "judges": [
     {
      "persona": "strict",
      "score": 1.0,
-     "reason": "The cited provision conditions transfers of personal data, which falls squarely within the indicator\u2019s personal-data coverage."
+     "reason": "Section 26(1) prohibits transfer of any personal data outside Singapore except as required under the Act, applying horizontally to personal data transfers."
     },
     {
      "persona": "ESCAP",
      "score": 1.0,
-     "reason": "The cited rule conditions outbound transfers of personal data, which falls squarely under score 1."
+     "reason": "The Personal Data Protection Act 2012 s. 26(1) imposes a horizontal condition on transfers of any personal data outside Singapore, requiring compliance with the"
     },
     {
      "persona": "skeptical",
      "score": 1.0,
-     "reason": "The cited rule imposes a transfer condition on personal data, which meets the indicator\u2019s threshold for score 1 even though it is sectoral."
+     "reason": "The cited Personal Data Protection Act 2012 s. 26(1) imposes a horizontal condition on transfers of any personal data outside Singapore, meeting the criterion f"
     }
    ],
    "band": [
-    0.5,
+    1.0,
     1.0
    ],
-   "spread": 0.5,
-   "flag_for_review": true,
+   "spread": 0.0,
+   "flag_for_review": false,
    "reviewer_decision": "pending"
   }
  },

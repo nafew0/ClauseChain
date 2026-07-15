@@ -89,9 +89,9 @@ status_assertions:
     quotation_url: "https://lom.agc.gov.my/ilims/upload/portal/akta/outputaktap/2177706_BI/Act%20854.pdf"
   "593":
     status: in_force
-    fact_url: "https://lom.agc.gov.my/act-detail.php?language=BI&act=593"
-    fact_text: "The current official Laws of Malaysia register publishes the Criminal Procedure Code (Act 593) and its subsidiary legislation."
-    quotation_url: "https://lom.agc.gov.my/ilims/upload/portal/akta/outputaktap/605_BI/ACT%20593%20(2).pdf"
+    fact_url: "https://ccid.rmp.gov.my/Laws/Act_593_-_Criminal_Procedure_Code_(CPC).pdf"
+    fact_text: "The Royal Malaysia Police Commercial Crime Investigation Department publishes the Criminal Procedure Code (Act 593) in its official legislation library."
+    quotation_url: "https://ccid.rmp.gov.my/Laws/Act_593_-_Criminal_Procedure_Code_(CPC).pdf"
   "747":
     status: in_force
     fact_url: "https://lom.agc.gov.my/act-detail.php?language=BI&act=747"

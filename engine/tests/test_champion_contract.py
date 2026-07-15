@@ -234,3 +234,14 @@ def test_pdf_validation_allows_nul_padding_but_not_trailing_payload():
         validate_source_bytes(valid + b"appended payload", "application/pdf")
     with pytest.raises(SourceValidationError, match="non-padding"):
         validate_source_bytes(valid + b"1234", "application/pdf")
+
+
+def test_screen_bypass_is_limited_to_current_indicator_anchor_ids():
+    from types import SimpleNamespace
+    from packages.core.orchestrator import _partition_current_anchors
+
+    candidates = [SimpleNamespace(provision_id="current"),
+                  SimpleNamespace(provision_id="known-under-other-indicator")]
+    anchors, rest = _partition_current_anchors(candidates, {"current"})
+    assert [item.provision_id for item in anchors] == ["current"]
+    assert [item.provision_id for item in rest] == ["known-under-other-indicator"]

@@ -1,8 +1,8 @@
 {
  "economy": "Singapore",
  "pillar": 7,
- "run": "run-sg-p7-1783775477",
- "krippendorff_alpha": 0.606,
+ "run": "run-sg-p7-1783837203",
+ "krippendorff_alpha": 0.408,
  "indicators": {
   "P7-I1": {
    "deterministic": 0.0,
@@ -11,25 +11,25 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "The evidence shows a horizontal Personal Data Protection Act 2012 that imposes organization-wide obligations, so a comprehensive horizontal framework exists."
+     "reason": "The cited provisions show a horizontal Personal Data Protection Act that governs collection, use, disclosure, and cross-border transfers of personal data, indic"
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "A horizontal Personal Data Protection Act exists, indicating a comprehensive legal framework for data protection rather than a sectoral-only or absent framework"
+     "reason": "Singapore\u2019s Personal Data Protection Act 2012 is a comprehensive horizontal data protection framework governing collection, use, disclosure, and cross-border tr"
     },
     {
      "persona": "skeptical",
-     "score": 0.0,
-     "reason": "The evidence shows a horizontal Personal Data Protection Act 2012 with core governance obligations, which is enough to count as a comprehensive framework rather"
+     "score": 0.5,
+     "reason": "While Singapore has a horizontal Personal Data Protection Act, the evidence provided does not show a fully comprehensive framework (e.g., key individual rights "
     }
    ],
    "band": [
     0.0,
-    0.0
+    0.5
    ],
-   "spread": 0.0,
-   "flag_for_review": false,
+   "spread": 0.5,
+   "flag_for_review": true,
    "reviewer_decision": "pending"
   },
   "P7-I2": {
@@ -38,18 +38,18 @@
    "judges": [
     {
      "persona": "strict",
-     "score": 0.5,
-     "reason": "The cited provisions show a cybersecurity statute, but the quoted operative rules are directed to critical information infrastructure, providers of essential se"
+     "score": 0.0,
+     "reason": "The cited provisions of the Cybersecurity Act 2018 include horizontal powers and obligations (e.g., s. 5(1) and s. 17(1) for incident response and designation a"
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "Singapore has a dedicated horizontal Cybersecurity Act 2018 establishing the Cyber Security Agency and a general cybersecurity framework, so the indicator for l"
+     "reason": "Singapore has a dedicated horizontal cybersecurity framework under the Cybersecurity Act 2018 (e.g., provisions empowering the Commissioner to respond to cybers"
     },
     {
      "persona": "skeptical",
-     "score": 0.0,
-     "reason": "Singapore has a dedicated horizontal Cybersecurity Act 2018 establishing the Cyber Security Agency and general powers for cybersecurity regulation, so this is n"
+     "score": 0.5,
+     "reason": "Although the Cybersecurity Act 2018 contains horizontal provisions (e.g., incident response powers), key operational obligations appear tied to designated/secto"
     }
    ],
    "band": [
@@ -67,17 +67,17 @@
     {
      "persona": "strict",
      "score": 1.0,
-     "reason": "The evidence plainly specifies minimum retention periods of not less than 3, 5, or at least 5 years, so the indicator is satisfied."
+     "reason": "The cited provisions plainly specify minimum retention periods (e.g., not less than 5 years, 7 years, or at least 5 years), so a minimum period is clearly speci"
     },
     {
      "persona": "ESCAP",
      "score": 1.0,
-     "reason": "Multiple horizontal and sectoral provisions clearly specify minimum retention periods (e.g., not less than 5 years, at least 5 years, not less than 3 years), so"
+     "reason": "Multiple laws explicitly specify minimum data retention periods (e.g., at least 5 years under Companies Act 1967 s.199(2) and Income Tax Act 1947 s.67(1), and a"
     },
     {
      "persona": "skeptical",
      "score": 1.0,
-     "reason": "Multiple horizontal provisions clearly specify minimum retention periods (e.g., not less than 5 years), so the indicator is satisfied."
+     "reason": "Multiple statutes explicitly specify minimum data retention periods (e.g., at least 5 years for company and income tax records, at least 7 years for certain tax"
     }
    ],
    "band": [
@@ -94,25 +94,25 @@
    "judges": [
     {
      "persona": "strict",
-     "score": 0.5,
-     "reason": "The quoted provision requires every organisation to designate responsible individual(s) for compliance, which is a horizontal DPO-type requirement, but it does "
+     "score": 0.0,
+     "reason": "The cited provisions only require designation of responsible individuals and delegation/continuing obligations, and they do not plainly state any DPIA or DPO re"
     },
     {
      "persona": "ESCAP",
-     "score": 1.0,
-     "reason": "The Personal Data Protection Act 2012 s. 11(3) imposes a horizontal requirement to designate responsible individuals for compliance across all sectors, which sa"
+     "score": 0.0,
+     "reason": "The provided evidence only shows designation of a responsible individual under the Personal Data Protection Act (s.11) and does not establish any requirement fo"
     },
     {
      "persona": "skeptical",
-     "score": 0.5,
-     "reason": "The cited provision requires a responsible individual under the Personal Data Protection Act, but it does not clearly establish a formal DPO/DPIA requirement ac"
+     "score": 0.0,
+     "reason": "The cited provisions establish accountability/oversight via designated individuals but do not require a DPO or mandate DPIAs/DPOs for specific processing activi"
     }
    ],
    "band": [
-    0.5,
+    0.0,
     1.0
    ],
-   "spread": 0.5,
+   "spread": 1.0,
    "flag_for_review": true,
    "reviewer_decision": "pending"
   },
@@ -123,25 +123,25 @@
     {
      "persona": "strict",
      "score": 1.0,
-     "reason": "The cited Criminal Procedure Code provisions plainly let police or authorised persons access and inspect computers and data, and order assistance, without any s"
+     "reason": "The cited provisions allow a police officer or authorised person to issue written orders and access/inspect computer data without any plain requirement for inde"
     },
     {
      "persona": "ESCAP",
      "score": 1.0,
-     "reason": "The Criminal Procedure Code expressly allows police or authorised persons to access and inspect computers and data, and to compel assistance, without any requir"
+     "reason": "The Criminal Procedure Code 2010 grants police/authorised persons powers to issue written orders to require authentication/production of data and to access/insp"
     },
     {
      "persona": "skeptical",
-     "score": 1.0,
-     "reason": "The Criminal Procedure Code expressly lets police or authorised persons access and inspect computers and obtain assistance without any indication of prior indep"
+     "score": 0.5,
+     "reason": "The Criminal Procedure Code grants police/authorised persons powers to order authentication/production and to access/inspect computer data, but the provided exc"
     }
    ],
    "band": [
-    1.0,
+    0.5,
     1.0
    ],
-   "spread": 0.0,
-   "flag_for_review": false,
+   "spread": 0.5,
+   "flag_for_review": true,
    "reviewer_decision": "pending"
   }
  },

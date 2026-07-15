@@ -19,15 +19,16 @@ from packages.ingest.xlsx import read_rows, sheet_names
 
 # --- article / section reference extraction -------------------------------
 
+_REF_NUMBER = r"\d+(?:\.\d+){0,2}[A-Z]{0,2}(?:\s*\(\s*\w{1,3}\s*\))*"
 _REF_PATTERNS = [
-    (re.compile(r"\bArticles?\s+(\d+[A-Z]{0,2}(?:\s*\(\s*\w{1,3}\s*\))*)", re.I), "Art."),
-    (re.compile(r"\bArt\.?\s*(\d+[A-Z]{0,2}(?:\s*\(\s*\w{1,3}\s*\))*)", re.I), "Art."),
-    (re.compile(r"\bSections?\s+(\d+[A-Z]{0,2}(?:\s*\(\s*\w{1,3}\s*\))*)", re.I), "s."),
-    (re.compile(r"\bSec\.?\s*(\d+[A-Z]{0,2}(?:\s*\(\s*\w{1,3}\s*\))*)", re.I), "s."),
-    (re.compile(r"\b[Ss]\.\s*(\d+[A-Z]{0,2}(?:\s*\(\s*\w{1,3}\s*\))*)"), "s."),
-    (re.compile(r"\bRegulations?\s+(\d+[A-Z]{0,2}(?:\s*\(\s*\w{1,3}\s*\))*)", re.I), "reg."),
-    (re.compile(r"\bRules?\s+(\d+[A-Z]{0,2}(?:\s*\(\s*\w{1,3}\s*\))*)(?!\s*of)", re.I), "r."),
-    (re.compile(r"\bClauses?\s+(\d+[A-Z]{0,2}(?:\s*\(\s*\w{1,3}\s*\))*)", re.I), "cl."),
+    (re.compile(rf"\bArticles?\s+({_REF_NUMBER})", re.I), "Art."),
+    (re.compile(rf"\bArt\.?\s*({_REF_NUMBER})", re.I), "Art."),
+    (re.compile(rf"\bSections?\s+({_REF_NUMBER})", re.I), "s."),
+    (re.compile(rf"\bSec\.?\s*({_REF_NUMBER})", re.I), "s."),
+    (re.compile(rf"\b[Ss]\.\s*({_REF_NUMBER})"), "s."),
+    (re.compile(rf"\bRegulations?\s+({_REF_NUMBER})", re.I), "reg."),
+    (re.compile(rf"\bRules?\s+({_REF_NUMBER})(?!\s*of)", re.I), "r."),
+    (re.compile(rf"\bClauses?\s+({_REF_NUMBER})", re.I), "cl."),
     (re.compile(r"\bSchedules?\s+(\d+[A-Z]{0,2})", re.I), "Sch."),
 ]
 

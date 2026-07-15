@@ -804,5 +804,320 @@
   "economy": "Malaysia",
   "pillar": 6,
   "elapsed_seconds": 473.5
+ },
+ {
+  "run_id": "run-sg-p6-1783813362",
+  "at": "2026-07-11T23:46:20.725444+00:00",
+  "models": {
+   "text-embedding-3-small": {
+    "input_tokens": 157,
+    "cached_input_tokens": 0,
+    "output_tokens": 0,
+    "calls": 23,
+    "usd": 0.0,
+    "priced": true
+   },
+   "gpt-5.4-nano": {
+    "input_tokens": 91178,
+    "cached_input_tokens": 0,
+    "output_tokens": 14797,
+    "calls": 65,
+    "usd": 0.0367,
+    "priced": true
+   },
+   "gpt-5.4-mini": {
+    "input_tokens": 33957,
+    "cached_input_tokens": 0,
+    "output_tokens": 3786,
+    "calls": 25,
+    "usd": 0.0425,
+    "priced": true
+   }
+  },
+  "total_usd": 0.0792,
+  "note": "measured from real API usage objects; prices per 1M tokens (PRICES)",
+  "economy": "Singapore",
+  "pillar": 6,
+  "elapsed_seconds": 218.3
+ },
+ {
+  "run_id": "run-sg-p7-1783813581",
+  "at": "2026-07-11T23:54:55.813879+00:00",
+  "models": {
+   "text-embedding-3-small": {
+    "input_tokens": 296,
+    "cached_input_tokens": 0,
+    "output_tokens": 0,
+    "calls": 31,
+    "usd": 0.0,
+    "priced": true
+   },
+   "gpt-5.4-nano": {
+    "input_tokens": 252295,
+    "cached_input_tokens": 0,
+    "output_tokens": 35664,
+    "calls": 192,
+    "usd": 0.095,
+    "priced": true
+   },
+   "gpt-5.4-mini": {
+    "input_tokens": 83677,
+    "cached_input_tokens": 0,
+    "output_tokens": 10405,
+    "calls": 61,
+    "usd": 0.1096,
+    "priced": true
+   }
+  },
+  "total_usd": 0.2046,
+  "note": "measured from real API usage objects; prices per 1M tokens (PRICES)",
+  "economy": "Singapore",
+  "pillar": 7,
+  "elapsed_seconds": 514.0
+ },
+ {
+  "run_id": "run-my-p6-1783814096",
+  "at": "2026-07-12T00:26:07.109299+00:00",
+  "models": {
+   "text-embedding-3-small": {
+    "input_tokens": 33937,
+    "cached_input_tokens": 0,
+    "output_tokens": 0,
+    "calls": 26,
+    "usd": 0.0007,
+    "priced": true
+   },
+   "gpt-5.4-nano": {
+    "input_tokens": 633325,
+    "cached_input_tokens": 0,
+    "output_tokens": 62978,
+    "calls": 538,
+    "usd": 0.2054,
+    "priced": true
+   },
+   "gpt-5.4-mini": {
+    "input_tokens": 450632,
+    "cached_input_tokens": 0,
+    "output_tokens": 50466,
+    "calls": 344,
+    "usd": 0.5651,
+    "priced": true
+   }
+  },
+  "total_usd": 0.7711,
+  "note": "measured from real API usage objects; prices per 1M tokens (PRICES)",
+  "economy": "Malaysia",
+  "pillar": 6,
+  "elapsed_seconds": 1870.6
+ },
+ {
+  "run_id": "run-sg-p6-1783836936",
+  "at": "2026-07-12T06:20:02.390622+00:00",
+  "models": {
+   "text-embedding-3-small": {
+    "input_tokens": 157,
+    "cached_input_tokens": 0,
+    "output_tokens": 0,
+    "calls": 23,
+    "usd": 0.0,
+    "priced": true
+   },
+   "gpt-5.4-nano": {
+    "input_tokens": 66271,
+    "cached_input_tokens": 8960,
+    "output_tokens": 11749,
+    "calls": 43,
+    "usd": 0.0263,
+    "priced": true
+   },
+   "gpt-5.4-mini": {
+    "input_tokens": 29442,
+    "cached_input_tokens": 0,
+    "output_tokens": 3194,
+    "calls": 22,
+    "usd": 0.0365,
+    "priced": true
+   }
+  },
+  "total_usd": 0.0628,
+  "note": "measured from real API usage objects; prices per 1M tokens (PRICES)",
+  "economy": "Singapore",
+  "pillar": 6,
+  "elapsed_seconds": 266.0
+ },
+ {
+  "run_id": "run-sg-p7-1783837203",
+  "at": "2026-07-12T06:28:23.971419+00:00",
+  "models": {
+   "text-embedding-3-small": {
+    "input_tokens": 296,
+    "cached_input_tokens": 0,
+    "output_tokens": 0,
+    "calls": 31,
+    "usd": 0.0,
+    "priced": true
+   },
+   "gpt-5.4-nano": {
+    "input_tokens": 228929,
+    "cached_input_tokens": 0,
+    "output_tokens": 33572,
+    "calls": 173,
+    "usd": 0.0878,
+    "priced": true
+   },
+   "gpt-5.4-mini": {
+    "input_tokens": 83452,
+    "cached_input_tokens": 0,
+    "output_tokens": 9735,
+    "calls": 61,
+    "usd": 0.1064,
+    "priced": true
+   }
+  },
+  "total_usd": 0.1942,
+  "note": "measured from real API usage objects; prices per 1M tokens (PRICES)",
+  "economy": "Singapore",
+  "pillar": 7,
+  "elapsed_seconds": 501.0
+ },
+ {
+  "run_id": "run-my-p6-1783837704",
+  "at": "2026-07-12T06:34:02.195023+00:00",
+  "models": {
+   "text-embedding-3-small": {
+    "input_tokens": 157,
+    "cached_input_tokens": 0,
+    "output_tokens": 0,
+    "calls": 23,
+    "usd": 0.0,
+    "priced": true
+   },
+   "gpt-5.4-nano": {
+    "input_tokens": 135779,
+    "cached_input_tokens": 0,
+    "output_tokens": 18704,
+    "calls": 105,
+    "usd": 0.0505,
+    "priced": true
+   },
+   "gpt-5.4-mini": {
+    "input_tokens": 98485,
+    "cached_input_tokens": 0,
+    "output_tokens": 11048,
+    "calls": 76,
+    "usd": 0.1236,
+    "priced": true
+   }
+  },
+  "total_usd": 0.1741,
+  "note": "measured from real API usage objects; prices per 1M tokens (PRICES)",
+  "economy": "Malaysia",
+  "pillar": 6,
+  "elapsed_seconds": 337.6
+ },
+ {
+  "run_id": "run-my-p7-1783838042",
+  "at": "2026-07-12T06:47:04.069476+00:00",
+  "models": {
+   "text-embedding-3-small": {
+    "input_tokens": 296,
+    "cached_input_tokens": 0,
+    "output_tokens": 0,
+    "calls": 31,
+    "usd": 0.0,
+    "priced": true
+   },
+   "gpt-5.4-nano": {
+    "input_tokens": 308032,
+    "cached_input_tokens": 0,
+    "output_tokens": 40041,
+    "calls": 248,
+    "usd": 0.1117,
+    "priced": true
+   },
+   "gpt-5.4-mini": {
+    "input_tokens": 173426,
+    "cached_input_tokens": 0,
+    "output_tokens": 20819,
+    "calls": 131,
+    "usd": 0.2238,
+    "priced": true
+   }
+  },
+  "total_usd": 0.3354,
+  "note": "measured from real API usage objects; prices per 1M tokens (PRICES)",
+  "economy": "Malaysia",
+  "pillar": 7,
+  "elapsed_seconds": 781.6
+ },
+ {
+  "run_id": "run-au-p6-1783838824",
+  "at": "2026-07-12T06:49:26.039788+00:00",
+  "models": {
+   "text-embedding-3-small": {
+    "input_tokens": 157,
+    "cached_input_tokens": 0,
+    "output_tokens": 0,
+    "calls": 23,
+    "usd": 0.0,
+    "priced": true
+   },
+   "gpt-5.4-nano": {
+    "input_tokens": 59610,
+    "cached_input_tokens": 0,
+    "output_tokens": 12214,
+    "calls": 37,
+    "usd": 0.0272,
+    "priced": true
+   },
+   "gpt-5.4-mini": {
+    "input_tokens": 9921,
+    "cached_input_tokens": 0,
+    "output_tokens": 1224,
+    "calls": 8,
+    "usd": 0.0129,
+    "priced": true
+   }
+  },
+  "total_usd": 0.0401,
+  "note": "measured from real API usage objects; prices per 1M tokens (PRICES)",
+  "economy": "Australia",
+  "pillar": 6,
+  "elapsed_seconds": 141.6
+ },
+ {
+  "run_id": "run-au-p7-1783838966",
+  "at": "2026-07-12T06:58:42.488071+00:00",
+  "models": {
+   "text-embedding-3-small": {
+    "input_tokens": 296,
+    "cached_input_tokens": 0,
+    "output_tokens": 0,
+    "calls": 31,
+    "usd": 0.0,
+    "priced": true
+   },
+   "gpt-5.4-nano": {
+    "input_tokens": 237689,
+    "cached_input_tokens": 0,
+    "output_tokens": 36547,
+    "calls": 187,
+    "usd": 0.0932,
+    "priced": true
+   },
+   "gpt-5.4-mini": {
+    "input_tokens": 106338,
+    "cached_input_tokens": 0,
+    "output_tokens": 12907,
+    "calls": 81,
+    "usd": 0.1378,
+    "priced": true
+   }
+  },
+  "total_usd": 0.2311,
+  "note": "measured from real API usage objects; prices per 1M tokens (PRICES)",
+  "economy": "Australia",
+  "pillar": 7,
+  "elapsed_seconds": 555.6
  }
 ]

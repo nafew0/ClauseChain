@@ -9,6 +9,7 @@ Usage: .venv/bin/python scripts/build_my_corpus.py [--all]
 from __future__ import annotations
 
 import json
+import hashlib
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -73,6 +74,8 @@ def main() -> int:
     total, loaded_acts, skipped_html = 0, 0, 0
     generation = datetime.now(timezone.utc).isoformat()
     build_complete = True
+    processed_registers: set[str] = set()
+    targeted_purged: set[str] = set()
     for url, entry in manifest.items():
         if entry.get("status") != "ok":
             continue
@@ -130,13 +133,27 @@ def main() -> int:
         import re as _re
 
         act_no = _re.search(r"\(Act\s+(A?\d+)\)", act_name, _re.I)
+        register_key = act_no.group(1).upper() if act_no else normalize_law(act_name)
+        if register_key in processed_registers:
+            print(f"  DUPLICATE seed skipped for {act_name[:52]}")
+            continue
+        processed_registers.add(register_key)
+        if only_act and act_name not in targeted_purged:
+            for st in stores:
+                purge = getattr(st, "purge_instrument_provisions", None)
+                if purge:
+                    removed = purge("Malaysia", act_name)
+                    if removed:
+                        print(f"  quarantined {removed} prior units for targeted rebuild")
+            targeted_purged.add(act_name)
         source_url = (f"https://lom.agc.gov.my/act-detail.php?act={act_no.group(1)}"
                       if act_no else url)
         assertion_key = (act_no.group(1).upper() if act_no else act_name)
         assertion = status_assertions.get(assertion_key) or status_assertions.get(act_name)
         if assertion and assertion.get("quotation_url"):
             quotation_url = assertion["quotation_url"]
-            official_file = Path("data/raw/my") / f"official_{assertion_key}.pdf"
+            url_key = hashlib.sha256(quotation_url.encode("utf-8")).hexdigest()[:12]
+            official_file = Path("data/raw/my") / f"official_{assertion_key}_{url_key}.pdf"
             if not official_file.is_file():
                 import httpx as _httpx3
                 response = _httpx3.get(quotation_url, follow_redirects=True, timeout=180,
@@ -200,6 +217,24 @@ def main() -> int:
                                    source_url=artifact.retrieved_url)
         except Exception as error:  # noqa: BLE001 — one bad PDF must not kill the build
             print(f"  FAILED {act_name[:50]}: {error}")
+            build_complete = False
+            continue
+        minimum_units = max(3, len(pages) // 5)
+        if len(units) < minimum_units:
+            reason = "STRUCTURE_COVERAGE_LOW"
+            for st in stores:
+                if hasattr(st, "add_discovery_lead"):
+                    st.add_discovery_lead(
+                        f"my:{Path(file).stem}", reason,
+                        {"name": act_name, "url": url, "file": file,
+                         "pages": len(pages), "units": len(units),
+                         "minimum_units": minimum_units},
+                    )
+                purge = getattr(st, "purge_instrument_provisions", None)
+                if purge:
+                    purge("Malaysia", act_name, reason)
+            print(f"  INELIGIBLE {act_name[:52]}: {reason} "
+                  f"({len(units)} units/{len(pages)} pages)")
             build_complete = False
             continue
         for unit in units:

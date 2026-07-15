@@ -1,35 +1,35 @@
 {
  "economy": "Australia",
  "pillar": 7,
- "run": "run-au-p7-1783777696",
- "krippendorff_alpha": 0.44,
+ "run": "run-au-p7-1783838966",
+ "krippendorff_alpha": 0.803,
  "indicators": {
   "P7-I1": {
-   "deterministic": 0.0,
-   "deterministic_reason": "comprehensive horizontal framework evidenced -> 0",
+   "deterministic": 1.0,
+   "deterministic_reason": "no DP framework evidence found -> lacks framework -> 1",
    "judges": [
     {
      "persona": "strict",
-     "score": 0.5,
-     "reason": "The quoted text shows a horizontal Privacy Act 1988 framework with Australian Privacy Principles, but the evidence also shows sectoral schemes and does not plai"
+     "score": 1.0,
+     "reason": "The only provided evidence states that no comprehensive horizontal framework was found (NO_EVIDENCE_FOUND_PENDING_REVIEW), so a comprehensive data protection fr"
     },
     {
      "persona": "ESCAP",
-     "score": 0.0,
-     "reason": "Australia has a comprehensive horizontal privacy framework in the Privacy Act 1988 (including APP-based privacy protections), so the indicator is scored 0 despi"
+     "score": 1.0,
+     "reason": "No comprehensive horizontal data protection framework is evidenced (Privacy Act 1988 is marked NO_EVIDENCE_FOUND_PENDING_REVIEW), so the economy cannot be credi"
     },
     {
      "persona": "skeptical",
-     "score": 0.0,
-     "reason": "Australia has a comprehensive horizontal privacy framework in the Privacy Act 1988 (including APP-based privacy protections), so this is not merely sectoral or "
+     "score": 1.0,
+     "reason": "No comprehensive horizontal data protection framework is evidenced (Privacy Act 1988 has no evidence found pending review), so the safest assessment is that a c"
     }
    ],
    "band": [
-    0.0,
-    0.5
+    1.0,
+    1.0
    ],
-   "spread": 0.5,
-   "flag_for_review": true,
+   "spread": 0.0,
+   "flag_for_review": false,
    "reviewer_decision": "pending"
   },
   "P7-I2": {
@@ -39,17 +39,17 @@
     {
      "persona": "strict",
      "score": 0.5,
-     "reason": "The cited provisions create cybersecurity obligations only for critical infrastructure and systems of national significance, so the framework is sectoral rather"
+     "reason": "The cited provisions are confined to critical infrastructure (systems of national significance) and impose cyber risk management, exercises, and vulnerability a"
     },
     {
      "persona": "ESCAP",
      "score": 0.5,
-     "reason": "The evidence shows cybersecurity obligations exist only in the sectoral critical-infrastructure framework (incident response plans, exercises, and incident-rela"
+     "reason": "The evidence shows a dedicated but sectoral cybersecurity framework limited to critical infrastructure (systems of national significance) under the Security of "
     },
     {
      "persona": "skeptical",
      "score": 0.5,
-     "reason": "The evidence shows only sector-specific cybersecurity obligations for critical infrastructure and systems of national significance, not a dedicated horizontal c"
+     "reason": "The evidence shows a sectoral framework limited to critical infrastructure (systems of national significance) with risk management, cyber security exercises, an"
     }
    ],
    "band": [
@@ -67,17 +67,17 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "The quoted text requires retention for a period beginning when the record is first uploaded, but it does not state any minimum retention duration (such as days,"
+     "reason": "Section 17(2) states the record must be retained for a period but the quoted text does not specify any minimum retention duration (e.g., days/months/years)."
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "The cited provision requires retention for a period beginning when the record is first uploaded, but no minimum retention duration (e.g., days/months/years) is "
+     "reason": "My Health Records Act 2012 s. 17(2) requires retention for \u201cthe period\u201d but does not specify any minimum retention duration (e.g., days/months/years), so no min"
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "The cited provision mentions a retention period only as a starting point (\u201cbeginning when the record is first uploaded\u201d) but does not specify any minimum durati"
+     "reason": "Section 17(2) requires retention for \u201cthe period:\u201d but the minimum retention period is not specified in the provided evidence, so it cannot be scored as having "
     }
    ],
    "band": [
@@ -94,25 +94,25 @@
    "judges": [
     {
      "persona": "strict",
-     "score": 0.0,
-     "reason": "The cited provision only allows the Commissioner to direct an agency to provide a privacy impact assessment for a specified activity or function, and it does no"
+     "score": 0.5,
+     "reason": "The quoted text only states that the Commissioner may direct an agency to provide a privacy impact assessment (and defines what such an assessment is), without "
     },
     {
      "persona": "ESCAP",
      "score": 0.5,
-     "reason": "The evidence shows a horizontal privacy impact assessment (DPIA) requirement under the Privacy Act 1988 s. 33D(1), but no economy-wide DPO requirement, so this "
+     "reason": "Evidence shows a statutory DPIA requirement exists (Privacy Act 1988 s.33D(3)) and can be directed by the Commissioner (s.33D(1)), but it is not evidenced as a "
     },
     {
      "persona": "skeptical",
-     "score": 0.0,
-     "reason": "The cited provision only lets the Commissioner require a privacy impact assessment in a particular case; it does not impose a general DPIA or DPO requirement ac"
+     "score": 0.5,
+     "reason": "The evidence shows a Commissioner-directed requirement for agencies to provide a privacy impact assessment (Privacy Act 1988 s.33D), but it does not establish t"
     }
    ],
    "band": [
-    0.0,
+    0.5,
     1.0
    ],
-   "spread": 1.0,
+   "spread": 0.5,
    "flag_for_review": true,
    "reviewer_decision": "pending"
   },
@@ -122,25 +122,25 @@
    "judges": [
     {
      "persona": "strict",
-     "score": 0.0,
-     "reason": "The quoted provision only says the act may assist in giving effect to a warrant or authorisation; it does not itself allow government access without independent"
+     "score": 1.0,
+     "reason": "The cited provisions allow the Commissioner/inspector to require production of information/documents and to conduct investigations and searches/seizures without"
     },
     {
      "persona": "ESCAP",
-     "score": 0.0,
-     "reason": "The cited provision only permits conduct that assists in giving effect to a warrant or authorisation, and does not itself allow government access to personal da"
+     "score": 1.0,
+     "reason": "The cited provisions allow the Commissioner/inspector to compel production of information/documents and to conduct investigations and enforcement actions (inclu"
     },
     {
      "persona": "skeptical",
-     "score": 0.0,
-     "reason": "The cited provision only permits acts that assist in giving effect to a warrant or authorization, which points to access being tied to independent legal authori"
+     "score": 0.5,
+     "reason": "The cited provisions give the Commissioner/inspectors broad powers to compel information and conduct searches/seizures, but the evidence does not clearly establ"
     }
    ],
    "band": [
-    0.0,
+    0.5,
     1.0
    ],
-   "spread": 1.0,
+   "spread": 0.5,
    "flag_for_review": true,
    "reviewer_decision": "pending"
   }

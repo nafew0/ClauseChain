@@ -6,12 +6,14 @@ from packages.ingest.known_index import extract_refs, indicator_code, normalize_
 def test_extract_refs_articles_and_sections() -> None:
     text = (
         "Article 18 of the amended Patent Law establishes ... and under s. 245(2) "
-        "and Section 17 records must be kept; see also Regulation 5 and Schedule 1."
+        "and Section 17 records must be kept; Code Section 3.5.14 applies; "
+        "see also Regulation 5 and Schedule 1."
     )
     refs = extract_refs(text)
     assert "Art. 18" in refs
     assert "s. 245(2)" in refs
     assert "s. 17" in refs
+    assert "s. 3.5.14" in refs
     assert "reg. 5" in refs
     assert "Sch. 1" in refs
 

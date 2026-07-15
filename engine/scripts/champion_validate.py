@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sqlite3
 import subprocess
@@ -37,6 +38,7 @@ def main() -> int:
     from packages.retrieval.hybrid import load_corpus
 
     store = SqliteGraphStore()
+    current_known_hash = hashlib.sha256(Path("data/known_index.json").read_bytes()).hexdigest()
     for run_path in RUNS:
         path = Path(run_path) / "output.json"
         if not path.is_file():
@@ -50,6 +52,12 @@ def main() -> int:
             report["runs"].setdefault(run_path, {})["corpus_fingerprint"] = {
                 "recorded": recorded, "current": expected, "status": "STALE"}
             failures.append(f"{run_path} is stale against the current evidence corpus")
+        recorded_known_hash = (envelope.get("metadata") or {}).get("known_index_sha256")
+        if recorded_known_hash != current_known_hash:
+            report["runs"].setdefault(run_path, {})["known_index_sha256"] = {
+                "recorded": recorded_known_hash, "current": current_known_hash,
+                "status": "STALE"}
+            failures.append(f"{run_path} is stale against the current KNOWN baseline")
 
     gold_path = Path("tests/fixtures/extraction_gold_v1.json")
     draft_path = Path("tests/fixtures/extraction_gold_v1.draft.json")

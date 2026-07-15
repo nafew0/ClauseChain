@@ -30,6 +30,14 @@ def _load_yaml(rel_path: str) -> dict:
     return yaml.safe_load((ENGINE_ROOT / rel_path).read_text(encoding="utf-8"))
 
 
+def _partition_current_anchors(candidates: list, gold_anchor_ids: set[str]) -> tuple[list, list]:
+    anchors = [candidate for candidate in candidates
+               if candidate.provision_id in gold_anchor_ids]
+    rest = [candidate for candidate in candidates
+            if candidate.provision_id not in gold_anchor_ids]
+    return anchors, rest
+
+
 def _whitelist(pack: dict) -> set[str]:
     domains = {s["domain"].lower() for s in pack.get("official_sources", [])}
     mined = pack.get("whitelist_source")
@@ -312,18 +320,10 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
         # KNOWN-anchor bypass: candidates matching a (law + section) that the master
         # dataset itself records are human-confirmed terrain — they go straight to the
         # mapper and must never be screen-dropped (reproducing KNOWN proves recall).
-        from packages.discovery.diff import section_base
-
-        anchors, rest = [], []
-        for candidate in candidates:
-            props = candidate.props
-            sections = known.known_sections(economy, props.get("law_name", ""))
-            base = section_base(props.get("article_section", ""))
-            if sections is not None and base and any(
-                    _section_matches(known_base, base) for known_base in sections):
-                anchors.append(candidate)
-            else:
-                rest.append(candidate)
+        # Bypass screening only for anchors recorded under THIS indicator.
+        # Using every section known anywhere in the master dataset caused a broad
+        # parent ref to bypass hundreds of unrelated descendants under every indicator.
+        anchors, rest = _partition_current_anchors(candidates, gold_anchor_ids)
         survivors = anchors + screen_candidates(llm_bulk, indicator_id, cfg, rest)
         survivor_ids = {c.provision_id for c in survivors}
         indicator_stats["screen_survival_recall"] = (
@@ -535,9 +535,11 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
         findings=findings,
         gates=gates_out,
         warnings=warnings,
-        metadata={
+    metadata={
             "corpus_provisions": len(corpus),
             "corpus_fingerprint": corpus_fingerprint(corpus),
+            "known_index_sha256": __import__("hashlib").sha256(
+                Path("data/known_index.json").read_bytes()).hexdigest(),
             "pipeline_stats": stats,
             "elapsed_seconds": round(time.time() - started, 1),
             "live_llm_calls": True,

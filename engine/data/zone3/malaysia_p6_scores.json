@@ -1,8 +1,8 @@
 {
  "economy": "Malaysia",
  "pillar": 6,
- "run": "run-my-p6-1783776487",
- "krippendorff_alpha": 0.621,
+ "run": "run-my-p6-1783837704",
+ "krippendorff_alpha": 0.732,
  "indicators": {
   "P6-I1": {
    "deterministic": 0.0,
@@ -11,17 +11,17 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "The only gate-verified row states NO_EVIDENCE_FOUND_PENDING_REVIEW for the Personal Data Protection Act 2010, so there is no plain evidence of a ban or local pr"
+     "reason": "No evidence was found that the economy imposes any ban or local processing requirement on personal data or applies such requirements horizontally (or on non-per"
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "No gate-verified evidence of any ban or local processing requirement was found for the cited law, so the transfer is treated as free of such requirements."
+     "reason": "No evidence was found (pending review) of any ban or local processing requirement applying to personal data or any horizontal/non-personal-specific data under t"
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "The only cited row is explicitly marked NO_EVIDENCE_FOUND_PENDING_REVIEW, so there is no verified ban or local processing requirement to score."
+     "reason": "No verified evidence was found that the economy imposes any ban or local processing requirement on personal data or non-personal/specific data (horizontal or ot"
     }
    ],
    "band": [
@@ -33,31 +33,31 @@
    "reviewer_decision": "pending"
   },
   "P6-I2": {
-   "deterministic": 0.0,
-   "deterministic_reason": "no qualifying measure found (absence row) -> 0",
+   "deterministic": 0.5,
+   "deterministic_reason": "sectoral/specific-data measure(s) only -> 0.5",
    "judges": [
     {
      "persona": "strict",
-     "score": 0.0,
-     "reason": "The only gate-verified row states NO_EVIDENCE_FOUND_PENDING_REVIEW for the Personal Data Protection Act 2010, so there is no plain evidence of any local-storage"
+     "score": 1.0,
+     "reason": "Section 24(2)(c) requires records to be kept in Malaysia (subject to approval), which is a local storage requirement and applies to tax record-keeping."
     },
     {
      "persona": "ESCAP",
-     "score": 0.0,
-     "reason": "No gate-verified evidence of any local-storage requirement was provided; the cited personal data law has no verified storage rule in the evidence."
+     "score": 1.0,
+     "reason": "The Services Tax Act 2018 (Act 807) s.24(2)(c) requires tax records to be kept in Malaysia (subject to DG approval), which is a local-storage requirement for no"
     },
     {
      "persona": "skeptical",
-     "score": 0.0,
-     "reason": "The only cited horizontal personal-data law has no verified evidence of any local-storage requirement, so the indicator should not be scored above zero."
+     "score": 1.0,
+     "reason": "The Act requires tax/service records to be kept in Malaysia (with only limited director-general approval), which constitutes a local storage requirement and is "
     }
    ],
    "band": [
-    0.0,
-    0.0
+    0.5,
+    1.0
    ],
-   "spread": 0.0,
-   "flag_for_review": false,
+   "spread": 0.5,
+   "flag_for_review": true,
    "reviewer_decision": "pending"
   },
   "P6-I3": {
@@ -67,17 +67,17 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "No evidence was found of any infrastructure requirement, and rules governing already-established data centres are not counted under this indicator."
+     "reason": "No evidence was found in the provided text that any local infrastructure (e.g., a data centre/server) is required as a precondition for service or as a conditio"
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "No evidence was found of any local data centre/server precondition or infrastructure-conditioned transfer requirement; under the guide, rules governing already-"
+     "reason": "No gate-verified evidence was found showing any infrastructure requirement (e.g., local data centre/server as a precondition or transfer conditioned on infrastr"
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "The only gate-verified evidence shows no infrastructure requirement found, so there is no basis to score a local data centre/server precondition or transfer con"
+     "reason": "No gate-verified evidence was found showing any infrastructure requirement (e.g., local data centre/server as a precondition or transfer conditioned on infrastr"
     }
    ],
    "band": [
@@ -89,23 +89,23 @@
    "reviewer_decision": "pending"
   },
   "P6-I4": {
-   "deterministic": 0.5,
-   "deterministic_reason": "sectoral/specific-data measure(s) only -> 0.5",
+   "deterministic": 1.0,
+   "deterministic_reason": "covers personal data / horizontal -> 1",
    "judges": [
     {
      "persona": "strict",
      "score": 1.0,
-     "reason": "The quoted rules expressly condition transfers of personal data abroad on consent, contract necessity, or destination-country adequacy, so the indicator is 1."
+     "reason": "The cited provisions impose conditional regimes on transfers of personal data outside Malaysia (e.g., consent and specified/approved destinations), and at least"
     },
     {
      "persona": "ESCAP",
      "score": 1.0,
-     "reason": "The cited rules impose conditions on the transfer of personal data abroad (e.g., adequacy, consent, contract necessity), which meets the score-1 criterion."
+     "reason": "The evidence shows conditional cross-border transfer rules for personal data under the Personal Data Protection Act (e.g., consent and minister-specified condit"
     },
     {
      "persona": "skeptical",
      "score": 0.5,
-     "reason": "The cited rules impose transfer conditions only for personal data and only in the banking sector, so they are sectoral rather than horizontal."
+     "reason": "The evidence shows conditional cross-border transfer rules apply to personal data (consent, minister-specified countries, and contractual safeguards) but the on"
     }
    ],
    "band": [

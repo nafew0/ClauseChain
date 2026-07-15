@@ -1,8 +1,8 @@
 {
  "economy": "Malaysia",
  "pillar": 7,
- "run": "run-my-p7-1783776783",
- "krippendorff_alpha": 1.0,
+ "run": "run-my-p7-1783838042",
+ "krippendorff_alpha": 0.576,
  "indicators": {
   "P7-I1": {
    "deterministic": 0.0,
@@ -10,18 +10,18 @@
    "judges": [
     {
      "persona": "strict",
-     "score": 0.5,
-     "reason": "The evidence shows a horizontal personal data protection law exists, but the cited provisions are limited and do not plainly show a full comprehensive framework"
+     "score": 0.0,
+     "reason": "The Personal Data Protection Act (Act 709) 2010 provides a horizontal framework with core principles and includes both access and correction rights (ss. 5(1) an"
     },
     {
      "persona": "ESCAP",
-     "score": 0.5,
-     "reason": "A horizontal data protection law exists, but the evidence shows only limited amendments (e.g., breach notification and DPO duties) alongside sectoral banking ru"
+     "score": 0.0,
+     "reason": "A comprehensive horizontal framework exists under the Personal Data Protection Act (Act 709) 2010, which sets out core principles and includes key data subject "
     },
     {
      "persona": "skeptical",
      "score": 0.5,
-     "reason": "A horizontal data protection law now exists, but the evidence suggests it is still incomplete and supplemented by sectoral banking rules rather than a fully com"
+     "reason": "Although a horizontal Personal Data Protection Act (Act 709) exists with notice/choice and access/correction rights, the evidence also shows sectoral codes carv"
     }
    ],
    "band": [
@@ -33,31 +33,31 @@
    "reviewer_decision": "pending"
   },
   "P7-I2": {
-   "deterministic": 1.0,
-   "deterministic_reason": "no cybersecurity framework evidence -> 1",
+   "deterministic": 0.0,
+   "deterministic_reason": "dedicated horizontal framework evidenced -> 0",
    "judges": [
     {
      "persona": "strict",
-     "score": 0.5,
-     "reason": "The only gate-verified evidence says no evidence was found for the Cyber Security Act 2024, so on the quoted record there is no plain proof of a dedicated horiz"
+     "score": 0.0,
+     "reason": "The Cyber Security Act (Act 854) 2024 contains horizontal provisions establishing licensing and regulation of cyber security services (e.g., s. 27(1) and s. 27("
     },
     {
      "persona": "ESCAP",
-     "score": 0.5,
-     "reason": "The evidence does not confirm a dedicated horizontal cybersecurity framework; the only gate-verified row is pending review with no evidence found, so this is sc"
+     "score": 0.0,
+     "reason": "The Cyber Security Act (Act 854) 2024 establishes a dedicated horizontal cybersecurity legal framework (e.g., licensing and regulation of cyber security service"
     },
     {
      "persona": "skeptical",
-     "score": 0.5,
-     "reason": "The only cited law is the Cyber Security Act 2024, but the evidence is marked as no evidence found/pending review, so I cannot verify a dedicated horizontal cyb"
+     "score": 0.0,
+     "reason": "The Cyber Security Act (Act 854) 2024 establishes a dedicated horizontal licensing/regulatory framework for cyber security services (including enforcement autho"
     }
    ],
    "band": [
-    0.5,
-    1.0
+    0.0,
+    0.0
    ],
-   "spread": 0.5,
-   "flag_for_review": true,
+   "spread": 0.0,
+   "flag_for_review": false,
    "reviewer_decision": "pending"
   },
   "P7-I3": {
@@ -67,17 +67,17 @@
     {
      "persona": "strict",
      "score": 1.0,
-     "reason": "The text plainly specifies a minimum retention period: data are retained for the account period plus a further seven (7) years after closure."
+     "reason": "The evidence includes multiple provisions that clearly specify minimum retention periods (e.g., seven years for banking records and services tax records, and no"
     },
     {
      "persona": "ESCAP",
      "score": 1.0,
-     "reason": "The evidence clearly specifies a minimum retention period: personal data is retained during the account relationship and for a further seven years after account"
+     "reason": "Multiple laws/codes explicitly specify minimum retention periods (e.g., banking sector: seven years; tax records: seven years; cyber security services: not less"
     },
     {
      "persona": "skeptical",
      "score": 1.0,
-     "reason": "The evidence clearly specifies a minimum retention period of a further seven years after account closure, which satisfies the indicator."
+     "reason": "Multiple laws and sectoral rules explicitly set minimum retention periods (e.g., seven years for banking accounts and services tax records, and not less than si"
     }
    ],
    "band": [
@@ -94,54 +94,54 @@
    "judges": [
     {
      "persona": "strict",
-     "score": 1.0,
-     "reason": "The quoted text plainly requires a data protection officer to be appointed by a data controller and, in relevant cases, by a data processor, with no sector limi"
-    },
-    {
-     "persona": "ESCAP",
-     "score": 1.0,
-     "reason": "The cited amendment makes DPO appointment mandatory for data controllers and data processors across all sectors, which satisfies the all-sectors DPO requirement"
-    },
-    {
-     "persona": "skeptical",
-     "score": 1.0,
-     "reason": "The cited amendment imposes a horizontal DPO appointment duty on data controllers and data processors across all sectors, which meets the full-score criterion; "
-    }
-   ],
-   "band": [
-    1.0,
-    1.0
-   ],
-   "spread": 0.0,
-   "flag_for_review": false,
-   "reviewer_decision": "pending"
-  },
-  "P7-I5": {
-   "deterministic": 0.0,
-   "deterministic_reason": "no government-access measure found",
-   "judges": [
-    {
-     "persona": "strict",
      "score": 0.0,
-     "reason": "The only gate-verified row states NO_EVIDENCE_FOUND_PENDING_REVIEW for the Personal Data Protection Act 2010, so there is no quoted measure showing government a"
+     "reason": "The cited text only states that a data controller may transfer personal data and does not plainly require any DPO or DPIA across sectors."
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "The provided evidence shows no verified measure allowing government access to personal data without independent judicial authorization, so the indicator scores "
+     "reason": "The cited provision (Act A1727 s.12) addresses data transfer powers of a data guardian but does not establish any DPIA or DPO requirement, so no DPO/DPIA obliga"
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "The only gate-verified evidence says no relevant measure was found, so there is no basis to conclude government access to personal data is allowed without indep"
+     "reason": "The cited provision (Act A1727 s.12) concerns data transfer powers and does not establish any requirement for Data Protection Impact Assessments (DPIA) or Data "
     }
    ],
    "band": [
     0.0,
-    0.0
+    1.0
    ],
-   "spread": 0.0,
-   "flag_for_review": false,
+   "spread": 1.0,
+   "flag_for_review": true,
+   "reviewer_decision": "pending"
+  },
+  "P7-I5": {
+   "deterministic": 1.0,
+   "deterministic_reason": "warrantless government access evidenced -> 1",
+   "judges": [
+    {
+     "persona": "strict",
+     "score": 1.0,
+     "reason": "The cited provisions allow an authorized officer to access computerized data and enter/search premises and persons in connection with investigations without any"
+    },
+    {
+     "persona": "ESCAP",
+     "score": 1.0,
+     "reason": "The cited provisions (e.g., Cyber Security Act 2024 s.46(1), s.40, and Personal Data Protection Act 2010 s.114) allow authorized officers to access computerized"
+    },
+    {
+     "persona": "skeptical",
+     "score": 0.5,
+     "reason": "The cited provisions grant authorized officers broad powers to access computerized personal data and conduct searches/entry without clearly requiring independen"
+    }
+   ],
+   "band": [
+    0.5,
+    1.0
+   ],
+   "spread": 0.5,
+   "flag_for_review": true,
    "reviewer_decision": "pending"
   }
  },

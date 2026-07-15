@@ -249,6 +249,28 @@ class SqliteGraphStore:
         conn.commit()
         return len(doomed)
 
+    def purge_instrument_provisions(self, economy: str, law_name: str,
+                                    reason: str = "TARGETED_REBUILD_REPLACED") -> int:
+        """Remove a derived instrument atomically while retaining quarantine leads."""
+        conn = self._connect()
+        rows = conn.execute(
+            "SELECT id,props FROM nodes WHERE label='Provision' "
+            "AND json_extract(props,'$.economy')=? "
+            "AND json_extract(props,'$.law_name')=?", (economy, law_name)).fetchall()
+        if not rows:
+            return 0
+        conn.execute("BEGIN")
+        for node_id, raw in rows:
+            conn.execute(
+                "INSERT OR REPLACE INTO discovery_leads(id,reason_code,payload) VALUES (?,?,?)",
+                (f"lead:{node_id}", reason, raw),
+            )
+            conn.execute("DELETE FROM provisions_fts WHERE provision_id=?", (node_id,))
+            conn.execute("DELETE FROM edges WHERE src=? OR dst=?", (node_id, node_id))
+            conn.execute("DELETE FROM nodes WHERE id=?", (node_id,))
+        conn.commit()
+        return len(rows)
+
     def prune_economy_generation(self, economy: str, generation: str) -> int:
         """Atomically remove stale derived provisions only after a complete rebuild."""
         conn = self._connect()

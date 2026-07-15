@@ -129,7 +129,7 @@
         "coverage": "Information Systems including network infrastructure, cloud computing systems, mobile application platforms, connected devices and industrial control systems",
         "impact": "The MLPS requires all IT systems in China to be classified on different levels of security, from one to five (with the most sensitive systems designated as level 5).\n\nArticle 8.1.9.3 of the GB/T 22239-2019 states that in terms of product procurement and usage, companies classified as level 3 and above need to ensure that (1) the procurement and usage of cybersecurity products comply with relevant national regulations; (2) the procurement and usage of encryption products and services comply with the requirements of the national encryption management authority; and (3) preliminary product selection testing shall be carried out to define the scope of candidate products. The list of selected products shall be reviewed and updated on a regular basis.\n\nSo far, there are no requirements for source code disclosure or for using specific encryption in order to win a tender.",
         "articles": [
-          "Art. 8"
+          "Art. 8.1.9"
         ],
         "timeframe": "Since June 2007;\n\nSince December 2019",
         "references": [
@@ -1008,7 +1008,7 @@
         "coverage": "Financial sector",
         "impact": "Article 7.1.3, part (d) of the Techinical Specification states that in the process of providing financial products or services within the territory of the People's Republic of China, personal financial information collected and generated shall be stored, processed, and analyzed within the country. If it is necessary to provide personal financial information to overseas institutions (including headquarters, parent companies, branches, subsidiaries, and other affiliated institutions essential for completing the business) due to business requirements, the specific requirements are as follows:\n\n- It must comply with national laws and regulations as well as relevant provisions of the competent industry authorities;\n- Explicit consent must be obtained from the subject of the personal financial information;\n- A security assessment for the cross-border transfer of personal financial information must be conducted in accordance with the measures and standards established by relevant national and industry authorities to ensure that the data security protection capabilities of overseas institutions meet the security requirements of relevant national and industry authorities as well as financial institutions;\n- Agreements must be signed with overseas institutions, and on-site inspections shall be conducted to clarify and supervise the overseas institutions in effectively fulfilling their obligations, such as maintaining the confidentiality of personal financial information, data deletion, and case investigation cooperation.",
         "articles": [
-          "Art. 7"
+          "Art. 7.1.3"
         ],
         "timeframe": "Since February 2020",
         "references": [
@@ -1249,7 +1249,7 @@
         "coverage": "Horizontal",
         "impact": "The 2020 Specification provides that personal information controllers shall appoint a person and a department responsible for personal information (PI) protection. Article 11.1 further stipulates that the person responsible for PI protection must be someone who has relevant management experience and personal information protection expertise and shall participate in important decisions on personal information processing activities and report directly to the principal of the organization.\n\nArticle 11.1 further states that organizations meeting any of the following conditions should establish a dedicated personal information protection officer and a personal information protection work mechanism, responsible for personal information security work:\n\n1. The primary business involves handling personal information, and the organization has more than 200 employees engaged in this business;\n2. Processes personal information of over 1 million individuals, or is expected to process the personal information of over 1 million individuals within 12 months;\n3. Processes the sensitive personal information of more than 100,000 individuals.",
         "articles": [
-          "Art. 11"
+          "Art. 11.1"
         ],
         "timeframe": "Since October 2020",
         "references": [
@@ -2702,7 +2702,7 @@
         "impact": "Section 84A of the Information Technology Act (Modes Or Methods For Encryption) states: “The Government may, for secure use of the electronic medium and for promotion of e-governance and e-commerce, prescribe the modes or methods for encryption.” However, no rules have been introduced under this section. \n\nThere exists a requirement to surrender patents (make it available on a royalty free basis) for those open standards identified as \"Identified Standards\". Per clause 4.1.2- The Patent claims necessary to implement the Identified Standard shall be made available on a Royalty-Free basis for the life time of the Standard. Open standards refer to the freedom to encode and decode data and network protocols.",
         "articles": [
           "s. 84A",
-          "cl. 4"
+          "cl. 4.1.2"
         ],
         "timeframe": "Since December 2000, last amended in 2008\n\nSince November 2010",
         "references": [
@@ -3388,7 +3388,10 @@
         "coverage": "Telecommunication sector",
         "impact": "In the newly implemented Telecommunications act in 2023, under provision 8 (2) (2) The Central Government may permit the sharing, trading, leasing and surrender of assigned spectrum, subject to the terms and conditions, including applicable fees or charges, as may be prescribed. This Act was also endorsed in the recommendations of The Telecom Regulatory Authority of India (TRAI) in the  ‘Consultation Paper on Telecommunication Infrastructure Sharing, Spectrum Sharing and Spectrum Leasing’  released in 2024.\n\nThe consultation paper acknowledges that active and passive infrastructure sharing is permitted under Unified License but it doesnt provide specific provisions for passive sharing (Section 2.6)and there are ambiguities in the provisions related to sharing in different types of telecom service licenses/authorisations. During the consultations, stakeholders were of the consensus view that passive infrastructure should be shared across all types of telecom service licenses/authorisatons (Sec 2.21) and in section 2.23 the Authority concurs with this consensus, given a proper review of all types of service licenses. Final recommendation is in Section 2.34 (a) and (b).",
         "articles": [
-          "s. 2"
+          "s. 2.6",
+          "s. 2.23",
+          "s. 2.34(a)",
+          "s. 2.21"
         ],
         "timeframe": "Since December 2023; \n\nSince April 2024",
         "references": [
@@ -4282,7 +4285,8 @@
         "impact": "In terms of Clause 9 of IFSCA (Anti Money Laundering, Counter Terrorist Financing and Know Your Customer Guidelines 2022), all Regulated Entities shall maintain the following records:\n(a) a copy of all documents and information obtained in undertaking initial and ongoing Customer Due Diligence;\n(b) records of customer business relationships (both original and certified copies), which include: -\n(i) correspondence of business and other information relating to a customer’s account;\n(ii) adequate records of transactions to enable standalone transactions to be reconstructed; and\n(iii) internal findings and analysis relating to a business transaction or other transactions, where the transaction or business may be unusual or suspicious, whether or not it results in a Suspicious Transactions Report;\n(c) notifications made under Clause 10.1.(b) of the Guidelines [Policies, procedures, systems and controls, put up in place by the Regulated Entities, which ensure that whenever any of its employee, acting in the ordinary course of his employment, either:\n(i) knows;\n(ii) suspects; or\n(iii) has reasonable grounds for knowing or suspecting; that a person is engaged in or attempting ML/TF, that employee promptly notifies the Principal Officer of the Regulated Entity with all relevant details].;\n(d) Suspicious Transactions Reports and any relevant supporting documents and information, including internal findings and analysis;\n(e) any relevant communications, if made with the FIU;\n(f) all the risk assessment documents referred to in Clause 9.4 of the Guidelines; and\n(g) any other matter that the Regulated Entity may be expressly required to record and maintain, under these Guidelines.\n\nFor a minimum period of 6 years at least six years or for such period as prescribed under the applicable laws, from the date on which business relationship has ended or transaction is completed.",
         "articles": [
           "cl. 9",
-          "cl. 10"
+          "cl. 10.1",
+          "cl. 9.4"
         ],
         "timeframe": "Since November 2022",
         "references": [
@@ -5077,7 +5081,7 @@
         "coverage": "E-commerce (B2C)",
         "impact": "As stated in section 5.2.15.3 (e), with respect to single-brand retail, which includes e-commerce entities with physical stores in India, foreign investment exceeding 51% is only allowed when 30% of the value of goods purchased is done from India.",
         "articles": [
-          "s. 5"
+          "s. 5.2.15"
         ],
         "timeframe": "Since 2015, Reported in 2022",
         "references": [
@@ -5284,7 +5288,8 @@
         "coverage": "E-commerce (B2C)",
         "impact": "Under section 5.2.15.2 .3 (i) in all amendements India permits up to 100 percent Foreign Direct Investment (FDI) in business-to-business (“marketplace-based”) electronic commerce, i.e. \"providing of an information technology platform by an e-commerce entity on a digital & electronic network to act as a facilitator between buyer and seller.\" However, under (ii) India prohibits foreign investment in business-to-consumer (or “inventory-based”) electronic commerce, also defined as \"e-commerce activity where inventory of goods and services is owned by e-commerce entity and is sold to the consumers directly\". \n\nAs per section 5.2.15.2.2 (iii) in all amendements , when a marketplace e-commerce entity exercises ownership or control over the inventory, the business is categorized into the inventory-based model. Additionally, India implemented regulations that expressly prohibit subsidiaries of foreign-owned marketplace-based electronic commerce sites from selling products on their parent companies’ sites. The rules also prohibit exclusivity arrangements by which electronic commerce retailers can offer a product on an exclusive basis. \n\nAs per 2017 amendment, section 5.2.5.2, the only exceptions for FDI in inventory-based electronic commerce are for food-product retailing and single-brand retailers that meet certain conditions, including the operation of physical stores in India. Since 2020, under section 5.2.15.3 (g) of the 2020 amendment the FDI policy stipulates that retail trading through e-commerce can also be undertaken prior to opening physical stores, subject to the condition that the entity opens physical stores within two years from the date of start of online retail. Overall, it is reported that these narrow exceptions limit the ability of many electronic commerce service suppliers to serve the Indian market.",
         "articles": [
-          "s. 5"
+          "s. 5.2.15",
+          "s. 5.2.5"
         ],
         "timeframe": "Since 2016, last amended in 2020",
         "references": [
@@ -5349,8 +5354,8 @@
         "coverage": "Payment aggregators, Payment Gateways, Prepaid Payment Instruments",
         "impact": "3.3. PA shall be a company incorporated in India under the Companies Act, 1956 / 2013. The Memorandum of Association (MoA) of the applicant entity must cover the proposed activity of operating as a PA. There is no mention of where the acquiring bank must be based but it seems like it needs to be regulated by RBI and thus based in India. \n\nMoroever as per 2020 amendment, section 12.3 of the master direction on PPI states that  Non-bank PPI issuers are required to maintain their outstanding balance in an escrow account with any scheduled commercial bank. An additional escrow account may be maintained with a different scheduled commercial bank at the discretion of the PPI issuer. Section 7.5  The electronic loading / reloading of PPIs shall be through above payment instruments issued only by regulated entities in India and shall be in INR only.\n\nPPI include Paytm, Paypal etc.",
         "articles": [
-          "s. 12",
-          "s. 7"
+          "s. 12.3",
+          "s. 7.5"
         ],
         "timeframe": "Since March 2020; \n\nSince October 2017, last amended in November 2020",
         "references": [
@@ -5372,7 +5377,7 @@
         "coverage": "Prepaid Payment Instruments",
         "impact": "Section 7.5 states that PPIs shall be permitted to be loaded / reloaded by cash, by debit to a bank account, by credit and debit cards, and other PPIs (as permitted from time to time). The electronic loading / reloading of PPIs shall be through above payment instruments issued only by regulated entities in India and shall be in Indian Rupee only.",
         "articles": [
-          "s. 7"
+          "s. 7.5"
         ],
         "timeframe": "Since October 2017, last amended in November 2020",
         "references": [
@@ -5438,7 +5443,7 @@
         "impact": "To start or operate a payment system, one must apply for authorization under the Payment and Settlement Systems (PSS) Act, 2007 (Q 5). Although foreign entities can apply, there are some potentially restrictive conditions:\n\nAuthorization Fees and Security Deposit: The RBI can charge authorization fees and request a security deposit for the smooth operation of the payment system (Q 7).\n\nSetting Standards: The RBI can establish standards for various aspects of the payment system, including formats, timings, membership criteria, and participation conditions (Q 10).\n\nThese conditions provide the RBI with regulatory flexibility, potentially affecting the licensing process.\n\nMoreover, Under Capital Requirements (section 4):  Existing Payment Aggregators (PAs) must have a net worth of ₹15 crore by March 31, 2021, and reach ₹25 crore by March 31, 2023, which must be maintained thereafter. New PAs must start with ₹15 crore at the time of applying for authorization and achieve ₹25 crore within three years of getting the license, maintaining this level afterward.\n\nSimilarly, in the guidelines section 3.1 it states that Non-bank PAs shall require authorisation from RBI under the Payment and Settlement Systems Act, 2007 (PSSA). Which may inturn be subject to possible restrictive fees and standards.",
         "articles": [
           "s. 4",
-          "s. 3"
+          "s. 3.1"
         ],
         "timeframe": "Since March 2020; \n\nSince December 2007, last amended in November 2022",
         "references": [
@@ -5460,7 +5465,7 @@
         "coverage": "Cross border payment",
         "impact": "Section 8.2 states that in respect of import and export transactions processed by PA-CBs, the maximum value per unit of goods / services sold / purchased shall be ₹25,00,000 (approximately 30,000 USD).",
         "articles": [
-          "s. 8"
+          "s. 8.2"
         ],
         "timeframe": "Since October 2023",
         "references": [
@@ -5591,7 +5596,7 @@
         "coverage": "Domain names",
         "impact": "According to the \".IN\" domain name Policy Framework and implementation, the registration for the \".in\" domain is available freely to all parties worldwide. Clause 2.5 provides that .IN domain name is open and market friendly.",
         "articles": [
-          "cl. 2"
+          "cl. 2.5"
         ],
         "timeframe": "Since October 2004",
         "references": [
@@ -5872,7 +5877,7 @@
         "coverage": "Horizontal",
         "impact": "The Ministry of Industry Regulation No. 02/M-IND/PER/1/2014 Article 16.1 restricts the participation of foreign suppliers in public procurement. According to the law, Articles 17 and 20 discuss the Domestic Component Level (TKDN) and the Benefit to Company Points (BMP) which is based on investments of the suppliers in Indonesia. According to Article 10, domestic service suppliers need to be prioritized. To be considered as a domestic service supplier, the majority of shares have to belong to an Indonesian citizen and two-thirds of the board members have to be locals. If no domestic service suppliers are participating in the procurement, service suppliers where more than 50% up to 90% is owned by a foreign company or foreign citizen will be taken into consideration. \n\nMinistry of Industry Regulation No. 02/M-IND/PER/1/2014: Article 3 and Article 4 cover the guidelines for the promotion and mandatory use of domestic products in government procurement, detailing conditions for verifying TKDN values. Article 10 mandates that service procurement must prioritize home services companies, which must be established under Indonesian law and operate domestically, with more than 50% shareholding by Indonesian citizens or state entities, and two-thirds of the board comprising Indonesian citizens. Articles 15 and 16 allow for participation by foreign service companies when domestic or national service companies are unavailable, specifying that such foreign companies can participate under specific conditions.",
         "articles": [
-          "Art. 16",
+          "Art. 16.1",
           "Art. 17",
           "Art. 10",
           "Art. 3",
@@ -9525,7 +9530,7 @@
         "coverage": ".co.id",
         "impact": "Second Level Indonesian Domain name applied, and divided according to the allocation categories, that include: .co.id (Clause 8.1) is allocated for legal or business entities operating within Indonesia. To register this domain, entities must provide a Business Identity Number (NIB) and valid identification such as a KTP-el or Passport. For brand-related registrations, a Brand Certificate or Power of Attorney from the brand holder is required.\n\nAdditionally, Clause 9 providing that document requirements of domain name registration include identity document and legality document (a copy of incorporation document of an institution/legal entity/business entity issued by the official institution of the Republic of Indonesia, according to the allocation of Domain Name).",
         "articles": [
-          "cl. 8",
+          "cl. 8.1",
           "cl. 9"
         ],
         "timeframe": "Since September 2024",
@@ -9550,7 +9555,7 @@
         "coverage": ".net.id",
         "impact": "Second Level Indonesian Domain name applied, and divided according to the allocation categories, that include: .net.id (Clause 8.2) is designated for entities involved in telecommunications, such as Internet Service Providers (ISP), Telcos, or mobile operators. These entities must meet the specific requirements set by the relevant Special Registrar, indicating the need for a local presence in Indonesia.\n\nAdditionally, Clause 9 providing that document requirements of domain name registration include identity document and legality document (a copy of incorporation document of an institution/legal entity/business entity issued by the official institution of the Republic of Indonesia, according to the allocation of Domain Name).",
         "articles": [
-          "cl. 8",
+          "cl. 8.2",
           "cl. 9"
         ],
         "timeframe": "Since September 2024",
@@ -9575,7 +9580,7 @@
         "coverage": ".biz.id",
         "impact": "Second Level Indonesian Domain name applied, and divided according to the allocation categories, that include: .biz.id (Clause 8.8) is intended for small and medium enterprises (UMKM) in Indonesia. To register this domain, the business entity must demonstrate its status as an UMKM, meeting the local requirements and regulations set for this category.\n\nAdditionally, Clause 9 providing that document requirements of domain name registration include identity document and legality document (a copy of incorporation document of an institution/legal entity/business entity issued by the official institution of the Republic of Indonesia, according to the allocation of Domain Name).",
         "articles": [
-          "cl. 8",
+          "cl. 8.8",
           "cl. 9"
         ],
         "timeframe": "Since September 2024",
@@ -9938,7 +9943,7 @@
         "coverage": "Horizontal",
         "impact": "Under the Investment Promotion Act, both domestic and foreign investors have the right to invest in all investment sectors and areas which are not prohibited by the law of the Lao PDR (Articles 67.1 and 3). The Act introduces a controlled business list, including businesses that are sensitive to national security, public order, national fine tradition, and socio-environmental impact. There is no foreign investment ownership restrictions in sectors relevant to the digital trade. \n\nMoreover, Law on Investment Promotion Article 4 (Government policies on investment promotion), the Government promotes investment in all sectors, business operations and in areas throughout the country except for the areas and business operations which are detrimental to national security, natural environment, at present and in long-term, public health and fine national cultures. Article 40 (Term of Investment for general investment), investment in general investments has no term limit except for those activities of which term limits have been specified by regulations of relevant sector authority.",
         "articles": [
-          "Art. 67",
+          "Art. 67.1",
           "Art. 4",
           "Art. 40"
         ],
@@ -10362,7 +10367,7 @@
         "impact": "Foreigners are permitted to invest in telecommunication business.\n\nAccording to the Telecommunications Law, any domestic and foreign individual, legal entity or organization wishing to establish a telecommunication enterprise shall apply for establishment and registration to the concerned organization as defined in the Law on Investment Promotion, the Law on Enterprise, and other relevant laws of Lao PDR (Article 24 Application for the Establishment of a Telecommunication Enterprise). Under the Investment Promotion Act, both domestic and foreign investors have the right to invest in all investment sectors, including telecommunications, and areas which are not prohibited by the law of the Lao PDR (Articles 67.1 and 3). \n\nStill, telecommunications business (wire telecommunications and wireless telecommunications related activities, and satellite telecommunications related activities) is subject to the controlled business/concession list, and therefore requires approval from relevant agencies.",
         "articles": [
           "Art. 24",
-          "Art. 67"
+          "Art. 67.1"
         ],
         "timeframe": "Since December 2011;\n\nSince November 2016, last amended in 2017;\n\nSince January 2019",
         "references": [
@@ -10412,7 +10417,7 @@
         "coverage": "Telecommunications sector",
         "impact": "Under the Law on Telecommunications No.09/NA, there is no specific mention of functional or accounting separation mandates for operators. However, Article 27.5 (Obligations of the Telecommunication Service Providers) of the Law on Telecommunications outlines the financial and accounting obligations of service providers, indicating they must comply with financial-accounting standards and reporting rules. \n\nAccording to the Decision, functional separation is mandated for operators with significant market power, however accounting separation is not required. The Decision indicates the three types of anti-competitive conduct: collusion of telecom service providers, market domination, and monopoly (Article 11). Telecommunication service provider shall summarize, conclude, and report its statistical data, volume, prices of services, in monthly, quarterly, annually period, to Department of Telecommunications in timely and regularly manner (Article 22 Reporting).",
         "articles": [
-          "Art. 27",
+          "Art. 27.5",
           "Art. 11",
           "Art. 22"
         ],
@@ -10874,9 +10879,10 @@
           "Art. 3",
           "Art. 9",
           "Art. 16",
-          "Art. 17",
+          "Art. 17.1",
           "Art. 7",
-          "Art. 14"
+          "Art. 14",
+          "Art. 14.2"
         ],
         "timeframe": "Since March 2012",
         "references": [
@@ -11167,7 +11173,7 @@
         "coverage": "Satellite",
         "impact": "The Decree on Satellite Communications, No. 471/GOL, dated 27 December 2019, specifies prohibitions related to satellite communication equipment. Article 52.2: Prohibits the \"manufacture, import, and export of satellite communication equipment without permission\"​. Multiple Goods Ban: Specific HS codes for Satellite Communication Equipment are 852560 and 852691.",
         "articles": [
-          "Art. 52"
+          "Art. 52.2"
         ],
         "timeframe": "Since December 2019",
         "references": [
@@ -11454,7 +11460,7 @@
           "Art. 5",
           "Art. 68",
           "Art. 65",
-          "Art. 53",
+          "Art. 53.1",
           "Art. 67"
         ],
         "timeframe": "Since July 2014\n;\nSince June 2012",
@@ -11960,7 +11966,7 @@
         "coverage": "Horizontal",
         "impact": "Mongolia currently does not have any legal acts implementing the WTO Agreement on Subsidies and Countervailing Measures and the Anti-Dumping Agreement. The Government of Mongolia approved the regulations for implementing the WTO Safeguards Agreement through Resolution No. 24 on January 27, 2021.\n\nMoreover, as per Article 10.2 of the Constitution of Mongolia, an international treaty of Mongolia is applied in the same manner as domestic legislation once the law of ratification or accession of Mongolia comes into force. Mongolia is a signatory of the WTO Agreement and WTO Anti-Dumping Agreement. \n\nMongolia has not imposed anti-dumping and countervailing duties, or safeguard measures against ICT-related goods imported from other countries.",
         "articles": [
-          "Art. 10"
+          "Art. 10.2"
         ],
         "timeframe": "Since January 1992 last amended in November 2019;\n\nMay 2008 last amended December 2015; \n\nSince January 1997",
         "references": [
@@ -11983,7 +11989,9 @@
         "coverage": "Horizontal",
         "impact": "According to Article 8.1 of the Revised Law on the Procurement of Goods, Works, and Services by State and Local Property Assets, The tender documents shall specify that goods that meet the quality and standard requirements that can be provided by domestic production will be purchased from domestic manufacturers. Moreover, Article 8.2, the list of names and types of goods specified in Article 8.1 of this Law shall be jointly developed by the central state administrative body in charge of economy, development, heavy and light industry, and approved by the Government.\n\nThe list of products reserved to local companies is found in Annex to Government Resolution No. 90. This includes all types of electrical connection tools and equipment, including collectors, connectors, switches, converters, meters, transformers, distributors, isolators, and control panels.\n\nMoreover, according to Article 8.3 of the Revised Law on the Procurement of Goods, Works, and Services by State and Local Property Assets, the procuring entity should not prohibit foreign parties from participating in tenders with a budget of more than MNT 30 billion for work, MNT 1 billion for goods, and MNT 300 million for services. Purchases that exceed these values require an international open tender to be announced mandatorily.",
         "articles": [
-          "Art. 8"
+          "Art. 8.1",
+          "Art. 8.2",
+          "Art. 8.3"
         ],
         "timeframe": "Since January 2024;\n\nSince February 2019",
         "references": [
@@ -12027,7 +12035,15 @@
         "impact": "Under Article 8 of the Law on the Procurement of Goods, Works, and Services by State and Local Property Assets, preference is given to domestic goods meeting quality standards. Article 8.1 prioritizes goods from domestic production, with a list developed by the central state administrative organization and approved by the Government (Article 8.2). Additional preferences include goods from recycled materials, those using local resources, innovative products, and those produced by businesses employing disabled workers (Article 8.4). \n\nMoreover, Article 8.5 gives preference to participants using domestic goods in their work. Discounts are provided on tender prices: 10% for domestic goods, or 15% if from small or medium-sized enterprises (Article 8.6). For work tenders, reductions are given for local operations and Mongolian-owned entities (Article 8.7). However, general contracts do not receive these preferences (Article 8.8), and tender documents must specify the required information for priority calculations (Article 8.9).\n\nNote that the term \"general contract method\" means purchasing goods and services from the online store by entering into a general contract with one or more participants that sets the maximum unit price and other conditions for the goods and services that the customer frequently purchases or regularly needs for a certain period of time (Article 4.1.8).",
         "articles": [
           "Art. 8",
-          "Art. 4"
+          "Art. 8.1",
+          "Art. 8.2",
+          "Art. 8.4",
+          "Art. 8.5",
+          "Art. 8.6",
+          "Art. 8.7",
+          "Art. 8.8",
+          "Art. 8.9",
+          "Art. 4.1.8"
         ],
         "timeframe": "Since June 2023",
         "references": [
@@ -12051,7 +12067,7 @@
         "coverage": "Horizontal",
         "impact": "Article 6.2 of the Constitution unequivocally affirms the public ownership of land, its resources, forests, water resources, and wildlife. This fundamental principle is firmly enshrined in the Mineral Law, which dictates that the state will assert ownership of up to 50% of the assets invested in strategic deposits with reserves explored using state budget funds and up to 34% of the assets invested in strategic deposits with reserves explored without state budget funds. Furthermore, it confidently asserts that the percentage of state ownership can be precisely determined based on the investment made in the deposit. There are no limits for foreign equity in digital trade-related sectors.",
         "articles": [
-          "Art. 6"
+          "Art. 6.2"
         ],
         "timeframe": "Since January,1992. Last amended in November 2019;\n\nSince October 2013;\n\nSince 2006, last amanded in April 19, 2024",
         "references": [
@@ -12114,7 +12130,7 @@
         "impact": "Foreign state-owned legal entities that own 33% or more of the total issued shares of Mongolian legal entities in mining, banking and finance, press, information, and communication must obtain operating permission under Article 21 of the Investment Law. The application for authorization should be directly submitted to the state central administrative body responsible for investment affairs in Mongolia, along with the necessary documents. The central state administrative body must resolve the request within 45 days, as specified in Articles 5.2 and 5.3 of the Law on Permits.",
         "articles": [
           "Art. 21",
-          "Art. 5"
+          "Art. 5.2"
         ],
         "timeframe": "Since October 2013",
         "references": [
@@ -12139,7 +12155,7 @@
         "impact": "Article 4 of the Investment Law states that foreign and domestic investors shall conduct activities in Mongolia upon registration to state registration by the Company Law, Law on State Registration of Legal Entities, and other relevant laws and regulations. Moreover, legal entities must apply for authorization from the state through a representative office and authorized representative in Mongolia. Article 5.1.1 of the Investment Law also permits foreign companies to establish their representative office or a subsidiary in Mongolia.",
         "articles": [
           "Art. 4",
-          "Art. 5"
+          "Art. 5.1.1"
         ],
         "timeframe": "Since October 2013;\n\nSince October 2011;\n\nSince June 2018",
         "references": [
@@ -12161,7 +12177,9 @@
         "coverage": "Horizontal",
         "impact": "Article 15 of the Patent Law focuses on filing of patent applications for inventions and utility. According to Article 15.2, an intellectual property agent may represent a patent application. According to Article 15.3 of this law, a foreign citizen, a stateless person, or a foreign legal entity who does not permanently reside in Mongolia or does not engage in activities shall be represented as an authorized intellectual property agent when applying for a patent for a new product or industrial design.",
         "articles": [
-          "Art. 15"
+          "Art. 15",
+          "Art. 15.2",
+          "Art. 15.3"
         ],
         "timeframe": "Since 1983, last amended May 2021",
         "references": [
@@ -12184,8 +12202,11 @@
         "impact": "The Patent Law of Mongolia addresses civil and administrative procedures, remedies, and provisional measures. Chapter 7 (Articles 46 to 52) focuses on the protection of patent rights and patent owners' rights. According to Articles 46.2.3 and 46.2.4, patent owners have the right to protect their inventions, utility models, and product designs from unauthorized use and to file lawsuits in court to enforce their rights. Article 55 (Liability for Violators) states that any person or legal entity violating this law shall be subject to the provisions of the Criminal Code or held liable as prescribed by law.\n\nAdditionally, provisional measures are addressed under Article 53. Chapter 8 outlines the role of the intellectual property authority and the dispute resolution council. Specifically, state inspectors have the power to stop violations (Article 53.1.3), seize infringing items (Article 53.1.3), prohibit sales (Article 53.1.4), and destroy infringing products (Article 53.1.4). These actions serve as provisional measures to prevent further harm to the rightsholder while a legal determination is pending.",
         "articles": [
           "Art. 46",
+          "Art. 46.2.3",
           "Art. 55",
-          "Art. 53"
+          "Art. 53",
+          "Art. 53.1.3",
+          "Art. 53.1.4"
         ],
         "timeframe": "Since 1983, last amended May 2021",
         "references": [
@@ -12253,6 +12274,7 @@
           "Art. 22",
           "Art. 23",
           "Art. 56",
+          "Art. 56.1.5",
           "Art. 57"
         ],
         "timeframe": "Since January 2006, last amended in May 2021",
@@ -12296,8 +12318,8 @@
         "coverage": "Horizontal",
         "impact": "Article 3.2 of the Organizational Secrets Law, enacted in 1995, unequivocally states that any information, technological solutions, projects, research, and analysis documents about the specific official activities of an organization or designated as confidential to safeguard its market and competitive advantages are eligible to be classified as organizational secrets. The organization possesses the exclusive authority to determine what qualifies as a secret under this law. Furthermore, according to Article 9.2, individuals or legal entities found violating this law will be subject to accountability under the Criminal Law or the Law on Violations.",
         "articles": [
-          "Art. 3",
-          "Art. 9"
+          "Art. 3.2",
+          "Art. 9.2"
         ],
         "timeframe": "Since May 1995",
         "references": [
@@ -12319,7 +12341,7 @@
         "coverage": "Telecommunication infrastructure",
         "impact": "According to Article 6.1.14 of the Telecommunications Law enacted in 2001, the Central State Administrative Organization for Telecommunications is mandated to approve the regulation of shared Internet connections. Despite this, the regulation is still pending approval. Mongolia consists of public service networks, domestic networks, and special-use networks. Telecommunications operators are exclusively authorized to utilize shared networks for public service networks.\n\nMoreover, it is becoming more common for active infrastructure sharing for 5G implementation. Some of them (e.g., Vodafone) have implemented 5G Open RAN to work with a broader range of suppliers and drive innovation.",
         "articles": [
-          "Art. 6"
+          "Art. 6.1.14"
         ],
         "timeframe": "Since October 2001, last amended in December 2019;\n\nLast reviewed in April 2024",
         "references": [
@@ -12341,7 +12363,7 @@
         "coverage": "Telecommunication infrastructure",
         "impact": "2.5. The service provider shall not refuse, without justification, to lease or share their own network, infrastructure, premises, or equipment with other service providers, except for those defined as resources.\n2.5.1. The service provider shall make their network and infrastructure available in accordance with Clause 23.1 of the Communication Law of Mongolia. \n2.5.2 In cases where the service provider holds a dominant position in the market, they shall fully ensure the opportunity for joint use of their own network and infrastructure with other service providers.",
         "articles": [
-          "cl. 23"
+          "cl. 23.1"
         ],
         "timeframe": "Since December 2014",
         "references": [
@@ -12407,7 +12429,8 @@
         "coverage": "Telecommunication sector",
         "impact": "Mongolia does not implement functional and/or accounting separation requirements. Under Article 17.2 of the Law of Mongolia on Communication, the primary telecommunication network is defined as the network providing public services, including intercountry and intercity transmission and intercity connection facilities. Additionally, Article 17.4 of this law states that all government and private enterprises can establish and own the primary network.",
         "articles": [
-          "Art. 17"
+          "Art. 17.2",
+          "Art. 17.4"
         ],
         "timeframe": "Since October 2001, last amended in July 2019",
         "references": [
@@ -12429,8 +12452,8 @@
         "coverage": "Telecommunication sector",
         "impact": "Following Article 8.1.9 of the Permit Law enacted by the Parliament in 2022, the Central State Administrative Organization for Telecommunications or Communication Regulatory Commission is mandated to issue specialized licenses for activities in 15 specific areas of information and communication. This provision unequivocally affirms that no legal obstacles should prevent a sole entity from participating in various functional information and communication activities and establishing and operating its network. Specifically, the authorized person has no right to refuse to accept the application for a permit without reason, and shall notify the applicant of the acceptance of the application and record it in the register (Article 5.2.1). The authorized person shall verify the application without 10 working days for special permit and within 5 days for simple approval. \n\nMoreover, there is no restriction on licensing renewal. The license holder shall notify the authority 45 days before the expireation of the permit.",
         "articles": [
-          "Art. 8",
-          "Art. 5"
+          "Art. 8.1.9",
+          "Art. 5.2.1"
         ],
         "timeframe": "Since June, 2022, last amended in July 2023",
         "references": [
@@ -12492,7 +12515,7 @@
         "coverage": "Horizontal",
         "impact": "There is no explicit data local storage requirement.\n\nThe Ministry shall establish the requirements for data security, evaluation guidance, and storage technology requirements for data collection, processing, and use (Article 20.2 of the Law on Personal Data Protection). However, so far no approved regulation that provides detailed procedures in this regard is observed.",
         "articles": [
-          "Art. 20"
+          "Art. 20.2"
         ],
         "timeframe": "Since December 2021",
         "references": [
@@ -12515,7 +12538,7 @@
         "coverage": "Horizontal",
         "impact": "Law on Protection of Personal Information does not mandate infrastructure requirement. Moreover, following Article 18.6 of the Law on Transparency of Public Information, enacted by the Parliament in 2021, it is mandatory for the data controller's system to fully adhere to the government's communication and information technology guidelines and security standards. There is no requirement for the location of the information processing server.",
         "articles": [
-          "Art. 18"
+          "Art. 18.6"
         ],
         "timeframe": "Since December 2021;\n\nSince December 2021",
         "references": [
@@ -12539,9 +12562,10 @@
         "impact": "Article 3 (Technological safety requirements) of the \"Regulation on Technical Requirements for Processing Sensitive, Biometric, and Genetic Data\" sets out the requirements for servers processing sensitive personal information. Among other stipulations, it mandates that the server must be physically located within the territory of Mongolia and must be accessible exclusively from within Mongolia.\n\nSpecifically, Article 3.2. The data processing server must meet the following requirements:\n3.2.1. Be located in the territory of Mongolia;\n3.2.2. be accessible only from Mongolia;\n3.2.3. The server must be located in a dedicated technical room;\n3.2.4. Ability to increase server capacity if necessary;\n3.2.5. Ability to exchange information through the \"KUR\" state information exchange system;\n3.2.6. Be connected to the network time server of the Communications Regulatory Commission;\n3.2.7. The information exchange system must be protected by an \"SSL\" certificate; \n3.2.8. Regularly back up information systems. \nMoreover, Section 3.3. The data processor shall have a firewall system that regularly monitors incoming and outgoing network traffic and blocks suspicious activity and access in order to ensure network security.\n\nPursuant to Article 1, the objective of this Regulation is to establish the principles and technological security requirements governing the processing of sensitive personal data, as well as genetic and biometric data, as stipulated in Articles 9 and 10 of the Law on the Protection of Personal Data.",
         "articles": [
           "Art. 3",
+          "Art. 3.2",
           "Art. 1",
           "Art. 9",
-          "s. 3"
+          "s. 3.3"
         ],
         "timeframe": "Since September 2023;\n\nSince December 2021",
         "references": [
@@ -12563,7 +12587,7 @@
         "coverage": "Horizontal",
         "impact": "Article 14.1 of the Law on Protection of Personal Information prohibits the provide personal information through individuals, legal entities, or international organizations in foreign countries, except as provided by Mongolian law and international agreements, or unless the information owner has given permission.",
         "articles": [
-          "Art. 14"
+          "Art. 14.1"
         ],
         "timeframe": "Since December 2021",
         "references": [
@@ -12627,6 +12651,7 @@
         "coverage": "Horizontal",
         "impact": "Mongolia does include explict requirements to appoint a Data Protection Officer (DPO). However, the requirements to conduct Data Protection Impact Assessments (DPIAs) exists under Article 20.1.5.\n\nAccording to Article 20 Measures to ensure information security, data controller and the data processor specified shall ensure data security by the following measures, including 20.1.1 implementing internal procedures to ensure information security in accordance with the requirements, as well as 20.1.5 conduct assessments to ensure the security of information processing operations.",
         "articles": [
+          "Art. 20.1.5",
           "Art. 20"
         ],
         "timeframe": "Since December 2021",
@@ -12649,7 +12674,7 @@
         "coverage": "Telecommunication sector",
         "impact": "Article 25.2.4 of the Communications Law provides that data and data must be kept safe by the licensed entity.",
         "articles": [
-          "Art. 25"
+          "Art. 25.2.4"
         ],
         "timeframe": "Since October 2001, last amended in December 2019",
         "references": [
@@ -12671,9 +12696,11 @@
         "coverage": "Horizontal",
         "impact": "Mongolia does not mandate DPO or DPIA requirement. \n\nArticle 22.1 of the Law on the Protection of Personal Information explicitly requires the data processor to immediately report any breach during data collection and processing to the data controller. As stipulated in Article 22.2, should the breach impact the rights and legal interests of the data owner, the data controller must promptly notify the data owner. Article 4.1.3 of the law defines \"promptly\" within a short, reasonable period. The data owner is empowered, following Article 22.4, to file a complaint with the relevant authorities if they believe their rights and legal interests have been violated, as elaborated in Article 22.2 of this law. Moreover, the data controller and data processor shall conduct a risk assessment to ensure the security of data processing operations (Article 20.1.5).",
         "articles": [
-          "Art. 22",
-          "Art. 4",
-          "Art. 20"
+          "Art. 22.1",
+          "Art. 22.2",
+          "Art. 4.1.3",
+          "Art. 22.4",
+          "Art. 20.1.5"
         ],
         "timeframe": "Since December 2021",
         "references": [
@@ -12695,8 +12722,8 @@
         "coverage": "Banking sector",
         "impact": "Article 7.2 of the law mandates that shareholders, the chairperson of the board of directors, members, executive management, review board, and employees of the bank must refrain from disclosing, revealing, or using any information considered confidential by the bank, its customers, or third parties, except in the following circumstances:\n- The individual must provide written consent to disclose the Information;\n- Disclosure may be made in response to a legitimate request from the authorized official of the Bank of Mongolia, its regulator, or the State Inspector of the Bank of Mongolia;\n- If the prosecutor has approved the investigator's proposal upon the request of the management of the court, the prosecutor's organization, or by the requirements of the anti-corruption organization, police organization, or intelligence organization to verify Information related to money laundering and terrorist financing;\n- Upon proof of a violation of Mongolian law, a request may be made by an international legal organization or the government of a foreign country with which Mongolia has established an agreement of legal assistance. \n- The Financial Regulatory Commission is empowered to submit requests to foreign countries' competent financial regulatory authority per the obligations outlined in agreements and memoranda of understanding concluded by the Commission for monitoring licensed activities;\n- Information must be submitted to the credit database in compliance with legal obligations; \n- Bailiffs requesting Information on a payer's account must obtain approval from the head of the court's enforcement department; \n- The Customs and Tax Department has the authority to demand payment of customs and tax liabilities from specific customers and conduct tax audits as per its legislated functions; \n- Auditors of the Deposit Insurance Corporation may demand Information to exercise their powers as stipulated in the Law on Deposit Insurance in Banks; \n- Information required by tax authorities under international agreements on exchanging Information for tax purposes is specified in Section 18.1.2 of the General Tax Law; \n- The state audit organization has the power to demand Information concerning the implementation of auditing functions as stipulated by law;",
         "articles": [
-          "Art. 7",
-          "s. 18"
+          "Art. 7.2",
+          "s. 18.1.2"
         ],
         "timeframe": "Since January 2010, last amended January 2023",
         "references": [
@@ -12762,7 +12789,7 @@
         "coverage": "Internet service providers",
         "impact": "The Communication Law, which the Parliament initially established in 2001 and most recently revised in 2024, outlines stringent requirements for legal entities involved in information and communication, including Internet service providers. Article 25.2 of the law explicitly states that service providers must refrain from discriminating against consumers, adhere strictly to service standards and technical conditions, and utilize certified equipment stipulated by law. Moreover, they must provide advance notification to the CRC and users regarding any equipment upgrades, changes in service purpose, or service suspensions. Service providers must also ensure the confidentiality of all transmitted news and information, guarantee uninterrupted network usage during force majeure events, and refrain from halting communication services outside the prescribed legal framework. Non-compliance may lead to liability under the Civil Code for any user damages. In addition, timely submission of required information to the regulatory committee, facilitation of connections to authorized organizations following legal procedures, and provision of necessary conditions for their utilization are essential responsibilities following the legal framework.",
         "articles": [
-          "Art. 25"
+          "Art. 25.2"
         ],
         "timeframe": "Since October 2001, last amended in June 2024",
         "references": [
@@ -12784,7 +12811,7 @@
         "coverage": "Service operators for telephone and internet protocol-based services",
         "impact": "According to Section 5.12.9, the service operators for telephone and internet protocol-based services must meticulously register individual users and organizations. This registration involves assigning a unique registration number, collecting each user's citizen registration number, name, and surname, and gathering relevant details about the organization. This requirement is critical to ensure users are appropriately connected and receive the correct service rights.",
         "articles": [
-          "s. 5"
+          "s. 5.12.9"
         ],
         "timeframe": "Since April 2020",
         "references": [
@@ -12806,8 +12833,9 @@
         "coverage": "Internet service providers (website service providers)",
         "impact": "According to Part 7, under Article 7.3, platforms that allow users to create or comment on content are required to actively monitor user activity and ensure compliance with content standards set by law. Article 7.3.4 provides that website service providers that enable users to create content and facilitate a user comment section are required to display the user's full Internet Protocol (IP) address within publicly accessible user-generated content. Specifically, Article 2.6 defineswebsite service provider as citizen and legal entity those deliver news, information and all types of other content to public using communications network.",
         "articles": [
-          "Art. 7",
-          "Art. 2"
+          "Art. 7.3",
+          "Art. 7.3.4",
+          "Art. 2.6"
         ],
         "timeframe": "Since 2011, last amended in October 2015",
         "references": [
@@ -12829,9 +12857,11 @@
         "coverage": "Internet service providers (website service providers, content aggregator)",
         "impact": "The law prescribes conditions and requirements for web site service provider, including the monitoring requirements. \n\nAccording to Part 7, under Article 7.3, platforms that allow users to create or comment on content are required to actively monitor user activity and ensure compliance with content standards set by law. \n7.3.1. to mandatorily use the word-filter software operated by the Regulatory Committee;\n7.3.2. to provide the customers who agreed the conditions and requirements that reminds the use of service in accordance with Mongolian relevant legislations with possibility to create content;\n7.3.3. in case customer considers the content created by other customers illegal or having negative impact on public ethics, to create possibility for the customer to express opinion or to erase such content depending from the number of the opinions;\n7.3.4. to place the customer’s IP address publicly visible on top of the content created by the customer;\n7.3.5. to erase the content if deems the content created by the customer violates provisions of the chapter 4.In particular, Article 4 prohibits the creation or distribution of content that includes pornography or erotic material, advertisements or expressions promoting criminal acts, content that threatens national solidarity or advertises terrorism, content that incites public disorder, promotes violent religious doctrines, or relates to the unauthorized promotion of drugs and substances. \n\nPerson whose interest has been violated or the web site service provider may submit the IP address of the customer who created a content which violated chapter 4 of the present General Conditions and Requirements to the Regulatory Committee (Article 7.4). \n\nAdditionally, under Article 6.3, content aggregator also required to monitor whether the content to be delivered to customer violate the article 4 of the present General Conditions and Requirements.  In the event the article 4 of the present General Conditions and Requirements is violated, technical possibility and condition to immediately intercept the violation shall be created (Article 6.4).",
         "articles": [
-          "Art. 7",
+          "Art. 7.3",
           "Art. 4",
-          "Art. 6"
+          "Art. 7.4",
+          "Art. 6.3",
+          "Art. 6.4"
         ],
         "timeframe": "Since 2011, last amended in October 2015",
         "references": [
@@ -12853,7 +12883,9 @@
         "coverage": "",
         "impact": "According to Article 25 (Child protection in the media, broadcasting and online environment) of the Law of Mongolia on Child Protection, media, broadcasting, and online media service providers are responsible for not distributing prohibited content on their services and for taking measures to monitor, restrict, and block content that is harmful to children (Article 25.5)\n\nInternet service providers shall take technological measures to restrict the dissemination of harmful and prohibited content to children on their networks in accordance with the conclusions and decisions of the competent authority (Article 25.6).",
         "articles": [
-          "Art. 25"
+          "Art. 25",
+          "Art. 25.5",
+          "Art. 25.6"
         ],
         "timeframe": "",
         "references": [
@@ -12896,7 +12928,7 @@
         "coverage": "Internet service providers",
         "impact": "Article 15.16.3 of the 2011 amendment to the Enterprise Licensing Law adopted in 2001 allowed the Communications Regulatory Commission of Mongolia (CRC) to issue special licenses for content services to enterprises. However, the Permit Law passed in 2022 has ceased the issuance of such permits. Neither the new nor the old law provides for content control. Since 2016, the Communications Regulatory Commission and Facebook have worked collaboratively to establish a \"Government-Case-Work-Channel,\" or green channel, in Mongolia to enable direct communication to address complaints about illegal content and swiftly implement regulations. This collaboration has proven effective during the 2020 parliament and local elections and the 2021 Mongolian Presidential elections. According to the CRC website, the \"Government Case Work Channel\" focuses solely on removing illegal content from the Facebook platform that violates Facebook's Community Standards.",
         "articles": [
-          "Art. 15"
+          "Art. 15.16.3"
         ],
         "timeframe": "Since 2001;\n\nSince June 2022",
         "references": [
@@ -12940,7 +12972,7 @@
         "impact": "Article 4 prescribes categories of prohibited content that platforms must block, filter, or remove in accordance with Mongolian law. While the article broadly targets content that violates legal standards, certain provisions specifically address national security concerns. These include content that threatens national unity, advertises terrorism, or incites public disorder. Other prohibited categories include pornography, promotion of criminal activity, violent religious doctrines, drug-related advertising, copyright infringement, and violations of the Advertisement Law. Although not limited to national security, Article 4 serves as a legal basis for content moderation, including blocking and filtering of harmful or unlawful material. \n\nMoreover, according to Part 9 (Control), the Regulatory Committee shall implement the control provided in sections other than 4 of this General Conditions and Requirements (Article 9.1). When implementing control, the Regulatory Committee shall use the following methods: to conduct control on the bases of the application or complaint by the customers and organizations; and to have required report or information prepared by content aggregator, hosting and web site service providers.",
         "articles": [
           "Art. 4",
-          "Art. 9"
+          "Art. 9.1"
         ],
         "timeframe": "Since 2011, last amended in October 2015",
         "references": [
@@ -12962,7 +12994,7 @@
         "coverage": "Restrictions to online advertising",
         "impact": "According to Article 6.5 of the Advertising Law of 2022, the following strict prohibitions apply to advertisements: \n1. Advertising for activities requiring a special license is strictly prohibited without obtaining a permit. \n2. Promotion of products prohibited by Mongolian laws is strictly forbidden. \n3. Advertising of goods subject to non-tariff restrictions is not permitted. \n4. Advertising uncertified products is strictly prohibited. \n5. No ads leading to actions violating laws are allowed. \n6. Publicizing projects before environmental assessments or when unable to implement them is strictly forbidden. \n7. Ads causing fear, violence, or harm are strictly prohibited. \n8. Advertising prohibited goods, works, or services is not allowed.\n\nMoreover, Article 12 prescribes the advertisements for Internet distribution. The distributor of advertisements is prohibited from placing his advertisements on the Internet pages owned by others without permission. Advertisements distributed on the Internet contain other information necessary for the user to establish contact, such as the name, address, and contact number of the advertiser. If a special fee is charged for entering the address where the advertisement is placed, then a reminder about this is placed in a visible way for users before entering the address.",
         "articles": [
-          "Art. 6",
+          "Art. 6.5",
           "Art. 12"
         ],
         "timeframe": "Since March 2002, last amended in December 2019",
@@ -12985,7 +13017,8 @@
         "coverage": "Digital Content providers, digital services and applications",
         "impact": "The \"Law on Permits\" enacted by the Parliament in 2022, regulates all types of licensing related to any activity or business in Mongolia. Article 8.1 prescribes the listed activities that shall be carried out with a special permit. Articles 8.1.9.2 through 8.1.9.15 unambiguously define the authority of the Telecommunications Regulatory Commission to issue licenses for broadcasting, television, radio, post office operations, and other related activities.",
         "articles": [
-          "Art. 8"
+          "Art. 8.1",
+          "Art. 8.1.9"
         ],
         "timeframe": "Since February 2001, last amended in June 2022",
         "references": [
@@ -13007,7 +13040,7 @@
         "coverage": "Internet service providers (content service providers, website service providers)",
         "impact": "According to Part 3 Special license (Sections 3.1 to 3.7), to operate a content service, a business must obtain a special license in accordance with the Law on the Special Licensing of Business Activities, the Communications Law, and other related regulations issued by the Regulatory Committee. \n\nThere are two main types of special licenses for content services: content hosting services and content aggregators. Content aggregators may operate either online—engaging in digital content activities in both online and offline forms—or via mobile platforms, providing content designed for mobile operating systems and interfaces. \n\nAny web service provider whose website receives more than 3,000 users per day is required to register with the Regulatory Committee. Additionally, websites that conduct commercial activities using digital content are considered content aggregators.\n\nThe terms and definitions of content providers are provided in Part 2:\n\t•\tContent Aggregator: Licensed legal entity that modifies, sells, and transmits content using its own systems via a service provider’s network.\n\t•\tContent Supplier: Individual or entity that creates or owns content (e.g., artists, authors, developers) and provides it to aggregators.\n\t•\tContent Hosting Service Provider: Stores digital data on its own servers and enables public access through a communications network; requires a special license.\n\t•\tWebsite Service Provider: Individual or entity that publishes content online; must register if average daily traffic exceeds 3,000 users or may require a license if operating commercially.",
         "articles": [
-          "s. 3"
+          "s. 3.1"
         ],
         "timeframe": "Since 2011, last amended in October 2015",
         "references": [
@@ -13115,6 +13148,8 @@
         "impact": "The 2017 Mongolian Law on Standardization, Technical Regulation and Conformity Assessment mandates Mongolian Agency for Standard Metrology contribute to Mongolia’s social, economic, industrial, and commercial development by establishing standards based on the mutual understanding and voluntary agreement between governmental authorities and business, with regard to consumers' rights, and to develop market-based standardization systems.\n\nArticle 9 regarding National standards prescribes that the specifications and requirements of the national standard are consistent with the requirements of international and regional standards (Article 9.2). The draft of the national standard shall be initiated by the interested parties on the basis of consensus (Article 9.3).\n\nIn addition, in development of the standard, the Technical Committee is established for each branch with the purpose of discussing and drawing conclusions on draft national, international and regional standards. The Committee consists of representatives of the state, citizens, enterprises, scientific and other professional organizations (Article 11).",
         "articles": [
           "Art. 9",
+          "Art. 9.2",
+          "Art. 9.3",
           "Art. 11"
         ],
         "timeframe": "Since May 2003, last amended in January 2023",
@@ -13139,7 +13174,7 @@
         "articles": [
           "Art. 13",
           "Art. 14",
-          "cl. 13"
+          "cl. 13.2"
         ],
         "timeframe": "Since May 2003, last amended in January 2023",
         "references": [
@@ -13241,8 +13276,8 @@
         "coverage": "Delivery services",
         "impact": "According to Article 8.1.9 of the Law on Permits, the operation of domestic postal services (9.13) and international postal services (9.15) is subject to special licensing requirements. Applicants wishing to operate these services must obtain a license from the Telecommunications Regulatory Commission. However, there are no restrictions on the process for applying for or renewing these licenses (see Article 5.2, procedures for processing applications for permits)",
         "articles": [
-          "Art. 8",
-          "Art. 5"
+          "Art. 8.1.9",
+          "Art. 5.2"
         ],
         "timeframe": "Since February 2001, last amended in June 2022",
         "references": [
@@ -13264,7 +13299,7 @@
         "coverage": "Service networks",
         "impact": "E-commerce operators are not subject to licensing under the Law on Permits. While the law does impose several licensing requirements for activities in the field of communication and information technology (such as communication services, domestic postal services, and international postal services) under Article 8.1.9, these licenses do not directly apply to e-commerce operators.",
         "articles": [
-          "Art. 8"
+          "Art. 8.1.9"
         ],
         "timeframe": "Since February 2001, last amended in June 2022",
         "references": [
@@ -13307,7 +13342,7 @@
         "impact": "The National Payment System Law of Mongolia regulates the management, oversight, and security of the country's payment system, ensuring its stability, reliability, and consumer protection. It applies to electronic payments (e-payments), including online transactions, digital wallets, and mobile payments. The law does not mandate the use of foreign currency for international payments, but it does require electronic money within Mongolia to be in MNT. \n\nChapter 8 (Articles 34 and 35) focuses on electronic money transfer and electronic money. Article 35.3 establishes that one unit of e-money must always equal one tögrög (MNT). In other words, electronic money must be transacted in MNT since e-money cannot be issued in foreign currencies. However, cross-border or international transactions are not explicitly addressed under this Chapter.",
         "articles": [
           "Art. 34",
-          "Art. 35"
+          "Art. 35.3"
         ],
         "timeframe": "Since May 2017",
         "references": [
@@ -13375,7 +13410,8 @@
         "coverage": "Horizontal",
         "impact": "The National Payment System Law of Mongolia regulates the management, oversight, and security of the country's payment system, ensuring its stability, reliability, and consumer protection. It applies to electronic payments (e-payments), including online transactions, digital wallets, and mobile payments. \n\nAccording to Article 2 (Legislation on the National Payment System), if an international agreement of Mongolia provides otherwise than the legislation on the national payment system, the provisions of the international agreement shall apply (Article 2.2)",
         "articles": [
-          "Art. 2"
+          "Art. 2",
+          "Art. 2.2"
         ],
         "timeframe": "Since May 2017",
         "references": [
@@ -13398,9 +13434,11 @@
         "impact": "The National Payment System Law of Mongolia regulates the management, oversight, and security of the country's payment system, ensuring its stability, reliability, and consumer protection. It applies to electronic payments (e-payments), including online transactions, digital wallets, and mobile payments. The law does not impose restrictive licensing conditions regarding nationality or residency, allowing both domestic and foreign entities to apply for a payment service provider license as long as they meet the regulatory requirements.\n\nAccording to Article 10 (Permission Granted by the Bank of Mongolia), the Bank of Mongolia issues licenses to conduct specific activities, including electronic transfers of funds (Article 10.1.9) and issuance of electronic money (Article 10.1.10).\n- An applicant for a license to provide payment services or engage in activities related to payment services must submit the documents prescribed under Article 11, such as the state registration certificate and documents outlining measures to protect customer funds, to the Bank of Mongolia.\n- The applicant must meet the requirements set forth under Article 12, including the capital adequacy ratio and equity ratio determined by the Bank of Mongolia, demonstrate technical and organizational capabilities, and submit a five-year business plan.\n\nAdditionally, Article 35.1 (Electronic Money and Requirements for Issuers) states that only entities licensed under the Bank of Mongolia’s regulations can issue electronic money.",
         "articles": [
           "Art. 10",
+          "Art. 10.1.9",
+          "Art. 10.1.10",
           "Art. 11",
           "Art. 12",
-          "Art. 35"
+          "Art. 35.1"
         ],
         "timeframe": "Since May 2017",
         "references": [
@@ -13442,8 +13480,8 @@
         "coverage": "Electronic money",
         "impact": "The procedure is issued under the to determine the requirements for applicants for a license to operate specified in Article 10.1 of the Law on the National Payment System by the Bank of Mongolia. \n\nAccording to Article 5.40 (Conditions for the authorization of the holder of an electronic money issuance license), electronic money issuers must adhere to specific transaction limits to ensure secure and responsible use. For registered users, the maximum amount of electronic money that can be held in a single account is 20 million tugriks. In contrast, unregistered users are subject to stricter limits: their accounts may hold no more than 100,000 tugriks, and their daily spending is capped at 40,000 tugriks. Additionally, the amount a user can spend in a single transaction must not exceed the threshold set for small-value transactions, as determined by an official order from the President of the Bank of Mongolia.",
         "articles": [
-          "Art. 10",
-          "Art. 5"
+          "Art. 10.1",
+          "Art. 5.40"
         ],
         "timeframe": "Since May 2023",
         "references": [
@@ -13505,7 +13543,7 @@
         "coverage": "Horizontal",
         "impact": "According to Article 38.1.15 of the Law on Customs Tariffs and Customs Taxes of Mongolia, international mail parcels sent in the name of an individual with a value not exceeding ten times the monthly minimum wage and not containing more than two goods of the same type, are exempt from customs tax. \n\nAs for trading partners, Mongolia is a country with low income and a small market with few buyers, so achieving a stable market share is a relative concept. Mongolia has no legislation directly determining the \"de minimise\" rule.",
         "articles": [
-          "Art. 38"
+          "Art. 38.1.15"
         ],
         "timeframe": "Since May 1996, last amended in January 2024",
         "references": [
@@ -13875,7 +13913,8 @@
         "coverage": "Horizontal",
         "impact": "Article 14.2 Regulations for Foreign Citizens in Executive Positions\n\nThe procedure for foreign citizens to hold executive positions in organizations where more than 50% of the authorized capital is owned by the Russian Federation is determined by the Government of the Russian Federation.\n\nArticle 14.3 Regulations for Foreign Citizens in Accounting Positions\n\nA foreign citizen who temporarily or permanently resides in the Russian Federation and meets the legal requirements of the Russian Federation may hold the position of chief accountant or another official responsible for accounting.",
         "articles": [
-          "Art. 14"
+          "Art. 14.2",
+          "Art. 14.3"
         ],
         "timeframe": "Since July 2002, last amended in December 2024",
         "references": [
@@ -13918,7 +13957,8 @@
         "coverage": "Horizontal",
         "impact": "Article 6.3. Transactions carried out by foreign states, international organizations, or organizations under their control, which result in these foreign states, international organizations, or organizations under their control acquiring the right to directly or indirectly dispose of more than 25 percent of the total number of votes attached to voting shares (stakes) constituting the authorized capital of a Russian business entity, or otherwise gaining the ability to block decisions of the governing bodies of such a business entity, are subject to prior approval.\n\nArticle 6.5 For the purposes of ensuring national defense and state security, transactions carried out by foreign investors in relation to Russian business entities are subject to prior approval by decision of the Chairman of the Government Commission. For the purposes of this article, foreign investors also include citizens of the Russian Federation who hold another citizenship and organizations controlled by foreign investors, including those established within the territory of the Russian Federation.",
         "articles": [
-          "Art. 6"
+          "Art. 6.3",
+          "Art. 6.5"
         ],
         "timeframe": "Since June 1999, last amended in August 2024",
         "references": [
@@ -14058,7 +14098,7 @@
         "articles": [
           "Art. 1384",
           "Art. 1392",
-          "Art. 1406"
+          "Art. 1406.1"
         ],
         "timeframe": "Since December 2006, last amended in March 2023",
         "references": [
@@ -14152,7 +14192,7 @@
         "impact": "Article 15 amended Article 10.1 of the Federal Law No. 149-FZ of July 27, 2006, \"On Information, Information Technologies and the Protection of Information\" by adding paragraph 4.1 as follows:\n\n\"4.1. The organizer of information dissemination on the Internet is required, when using additional encryption for the reception, transmission, delivery, and (or) processing of electronic messages of Internet users, and (or) when providing Internet users with the ability to apply additional encryption to electronic messages, to submit to the federal executive body responsible for security the necessary information for decoding the received, transmitted, delivered, and (or) processed electronic messages.\"\n\nIn order words, if a service uses encryption (such as end-to-end encryption, secure messaging, or cryptographic protections), it must provide the decryption keys or any necessary information to state authorities for accessing encrypted communications.",
         "articles": [
           "Art. 15",
-          "Art. 10"
+          "Art. 10.1"
         ],
         "timeframe": "Since July 2016",
         "references": [
@@ -14240,7 +14280,7 @@
         "coverage": "Horizontal",
         "impact": "Article 6.3. Transactions carried out by foreign states, international organizations, or organizations under their control, which result in these foreign states, international organizations, or organizations under their control acquiring the right to directly or indirectly dispose of more than 25 percent of the total number of votes attached to voting shares (stakes) constituting the authorized capital of a Russian business entity, or otherwise gaining the ability to block decisions of the governing bodies of such a business entity, are subject to prior approval.\n\nHowever, there is currently no specific foreign equity control applicable to the telecommunication sector.",
         "articles": [
-          "Art. 6"
+          "Art. 6.3"
         ],
         "timeframe": "Since June 1999, last amended in August 2024",
         "references": [
@@ -14373,8 +14413,8 @@
         "coverage": "Horizontal",
         "impact": "Article 12.7. The cross-border transfer of personal data may be prohibited or restricted for the purposes of protecting the constitutional order of the Russian Federation, public morals, health, rights and legitimate interests of citizens, ensuring national defense and state security, protecting the economic and financial interests of the Russian Federation, and ensuring diplomatic and international legal protection of the rights, freedoms, and interests of Russian citizens, sovereignty, security, territorial integrity of the Russian Federation, and other national interests on the international stage — starting from the date on which a decision is made by the authorized body for the protection of the rights of personal data subjects, as provided for in part 12 of this article.\n\nArticle 18.5. When collecting personal data, including via the information and telecommunications network \"Internet\", the operator must ensure the recording, systematization, accumulation, storage, clarification (updating, modification), and retrieval of personal data of citizens of the Russian Federation using databases located within the territory of the Russian Federation, except in the cases listed in points 2, 3, 4, and 8 of Part 1 of Article 6 of this Federal Law. (effective from September 1, 2015)",
         "articles": [
-          "Art. 12",
-          "Art. 18",
+          "Art. 12.7",
+          "Art. 18.5",
           "Art. 6"
         ],
         "timeframe": "Since July 2006, last amended in February 2025",
@@ -14440,7 +14480,7 @@
         "coverage": "Horizontal",
         "impact": "Article 10.1.3: The organizer of information dissemination on the Internet is obliged to store on the territory of the Russian Federation:\n\n1) information on the facts of receipt, transmission, delivery and (or) processing of voice information, written text, images, sounds, video or other electronic messages of Internet users and information about these users within one year from the date of the end of such actions;\n\n2) text messages of Internet users, voice information, images, sounds, video, other electronic messages of Internet users up to six months from the end of their reception, transmission, delivery and (or) processing. The procedure, terms and scope of storage of the information specified in this subparagraph shall be established by the Government of the Russian Federation.",
         "articles": [
-          "Art. 10"
+          "Art. 10.1.3"
         ],
         "timeframe": "Since July 2006, last amended in July 2024",
         "references": [
@@ -14462,7 +14502,7 @@
         "coverage": "Horizontal",
         "impact": "Article 18.5. When collecting personal data, including via the information and telecommunications network \"Internet\", the operator must ensure the recording, systematization, accumulation, storage, clarification (updating, modification), and retrieval of personal data of citizens of the Russian Federation using databases located within the territory of the Russian Federation, except in the cases listed in points 2, 3, 4, and 8 of Part 1 of Article 6 of this Federal Law. (effective from September 1, 2015)",
         "articles": [
-          "Art. 18",
+          "Art. 18.5",
           "Art. 6"
         ],
         "timeframe": "Since July 2006, last amended in February 2025",
@@ -14577,7 +14617,7 @@
         "coverage": "News aggregators",
         "impact": "According to Article 1.10, Russian news aggregators are required to store the news disseminated, information about the news source, as well as information about the terms of its dissemination for six months, and to provide access to such information to the Russian Federal Service for Supervision of Telecom, Information Technologies and Mass Media.",
         "articles": [
-          "Art. 1"
+          "Art. 1.10"
         ],
         "timeframe": "Since January 2017",
         "references": [
@@ -14599,7 +14639,7 @@
         "coverage": "Horizontal",
         "impact": "Article 10.1. Duties of an Organizer of Information Dissemination on the Internet\n\nPart 3. The organizer of information dissemination on the Internet is obliged to store the following on the territory of the Russian Federation:\n\n1. Information on the facts of reception, transmission, delivery, and/or processing of voice information, written texts, images, sounds, videos, or other electronic messages of Internet users, and information about such users — for one year from the moment the actions are completed;\n\n2. Text messages of Internet users, voice data, images, sounds, videos, and other electronic messages of Internet users — for up to six months from the moment of their reception, transmission, delivery, and/or processing. The procedure, period, and scope of storage of the information specified in this subparagraph shall be established by the Government of the Russian Federation. (Effective July 1, 2018)",
         "articles": [
-          "Art. 10"
+          "Art. 10.1"
         ],
         "timeframe": "Since July 2006, last amended in July 2024",
         "references": [
@@ -14622,7 +14662,7 @@
         "impact": "Part 1 of Article 64 of the Federal Law of July 7, 2003 No. 126-FZ “On Communications” - telecom operators are required to store on the territory of the Russian Federation: information about the facts of reception, transmission, delivery and (or) processing of voice information, text messages, images, sounds , video or other messages from users of communication services - within three years from the date of completion of such actions; text messages from users of communication services, voice information, images, sounds, video, and other messages from users of communication services - up to six months from the end of their reception, transmission, delivery and (or) processing. The procedure, terms and volume of storage of the information specified in this subparagraph are established by the Government of the Russian Federation.\n\nFurthermore, Article 56.2 requires owners of technological communication networks with an autonomous system number to store, within the territory of the Russian Federation, data on the receipt, transmission, delivery, and processing of voice, text, images, video, and other electronic messages—along with user interaction data and user information—for a period of three years from the date of the activity.",
         "articles": [
           "Art. 64",
-          "Art. 56"
+          "Art. 56.2"
         ],
         "timeframe": "Since July 2003, last amended in December 2024",
         "references": [
@@ -14645,7 +14685,7 @@
         "impact": "According to Article 19 of the Law No. 152-FZ, the data operator should take all reasonable organizational and technical measures when processing personal data in order to prevent unauthorized access to personal data, its destruction, alteration, blocking, copying, distribution or conduct of other illegitimate acts. \nArticle 22.1 of the Law which has been in force since 2011 requires appointment of a person responsible for organizing the processing of personal data. This person is responsible for organizing the processing of personal data and should:\n1) exercise internal control over compliance by the operator and its employees with the legislation of the Russian Federation concerning personal data, including requirements relating to the protection of personal data;\n2) make employees of the operator aware of the provisions of the legislation of the Russian Federation concerning personal data, of by-laws on the processing of personal data and of requirements relating to the protection of personal data;\n3) organize the acceptance and processing of applications and requests from data subjects or their representatives and (or) to exercise control over the acceptance and processing of such applications and requests.",
         "articles": [
           "Art. 19",
-          "Art. 22"
+          "Art. 22.1"
         ],
         "timeframe": "Since July 2006, last amended in February 2025",
         "references": [
@@ -14711,7 +14751,7 @@
         "coverage": "Hortizontal",
         "impact": "Article 10.1. Obligations of an Organizer of Information Dissemination on the Internet\n\n3. (Amended by Federal Law No. 374-FZ of July 6, 2016, effective July 20, 2016) The organizer is obliged to store the following on the territory of the Russian Federation:\n\n- Information on the fact of reception, transmission, delivery, and/or processing of voice data, written texts, images, sounds, videos, or other electronic messages of Internet users and information about these users — for one year from the completion of such actions;\n\n- The content of text messages, voice data, images, sounds, videos, and other electronic messages — for up to six months from the completion of their reception, transmission, delivery, and/or processing. The procedure, terms, and scope of storage are defined by the Government.\n\n3.1. (Amended by Federal Law No. 241-FZ of July 29, 2017, effective January 1, 2018)\nThe organizer must provide this information to authorized state bodies conducting operational-search activities or ensuring national security, in cases established by law.\n\n4.1. (Added by Federal Law No. 374-FZ, effective July 20, 2016)\nIf the organizer provides additional encryption of electronic messages or enables users to encrypt them, they must provide decryption information to the federal security authority to decode the transmitted, received, delivered, and/or processed messages.\n\n4.2. (Added by Federal Law No. 241-FZ, effective January 1, 2018)\nIf the organizer only facilitates user-to-user encrypted messaging (i.e., not public posting), and does not allow the public posting or distribution to an undefined group, the organizer (i.e., instant messaging service provider) must provide information about users at the request of an authorized federal executive body; the scope and procedure are defined by the Government.",
         "articles": [
-          "Art. 10"
+          "Art. 10.1"
         ],
         "timeframe": "Since July 2006, last amended in July 2024",
         "references": [
@@ -14733,7 +14773,7 @@
         "coverage": "Internet Service Providers",
         "impact": "The Law establishes a safe harbor for Internet Service Providers (ISPs) in certain cases. \n\nAccording to Article 1253.1, an information intermediary transferring material in an information and telecommunication network is not responsible for the violation of IP rights resulting from this transfer, provided that the following conditions simultaneously exist: (i) he is not the initiator of this transfer and does not determine the recipient of the specified material; (ii) he does not change the specified material when providing communication services, with the exception of changes made to ensure the technological process of transferring the material; (iii) he did not know and should not have known that the use of the corresponding result of intellectual activity or means of individualization by the person who initiated the transfer of material containing the corresponding result of intellectual activity or means of individualization is illegal.\n\nIn addition, according to the Article, an information intermediary providing the possibility of posting material in an information and telecommunications network is not responsible for the violation of IP rights that occurred as a result of posting of materials in the network by a third party or at his direction, while the intermediary observes the following conditions: (i) he did not know and should not have known that the use of the corresponding result of intellectual activity or means of individualization contained in such material is illegal; (ii) in case of receiving in writing a statement of the copyright holder about the infringement of intellectual rights with an indication of the website page and (or) the network address on the Internet on which such material is posted, he took the necessary and sufficient measures in a timely manner to stop the infringement of intellectual rights. (the so-called \"Notice and take down\" rule). \n\nThe information intermediary who is not held responsible for the violation of IP rights accordingly, may be subject to claims for the protection of IP rights including the removal of information that violates exclusive rights, or restricting access to it.",
         "articles": [
-          "Art. 1253"
+          "Art. 1253.1"
         ],
         "timeframe": "Since December 2006, last amended in March 2023",
         "references": [
@@ -14755,7 +14795,7 @@
         "coverage": "Internet Service Providers",
         "impact": "As of now, the Russian legal framework does not provide a safe harbour regime for intermediaries in relation to other unlawful activities.\n\nInstead of a safe harbour provision, Article 15.1-1 of Federal Law No. 149-FZ of 27 July 2006 provides for a procedure for restricting access to information expressing in an indecent form that offends human dignity and public morals, a clear disrespect for society, the State, the official State symbols of the Russian Federation, the Constitution of the Russian Federation or the bodies exercising State power in the Russian Federation. \n\nIn the event that such information is found in information and telecommunications networks, including the Internet, the Prosecutor General of the Russian Federation or his deputies shall apply to Roskomnadzor with a request to take measures to remove the said information and to restrict access to information resources disseminating the said information if it is not removed. Roskomnadzor sends to the hosting provider or other person providing hosting of the said information resource serving the owner of the Internet site where the information is placed a notice of violation of the procedure for dissemination of information. The hosting provider shall be obliged to inform the owner of the information resource served by them about it and notify him/her of the need to immediately remove the information (hereinafter - notification). Within twenty-four hours of receiving the notice from the hosting provider, the owner of the information resource is obliged to remove such information. In case of refusal or inaction of the owner of the information resource, the hosting provider is obliged to restrict access to the relevant information resource immediately upon expiry of twenty-four hours from the moment of receipt of the notice.",
         "articles": [
-          "Art. 15"
+          "Art. 15.1"
         ],
         "timeframe": "Since July 2006, last amended in July 2024",
         "references": [
@@ -14778,7 +14818,7 @@
         "coverage": "Instant messaging services",
         "impact": "Amendments to the Federal Law No. 149-FZ introduced by Federal Law No. 241 prohibit the anonymous use of instant message (“IM”) services. \n\nArticle 10.1 part 4.2 of the Law No.149-FZ states that providers are obliged to identify users of the instant messaging service by the subscriber number of the mobile radiotelephone operator in the manner established by the Government of the Russian Federation, on the basis of an identification agreement concluded by the organizer of the instant messaging service with the mobile radiotelephone operator.",
         "articles": [
-          "Art. 10"
+          "Art. 10.1"
         ],
         "timeframe": "Since July 2006, last amended in July 2024;\n\nSince January 2018",
         "references": [
@@ -14846,8 +14886,8 @@
         "coverage": "Internet service providers (ISPs)",
         "impact": "Under Article 10.6 paragraph 1 subparagraph 5, the owner of a social network must “carry out monitoring of the social network for the purpose of detecting” prohibited materials and information listed in subparagraphs “a” through “k”.\n\nArticle 15.8 prohibits internet intermediaries from providing access to websites and information resources that are designated as “resources with restricted access” by Roskomnadzor. The Law requires Roskomnadzor to create a national information database of online resources and services to which access is prohibited in Russia. Internet service providers (ISPs) will be required to identify those owners of resources who do not block access to prohibited online resources and report them to the Roskomnadzor within three days. Operators of online search engines are required to block links to websites included in the database of prohibited online resources. If the owner of the network or information resource continues to ignore the requirement to block access to restricted websites, its Internet connection can be terminated by the ISP within 24 hours.",
         "articles": [
-          "Art. 10",
-          "Art. 15"
+          "Art. 10.6",
+          "Art. 15.8"
         ],
         "timeframe": "Since July 2006, last amended in July 2024",
         "references": [
@@ -14869,7 +14909,7 @@
         "coverage": "Web content",
         "impact": "Article 3.3 of the law lays out a legal mechanism for restricting or blocking online resources (such as websites, apps, or platforms) that are accused of infringing on the rights and freedoms of Russian citizens, particularly regarding freedom of information and freedom of the press.\n\nA platform can be labeled as violating fundamental rights and freedoms if it:\n- Restricts access to socially significant information (including media content) within Russia,\n- Does this based on discriminatory criteria such as nationality, language, profession, place of residence, etc.,\n- Or, restricts content because of foreign sanctions imposed on Russia, its citizens, or companies.\n\nThe Prosecutor General (or their deputies), in consultation with the Russian Foreign Ministry, decides whether an Internet resource owner is involved in such violations.\n\nOnce designated:\n1. The platform is added to a public blacklist on Roskomnadzor’s website.\n2. The government issues a formal warning to the platform, demanding it stops the alleged violations (e.g., lifting bans, unblocking users, etc.).\n3. If the platform doesn’t comply, the government may block access to it in Russia using technical means (like DNS blocking or Deep Packet Inspection).",
         "articles": [
-          "Art. 3"
+          "Art. 3.3"
         ],
         "timeframe": "Since December 20012, last amended in December 2024",
         "references": [
@@ -14891,7 +14931,7 @@
         "coverage": "Internet intermediaries",
         "impact": "According to the Article 13.34 of the Administrative Offenses Code, ISPs that do not block banned sites according to the information received from state regulator Roskomnadzor will be required to pay between 100,000-500,000 Rubles (1090 USD - 5435 USD)  penalty. The officials of those legal entities (ISPs) will face fines of 5,000-30,000 Rubles (59 USD - 354 USD) for failing to implement Roskomnadzor’s instructions. If the actions are repeated during the year the amount of penalties will be 30,000-50,000 Rubles (355 USD - 593 USD) for officials and 500,000-800,000 Rubles (5900 USD - 9440 USD) for ISPs.",
         "articles": [
-          "Art. 13"
+          "Art. 13.34"
         ],
         "timeframe": "Since December 2001, last amended in February 2024",
         "references": [
@@ -14935,8 +14975,9 @@
         "coverage": "Horizontal",
         "impact": "Article 10.1. Responsibilities of the organizer of information dissemination on the Internet\nPart 4.2 establishes a censorship complicnace regime. It states that if a government authority asks the service to block a user from sending illegal content, the service must do so within 24 hours. “Illegal content” here refers to anything banned under Russian law, like extremism, drugs, or politically sensitive material.\n\nFurthermore, Article 15.1 of Russia's Federal Law No. 149-FZ establishes a legal framework for blocking websites that contain information prohibited from dissemination within the Russian Federation. It introduces the creation of a Unified Register of domain names, web pages, and IP addresses that can be used to identify such content. The register is maintained by Roskomnadzor, Russia's media and communications regulator. Information subject to blocking includes content related to child pornography, drug production and distribution, methods of suicide, illegal gambling, unauthorized online sales of alcohol or pharmaceuticals, and more. Once a site is added to the register, hosting providers must notify site owners and require removal of the content. If the site owners fail to comply, hosting providers and Internet service providers are obligated to restrict access. The article also provides a procedure for appealing inclusion in the register and for removing a site once the violations have been corrected.\n\nArticle 15.8 of the Law stipulates that VPN providers, along with other owners of information and telecommunication networks or resources that enable access to restricted content, are prohibited from allowing users in the Russian Federation to use their services to reach websites or networks that have been officially blocked. The law requires that such providers connect to a federal state information system maintained by Roskomnadzor which contains a registry of banned websites and resources. Once connected, VPN providers are obligated to block access to all listed content. If they do not comply, Roskomnadzor is authorized to identify the provider, issue warnings, and instruct internet service providers to block access to the non-compliant VPNs within 24 hours.",
         "articles": [
-          "Art. 10",
-          "Art. 15"
+          "Art. 10.1",
+          "Art. 15.1",
+          "Art. 15.8"
         ],
         "timeframe": "Since July 2006, last amended in July 2024",
         "references": [
@@ -14959,7 +15000,7 @@
         "coverage": "Mass Media",
         "impact": "Article 56.2 (Suspension of the Activities of a Mass Media Outlet, Invalidation of Its Registration, or Termination of Its Broadcasting License Based on a Request from the Prosecutor General of the Russian Federation or Their Deputies) outlines the legal grounds and procedures for suspending the operations of a mass media outlet in Russia, invalidating its registration, or terminating its broadcasting license. This can occur if the Prosecutor General or their deputies determine that the outlet is distributing false or harmful information under the guise of factual reporting. Such content includes material deemed to threaten public safety, discredit the Russian Armed Forces, encourage illegal public gatherings, or promote extremist activity. The initial suspension can last up to three months and, in the case of repeated violations, up to six months. If the outlet stops spreading the offending content, it may be allowed to resume operations early. If violations persist, the Prosecutor General can request the full revocation of the outlet’s registration or license. The federal media oversight authority is responsible for enforcing these measures and updating official records accordingly.\n\nFurthermore, according to the Open Observatory of Network Interference (a global community measuring internet censorship around the world), as part of their analysis of OONI data collected from Russia between 1st September 2023 to 1st September 2024, OONI confirmed the blocking of 279 domains that are categorized as “News Media (NEWS)” based on the Citizen Lab test list category codes. These domains pertain to a wide range of different types of news media websites, including both foreign (such as BBC, Deutsche Welle, and Voice of America) and independent Russian news media sites (such as Meduza). They also include several Ukrainian news media sites, the Kavkaz Center (a Chechen internet news agency which is also blocked in Kazakhstan), and investigative journalist site Bellingcat – all of which have been blocked in Russia for years.",
         "articles": [
-          "Art. 56"
+          "Art. 56.2"
         ],
         "timeframe": "Since December 1991, last amended in November 2024",
         "references": [
@@ -15027,7 +15068,7 @@
         "coverage": "Online advertising",
         "impact": "The Amendment to the Federal Law On Advertising No. 38-FZ, entered into force in September 2022, requires that all online advertising disseminated within the Russian Federation be properly marked in accordance with Article 18.1 of the law. Marking entails assigning a unique advertising identifier, or token, to each advertisement, labeling the material with the word “advertising,” and disclosing information about the advertiser (i.e., the manufacturer or seller of the advertised product or service). \n\nThis information must be submitted to the Unified Register of Online Advertising (UROA), a centralized database operated by Roskomnadzor. The process involves two key actors: the Advertising Data Operator (ADO), responsible for collecting and transmitting advertising data to the UROA, and the Operator of the Advertising System (OAS), which refers to the platform distributing the advertisement.",
         "articles": [
-          "Art. 18"
+          "Art. 18.1"
         ],
         "timeframe": "Since September 2022",
         "references": [
@@ -15202,7 +15243,7 @@
         "coverage": "Computer software",
         "impact": "According to Article 4.1, ehen selling certain types of technically complex goods with pre-installed computer software, the consumer must be able to use those goods with software originating from the Russian Federation or other member states of the Eurasian Economic Union. The list of such goods, the procedure for compiling and maintaining the list of required pre-installed software, and the rules for such pre-installation, including operational requirements, are defined by the Government of the Russian Federation.\n\nStarting July 1, 2021, any pre-installed software enabling internet access must also ensure, by default and without additional settings, the ability to use a search engine originating from Russia or other EAEU member states. The Government also defines the requirements for this search engine and the procedure for selecting it.When selling certain types of technically complex goods with pre-installed computer software, the consumer must be able to use those goods with software originating from the Russian Federation or other member states of the Eurasian Economic Union. The list of such goods, the procedure for compiling and maintaining the list of required pre-installed software, and the rules for such pre-installation, including operational requirements, are defined by the Government of the Russian Federation.\n\nStarting July 1, 2021, any pre-installed software enabling internet access must also ensure, by default and without additional settings, the ability to use a search engine originating from Russia or other EAEU member states. The Government also defines the requirements for this search engine and the procedure for selecting it.",
         "articles": [
-          "Art. 4"
+          "Art. 4.1"
         ],
         "timeframe": "Since February 1992, last amended in December 2024",
         "references": [
@@ -15518,7 +15559,7 @@
         "coverage": "Foreign payment systems operators",
         "impact": "Article 19.2 introduces the requirement that foreign payment systems must be registered in the Bank of Russia’s official register to operate in the country when handling cross-border transfers. It establishes that a foreign payment system operator must open a representative office in Russia and apply for inclusion in the register by submitting various corporate and procedural documents.\n\nWithout such registration, Russian payment operators are prohibited from accepting transactions via those foreign systems.",
         "articles": [
-          "Art. 19"
+          "Art. 19.2"
         ],
         "timeframe": "Since June 2011, last amended in February 2025",
         "references": [
@@ -15580,7 +15621,7 @@
         "coverage": "Foreign payment systems operators",
         "impact": "Article 9.1 outlines the requirements for accepting and processing electronic payment instruments in the Russian Federation.\n\nThe article states that foreign payment service providers can only operate in Russia if they meet specific conditions, including concluding a formal agreement with a Russian money transfer operator. This agreement must detail responsibilities for dispute resolution, settlement timelines, client identification procedures, and information security in accordance with Central Bank of Russia standards.\n\nThe article further states that electronic payment instruments issued by foreign providers can only be accepted in Russia under strict conditions, including if the foreign provider is included in a register maintained by the Central Bank of Russia.\n\nThis effectively means that if a foreign payment system is not registered with the Bank of Russia and does not have a subsidiary or agreement in place with a local licensed operator, Russian financial institutions are prohibited from processing transactions involving that system.",
         "articles": [
-          "Art. 9"
+          "Art. 9.1"
         ],
         "timeframe": "Since June 2011, last amended in February 2025",
         "references": [
@@ -16035,7 +16076,7 @@
         "impact": "While Thailand does not impose a general nationality requirement for directors, residency requirements are in place for both directors and managers of foreign businesses. Specifically, managers must either reside in Thailand or be permitted to temporarily enter the Kingdom under immigration law.\n\nHowever, for businesses operating under List 2 of the Foreign Business Act (FBA), Section 15 requires that at least two-fifths of the company’s directors be Thai nationals, thereby imposing a nationality requirement in this context. Section 16.2 of the FBA further stipulates that a foreigner applying for a business license must reside in Thailand or be permitted temporary entry. In addition, Section 18 authorizes the Minister to issue Ministerial Regulations prescribing conditions such as the number of foreign directors who must have domicile or residence in Thailand, or the required duration for maintaining minimum capital in the country.\n\nMoreover, the Public Companies Limited Act provides that a board of directors of a public company limited must consist of at least five directors to conduct the business of the company, where shares are publically available, and not less than half of whom shall reside within the country (Section 67). For other kinds of juristic person applying for foreign business license, the board of directors shall have residency or being permitted to temporarily enter into Thailand under the immigration law.",
         "articles": [
           "s. 15",
-          "s. 16",
+          "s. 16.2",
           "s. 18",
           "s. 67"
         ],
@@ -16085,7 +16126,7 @@
         "impact": "Under the Telecommunications Business Act, any person who wishes to operate a telecommunications business in the country is required to obtain a license issued by the National Broadcasting and Telecommunications Commission (NBTC) (Section 7). Regarding the 2020 Notification, issued under the Telecommunications Business Act, telecoms service providers qualifications must include being a juristic person under Thai law, i.e., establish companies in Thailand, and has the main objective for operating telecommunications business (Clause 6.1).",
         "articles": [
           "s. 7",
-          "cl. 6"
+          "cl. 6.1"
         ],
         "timeframe": "Since November 2001, last amended in July 2019;\n\nSince March 2020",
         "references": [
@@ -16132,7 +16173,7 @@
         "coverage": "Satellites Communication Services",
         "impact": "The Notification regarding License Foreign Satellite to Provide Domestic Services and the Notification regarding Criteria and Procedures for Licensing and the Right to Orbit Satellites B.E.2563 are issued under the Organization to Assign Frequency Waves and to Regulate the Radio Broadcasting, Radio Television and Telecommunications Services Act B.E.2553. \n\nThe Notification regarding License Foreign Satellite to Provide Domestic Services aims to accommodate the growing demand for foreign satellite transponders by satellite communication providers in Thailand and to create opportunities for Thai operators to provide services through these transponders. Clause 5.1 provides that the applicant who wishes to operate satellite must be: (1) a limited company or public limited company established as a juristic person under Thai law with an establishment in Thailand, and also (2) a representative of a foreign satellite operator who meets the qualifications prescribe state policy. \n\nMoreover, the Notification regarding Criteria and Procedures for Licensing and the Right to Orbit Satellites allows Thai operators to use foreign satellite channels for services, in line with the government’s policy on permitting foreign satellites to operate in the country. Clause 7 provides that for commercial service, applicants must be a limited or public company established under Thai law, have a business presence in Thailand, and not qualify as a foreign entity under the Foreign Business Act. For government missions or specific non-commercial use: Applicants must be a government agency, state enterprise, or a Thai-incorporated legal entity that is not classified as a foreign entity (Clause 8).",
         "articles": [
-          "cl. 5",
+          "cl. 5.1",
           "cl. 7",
           "cl. 8"
         ],
@@ -16528,8 +16569,9 @@
         "articles": [
           "s. 7",
           "s. 8",
-          "s. 9",
-          "cl. 6"
+          "s. 9.1",
+          "s. 9.2",
+          "cl. 6.1"
         ],
         "timeframe": "Since November 2001, last amended in July 2019;\n\nSince March 2020",
         "references": [
@@ -16553,8 +16595,9 @@
         "coverage": "Satellites Communication Services",
         "impact": "Previously, satellite businesses have been operated under concession contracts. In 2020, Thailand opened its satellite telecommunications services to foreign-owned satellites. Anyone who wants to provide satellite telecommunications services must apply to the National Broadcasting and Telecommunications Commission (NBTC) for a telecommunication services license. Regarding the NBTC Notification, any persons who wish to orbit their satellites in the country must apply for a license and comply with the requirements. \n\nThe Notification regarding License Foreign Satellite to Provide Domestic Services prescribes that the applicant who wishes to operate satellite must be: (1) a limited company or public limited company established as a juristic person under Thai law with an establishment in Thailand, and also (2) a representative of a foreign satellite operator who meets the qualifications prescribe state policy (Clause 5.1).\n\nMoreover, the Notification regarding Criteria and Procedures for Licensing and the Right to Orbit Satellites  B.E.2563 prescribes that individuals seeking to secure Thailand’s or a government agency’s right to use satellite orbital slots must obtain authorization based on a first-come, first-served principle (Clause 4). The rights are categorized into preliminary rights and full rights. Authorization for planned orbital use or existing but unused satellite networks will follow criteria set by the NBTC (Clause 5). Those intending to use the rights for commercial services must obtain full rights and a Type 3 telecommunications business license. \n- For commercial services: Applicants must be a limited or public company established under Thai law, have a business presence in Thailand, and not qualify as a foreign entity under the Foreign Business Act (Clause 7)\n- For government missions or specific non-commercial use: Applicants must be a government agency, state enterprise, or a Thai-incorporated legal entity that is not classified as a foreign entity (Clause 8).",
         "articles": [
-          "cl. 5",
+          "cl. 5.1",
           "cl. 4",
+          "cl. 5",
           "cl. 7",
           "cl. 8"
         ],
@@ -16741,7 +16784,7 @@
         "impact": "The Personal Data Protection Act (PDPA) of Thailand was published in the Government Gazette on 27 May 2019 and fully entry into force on 1 June 2022. Thai PDPA, a general rule on data protection, was drafted based on EU Regulation 2016/679 (GDPR) and governs how personal data is processed, collected, used, disclosed, and transferred. For example, Section 19 states that the Data Controller shall not collect, use, or disclose personal data unless the data subject has given explicit consent, which can be in the written statement or via electronic means. \n\nThe PDPA will join a suite with other legislations related to the digital economy: cybersecurity, consumer protection, etc. Those who violate or fail to comply with the PDPA will incur penalties, including civil, criminal, and administrative liabilities (Chapter VII Penalties). However, the PDPA shall not apply to operations of data undertaken by a credit bureau company (Section 4.6). Therefore, the details of a particular issue are in the Credit Information Business Operation Act. \n\nMoreover, before PDPA, data protection is regulated under specific laws, including the National Health Act (personal health information), Credit Information Business Operation Act  (credit information), Telecommunications Business Act (personal information under the telecom sector), Commission of Computer-Related Offences Act (computer data, computer traffic data), and the Cyber Security Maintenance Act (computer data, computer system).",
         "articles": [
           "s. 19",
-          "s. 4",
+          "s. 4.6",
           "reg. 2016"
         ],
         "timeframe": "Since May 2019",
@@ -17116,7 +17159,8 @@
           "cl. 5",
           "cl. 6",
           "cl. 7",
-          "cl. 12",
+          "cl. 12.1",
+          "cl. 12.2",
           "cl. 9",
           "cl. 13"
         ],
@@ -18011,7 +18055,7 @@
         "coverage": "Computer data, Computer traffic data",
         "impact": "There are no specific encryption standards implemented in Thailand. The Commission of Computer-Related Offences Act B.E.2550 Part 2 (Competent Officials) Section 18.7 provides that in case where there is a reasonable ground to believe that an offence under this Act has been committed or where there is a request under Paragraph 2, the competent official is empowered toTo decrypt any person’s computer data or order a person related to the encryption of the computer data to decrypt it, or cooperate with the competent official to decrypt it.",
         "articles": [
-          "s. 18"
+          "s. 18.7"
         ],
         "timeframe": "Since June 2007, last amended in January 2017",
         "references": [
@@ -18251,7 +18295,7 @@
         "coverage": "E-money",
         "impact": "There is no requirement to use the local currency for international payments in Thailand. Clause 4.2 of the Notification (Regulations on undertaking electronic money service business) provides that the business providers of designated electronic money services shall comply with the following regulations, including 4.2.2 Electronic money services must be recorded the value of money in Thai baht or in foreign currencies.",
         "articles": [
-          "cl. 4"
+          "cl. 4.2"
         ],
         "timeframe": "Since April 2018",
         "references": [
@@ -18303,7 +18347,7 @@
         "articles": [
           "s. 13",
           "s. 14",
-          "cl. 4"
+          "cl. 4.2"
         ],
         "timeframe": "Since April 2018; \n\nSince April 2018",
         "references": [
@@ -18327,7 +18371,7 @@
         "coverage": "E-money",
         "impact": "Clause 4.2 (Regulations on undertaking electronic money service business) of the Notification provides that the business providers of designated electronic money services shall comply with the following regulations, including 4.2.2  Specify the maximum value of electronic money that can be used per card or per account based on appropriateness to service users and sound risk management.",
         "articles": [
-          "cl. 4"
+          "cl. 4.2"
         ],
         "timeframe": "Since April 2018",
         "references": [
@@ -18412,7 +18456,7 @@
         "coverage": "Horizontal",
         "impact": "There are no legal mechanisms or regulations currently in place to impose customs duties on electronic transmissions. Under the Customs Act, Section 13, it is specified that for the importation of goods into or exportation of goods out of the Kingdom, a duty shall be collected from the importer or exporter in accordance with this Act and the law on customs tariffs. The calculation of duties for goods imported into or exported out of the Kingdom shall be based on the nature of the goods, their customs value, the applicable customs tariff, and the duty rate at the time of importation completion (Sections 14 and 15).\n\nMoreover, Thailand is a member of the World Trade Organization's (WTO) Joint Statement Initiative (JSI) on Electronic Commerce. The WTO JSI stabilized text Article 11.3 (Customs duties on electronic transmissions) provides that no Party shall impose customs duties on electronic transmissions between a person of one Party and a person of another Party.\n\nThailand currently adheres to the practice of not imposing customs duties on electronic transmissions, in accordance with the Ministerial Decision adopted at MC13. Furthermore, Thailand took part in the WTO Joint Statement Initiative (JSI) on Electronic Commerce and was actively engaged in the negotiations. Although the negotiation phase has concluded, Thailand's status with respect to the final agreement remains under consideration.",
         "articles": [
-          "Art. 11",
+          "Art. 11.3",
           "s. 13",
           "s. 14"
         ],
@@ -18551,7 +18595,7 @@
           "cl. 5",
           "cl. 6",
           "cl. 7",
-          "cl. 9",
+          "cl. 9.3",
           "cl. 13"
         ],
         "timeframe": "Since August 2021",
