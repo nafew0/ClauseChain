@@ -1,8 +1,8 @@
 {
  "economy": "Malaysia",
  "pillar": 6,
- "run": "run-my-p6-1783837704",
- "krippendorff_alpha": 0.732,
+ "run": "run-my-p6-1784112136",
+ "krippendorff_alpha": 1.0,
  "indicators": {
   "P6-I1": {
    "deterministic": 0.0,
@@ -11,17 +11,17 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "No evidence was found that the economy imposes any ban or local processing requirement on personal data or applies such requirements horizontally (or on non-per"
+     "reason": "No evidence was found that the economy\u2019s rules impose any ban or local processing requirement on personal data or apply such requirements horizontally (or on no"
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "No evidence was found (pending review) of any ban or local processing requirement applying to personal data or any horizontal/non-personal-specific data under t"
+     "reason": "No evidence was found (pending review) of any ban or local processing requirement for personal data or any horizontal/non-personal-specific requirement affectin"
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "No verified evidence was found that the economy imposes any ban or local processing requirement on personal data or non-personal/specific data (horizontal or ot"
+     "reason": "No evidence was found (pending review) of any ban or local processing requirement applying to personal data or horizontally, so the indicator cannot be credited"
     }
    ],
    "band": [
@@ -33,31 +33,31 @@
    "reviewer_decision": "pending"
   },
   "P6-I2": {
-   "deterministic": 0.5,
-   "deterministic_reason": "sectoral/specific-data measure(s) only -> 0.5",
+   "deterministic": 0.0,
+   "deterministic_reason": "no qualifying measure found (absence row) -> 0",
    "judges": [
     {
      "persona": "strict",
-     "score": 1.0,
-     "reason": "Section 24(2)(c) requires records to be kept in Malaysia (subject to approval), which is a local storage requirement and applies to tax record-keeping."
+     "score": 0.0,
+     "reason": "The provided evidence states no local-storage requirement was found (NO_EVIDENCE_FOUND_PENDING_REVIEW), so the criterion is not met."
     },
     {
      "persona": "ESCAP",
-     "score": 1.0,
-     "reason": "The Services Tax Act 2018 (Act 807) s.24(2)(c) requires tax records to be kept in Malaysia (subject to DG approval), which is a local-storage requirement for no"
+     "score": 0.0,
+     "reason": "No gate-verified evidence was found for any local storage requirement for personal data or any non-personal/specific-data storage rule under the cited Act 709 ("
     },
     {
      "persona": "skeptical",
-     "score": 1.0,
-     "reason": "The Act requires tax/service records to be kept in Malaysia (with only limited director-general approval), which constitutes a local storage requirement and is "
+     "score": 0.0,
+     "reason": "No gate-verified evidence was found showing any local storage requirement for personal data or any horizontal/non-personal specific storage rule."
     }
    ],
    "band": [
-    0.5,
-    1.0
+    0.0,
+    0.0
    ],
-   "spread": 0.5,
-   "flag_for_review": true,
+   "spread": 0.0,
+   "flag_for_review": false,
    "reviewer_decision": "pending"
   },
   "P6-I3": {
@@ -67,7 +67,7 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "No evidence was found in the provided text that any local infrastructure (e.g., a data centre/server) is required as a precondition for service or as a conditio"
+     "reason": "No evidence was found (pending review) of any infrastructure requirement such as a local data centre/server as a precondition of service or as a condition for d"
     },
     {
      "persona": "ESCAP",
@@ -77,7 +77,7 @@
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "No gate-verified evidence was found showing any infrastructure requirement (e.g., local data centre/server as a precondition or transfer conditioned on infrastr"
+     "reason": "No gate-verified evidence was found that any service or data transfer is conditioned on local data-centre/server infrastructure, and the only cited act is marke"
     }
    ],
    "band": [
@@ -95,25 +95,25 @@
     {
      "persona": "strict",
      "score": 1.0,
-     "reason": "The cited provisions impose conditional regimes on transfers of personal data outside Malaysia (e.g., consent and specified/approved destinations), and at least"
+     "reason": "The evidence shows conditional cross-border transfer rules for personal data under the Personal Data Protection Act (Act 709) applying horizontally (e.g., conse"
     },
     {
      "persona": "ESCAP",
      "score": 1.0,
-     "reason": "The evidence shows conditional cross-border transfer rules for personal data under the Personal Data Protection Act (e.g., consent and minister-specified condit"
+     "reason": "The law and banking code impose conditional cross-border transfer regimes for personal data (e.g., consent, specified destinations, and sufficient data protecti"
     },
     {
      "persona": "skeptical",
-     "score": 0.5,
-     "reason": "The evidence shows conditional cross-border transfer rules apply to personal data (consent, minister-specified countries, and contractual safeguards) but the on"
+     "score": 1.0,
+     "reason": "The evidence shows conditional cross-border transfer rules for personal data (consent and minister-specified/sufficient protection requirements) that apply hori"
     }
    ],
    "band": [
-    0.5,
+    1.0,
     1.0
    ],
-   "spread": 0.5,
-   "flag_for_review": true,
+   "spread": 0.0,
+   "flag_for_review": false,
    "reviewer_decision": "pending"
   }
  },

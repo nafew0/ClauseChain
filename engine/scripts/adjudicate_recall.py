@@ -36,7 +36,7 @@ load_env_file()
 
 from packages.discovery.diff import KnownIndex, laws_match, section_base, section_matches  # noqa: E402
 from packages.graph.sqlite_graph import SqliteGraphStore  # noqa: E402
-from packages.ingest.known_index import base_ref, extract_refs  # noqa: E402
+from packages.ingest.known_index import base_ref, expected_anchors  # noqa: E402
 
 ECONOMY_OF = {"si": "Singapore", "ma": "Malaysia", "au": "Australia"}
 
@@ -80,12 +80,15 @@ def main() -> int:
             if (e.get("source") != "master"
                     or not re.fullmatch(rf"P{pillar}-I\d+", str(e.get("indicator_code", "")))):
                 continue
-            laws = e.get("acts_norm", [e.get("act_norm")])
-            for ref in e.get("articles", []):
+            for anchor in expected_anchors(e):
+                ref = anchor["ref"]
+                laws = anchor.get("laws_norm") or e.get("acts_norm", [e.get("act_norm")])
                 gold.append({"anchor_id": f"{row_index}:{ref}", "laws": laws,
                              "base": base_ref(ref), "ref": ref,
                              "indicator": e.get("indicator_code"),
-                             "act_display": e.get("act", laws[0] if laws else "")})
+                             "act_display": e.get("act", laws[0] if laws else ""),
+                             "anchor_role": anchor.get("role"),
+                             "anchor_reason": anchor.get("reason")})
 
         corpus = corpus_units(store, economy)
         run_stats = {"gold": len(gold), "matched": 0, "NOT_IN_CORPUS": 0,

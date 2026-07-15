@@ -24,8 +24,14 @@ def main() -> int:
     report: dict = {"status": "FAIL", "failures": failures, "runs": {}}
     if not args.skip_tests:
         test = subprocess.run([sys.executable, "-m", "pytest", "-q"], capture_output=True, text=True)
+        test_lines = (test.stdout + test.stderr).strip().splitlines()
+        test_summary = next(
+            (line for line in reversed(test_lines)
+             if " passed" in line or " failed" in line or " error" in line.lower()),
+            test_lines[-1] if test_lines else "no test output",
+        )
         report["tests"] = {"passed": test.returncode == 0,
-                           "summary": (test.stdout + test.stderr).strip().splitlines()[-1:]}
+                           "summary": [test_summary]}
         if test.returncode:
             failures.append("automated test suite failed")
 
@@ -87,10 +93,21 @@ def main() -> int:
 
     candidate_path = Path("submission/consolidated.json")
     candidates = json.loads(candidate_path.read_text()).get("rows", []) if candidate_path.is_file() else []
+    citation_rows = [r for r in candidates if r.get("citation_proof")]
+    absence_rows = [r for r in candidates if not r.get("citation_proof")
+                    and r.get("search_coverage_manifest")
+                    and str(r.get("Article / Section", r.get("article_section", ""))).lower() == "n/a"]
+    incomplete_evidence = [r for r in candidates if not r.get("citation_proof") and not (
+        r.get("search_coverage_manifest")
+        and str(r.get("Article / Section", r.get("article_section", ""))).lower() == "n/a")]
     report["candidates"] = {"rows": len(candidates),
         "pending_review": sum(r.get("reviewer_decision", "pending") != "approved" for r in candidates),
-        "complete_citation_proof": sum(bool(r.get("citation_proof")) for r in candidates),
+        "citation_proof_rows": len(citation_rows),
+        "absence_manifest_rows": len(absence_rows),
+        "complete_evidence_contract": len(candidates) - len(incomplete_evidence),
         "in_force": sum(r.get("Status", r.get("status")) == "in_force" for r in candidates)}
+    if incomplete_evidence:
+        failures.append(f"{len(incomplete_evidence)} candidates lack CitationProof or an absence manifest")
     if report["candidates"]["pending_review"]:
         failures.append("candidate findings still require named human decisions")
 

@@ -19,7 +19,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from packages.ingest.known_index import base_ref, extract_refs, normalize_law_name  # noqa: E402
+from packages.ingest.known_index import (base_ref, expected_anchors, extract_refs,
+                                         normalize_law_name)  # noqa: E402
 
 INDICATOR_RE = re.compile(r"^P(\d{1,2})-I\d{1,2}$")
 PARAGRAPH_RE = re.compile(r"\(\w{1,3}\)")
@@ -43,9 +44,10 @@ def main() -> int:
     # a master row may pack several laws into one Act cell — match against each
     known_laws = {name for e in known for name in e.get("acts_norm", [e["act_norm"]])}
     known_provisions = [
-        {"id": f"{i}:{article}", "laws": e.get("acts_norm", [e["act_norm"]]),
-         "article": base_ref(article), "indicator": e.get("indicator_code")}
-        for i, e in enumerate(known) for article in e["articles"]
+        {"id": f"{i}:{anchor['ref']}",
+         "laws": anchor.get("laws_norm") or e.get("acts_norm", [e["act_norm"]]),
+         "article": base_ref(anchor["ref"]), "indicator": e.get("indicator_code")}
+        for i, e in enumerate(known) for anchor in expected_anchors(e)
     ]
 
     with open(args.output, newline="", encoding="utf-8") as file:

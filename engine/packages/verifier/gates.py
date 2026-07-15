@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import re
 import unicodedata
-from datetime import datetime
+from datetime import date, datetime
 from urllib.parse import urlparse
 
 from packages.core.schemas import GateResult
@@ -98,8 +98,11 @@ def g4_currentness(current_as_at: str | None, status: str = "in_force") -> GateR
         return GateResult(gate_id="G4", status="WARN",
                           reason="no current-version assertion found on the source page")
     try:
-        as_at = datetime.strptime(current_as_at, "%d %b %Y")
-        reason = f"official portal asserts current version as at {as_at.date().isoformat()}"
+        try:
+            as_at = datetime.strptime(current_as_at, "%d %b %Y").date()
+        except ValueError:
+            as_at = date.fromisoformat(current_as_at)
+        reason = f"official portal asserts current version as at {as_at.isoformat()}"
         return GateResult(gate_id="G4", status="PASS", reason=reason)
     except ValueError:
         return GateResult(gate_id="G4", status="WARN",
@@ -113,7 +116,24 @@ _TRANSFER = re.compile(r"transfer|transmit|send|disclos\w+ to .{0,40}(outside|ab
 _RETAIN = re.compile(r"retain|keep|preserve|maintain|stor\w+", re.I)
 _DURATION = re.compile(r"(period of|not less than|at least|minimum of)?\s*\w*\s*(year|month|day|week)s?", re.I)
 _RECORDS = re.compile(r"record|data|document|book|information|register", re.I)
+_INFRASTRUCTURE = re.compile(r"server|data cent(?:re|er)|comput(?:er|ing) (?:system|facility)|infrastructure|facility", re.I)
+_DOMESTIC_LOCATION = re.compile(
+    r"\b(?:local|domestic(?:ally)?)\b|\b(?:located|established|maintained|hosted)\b"
+    r".{0,35}\b(?:in|within)\b(?!\s+(?:another|other|foreign))|"
+    r"\b(?:server|data cent(?:re|er)|facility|infrastructure)\b.{0,35}"
+    r"\b(?:in|within)\b(?!\s+(?:another|other|foreign))",
+    re.I,
+)
+_PROHIBITION = re.compile(r"\b(?:must not|shall not|may not|is prohibited|are prohibited|prohibit(?:s|ed)?)\b", re.I)
+_CONDITION = re.compile(r"\b(?:if|unless|only if|consent|adequacy|adequate|approval|condition|safeguard|contract)\b", re.I)
+_MINIMUM_DUTY = re.compile(r"\b(?:must|shall|required to|not less than|at least|minimum(?: period)? of)\b", re.I)
+_RETENTION_CEILING = re.compile(r"\b(?:need only|may (?:retain|keep)|up to|not more than|no longer than|maximum(?: period)? of)\b", re.I)
 _WARRANT = re.compile(r"warrant|court order|order of (a|the) court|judge|magistrate|judicial", re.I)
+_WITHOUT_JUDICIAL = re.compile(
+    r"\b(?:without|no need for|does not require|not required to obtain)\b"
+    r".{0,35}\b(?:warrant|court order|judicial authori[sz]ation)\b|\bwarrantless\b",
+    re.I,
+)
 
 
 def g7_indicator_fit(indicator_id: str, snippet: str, full_text: str, law_name: str) -> GateResult:
@@ -127,6 +147,23 @@ def g7_indicator_fit(indicator_id: str, snippet: str, full_text: str, law_name: 
             return GateResult(gate_id="G7", status="FAIL",
                               reason=f"{indicator_id} requires CROSS-BORDER data transfer language; "
                                      "generic processing/disclosure does not qualify")
+    if indicator_id == "P6-I1" and not _PROHIBITION.search(blob):
+        return GateResult(gate_id="G7", status="FAIL",
+                          reason="P6-I1 requires an operative prohibition on cross-border transfer")
+    if indicator_id == "P6-I2":
+        if not (_RETAIN.search(blob) and _RECORDS.search(blob)
+                and _DOMESTIC_LOCATION.search(blob) and _MINIMUM_DUTY.search(blob)):
+            return GateResult(gate_id="G7", status="FAIL",
+                              reason="P6-I2 requires a mandatory domestic-copy/storage duty")
+    if indicator_id == "P6-I3":
+        if not (_INFRASTRUCTURE.search(blob) and _DOMESTIC_LOCATION.search(blob)
+                and (_MINIMUM_DUTY.search(blob)
+                     or re.search(r"\b(?:condition|precondition)\b", blob, re.I))):
+            return GateResult(gate_id="G7", status="FAIL",
+                              reason="P6-I3 requires local infrastructure as a mandatory service condition")
+    if indicator_id == "P6-I4" and not _CONDITION.search(blob):
+        return GateResult(gate_id="G7", status="FAIL",
+                          reason="P6-I4 requires an operative condition or safeguard for transfer")
     if indicator_id == "P7-I3":
         if not (_RETAIN.search(blob) and _DURATION.search(blob) and _RECORDS.search(blob)):
             return GateResult(gate_id="G7", status="FAIL",
@@ -134,8 +171,11 @@ def g7_indicator_fit(indicator_id: str, snippet: str, full_text: str, law_name: 
         if re.search(r"licen[cs]e|permit", snippet, re.I) and not re.search(r"record|data", snippet, re.I):
             return GateResult(gate_id="G7", status="FAIL",
                               reason="P7-I3: licence-duration provisions are not data retention")
+        if _RETENTION_CEILING.search(blob) or not _MINIMUM_DUTY.search(blob):
+            return GateResult(gate_id="G7", status="FAIL",
+                              reason="P7-I3 requires a mandatory minimum; permissive or maximum retention does not qualify")
     if indicator_id == "P7-I5":
-        if _WARRANT.search(blob) and not re.search(r"without (a )?(warrant|court order)", blob, re.I):
+        if _WARRANT.search(blob) and not _WITHOUT_JUDICIAL.search(blob):
             return GateResult(gate_id="G7", status="WARN",
                               reason="P7-I5: access appears COURT-GATED (warrant/judicial language) — "
                                      "court-order test says this supports score 0; flag for legal review")

@@ -1,8 +1,8 @@
 {
  "economy": "Australia",
  "pillar": 7,
- "run": "run-au-p7-1783838966",
- "krippendorff_alpha": 0.803,
+ "run": "run-au-p7-1784113103",
+ "krippendorff_alpha": 0.527,
  "indicators": {
   "P7-I1": {
    "deterministic": 1.0,
@@ -11,7 +11,7 @@
     {
      "persona": "strict",
      "score": 1.0,
-     "reason": "The only provided evidence states that no comprehensive horizontal framework was found (NO_EVIDENCE_FOUND_PENDING_REVIEW), so a comprehensive data protection fr"
+     "reason": "The provided evidence shows no comprehensive horizontal data-protection framework (Privacy Act 1988: NO_EVIDENCE_FOUND_PENDING_REVIEW), so a comprehensive frame"
     },
     {
      "persona": "ESCAP",
@@ -21,7 +21,7 @@
     {
      "persona": "skeptical",
      "score": 1.0,
-     "reason": "No comprehensive horizontal data protection framework is evidenced (Privacy Act 1988 has no evidence found pending review), so the safest assessment is that a c"
+     "reason": "No evidence was found (pending review) for a comprehensive horizontal data protection framework, so the safest assessment is that such a framework is not establ"
     }
    ],
    "band": [
@@ -33,31 +33,31 @@
    "reviewer_decision": "pending"
   },
   "P7-I2": {
-   "deterministic": 0.5,
-   "deterministic_reason": "sectoral-only / non-dedicated -> 0.5",
+   "deterministic": 0.0,
+   "deterministic_reason": "dedicated horizontal framework evidenced -> 0",
    "judges": [
     {
      "persona": "strict",
-     "score": 0.5,
-     "reason": "The cited provisions are confined to critical infrastructure (systems of national significance) and impose cyber risk management, exercises, and vulnerability a"
+     "score": 0.0,
+     "reason": "The cited Security of Critical Infrastructure Act 2018 s. 3 is described as a horizontal provision imposing enhanced cyber security obligations, indicating a de"
     },
     {
      "persona": "ESCAP",
-     "score": 0.5,
-     "reason": "The evidence shows a dedicated but sectoral cybersecurity framework limited to critical infrastructure (systems of national significance) under the Security of "
+     "score": 0.0,
+     "reason": "The Security of Critical Infrastructure Act 2018 provides a dedicated horizontal cybersecurity framework by imposing enhanced cyber security obligations on rele"
     },
     {
      "persona": "skeptical",
      "score": 0.5,
-     "reason": "The evidence shows a sectoral framework limited to critical infrastructure (systems of national significance) with risk management, cyber security exercises, an"
+     "reason": "The evidence points to a horizontal framework limited to critical infrastructure/system-of-national-significance obligations rather than a fully dedicated horiz"
     }
    ],
    "band": [
-    0.5,
+    0.0,
     0.5
    ],
-   "spread": 0.0,
-   "flag_for_review": false,
+   "spread": 0.5,
+   "flag_for_review": true,
    "reviewer_decision": "pending"
   },
   "P7-I3": {
@@ -67,17 +67,17 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "Section 17(2) states the record must be retained for a period but the quoted text does not specify any minimum retention duration (e.g., days/months/years)."
+     "reason": "Section 17(2) states the record must be retained for a period but the quoted text does not plainly specify any minimum retention duration (e.g., days/months/yea"
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "My Health Records Act 2012 s. 17(2) requires retention for \u201cthe period\u201d but does not specify any minimum retention duration (e.g., days/months/years), so no min"
+     "reason": "Section 17(2) requires retention for a period but does not specify any minimum duration (e.g., days/months/years), so no minimum period is clearly stated."
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "Section 17(2) requires retention for \u201cthe period:\u201d but the minimum retention period is not specified in the provided evidence, so it cannot be scored as having "
+     "reason": "Section 17(2) requires retention for \u201cthe period:\u201d but the minimum retention duration is not specified in the provided evidence, so it cannot be scored as havin"
     }
    ],
    "band": [
@@ -95,17 +95,17 @@
     {
      "persona": "strict",
      "score": 0.5,
-     "reason": "The quoted text only states that the Commissioner may direct an agency to provide a privacy impact assessment (and defines what such an assessment is), without "
+     "reason": "The text shows a sectoral/public-sector power for the Commissioner to direct an agency to provide a privacy impact assessment, and it also defines a privacy imp"
     },
     {
      "persona": "ESCAP",
      "score": 0.5,
-     "reason": "Evidence shows a statutory DPIA requirement exists (Privacy Act 1988 s.33D(3)) and can be directed by the Commissioner (s.33D(1)), but it is not evidenced as a "
+     "reason": "Evidence shows a sectoral/public-sector requirement where the Commissioner can direct an agency to provide a privacy impact assessment, but it does not establis"
     },
     {
      "persona": "skeptical",
      "score": 0.5,
-     "reason": "The evidence shows a Commissioner-directed requirement for agencies to provide a privacy impact assessment (Privacy Act 1988 s.33D), but it does not establish t"
+     "reason": "Evidence shows DPIA is mandated only via the Commissioner\u2019s direction for specific activities/functions (sectoral public-sector context), not as a blanket DPO/D"
     }
    ],
    "band": [
@@ -122,25 +122,25 @@
    "judges": [
     {
      "persona": "strict",
-     "score": 1.0,
-     "reason": "The cited provisions allow the Commissioner/inspector to require production of information/documents and to conduct investigations and searches/seizures without"
+     "score": 0.0,
+     "reason": "The cited provisions allow the Commissioner/inspector to require information or search and seize, but the quoted text does not plainly state that government acc"
     },
     {
      "persona": "ESCAP",
      "score": 1.0,
-     "reason": "The cited provisions allow the Commissioner/inspector to compel production of information/documents and to conduct investigations and enforcement actions (inclu"
+     "reason": "The Data Availability and Transparency Act 2022 s.104(1) and s.104(4) allow the Commissioner to require a person to provide information/documents and to take po"
     },
     {
      "persona": "skeptical",
      "score": 0.5,
-     "reason": "The cited provisions give the Commissioner/inspectors broad powers to compel information and conduct searches/seizures, but the evidence does not clearly establ"
+     "reason": "The cited provisions allow regulators/inspectors to compel production and take possession/copies (and to search/seize in telecommunications enforcement) without"
     }
    ],
    "band": [
-    0.5,
+    0.0,
     1.0
    ],
-   "spread": 0.5,
+   "spread": 1.0,
    "flag_for_review": true,
    "reviewer_decision": "pending"
   }

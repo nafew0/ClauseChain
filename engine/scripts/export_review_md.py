@@ -20,14 +20,21 @@ from packages.discovery.diff import laws_match, section_base  # noqa: E402
 from packages.graph.sqlite_graph import SqliteGraphStore  # noqa: E402
 
 
-def provision_text(store, economy: str, law_name: str, article: str) -> str:
-    import json as _json
+def load_provisions(store) -> list[dict]:
+    """Read the provision corpus once for the whole review export.
 
-    base = section_base(article)
+    The previous implementation re-scanned and decoded every graph provision
+    for every output row.  Runtime therefore grew as rows x corpus size.
+    """
+    import json as _json
     rows = store._connect().execute("SELECT props FROM nodes WHERE label='Provision'").fetchall()
+    return [_json.loads(props) for (props,) in rows]
+
+
+def provision_text(provisions: list[dict], economy: str, law_name: str, article: str) -> str:
+    base = section_base(article)
     hits = []
-    for (props,) in rows:
-        p = _json.loads(props)
+    for p in provisions:
         if (p.get("economy") == economy and laws_match(law_name, p.get("law_name", ""))
                 and section_base(p.get("article_section", "")) == base):
             hits.append(p)
@@ -35,7 +42,7 @@ def provision_text(store, economy: str, law_name: str, article: str) -> str:
         hits, key=lambda p: p.get("article_section", ""))) or "(provision not found in graph)"
 
 
-def export(run_dir: Path, store) -> Path:
+def export(run_dir: Path, provisions: list[dict]) -> Path:
     rows = list(csv.DictReader((run_dir / "output.csv").open(encoding="utf-8")))
     lines = [f"# Review: {run_dir.name} — {len(rows)} rows\n"]
     for i, r in enumerate(rows, 1):
@@ -48,7 +55,7 @@ def export(run_dir: Path, store) -> Path:
             f"\n**Rationale:** {r.get('Mapping Rationale')}",
             f"\n**Notes:** {r.get('Notes','')}",
             "\n<details><summary>Full section text (from graph)</summary>\n",
-            provision_text(store, r.get("Economy", ""), r.get("Law Name", ""),
+            provision_text(provisions, r.get("Economy", ""), r.get("Law Name", ""),
                            r.get("Article / Section", "")),
             "\n</details>",
         ]
@@ -59,5 +66,6 @@ def export(run_dir: Path, store) -> Path:
 
 if __name__ == "__main__":
     store = SqliteGraphStore()
+    provisions = load_provisions(store)
     for arg in sys.argv[1:]:
-        print("wrote", export(Path(arg), store))
+        print("wrote", export(Path(arg), provisions))

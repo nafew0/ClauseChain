@@ -269,13 +269,16 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                       and r.get("indicator_code") == indicator_id]
         gold_anchor_ids: set[str] = set()
         anchor_matches: dict[str, set[str]] = {}
+        from packages.ingest.known_index import expected_anchors
         for krow in known_rows:
-            for ref in krow.get("articles", []):
+            for anchor in expected_anchors(krow):
+                ref = anchor["ref"]
                 kbase = _sb(ref)
                 if not kbase:
                     continue
+                scoped_laws = anchor.get("laws_norm") or krow.get("acts_norm", [])
                 acts_resolved = [known._resolve_alias(economy, a)
-                                 for a in krow.get("acts_norm", []) if a]
+                                 for a in scoped_laws if a]
                 def _base_hits(ubase: str | None) -> bool:
                     return _section_matches(kbase, ubase)
                 matches = [c for c in corpus
@@ -287,7 +290,7 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                     if hole not in warnings:
                         warnings.append(hole)
                     continue
-                anchor_key = f"{krow.get('act_norm', krow.get('act', ''))}|{ref}|{indicator_id}"
+                anchor_key = f"{'|'.join(acts_resolved)}|{ref}|{indicator_id}"
                 anchor_matches.setdefault(anchor_key, set()).update(
                     m["provision_id"] for m in matches)
                 for m in matches:
@@ -421,20 +424,24 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
             source_hash = props.get("content_sha256") or ""
             proof = None
             if source_hash and props.get("source_artifact_id"):
+                span_ids = props.get("linked_span_ids") or []
+                span_boxes = (props.get("metadata", {}).get("pdf_span_boxes", []) or
+                              props.get("metadata", {}).get("citation_span_boxes", []))
+                page_exact = bool(page_match and span_ids and span_boxes)
+                alignment_exact = props.get("pdf_alignment") == "exact" or page_exact
                 proof = CitationProof(
                     source_artifact_id=props["source_artifact_id"], source_sha256=source_hash,
                     page_number=int(page_match.group(1)) if page_match else None,
                     anchor=loc if loc.startswith("#") else None,
                     article_path=citation_path(props.get("article_section", "")),
-                    span_ids=props.get("linked_span_ids") or [],
-                    bboxes=(props.get("metadata", {}).get("pdf_span_boxes", []) or
-                            props.get("metadata", {}).get("citation_span_boxes", [])),
+                    span_ids=span_ids,
+                    bboxes=span_boxes,
                     exact_snippet=decision.verbatim_snippet,
                     normalized_snippet=" ".join(decision.verbatim_snippet.split()).lower(),
-                    alignment_status=("exact" if props.get("pdf_alignment") == "exact" else
+                    alignment_status=("exact" if alignment_exact else
                                       "anchor" if loc.startswith("#") else "unaligned"),
                     alignment_score=float(props.get("alignment_score") or
-                                          (1.0 if loc.startswith("#") else 0.0)),
+                                          (1.0 if alignment_exact or loc.startswith("#") else 0.0)),
                     gate_results=[g.model_dump(mode="json") for g in gate_results],
                 )
             findings.append(
@@ -516,6 +523,15 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                 _coverage_manifest(economy, indicator_id, cfg, pack, warnings, corpus, []),
                 _governing_props(corpus, gov["law"]),
             ))
+    # Precision-first NEW curation: retain a small functionally diverse set per
+    # law/indicator and preserve every excluded candidate in run metadata.
+    from packages.core.curation import curate_new_findings
+
+    findings, excluded_new = curate_new_findings(findings)
+    stats["curation"] = {
+        "excluded_count": len(excluded_new),
+        "excluded": excluded_new,
+    }
     findings.sort(key=lambda f: f.indicator_id)
 
     from packages.providers import cost

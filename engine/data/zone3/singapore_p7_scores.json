@@ -1,8 +1,8 @@
 {
  "economy": "Singapore",
  "pillar": 7,
- "run": "run-sg-p7-1783837203",
- "krippendorff_alpha": 0.408,
+ "run": "run-sg-p7-1784114798",
+ "krippendorff_alpha": 1.0,
  "indicators": {
   "P7-I1": {
    "deterministic": 0.0,
@@ -10,18 +10,18 @@
    "judges": [
     {
      "persona": "strict",
-     "score": 0.0,
-     "reason": "The cited provisions show a horizontal Personal Data Protection Act that governs collection, use, disclosure, and cross-border transfers of personal data, indic"
+     "score": 0.5,
+     "reason": "The cited Personal Data Protection Act 2012 s. 26(1) imposes a horizontal cross-border transfer rule, but the evidence provided does not show a comprehensive ho"
     },
     {
      "persona": "ESCAP",
-     "score": 0.0,
-     "reason": "Singapore\u2019s Personal Data Protection Act 2012 is a comprehensive horizontal data protection framework governing collection, use, disclosure, and cross-border tr"
+     "score": 0.5,
+     "reason": "The Personal Data Protection Act 2012 contains horizontal cross-border transfer restrictions (e.g., s.26(1)), but the provided evidence does not show a comprehe"
     },
     {
      "persona": "skeptical",
      "score": 0.5,
-     "reason": "While Singapore has a horizontal Personal Data Protection Act, the evidence provided does not show a fully comprehensive framework (e.g., key individual rights "
+     "reason": "The cited Personal Data Protection Act 2012 provision is horizontal and addresses cross-border transfers, but the evidence provided does not demonstrate a compr"
     }
    ],
    "band": [
@@ -39,25 +39,25 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "The cited provisions of the Cybersecurity Act 2018 include horizontal powers and obligations (e.g., s. 5(1) and s. 17(1) for incident response and designation a"
+     "reason": "The cited Cybersecurity Act 2018 provisions (e.g., s. 19(1)) indicate a dedicated horizontal cybersecurity framework rather than relying solely on non-dedicated"
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "Singapore has a dedicated horizontal cybersecurity framework under the Cybersecurity Act 2018 (e.g., provisions empowering the Commissioner to respond to cybers"
+     "reason": "The Cybersecurity Act 2018 contains horizontal provisions (e.g., s.19(1) empowering the Commissioner to act on cybersecurity threats/incidents), indicating a de"
     },
     {
      "persona": "skeptical",
-     "score": 0.5,
-     "reason": "Although the Cybersecurity Act 2018 contains horizontal provisions (e.g., incident response powers), key operational obligations appear tied to designated/secto"
+     "score": 0.0,
+     "reason": "The evidence cites a Cybersecurity Act 2018 with horizontal provisions (e.g., s.19(1) empowering the Commissioner to act on cybersecurity threats/incidents), in"
     }
    ],
    "band": [
     0.0,
-    0.5
+    0.0
    ],
-   "spread": 0.5,
-   "flag_for_review": true,
+   "spread": 0.0,
+   "flag_for_review": false,
    "reviewer_decision": "pending"
   },
   "P7-I3": {
@@ -67,17 +67,17 @@
     {
      "persona": "strict",
      "score": 1.0,
-     "reason": "The cited provisions plainly specify minimum retention periods (e.g., not less than 5 years, 7 years, or at least 5 years), so a minimum period is clearly speci"
+     "reason": "The cited provisions across the economy plainly specify minimum data retention periods (e.g., not less than 5 years, 3 years, 7 years, and at least 5 years), so"
     },
     {
      "persona": "ESCAP",
      "score": 1.0,
-     "reason": "Multiple laws explicitly specify minimum data retention periods (e.g., at least 5 years under Companies Act 1967 s.199(2) and Income Tax Act 1947 s.67(1), and a"
+     "reason": "Multiple laws explicitly specify minimum data retention periods (e.g., Companies Act 1967 s.199(2) and s.138(1A) at not less than 5 years, Income Tax Act 1947 s"
     },
     {
      "persona": "skeptical",
      "score": 1.0,
-     "reason": "Multiple statutes explicitly specify minimum data retention periods (e.g., at least 5 years for company and income tax records, at least 7 years for certain tax"
+     "reason": "Multiple statutes explicitly specify minimum retention periods (e.g., 3 years under the Cybersecurity Act and 5\u20137 years under the Companies and Income Tax Acts)"
     }
    ],
    "band": [
@@ -95,17 +95,17 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "The cited provisions only require designation of responsible individuals and delegation/continuing obligations, and they do not plainly state any DPIA or DPO re"
+     "reason": "The cited provisions only require designation of responsible individuals and allow delegation, but they do not plainly state any DPO or DPIA requirement."
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "The provided evidence only shows designation of a responsible individual under the Personal Data Protection Act (s.11) and does not establish any requirement fo"
+     "reason": "The provided evidence only shows designation of a compliance-responsible individual under PDPA s.11(3)-(6) and delegation, with no requirement for a Data Protec"
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "The cited provisions establish accountability/oversight via designated individuals but do not require a DPO or mandate DPIAs/DPOs for specific processing activi"
+     "reason": "The cited provisions establish designation/delegation of compliance responsibility (s.11) but do not require a DPO or mandate DPIA/DPO processes across sectors,"
     }
    ],
    "band": [
@@ -123,25 +123,25 @@
     {
      "persona": "strict",
      "score": 1.0,
-     "reason": "The cited provisions allow a police officer or authorised person to issue written orders and access/inspect computer data without any plain requirement for inde"
+     "reason": "The cited provisions allow police or an authorised person to issue orders and access/inspect computer data in investigating arrestable offences without any plai"
     },
     {
      "persona": "ESCAP",
      "score": 1.0,
-     "reason": "The Criminal Procedure Code 2010 grants police/authorised persons powers to issue written orders to require authentication/production of data and to access/insp"
+     "reason": "The Criminal Procedure Code 2010 grants police/authorised persons powers to order authentication and production of data and to access/inspect computer data for "
     },
     {
      "persona": "skeptical",
-     "score": 0.5,
-     "reason": "The Criminal Procedure Code grants police/authorised persons powers to order authentication/production and to access/inspect computer data, but the provided exc"
+     "score": 1.0,
+     "reason": "The cited Criminal Procedure Code provisions allow police or an authorised person to issue written orders to require authentication/production and to access/ins"
     }
    ],
    "band": [
-    0.5,
+    1.0,
     1.0
    ],
-   "spread": 0.5,
-   "flag_for_review": true,
+   "spread": 0.0,
+   "flag_for_review": false,
    "reviewer_decision": "pending"
   }
  },

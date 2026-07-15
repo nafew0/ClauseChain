@@ -50,11 +50,180 @@ def extract_refs(text: str) -> list[str]:
     return found
 
 
+_DEFINITION_CONTEXT = re.compile(
+    r"\b(defin(?:e[sd]?|ition)|means|refers? to)\b", re.I)
+_SUPPORTING_CONTEXT = re.compile(
+    r"\b(see also|read with|as defined in|provided for under)\b",
+    re.I,
+)
+_SIGNIFICANT_LAW_TOKENS = {
+    "act", "acts", "the", "of", "and", "a", "an", "bill", "code", "regulations",
+    "amendment", "legislation", "organisation", "organization",
+}
+
+
+def _reference_context(text: str, start: int, end: int, radius: int = 360) -> str:
+    """Return a bounded prose window around a master reference.
+
+    Master cells are narrative rather than a citation table. A window is more
+    reliable than sentence splitting because spreadsheet prose frequently omits
+    periods or uses bullet fragments.
+    """
+    floor, ceiling = max(0, start - radius), min(len(text), end + radius)
+    boundaries_before = [text.rfind(token, floor, start) for token in (". ", "\n", "• ")]
+    left = max(boundaries_before)
+    boundaries_after = [pos for token in (". ", "\n", " •")
+                        if (pos := text.find(token, end, ceiling)) >= 0]
+    right = min(boundaries_after) + 1 if boundaries_after else ceiling
+    context = text[left + 1:right].strip()
+    if re.match(r"^(?:It|This)\b", context):
+        prior = max(text.rfind(token, floor, max(floor, left)) for token in (". ", "\n", "• "))
+        context = text[prior + 1:right].strip()
+    return re.sub(r"\s+", " ", context).strip()
+
+
+def _law_hints(context: str, act_cell: str) -> list[str]:
+    """Bind a prose citation to the instrument(s) actually named near it.
+
+    If no instrument can be resolved confidently the caller retains the complete
+    act list. This avoids inventing a pairing while preventing the old Cartesian
+    product when the narrative clearly names the relevant Act.
+    """
+    context_tokens = set(normalize_law_name(context).split())
+    candidates: list[tuple[tuple[int, float, int, int], str]] = []
+    for act in split_act_names(act_cell):
+        norm = normalize_law_name(act)
+        tokens = {t for t in norm.split()
+                  if t not in _SIGNIFICANT_LAW_TOKENS and not t.isdigit()}
+        overlap = tokens & context_tokens
+        if tokens and len(overlap) >= min(2, len(tokens)) and len(overlap) / len(tokens) >= 0.5:
+            # Prefer the most specific named instrument.  A phrase such as
+            # "Telecommunications (Interception and Access) Act" also contains
+            # the words "Telecommunications Act"; returning both recreates the
+            # old citation x instrument Cartesian product.
+            score = (len(overlap), len(overlap) / len(tokens), len(tokens), len(norm.split()))
+            candidates.append((score, norm))
+    if not candidates:
+        return []
+    best = max(score for score, _ in candidates)
+    return [norm for score, norm in candidates if score == best]
+
+
+def _indicator_context_fit(indicator: str | None, context: str) -> bool:
+    """Conservative lexical test for whether a cited section is operative evidence.
+
+    This is used only to define recall anchors from free-text master prose. It does
+    not decide final legal mapping. When uncertain, the reference remains operative.
+    """
+    text = context.lower()
+    transfer = re.search(r"transfer|transmit|send", text)
+    cross_border = re.search(r"outside|abroad|foreign|cross[- ]border|out of", text)
+    if indicator == "P6-I1":
+        return bool(transfer and cross_border and re.search(r"must not|shall not|prohibit|ban", text))
+    if indicator == "P6-I2":
+        return bool(re.search(r"stor|keep|maintain|records?", text)
+                    and re.search(r"local|within|in malaysia|in singapore|in australia|territor", text))
+    if indicator == "P6-I3":
+        return bool(re.search(r"server|data cent|infrastructure|facility", text)
+                    and re.search(r"local|within|territor", text))
+    if indicator == "P6-I4":
+        return bool(transfer and cross_border and re.search(
+            r"unless|\bif\b|consent|adequate|contract|condition|approval|safeguard", text))
+    if indicator == "P7-I3":
+        return bool(re.search(r"retain|keep|preserve|maintain", text)
+                    and re.search(r"year|month|day|week|period of|not less than|at least", text))
+    if indicator == "P7-I5":
+        return bool(re.search(r"access|search|intercept|produce|seiz|investigat", text)
+                    and re.search(r"government|police|officer|authority|commissioner|prosecutor|minister|"
+                                  r"organisation|organization|agency|security intelligence|law enforcement", text))
+    return True
+
+
+def master_anchor_expected(indicator: str | None, score: str) -> bool:
+    """Whether a master row should create positive provision-recall anchors.
+
+    P7-I1/I2 are reverse-polarity framework indicators: score 0 normally means a
+    framework exists, so its cited provisions remain positive evidence. For the
+    presence/restriction indicators, score 0 is negative evidence and must not be
+    forced into a positive output row.
+    """
+    try:
+        value = float(str(score).strip())
+    except (TypeError, ValueError):
+        return True
+    if indicator in {"P7-I1", "P7-I2"}:
+        return value < 1
+    return value > 0
+
+
+def classify_ref_mentions(text: str, act_cell: str, indicator: str | None,
+                          score: str) -> list[dict[str, Any]]:
+    """Extract refs with audit-ready role, reason, context and law binding."""
+    if not text:
+        return []
+    mentions: dict[str, dict[str, Any]] = {}
+    positive_row = master_anchor_expected(indicator, score)
+    for pattern, prefix in _REF_PATTERNS:
+        for match in pattern.finditer(text):
+            raw = re.sub(r"\s+", "", match.group(1))
+            ref = f"{prefix} {raw}"
+            context = _reference_context(text, match.start(), match.end())
+            local_prefix = text[max(0, match.start() - 90):match.start()]
+            if prefix == "reg." and raw.isdigit() and 1900 <= int(raw) <= 2100:
+                role, reason = "instrument_title", "year in a Regulations title is not a provision"
+            elif not positive_row:
+                role, reason = "negative_evidence", "master score/polarity does not expect a positive row"
+            elif _DEFINITION_CONTEXT.search(context):
+                role, reason = "definition", "reference appears in definition/meaning context"
+            elif _SUPPORTING_CONTEXT.search(context):
+                role, reason = "supporting", "reference is descriptive or cross-referential, not the operative rule"
+            elif re.search(r"(?:set out in|relevant to .{0,35} under|as mentioned in|defined in)\s*$",
+                           local_prefix, re.I):
+                role, reason = "supporting", "reference is a dependency of the operative provision"
+            elif not _indicator_context_fit(indicator, context):
+                role, reason = "supporting", f"nearby prose does not satisfy the {indicator} anchor predicate"
+            else:
+                role, reason = "operative", "positive master prose and indicator predicate support an operative anchor"
+            item = {"ref": ref, "role": role, "reason": reason, "context": context,
+                    "laws_norm": _law_hints(context, act_cell)}
+            previous = mentions.get(ref.lower())
+            # If the same ref occurs more than once, retain the strongest role.
+            strength = {"instrument_title": 0, "negative_evidence": 1, "definition": 2,
+                        "supporting": 3, "operative": 4}
+            if previous is None or strength[role] > strength[previous["role"]]:
+                mentions[ref.lower()] = item
+    return list(mentions.values())
+
+
+def expected_anchors(entry: dict[str, Any]) -> list[dict[str, Any]]:
+    """Return only positive operative anchors, with legacy-index fallback."""
+    if "ref_mentions" in entry:
+        return [m for m in entry.get("ref_mentions", []) if m.get("role") == "operative"]
+    if not master_anchor_expected(entry.get("indicator_code"), entry.get("score", "")):
+        return []
+    return [{"ref": ref, "role": "operative", "reason": "legacy index",
+             "laws_norm": []} for ref in entry.get("articles", [])]
+
+
 # --- normalization ----------------------------------------------------------
 
 def normalize_law_name(name: str) -> str:
-    """Lowercase, drop punctuation/bracketed refs so name matching is forgiving."""
-    text = re.sub(r"\(.*?\)", " ", (name or "").lower())
+    """Normalize a title without erasing substantive parenthetical words.
+
+    Acronyms and register identifiers are aliases (``(PDPA)``, ``(Act 854)``),
+    while phrases such as ``(Interception and Access)`` distinguish one Act
+    from another.  Treating every parenthesis as disposable collapses legally
+    different instruments onto the same identifier.
+    """
+    def replace_parenthetical(match: re.Match[str]) -> str:
+        value = match.group(1).strip()
+        if re.fullmatch(r"[A-Z][A-Z0-9.&/-]{1,14}", value):
+            return " "
+        if re.fullmatch(r"(?:Act|No\.?)\s*\d+[A-Z-]*", value, re.I):
+            return " "
+        return f" {value} "
+
+    text = re.sub(r"\(([^()]*)\)", replace_parenthetical, name or "").lower()
     text = text.replace("&", " and ")
     text = re.sub(r"[^a-z0-9]+", " ", text)
     return re.sub(r"\s+", " ", text).strip()
@@ -167,11 +336,12 @@ def _rows_from_sheet(path: Path, sheet: str, forced_country: str | None = None) 
         if not act or not country:
             continue
         impact = cell("impact")
+        code = indicator_code(cell("indicator"), cell("pillar"))
         entry = {
             "economy": country,
             "pillar": cell("pillar"),
             "indicator_raw": cell("indicator"),
-            "indicator_code": indicator_code(cell("indicator"), cell("pillar")),
+            "indicator_code": code,
             "score": cell("score"),
             "act": act,
             "act_norm": normalize_law_name(act),
@@ -179,6 +349,7 @@ def _rows_from_sheet(path: Path, sheet: str, forced_country: str | None = None) 
             "coverage": cell("coverage"),
             "impact": impact,
             "articles": extract_refs(impact),
+            "ref_mentions": classify_ref_mentions(impact, act, code, cell("score")),
             "timeframe": cell("timeframe"),
             "references": [row[i].strip() for i in header["refs"] if i < len(row) and row[i].strip()],
             "source": "master",

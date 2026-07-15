@@ -1,8 +1,8 @@
 {
  "economy": "Malaysia",
  "pillar": 7,
- "run": "run-my-p7-1783838042",
- "krippendorff_alpha": 0.576,
+ "run": "run-my-p7-1784112332",
+ "krippendorff_alpha": 0.627,
  "indicators": {
   "P7-I1": {
    "deterministic": 0.0,
@@ -10,18 +10,18 @@
    "judges": [
     {
      "persona": "strict",
-     "score": 0.0,
-     "reason": "The Personal Data Protection Act (Act 709) 2010 provides a horizontal framework with core principles and includes both access and correction rights (ss. 5(1) an"
+     "score": 0.5,
+     "reason": "The Personal Data Protection Act (Act 709) provides horizontal principles and access/correction rights, but the evidence also shows sectoral codes (banking) add"
     },
     {
      "persona": "ESCAP",
-     "score": 0.0,
-     "reason": "A comprehensive horizontal framework exists under the Personal Data Protection Act (Act 709) 2010, which sets out core principles and includes key data subject "
+     "score": 0.5,
+     "reason": "Malaysia has a horizontal Personal Data Protection Act (Act 709) with core principles and data subject rights (access and correction), but the evidence provided"
     },
     {
      "persona": "skeptical",
      "score": 0.5,
-     "reason": "Although a horizontal Personal Data Protection Act (Act 709) exists with notice/choice and access/correction rights, the evidence also shows sectoral codes carv"
+     "reason": "While Act 709 provides a horizontal framework and includes access/correction rights, the evidence does not show a fully comprehensive set of data subject rights"
     }
    ],
    "band": [
@@ -39,25 +39,25 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "The Cyber Security Act (Act 854) 2024 contains horizontal provisions establishing licensing and regulation of cyber security services (e.g., s. 27(1) and s. 27("
+     "reason": "The cited provisions show a horizontal Cyber Security Act framework (e.g., licensing requirements for providing/advertising cyber security services under Act 85"
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "The Cyber Security Act (Act 854) 2024 establishes a dedicated horizontal cybersecurity legal framework (e.g., licensing and regulation of cyber security service"
+     "reason": "The Cyber Security Act (Act 854) 2024 provides a dedicated horizontal cybersecurity framework (e.g., licensing requirements for cyber security service providers"
     },
     {
      "persona": "skeptical",
-     "score": 0.0,
-     "reason": "The Cyber Security Act (Act 854) 2024 establishes a dedicated horizontal licensing/regulatory framework for cyber security services (including enforcement autho"
+     "score": 0.5,
+     "reason": "Although the Cyber Security Act (Act 854) 2024 contains horizontal licensing provisions for cyber security service providers, the evidence provided does not sho"
     }
    ],
    "band": [
     0.0,
-    0.0
+    0.5
    ],
-   "spread": 0.0,
-   "flag_for_review": false,
+   "spread": 0.5,
+   "flag_for_review": true,
    "reviewer_decision": "pending"
   },
   "P7-I3": {
@@ -67,17 +67,17 @@
     {
      "persona": "strict",
      "score": 1.0,
-     "reason": "The evidence includes multiple provisions that clearly specify minimum retention periods (e.g., seven years for banking records and services tax records, and no"
+     "reason": "The evidence includes multiple provisions that clearly specify minimum retention periods (e.g., banking sector retention \u201cmore than seven (7) years\u201d and \u201cuntil "
     },
     {
      "persona": "ESCAP",
      "score": 1.0,
-     "reason": "Multiple laws/codes explicitly specify minimum retention periods (e.g., banking sector: seven years; tax records: seven years; cyber security services: not less"
+     "reason": "Multiple laws/codes explicitly specify minimum retention periods (e.g., at least seven years for banking records and tax records, and not less than six years fo"
     },
     {
      "persona": "skeptical",
      "score": 1.0,
-     "reason": "Multiple laws and sectoral rules explicitly set minimum retention periods (e.g., seven years for banking accounts and services tax records, and not less than si"
+     "reason": "Multiple laws and sectoral guidance explicitly specify minimum retention periods (e.g., at least seven years for banking records and at least six years for cybe"
     }
    ],
    "band": [
@@ -89,31 +89,31 @@
    "reviewer_decision": "pending"
   },
   "P7-I4": {
-   "deterministic": 1.0,
-   "deterministic_reason": "all-sectors DPO/DPIA evidenced",
+   "deterministic": 0.0,
+   "deterministic_reason": "no DPO/DPIA requirement found",
    "judges": [
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "The cited text only states that a data controller may transfer personal data and does not plainly require any DPO or DPIA across sectors."
+     "reason": "The provided evidence contains no gate-verified text establishing any DPO or DPIA requirement under Act 709 (Personal Data Protection Act 2010), so neither is p"
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "The cited provision (Act A1727 s.12) addresses data transfer powers of a data guardian but does not establish any DPIA or DPO requirement, so no DPO/DPIA obliga"
+     "reason": "No gate-verified evidence was found that Act 709 (or any other law) requires a DPO and/or DPIA for any sectors, so neither requirement can be confirmed."
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "The cited provision (Act A1727 s.12) concerns data transfer powers and does not establish any requirement for Data Protection Impact Assessments (DPIA) or Data "
+     "reason": "The only cited source (Act 709) has no gate-verified evidence of any DPO or DPIA requirement, so the indicator cannot support a sector-specific or cross-sector "
     }
    ],
    "band": [
     0.0,
-    1.0
+    0.0
    ],
-   "spread": 1.0,
-   "flag_for_review": true,
+   "spread": 0.0,
+   "flag_for_review": false,
    "reviewer_decision": "pending"
   },
   "P7-I5": {
@@ -123,17 +123,17 @@
     {
      "persona": "strict",
      "score": 1.0,
-     "reason": "The cited provisions allow an authorized officer to access computerized data and enter/search premises and persons in connection with investigations without any"
+     "reason": "The cited provisions allow government/police interception and entry powers based on authorization by the Public Prosecutor or in urgent cases without independen"
     },
     {
      "persona": "ESCAP",
      "score": 1.0,
-     "reason": "The cited provisions (e.g., Cyber Security Act 2024 s.46(1), s.40, and Personal Data Protection Act 2010 s.114) allow authorized officers to access computerized"
+     "reason": "The cited provisions allow government/police/public prosecutor-authorized officers to access/intercept/enter and exercise investigative powers without independe"
     },
     {
      "persona": "skeptical",
      "score": 0.5,
-     "reason": "The cited provisions grant authorized officers broad powers to access computerized personal data and conduct searches/entry without clearly requiring independen"
+     "reason": "The cited laws allow government/police to compel interception/retention and to enter premises based on authorization by the Public Prosecutor or an \u201curgent and "
     }
    ],
    "band": [

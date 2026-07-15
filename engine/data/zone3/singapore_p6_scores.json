@@ -1,7 +1,7 @@
 {
  "economy": "Singapore",
  "pillar": 6,
- "run": "run-sg-p6-1783836936",
+ "run": "run-sg-p6-1784114671",
  "krippendorff_alpha": 1.0,
  "indicators": {
   "P6-I1": {
@@ -11,17 +11,17 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "No evidence was found that the Personal Data Protection Act 2012 imposes ban and local processing requirements for personal data or applies such requirements ho"
+     "reason": "No evidence was found that the Personal Data Protection Act 2012 imposes any ban or local processing requirement on personal data or applies such requirements h"
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "No gate-verified evidence was found that the economy has any ban and local processing requirements for personal data or non-personal/specific data under RDTII 2"
+     "reason": "No evidence was found (pending review) of any ban and local processing requirements covering personal data or applying horizontally, so transfers appear free of"
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "No verified evidence was found that the economy imposes any ban or local processing requirement on personal data (or any horizontal/local-processing requirement"
+     "reason": "No evidence was found that the economy imposes any ban or local processing requirement on personal data or applies such requirements horizontally (or on non-per"
     }
    ],
    "band": [
@@ -33,31 +33,31 @@
    "reviewer_decision": "pending"
   },
   "P6-I2": {
-   "deterministic": 0.5,
-   "deterministic_reason": "sectoral/specific-data measure(s) only -> 0.5",
+   "deterministic": 0.0,
+   "deterministic_reason": "no qualifying measure found (absence row) -> 0",
    "judges": [
     {
      "persona": "strict",
-     "score": 1.0,
-     "reason": "The cited provisions require accounting/corporate records to be kept at a place in Singapore (either at the registered office or another place in Singapore), wh"
+     "score": 0.0,
+     "reason": "The provided evidence shows no local storage requirement for personal data or any non-personal/specific-data storage rule (NO_EVIDENCE_FOUND_PENDING_REVIEW)."
     },
     {
      "persona": "ESCAP",
-     "score": 1.0,
-     "reason": "The Companies Act 1967 requires accounting/corporate records to be kept at the company\u2019s registered office or another place in Singapore (s.199(3)) and, if kept"
+     "score": 0.0,
+     "reason": "No gate-verified evidence was found showing any local storage requirement for personal data or any horizontal/non-personal storage rule under the cited Personal"
     },
     {
      "persona": "skeptical",
-     "score": 1.0,
-     "reason": "The Companies Act requires accounting/corporate records to be kept in Singapore (either at the registered office or another place in Singapore, and if kept abro"
+     "score": 0.0,
+     "reason": "No gate-verified evidence was found showing any local storage requirement for personal data or any horizontal/non-personal specific storage rule."
     }
    ],
    "band": [
-    0.5,
-    1.0
+    0.0,
+    0.0
    ],
-   "spread": 0.5,
-   "flag_for_review": true,
+   "spread": 0.0,
+   "flag_for_review": false,
    "reviewer_decision": "pending"
   },
   "P6-I3": {
@@ -67,17 +67,17 @@
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "No evidence was found that any infrastructure requirement (e.g., local data centre/server as a precondition or transfer conditioned on infrastructure) exists in"
+     "reason": "No evidence was found that any rule makes local data centre/server infrastructure a precondition for service or conditions data transfer on such infrastructure."
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "No gate-verified evidence was found that any infrastructure requirement (e.g., local data centre/server as a precondition or transfer conditioned on infrastruct"
+     "reason": "No gate-verified evidence was found showing any infrastructure requirement (e.g., local data centre/server as a precondition or transfer conditioned on infrastr"
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "No gate-verified evidence was found showing any infrastructure requirement (e.g., local data centre/server as a precondition or transfer conditioned on infrastr"
+     "reason": "No verified evidence was found that any service is conditioned on local data-centre/server infrastructure or that transfers require such infrastructure, so the "
     }
    ],
    "band": [
@@ -89,28 +89,28 @@
    "reviewer_decision": "pending"
   },
   "P6-I4": {
-   "deterministic": 1.0,
-   "deterministic_reason": "covers personal data / horizontal -> 1",
+   "deterministic": 0.0,
+   "deterministic_reason": "no qualifying measure found (absence row) -> 0",
    "judges": [
     {
      "persona": "strict",
-     "score": 1.0,
-     "reason": "Section 26(1) prohibits transfer of any personal data outside Singapore except as required under the Act, applying horizontally to personal data transfers."
+     "score": 0.0,
+     "reason": "No quoted evidence shows any conditional flow regimes on transfers under the Personal Data Protection Act 2012, and the provided row indicates no evidence found"
     },
     {
      "persona": "ESCAP",
-     "score": 1.0,
-     "reason": "The Personal Data Protection Act 2012 s. 26(1) imposes a horizontal condition on transfers of any personal data outside Singapore, requiring compliance with the"
+     "score": 0.0,
+     "reason": "No evidence was found of any conditional flow regime governing transfers (including for personal data) in the provided material."
     },
     {
      "persona": "skeptical",
-     "score": 1.0,
-     "reason": "The cited Personal Data Protection Act 2012 s. 26(1) imposes a horizontal condition on transfers of any personal data outside Singapore, meeting the criterion f"
+     "score": 0.0,
+     "reason": "No gate-verified evidence was found that any conditional flow regime applies to transfers (personal or non-personal), so the indicator should be scored as havin"
     }
    ],
    "band": [
-    1.0,
-    1.0
+    0.0,
+    0.0
    ],
    "spread": 0.0,
    "flag_for_review": false,
