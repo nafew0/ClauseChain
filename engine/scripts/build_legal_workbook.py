@@ -58,12 +58,58 @@ def _indicator_questions() -> dict[str, dict]:
 
 def _alignment_label(finding: dict) -> str:
     proof = finding.get("citation_proof") or {}
-    method = str(proof.get("method", proof.get("alignment", ""))).lower()
+    method = str(proof.get("alignment_status") or proof.get("method")
+                 or proof.get("alignment") or "").lower()
+    score = proof.get("alignment_score")
     if "anchor" in method or (finding.get("Location Reference") or "").startswith("#"):
-        return "anchor (1)"
+        return f"anchor ({score if score is not None else 1})"
     if "exact" in method:
-        return "exact (1)"
+        return f"exact ({score if score is not None else 1})"
     return "unaligned (0)"
+
+
+def _display(value, limit: int) -> str:
+    if value is None:
+        return ""
+    text = value if isinstance(value, str) else json.dumps(value, ensure_ascii=False)
+    return text[:limit]
+
+
+def _surrounding_context(finding: dict) -> str:
+    return _display(finding.get("raw_context") or finding.get("Notes") or "", 1400)
+
+
+def _official_urls(entry: dict) -> str:
+    values = entry.get("references") or entry.get("urls") or entry.get("url") or []
+    if isinstance(values, str):
+        values = [values]
+    return "\n".join(str(value).strip() for value in values if str(value).strip())[:900]
+
+
+def _recall_rationale(miss: dict) -> str:
+    evidence = miss.get("evidence") or {}
+    technical = evidence.get("technical_class") or miss.get("class") or "UNCLASSIFIED"
+    emitted = ", ".join(miss.get("emitted_under") or [])
+    messages = {
+        "NOT_IN_CORPUS": (
+            "The master citation was not located in the rebuilt eligible corpus. Review whether "
+            "the official instrument/version was acquired and whether the master reference is current."
+        ),
+        "IN_CORPUS_NOT_EMITTED": (
+            "The cited provision exists in the corpus, but no surviving finding was emitted for the "
+            "master indicator. Review legal mapping, context and deterministic gate outcomes."
+        ),
+        "EMITTED_OTHER_INDICATOR": (
+            f"The cited provision was emitted under {emitted or 'another indicator'}, not under the "
+            "master indicator. Decide whether the master mapping, engine mapping, or both need correction."
+        ),
+        "GOLD_REF_UNPARSEABLE": (
+            "The master citation could not be parsed into a stable legal anchor. Verify the citation "
+            "against the official instrument and provide a corrected reference if necessary."
+        ),
+    }
+    detail = messages.get(technical, f"Technical classification: {technical}. Legal review is required.")
+    return f"{detail} Proposed system verdict: {miss.get('proposed_verdict') or 'REVIEW_REQUIRED'}."
 
 
 def main() -> int:
@@ -78,7 +124,9 @@ def main() -> int:
         for it in items:
             key = (it.get("indicator"), it.get("law"), it.get("article"))
             votes = it.get("refuter_votes") or []
-            reason = " || ".join(f"{v.get('persona')}: {v.get('reason','')[:120]}" for v in votes)
+            reason = " || ".join(
+                f"{v.get('persona')}/{v.get('failure_mode', 'none')}: {v.get('reason','')[:220]}"
+                for v in votes)
             refutations[key] = {"verdict": it.get("verdict"), "reason": reason}
 
     wb = Workbook()
@@ -91,8 +139,9 @@ def main() -> int:
     ws.append(["Sheet: Recall Misses", f"{len(misses.get('misses', []))} unmatched master anchors — fill Reviewer verdict "
                "(REAL_MISS / GOLD_WRONG / GOLD_AMBIGUOUS / CORRECT_ABSTENTION). Malaysia rows: ESCAP planted deliberate "
                "errors (confirmed) — cross-check the error audit before calling anything a real miss."])
-    ws.append(["Sheet: NEW Findings", "Every NEW row pending decision. The Refuter verdict column is an adversarial AI "
-               "opinion with a named failure mode — confirm or override it; your decision is final."])
+    ws.append(["Sheet: NEW Findings", "Every NEW row is pending. The refuter is one configured model applying three "
+               "named analytical lenses with the complete indicator rubric; it is advisory, not three independent "
+               "legal opinions. Confirm or override it; your named decision is final."])
     ws.append(["Decisions vocabulary", "approve | reject | needs-correction (name + date required; row is excluded from "
                "the final export without an explicit approve)"])
     for row in ws.iter_rows(min_row=2):
@@ -107,11 +156,11 @@ def main() -> int:
     for i, m in enumerate(misses.get("misses", []), start=1):
         ind = indicators.get(m.get("gold_indicator") or "", {})
         ws.append([f"M{i:03d}", m.get("economy"), m.get("gold_indicator"),
-                   str(ind.get("legal_question", ind.get("name", "")))[:300],
+                   str(ind.get("question", ind.get("legal_question", ind.get("name", ""))))[:300],
                    m.get("act"), m.get("ref"), m.get("class"),
                    ", ".join(m.get("emitted_under") or []) or "—",
                    m.get("proposed_verdict"),
-                   json.dumps(m.get("evidence", {}))[:280]] + [""] * 9)
+                   _recall_rationale(m)] + [""] * 9)
 
     # --- NEW Findings ----------------------------------------------------------
     heads = ["NEW ID", "Economy", "Indicator", "Indicator question", "Law/instrument",
@@ -140,13 +189,13 @@ def main() -> int:
             if align.startswith("unaligned"):
                 comment = "BLOCK: citation not aligned to a canonical page/anchor; cannot enter final export until resolved. " + comment
             ws.append([f"N{n:03d}", f.get("Economy"), f.get("Indicator ID"),
-                       str(ind.get("legal_question", ind.get("name", "")))[:300],
+                   str(ind.get("question", ind.get("legal_question", ind.get("name", ""))))[:300],
                        f.get("Law Name"), cite,
                        str(f.get("Verbatim Snippet", ""))[:900],
-                       str(f.get("Notes", ""))[:500],
+                       _surrounding_context(f),
                        str(f.get("Mapping Rationale", ""))[:700],
                        f.get("Source URL"), align,
-                       str(f.get("status_evidence", ""))[:220], row_warns,
+                       _display(f.get("status_evidence", ""), 700), row_warns,
                        str(ref.get("verdict", "NOT RUN"))[:40],
                        str(ref.get("reason", ref.get("rationale", "")))[:400],
                        comment] + [""] * 9)
@@ -161,7 +210,8 @@ def main() -> int:
                  "Scoring criteria", "Exclusions"], [10, 12, 26, 44, 44, 44, 34])
     for ind_id, ind in sorted(indicators.items()):
         ws.append([ind_id, str(ind.get("methodology_no", "")), str(ind.get("name", ""))[:120],
-                   str(ind.get("legal_question", ""))[:400], str(ind.get("legal_test", ""))[:400],
+                   str(ind.get("question", ind.get("legal_question", "")))[:400],
+                   str(ind.get("legal_test", ""))[:400],
                    json.dumps(ind.get("criteria", ind.get("scoring", "")))[:400],
                    json.dumps(ind.get("exclusions", ""))[:300]])
 
@@ -178,7 +228,7 @@ def main() -> int:
             ws.append([economy, e.get("indicator_code"), str(e.get("score", "")),
                        str(e.get("act", ""))[:200], ", ".join(e.get("articles", []))[:150],
                        str(e.get("coverage", "")), str(e.get("impact", ""))[:800],
-                       str(e.get("url", e.get("urls", "")))[:300]])
+                       _official_urls(e)])
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     wb.save(OUT)

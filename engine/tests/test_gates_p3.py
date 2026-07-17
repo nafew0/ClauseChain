@@ -90,3 +90,10 @@ def test_g7_cross_border_indicators_require_the_correct_legal_effect():
     assert g7_indicator_fit("P6-I1", transfer_only, transfer_only, "Privacy Act").status == "FAIL"
     conditional = "An organisation may transfer data outside the country only if consent is obtained."
     assert g7_indicator_fit("P6-I4", conditional, conditional, "Privacy Act").status == "PASS"
+
+
+def test_g7_accepts_statutory_in_accordance_condition_wording():
+    text = ("An organisation must not transfer any personal data to a country or territory "
+            "outside Singapore except in accordance with requirements prescribed under this Act.")
+    assert g7_indicator_fit("P6-I4", text, text,
+                            "Personal Data Protection Act 2012").status == "PASS"
