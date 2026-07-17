@@ -93,11 +93,24 @@ def review_blanks() -> list[str]:
     return [""] * len(REVIEW_FIELDS)
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--out", required=True)
-    args = parser.parse_args()
+def _load_refuter_verdicts() -> tuple[dict[tuple, dict], bool]:
+    """({(indicator, law, article): item}, all_v2). Verdicts are usable ONLY
+    when every item came from the full-rubric v2 panel (rubric_version gate)."""
+    verdicts: dict[tuple, dict] = {}
+    versions: set[str] = set()
+    for run in RUNS:
+        path = Path(f"data/review/refutation_{run}.json")
+        if not path.is_file():
+            continue
+        for item in json.loads(path.read_text()):
+            versions.add(str(item.get("rubric_version")))
+            verdicts[(item.get("indicator"), item.get("law"), item.get("article"))] = item
+    return verdicts, bool(verdicts) and versions == {"full-indicator-v2"}
+
+
+def build_payload() -> dict:
     configs = indicator_configs()
+    refuter_verdicts, refuter_ok = _load_refuter_verdicts()
     findings: list[dict] = []
     for run in RUNS:
         envelope = json.loads(Path(f"outputs/{run}/output.json").read_text())
@@ -146,6 +159,14 @@ def main() -> int:
             _display(finding.get("status_evidence"), 1200), gate_summary(finding),
             guidance,
         ] + review_blanks()
+        if tag == "NEW" and refuter_ok:
+            item = refuter_verdicts.get((indicator_id, finding.get("Law Name"),
+                                         finding.get("Article / Section")), {})
+            votes = item.get("refuter_votes") or []
+            reasoning = " || ".join(
+                f"{v.get('persona')}/{v.get('failure_mode', 'none')}: {v.get('reason', '')[:220]}"
+                for v in votes)
+            row = row[:14] + [item.get("verdict", "NOT RUN"), reasoning] + row[14:]
         (new_rows if tag == "NEW" else known_rows).append(row)
 
     misses = json.loads(Path("data/review/recall_adjudication.json").read_text())
@@ -231,7 +252,10 @@ def main() -> int:
             "recall": len(recall_rows), "zone3": len(zone_rows), "master": len(master_rows),
         },
         "sheets": {
-            "NEW Findings": {"headers": common_headers, "rows": new_rows},
+            "NEW Findings": {"headers": (common_headers[:14]
+                                         + ["Refuter verdict", "Refuter panel reasoning"]
+                                         + common_headers[14:]) if refuter_ok else common_headers,
+                             "rows": new_rows},
             "Absence Review": {"headers": absence_headers, "rows": absence_rows},
             "Recall Misses": {"headers": recall_headers, "rows": recall_rows},
             "Zone-3 Scores": {"headers": zone_headers, "rows": zone_rows},
@@ -240,11 +264,22 @@ def main() -> int:
             "Master Known": {"headers": master_headers, "rows": master_rows},
         },
         "refuter_status": (
-            "Automated refuter verdicts are not used in this workbook. The legacy run omitted the "
-            "complete indicator rubric; the corrected rerun was not exported because external API "
-            "transfer was not authorized. Every NEW row therefore requires human legal review."
+            "Rubric-aware adversarial refuter (full-indicator-v2) verdicts are included on NEW rows "
+            "as ADVISORY columns — one model applying three analytical lenses with the complete "
+            "indicator rubric. The named human decision is final and overrides them."
+            if refuter_ok else
+            "Automated refuter verdicts are not used in this workbook: no complete full-indicator-v2 "
+            "refuter run exists for the current outputs. Every NEW row requires human legal review."
         ),
     }
+    return payload
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--out", required=True)
+    args = parser.parse_args()
+    payload = build_payload()
     Path(args.out).write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
     print(json.dumps(payload["counts"], sort_keys=True))
     return 0

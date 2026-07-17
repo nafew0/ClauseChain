@@ -3,22 +3,27 @@
   "indicator": "P7-I1",
   "law": "Personal Data Protection Act (Act 709) 2010",
   "article": "s. 8",
-  "verdict": "RECOMMEND-REJECT",
+  "verdict": "RECOMMEND-KEEP",
+  "rubric_version": "full-indicator-v2",
+  "panel_type": "three-lens-single-configured-model",
   "refuter_votes": [
    {
-    "persona": "opposing",
-    "refuted": true,
-    "reason": "The snippet is a domestic disclosure-purpose limitation tied to consent, but it does not clearly evidence the specific \u201cP7-I1 comprehensive framework\u201d indicator"
-   },
-   {
-    "persona": "reviewer",
-    "refuted": true,
-    "reason": "Keyword match without the legal FUNCTION: the snippet is a domestic disclosure-purpose limitation tied to data-subject consent, but the claimed \u201ccomprehensive f"
-   },
-   {
-    "persona": "textualist",
+    "persona": "opposing_counsel",
     "refuted": false,
-    "reason": "The quoted text plainly establishes a consent requirement and a purpose-limitation on disclosure of personal data (subject to section 39), which supports the cl"
+    "failure_mode": "none",
+    "reason": "s. 8 is a horizontal personal-data disclosure/consent and purpose-limitation rule (subject to s.39), which is within the scope of a comprehensive horizontal data-protection framework; it is not a clear scope/function mismatch for P7-I1."
+   },
+   {
+    "persona": "methodology_reviewer",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "Rubric P7-I1 asks whether the economy lacks a comprehensive horizontal personal-data-protection law; the claimed evidence is from Malaysia’s Personal Data Protection Act 2010 (Act 709), which is a horizontal DP statute. The snippet supports the existence of a horizontal framework (consent + purpose limitation), and the rubric’s hunt_in is empty, so no additional keyword/function test is required."
+   },
+   {
+    "persona": "strict_textualist",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "The quoted text establishes a legal obligation restricting disclosure of personal data without data-subject consent and limiting disclosure purposes, subject to section 39. While it does not, by itself, prove “comprehensive” coverage of every right, P7-I1 is satisfied by evidence of a horizontal DP law existing; the snippet is consistent with that establishment."
    }
   ]
  },
@@ -27,21 +32,26 @@
   "law": "Cyber Security Act (Act 854) 2024",
   "article": "s. 11(1)",
   "verdict": "SPLIT-REVIEW",
+  "rubric_version": "full-indicator-v2",
+  "panel_type": "three-lens-single-configured-model",
   "refuter_votes": [
    {
-    "persona": "opposing",
-    "refuted": false,
-    "reason": "The quoted s. 11(1) expressly mandates establishing and maintaining a national cyber security system to deal with cyber security threats and incidents, which su"
-   },
-   {
-    "persona": "reviewer",
+    "persona": "opposing_counsel",
     "refuted": true,
-    "reason": "Keyword match without the legal FUNCTION: the cited duty to establish/maintain a national coordination/command centre system is an institutional cyber-security "
+    "failure_mode": "provision evidences a different indicator than claimed",
+    "reason": "P7-I2 asks whether the economy lacks a dedicated cybersecurity legal framework. s. 11(1) only mandates establishing/maintaining a national cyber coordination and command centre system; it is an institutional/coordination duty, not a showing that the Act provides a horizontal cybersecurity framework covering incident response/monitoring/prevention/mitigation across the economy. Under the rubric, this may evidence cybersecurity measures but does not clearly establish the existence of a dedicated h"
    },
    {
-    "persona": "textualist",
+    "persona": "methodology_reviewer",
     "refuted": false,
-    "reason": "The quoted text plainly establishes a national cyber security system for dealing with threats and incidents, so it supports the claimed indicator/rationale rath"
+    "failure_mode": "none",
+    "reason": "Rubric P7-I2 scores framework_absent_scores_high: 0.5 for non-dedicated or sectoral-only; 0 for dedicated horizontal cybersecurity framework. The hunt_in is empty, so scoring relies on positive cues and whether the evidence supports a dedicated cybersecurity framework. The claimed law name is “Cyber Security Act (Act 854) 2024,” which is a positive cue for a dedicated cybersecurity framework. The cited provision is within that cybersecurity act and concerns cyber security threats/incidents, whic"
+   },
+   {
+    "persona": "strict_textualist",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "The exact quoted text establishes only that the Chief Executive must establish and maintain a national cyber security system (the “National Cyber Coordination and Command Centre System”) for dealing with cyber security threats and cyber security incidents. It does not, in the excerpt itself, enumerate the full scope of a horizontal framework, but it does directly evidence a dedicated cybersecurity mechanism within a cybersecurity act. For P7-I2, that is sufficient to support the claimed rational"
    }
   ]
  },
@@ -49,22 +59,27 @@
   "indicator": "P7-I2",
   "law": "Cyber Security Act (Act 854) 2024",
   "article": "s. 35(4)",
-  "verdict": "RECOMMEND-REJECT",
+  "verdict": "SPLIT-REVIEW",
+  "rubric_version": "full-indicator-v2",
+  "panel_type": "three-lens-single-configured-model",
   "refuter_votes": [
    {
-    "persona": "opposing",
+    "persona": "opposing_counsel",
     "refuted": true,
-    "reason": "The snippet supports issuing directives to respond/recover after a cyber incident, but it does not evidence the specific indicator P7-I2 as claimed (it is about"
+    "failure_mode": "provision evidences a different indicator than claimed",
+    "reason": "P7-I2 asks whether there is a dedicated horizontal cybersecurity framework. s.35(4) is a discretionary directive power tied to national critical information infrastructure entities after notification of a cyber incident; it does not, by itself, evidence that the economy lacks a cybersecurity framework or that a horizontal, dedicated framework exists across cybersecurity functions (incident response/critical infrastructure/cyber-risk) as a whole. The mapping rationale treats a single incident-res"
    },
    {
-    "persona": "reviewer",
-    "refuted": true,
-    "reason": "Keyword match without the legal FUNCTION: the provision authorizes a directive to a specific national critical information infrastructure entity to respond/reco"
-   },
-   {
-    "persona": "textualist",
+    "persona": "methodology_reviewer",
     "refuted": false,
-    "reason": "The snippet plainly supports the claimed indicator: it authorizes the Chief Executive, after notification of a cyber security incident, to issue directives to t"
+    "failure_mode": "none",
+    "reason": "Rubric P7-I2 scores framework existence: 1 (none), 0.5 (non-dedicated or sectoral-only), 0 (dedicated horizontal). The provided snippet is from Act 854 (Cyber Security Act) and concerns cyber security incident response/recovery directives for national critical information infrastructure—i.e., cybersecurity-specific and critical-infrastructure incident handling within a dedicated act. Under the rubric’s hunt_in (empty) and positive cues (Cyber Security Act), the evidence is consistent with a dedi"
+   },
+   {
+    "persona": "strict_textualist",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "Exact text establishes only that, after notification that a cyber security incident has occurred, the Chief Executive may issue a directive to the national critical information infrastructure entity on measures to respond/recover and prevent recurrence. It does not explicitly state “horizontal framework” or “lack of cybersecurity law,” but it does directly establish a cybersecurity-incident response/recovery mechanism within Act 854. For P7-I2, that is sufficient to support the claimed framework"
    }
   ]
  },
@@ -72,22 +87,27 @@
   "indicator": "P7-I3",
   "law": "Cyber Security Act (Act 854) 2024",
   "article": "s. 32(2)",
-  "verdict": "RECOMMEND-REJECT",
+  "verdict": "RECOMMEND-KEEP",
+  "rubric_version": "full-indicator-v2",
+  "panel_type": "three-lens-single-configured-model",
   "refuter_votes": [
    {
-    "persona": "opposing",
-    "refuted": true,
-    "reason": "The snippet supports a minimum retention period for records of a cyber security service, but the claimed indicator P7-I3 is framed as a general \u201cminimum data re"
-   },
-   {
-    "persona": "reviewer",
-    "refuted": true,
-    "reason": "Keyword match without the legal FUNCTION: the text is a minimum retention period for records of a cyber security service, but the mapping treats it as a general"
-   },
-   {
-    "persona": "textualist",
+    "persona": "opposing_counsel",
     "refuted": false,
-    "reason": "The snippet plainly establishes a minimum retention period (\u201cnot less than six years\u201d) tied to the provision of the cyber security service, which matches the cl"
+    "failure_mode": "none",
+    "reason": "s.32(2) expressly states a minimum retention period (“retained for a period of not less than six years”), which directly supplies the legal-function required by P7-I3 (minimum retention). No scope/functional defect is apparent from the quoted text."
+   },
+   {
+    "persona": "methodology_reviewer",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "Rubric P7-I3 (requirement_present_scores_high): hunt_in allows sectoral law; positive cue present (“not less than six years from the date…”). Scoring: '1' because a minimum period is clearly specified (>= 6 years). The surrounding context also shows the retention obligation is part of the same subsection, supporting the evidence row."
+   },
+   {
+    "persona": "strict_textualist",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "Exact quoted text establishes a retention requirement with a specified minimum duration: “retained for a period of not less than six years from the date the cyber security service was provided.” The context (subsection (2) listing keep/retain/produce duties) confirms it is a minimum retention obligation, not a limit or mere permission."
    }
   ]
  },
@@ -96,21 +116,26 @@
   "law": "Services Tax Act (Act 807) 2018",
   "article": "s. 61",
   "verdict": "RECOMMEND-REJECT",
+  "rubric_version": "full-indicator-v2",
+  "panel_type": "three-lens-single-configured-model",
   "refuter_votes": [
    {
-    "persona": "opposing",
+    "persona": "opposing_counsel",
     "refuted": true,
-    "reason": "The snippet is about a service tax officer\u2019s powers to enter/search/seize premises \u201cin the same manner as if\u2026 by a warrant,\u201d i.e., it does not clearly authorize"
+    "failure_mode": "court-gated access misread as warrantless (7.5 court-order test)",
+    "reason": "The snippet is explicitly framed as powers exercisable “in the same manner as if he was empowered so to do by a warrant issued under that section,” and the surrounding context is triggered by delay in obtaining a “search warrant.” Under P7-I5, this is court/warrant-gated access (or access only in substitution for a warrant), which supports score 0 rather than a warrantless (score 1) government access power."
    },
    {
-    "persona": "reviewer",
+    "persona": "methodology_reviewer",
     "refuted": true,
-    "reason": "Keyword match without the legal FUNCTION: the quoted text concerns a tax officer\u2019s authority to exercise search/seizure powers (warrant substitution/administrat"
+    "failure_mode": "provision evidences a different indicator than claimed",
+    "reason": "Rubric P7-I5 scores 1 only for government access WITHOUT independent judicial authorization. Here, the text ties the officer’s powers to being “as if” empowered by a “warrant,” and the trigger is delay in obtaining a “search warrant.” This is not a warrantless access cue (negative_cues: “only under a warrant issued by / pursuant to a court order / authorization of a judge”); therefore the mapping rationale to score 1 is inconsistent with the rubric’s court-order test."
    },
    {
-    "persona": "textualist",
+    "persona": "strict_textualist",
     "refuted": false,
-    "reason": "The quoted text plainly authorizes a senior service tax officer to exercise section 60 powers (including entry/search-type powers) without a warrant, so the sni"
+    "failure_mode": "none",
+    "reason": "What the exact quoted text establishes is that, upon reasonable cause and risk of removal due to delay, the senior officer may exercise section-60 powers “in the same manner as if” empowered by a warrant. The text does not clearly state “without a warrant” or “no judicial authorization required”; it instead uses warrant-referential language. This supports a score-0 interpretation under P7-I5, but the snippet’s conditional substitution for a warrant is not stated with enough precision to claim a "
    }
   ]
  }

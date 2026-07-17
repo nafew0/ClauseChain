@@ -3,22 +3,27 @@
   "indicator": "P7-I2",
   "law": "Security of Critical Infrastructure Act 2018",
   "article": "s. 3",
-  "verdict": "RECOMMEND-KEEP",
+  "verdict": "RECOMMEND-REJECT",
+  "rubric_version": "full-indicator-v2",
+  "panel_type": "three-lens-single-configured-model",
   "refuter_votes": [
    {
-    "persona": "opposing",
-    "refuted": false,
-    "reason": "The snippet describes the Act\u2019s object to impose enhanced cybersecurity obligations for systems of national significance, which supports the claimed indicator a"
+    "persona": "opposing_counsel",
+    "refuted": true,
+    "failure_mode": "provision evidences a different indicator than claimed",
+    "reason": "P7-I2 asks whether there is a dedicated horizontal cybersecurity framework. The cited s.3 object clause is about managing risks relating to critical infrastructure and imposing enhanced cyber security obligations for systems of national significance, but it is not clearly a dedicated horizontal cybersecurity act across the economy; it is a critical-infrastructure risk framework (sectoral-by-subject). Under the rubric’s 0.5 vs 0 split, this is at least sectoral-only/dedicated-to-a-domain evidence"
    },
    {
-    "persona": "reviewer",
-    "refuted": false,
-    "reason": "The snippet describes the Act\u2019s purpose to impose enhanced cybersecurity obligations for systems of national significance (including preparedness and response),"
+    "persona": "methodology_reviewer",
+    "refuted": true,
+    "failure_mode": "lost exception",
+    "reason": "Rubric scoring for P7-I2: 0.5 if NON-DEDICATED (relies on other laws) and/or dedicated but SECTORAL-ONLY; 0 only if a dedicated HORIZONTAL cybersecurity framework exists. The mapping rationale treats the critical-infrastructure act as horizontal across sectors, but the rubric’s sectoral-only exclusion is a scoring gate. The hunt_in is empty, so the only basis is the provided snippet; that snippet is an object clause for critical infrastructure systems, which triggers the sectoral-only branch rat"
    },
    {
-    "persona": "textualist",
+    "persona": "strict_textualist",
     "refuted": false,
-    "reason": "The quoted text plainly describes an object of imposing enhanced cybersecurity obligations for systems of national significance to improve preparedness and resp"
+    "failure_mode": "none",
+    "reason": "The quoted snippet (d) expressly states the Act’s object includes “imposing enhanced cyber security obligations… for systems of national significance” and “preparedness for, and ability to respond to, cyber security incidents.” That does establish a dedicated cyber-security obligation regime tied to critical infrastructure systems. Whether it is “horizontal across the economy” is not resolved by s.3 alone, but the text does support the existence of a cybersecurity framework for that domain; thus"
    }
   ]
  },
@@ -27,21 +32,26 @@
   "law": "Security of Critical Infrastructure Act 2018",
   "article": "s. 30CB(1)",
   "verdict": "SPLIT-REVIEW",
+  "rubric_version": "full-indicator-v2",
+  "panel_type": "three-lens-single-configured-model",
   "refuter_votes": [
    {
-    "persona": "opposing",
-    "refuted": false,
-    "reason": "The snippet clearly supports a conditional determination by the Secretary that incident response planning obligations apply to a responsible entity for a system"
-   },
-   {
-    "persona": "reviewer",
+    "persona": "opposing_counsel",
     "refuted": true,
-    "reason": "The snippet is a keyword/authority match for \u201cincident response planning\u201d but it does not evidence the claimed legal function as a conditional applicability tri"
+    "failure_mode": "provision evidences a different indicator than claimed",
+    "reason": "P7-I2 asks whether there is a dedicated horizontal cybersecurity framework. s.30CB(1) is a conditional mechanism to extend “incident response planning obligations” to entities for “systems of national significance,” but the snippet does not establish that the overall Act is a dedicated horizontal cybersecurity framework (vs a critical-infrastructure-specific incident-planning regime). Under the rubric, sectoral-only/dedicated-but-sectoral evidence scores 0.5, so treating this as proof of a dedic"
    },
    {
-    "persona": "textualist",
+    "persona": "methodology_reviewer",
     "refuted": false,
-    "reason": "The snippet plainly establishes a Secretary power to determine that incident response planning obligations apply to a responsible entity for a system of nationa"
+    "failure_mode": "none",
+    "reason": "Rubric P7-I2: score 0 only if a dedicated horizontal cybersecurity framework exists; score 0.5 if non-dedicated or sectoral-only. The provided snippet shows incident-response planning obligations for “systems of national significance” (critical infrastructure), which is sectoral/critical-infrastructure scoped rather than clearly horizontal across the economy. The rubric’s hunt_in is empty, and the evidence is directly about incident-response planning obligations; this supports at most a 0.5-type"
+   },
+   {
+    "persona": "strict_textualist",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "Exact text establishes only that the Secretary may, by written notice, determine that “statutory incident response planning obligations” apply to a responsible entity for a “system of national significance” in relation to the system and “cyber security incidents,” with timing/consultation/cost/proportionality constraints. It does not, in the quoted excerpt, state that the Act is a dedicated horizontal cybersecurity law for the economy (network security/incident response/critical infrastructure/c"
    }
   ]
  },
@@ -50,21 +60,26 @@
   "law": "My Health Records Act 2012",
   "article": "s. 17(2)",
   "verdict": "RECOMMEND-KEEP",
+  "rubric_version": "full-indicator-v2",
+  "panel_type": "three-lens-single-configured-model",
   "refuter_votes": [
    {
-    "persona": "opposing",
+    "persona": "opposing_counsel",
     "refuted": false,
-    "reason": "The snippet supports a retention-duration obligation on the System Operator (it is about ensuring records are retained for a specified period), so it does not c"
+    "failure_mode": "none",
+    "reason": "s. 17(2) expressly requires retention for a specified period (30 years after death / 130 years after birth / until required destruction), so there is no concrete scope/function defect for P7-I3."
    },
    {
-    "persona": "reviewer",
+    "persona": "methodology_reviewer",
     "refuted": false,
-    "reason": "The snippet supports a retention-duration obligation for the System Operator (it is not merely a keyword match), and the claimed rationale aligns with the legal"
+    "failure_mode": "none",
+    "reason": "Rubric P7-I3 (requirement_present_scores_high): hunt_in allows sectoral law; positive cue “retained for the period… 30 years… 130 years…” specifies a minimum retention duration. Scoring: '1' because a minimum period is clearly specified (keep >= X). No exclusion applies (it is not a “no longer than necessary” limit)."
    },
    {
-    "persona": "textualist",
+    "persona": "strict_textualist",
     "refuted": false,
-    "reason": "The quoted text only states that the System Operator must ensure retention for a period, but it does not plainly establish the specific minimum-duration indicat"
+    "failure_mode": "none",
+    "reason": "Exact text establishes a retention obligation with defined endpoints: “beginning when… first uploaded” and “ending” at 30 years after death / 130 years after birth / when required to destroy under subsection (4). This directly supports the claimed P7-I3 minimum retention requirement."
    }
   ]
  },
@@ -73,21 +88,26 @@
   "law": "Telecommunications Act 1997",
   "article": "s. 545(1)",
   "verdict": "RECOMMEND-REJECT",
+  "rubric_version": "full-indicator-v2",
+  "panel_type": "three-lens-single-configured-model",
   "refuter_votes": [
    {
-    "persona": "opposing",
+    "persona": "opposing_counsel",
     "refuted": true,
-    "reason": "The snippet is about physical search and seizure powers (search person/clothing/property and seize things) rather than authorizing access to personal data, so i"
+    "failure_mode": "keyword match without the legal FUNCTION (confidentiality != localization; busin",
+    "reason": "The cited power is to search/seize a person’s clothing/property and enter premises to prevent concealment/destruction of things connected with an offence. The rubric P7-I5 requires evidence of government access to personal data without independent judicial authorization; this snippet does not establish access to personal data (it is physical search/seizure), so the mapping to “government access to personal data” is a legal-function mismatch."
    },
    {
-    "persona": "reviewer",
+    "persona": "methodology_reviewer",
     "refuted": true,
-    "reason": "Keyword match without the legal FUNCTION: the cited power is an inspector\u2019s search-and-seizure of a person/property (enforcement procedure), not a data-access/l"
+    "failure_mode": "provision evidences a different indicator than claimed",
+    "reason": "Rubric hunt_in/scoring for P7-I5 looks for warrantless government access to personal data (e.g., police may access/search/copy computer data without a warrant). The provided text authorizes an inspector to search and seize persons/property and enter premises to prevent concealment/loss/destruction, but it does not evidence access to personal data. Under the court-order test, this is not a “warrantless access to personal data” provision; therefore it cannot score 1 for P7-I5."
    },
    {
-    "persona": "textualist",
+    "persona": "strict_textualist",
     "refuted": false,
-    "reason": "The snippet plainly authorizes an inspector to search and seize items without a warrant in circumstances of seriousness and urgency, which supports the claimed "
+    "failure_mode": "none",
+    "reason": "The exact quoted text establishes that an inspector may search the person/clothing/immediate control and seize things found, and that this may be done immediately without a warrant issued under Division 3, where there are reasonable grounds and seriousness/urgency. It does not, in the quoted text, expressly mention “personal data” or “access/search/copy” of data; however, the rubric’s scoring is about warrantless access to personal data, and the snippet’s lack of explicit data-access language is"
    }
   ]
  },
@@ -95,22 +115,27 @@
   "indicator": "P7-I5",
   "law": "Telecommunications Act 1997",
   "article": "s. 545(2)",
-  "verdict": "RECOMMEND-REJECT",
+  "verdict": "SPLIT-REVIEW",
+  "rubric_version": "full-indicator-v2",
+  "panel_type": "three-lens-single-configured-model",
   "refuter_votes": [
    {
-    "persona": "opposing",
+    "persona": "opposing_counsel",
     "refuted": true,
-    "reason": "The snippet\u2019s wording (\u201cwithout the authority of a warrant issued under Division 3\u201d) is about acting without a warrant, not about permitting warrantless access "
+    "failure_mode": "snippet does not actually support the rationale",
+    "reason": "P7-I5 requires government access to personal data without independent judicial authorization. The quoted text authorizes an inspector to search/enter/seize things connected with an offence (Part 21) in urgent circumstances, but it does not establish that the searched/seized “thing” is personal data or that the access is to personal data as such; therefore the mapping to “personal data-related material” is not supported by the snippet."
    },
    {
-    "persona": "reviewer",
-    "refuted": true,
-    "reason": "The snippet\u2019s function is \u201centry/search/seizure without a warrant\u201d (warrantless access), but the rationale claims it is \u201cwhen no warrant is required\u201d for urgent"
+    "persona": "methodology_reviewer",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "Rubric hunt_in directs looking beyond privacy statutes to lawful-access/surveillance regimes; this is a criminal/enforcement access power. The court-order test is satisfied for score=1 only if access is without independent judicial authorization. The snippet expressly permits immediate exercise “without the authority of a warrant issued under Division 3,” which is warrantless access (positive cue: “without a warrant”). Although the provision uses “may” and is framed as urgent search/seizure, the"
    },
    {
-    "persona": "textualist",
-    "refuted": true,
-    "reason": "The snippet only states access is taken \u201cwithout the authority of a warrant issued under Division 3,\u201d but it does not plainly establish the claimed function of "
+    "persona": "strict_textualist",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "Exact quoted text: “without the authority of a warrant issued under Division 3.” In context, subsections (1)-(3) allow an inspector to search/enter and seize things connected with offences against Part 21, where urgency/seriousness “require and justify” immediate exercise without that warrant. The text establishes a warrantless (no independent judicial authorization) access power for the inspector in urgent circumstances; it does not expressly say “personal data,” but the rubric’s court-order te"
    }
   ]
  }
