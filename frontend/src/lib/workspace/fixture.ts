@@ -9,6 +9,9 @@ import type {
   ReviewQueueResponse,
   ReviewContext,
   SourceMatchDetail,
+  SourceMatchMode,
+  SubmissionParams,
+  SubmissionResponse,
   WorkspaceFixture,
   WorkspaceQueue,
 } from '@/types/workspace'
@@ -274,6 +277,65 @@ export async function fixtureSourceMatch(
       previous_key: index > 0 ? filtered[index - 1].finding_key : null,
       next_key: index + 1 < filtered.length ? filtered[index + 1].finding_key : null,
     },
+  }
+}
+
+export async function fixtureSubmission(
+  params: SubmissionParams = {}
+): Promise<SubmissionResponse> {
+  const fixture = await loadWorkspaceFixture()
+  let rows = (await fixtureEvidence(params)).results
+  const query = params.q?.trim().toLocaleLowerCase()
+  if (query) {
+    rows = rows.filter(({ row }) =>
+      ['Law Name', 'Article / Section', 'Verbatim Snippet', 'Indicator ID', 'Economy']
+        .map((field) => String(row[field] ?? ''))
+        .join(' ')
+        .toLocaleLowerCase()
+        .includes(query)
+    )
+  }
+  const templateColumns = [
+    'Economy', 'Law Name', 'Law Number / Ref', 'Last Amended', 'Indicator ID',
+    'Article / Section', 'Discovery Tag', 'Location Reference', 'Verbatim Snippet',
+    'Mapping Rationale', 'Source URL', 'Confidence', 'Notes',
+  ]
+  const results = rows.map((evidence) => {
+    const proof = (evidence.row['citation_proof'] ?? {}) as Record<string, unknown>
+    const gates = Array.isArray(proof.gate_results) ? proof.gate_results as never[] : []
+    const mode: SourceMatchMode = evidence.blocked ? 'blocked' : proof.alignment_status === 'anchor' ? 'anchor' : proof.alignment_status === 'exact' ? 'exact' : 'blocked'
+    const reviewItem = Object.values(fixture.queues).flatMap((queue) => queue.results).find((item) => item.finding_key === evidence.finding_key)
+    return {
+      finding_key: evidence.finding_key,
+      template: Object.fromEntries(templateColumns.map((name) => [name, evidence.row[name] ?? null])),
+      row: evidence.row,
+      verification: {
+        source_domain: null,
+        citation_tier: String(evidence.row['citation_tier'] ?? '') || null,
+        match_mode: mode,
+        match_label: mode === 'exact' ? 'VERBATIM · exact' : mode === 'anchor' ? 'VERBATIM · anchor' : 'blocked',
+        page_or_anchor: String(proof.page_number ?? proof.anchor ?? '') || null,
+        source_sha256: String(proof.source_sha256 ?? evidence.source_hash),
+        access_date: String(evidence.row['access_date'] ?? '') || null,
+        status: String(evidence.row['Status'] ?? '') || null,
+        gates,
+        gates_pass: gates.length > 0,
+        blocked: mode === 'blocked',
+      },
+      review_state: reviewItem?.review_state ?? {
+        decision: null, correction_pending: false, citation_checked: false,
+        mapping_checked: false, status_checked: false, citation_reviewer_name: '',
+        mapping_reviewer_name: '', status_reviewer_name: '', stages: {},
+      },
+    }
+  })
+  const page = pageSlice(results, params.page, params.page_size)
+  return {
+    ...page,
+    template_columns: templateColumns,
+    snapshot: { id: fixture.summary.snapshot.id, source_hash: fixture.summary.snapshot.source_hash, stale: fixture.summary.snapshot.stale },
+    final_artifacts: { available: false, rows: 0 },
+    release: null,
   }
 }
 

@@ -1,6 +1,7 @@
 import tempfile
 import json
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
 
 from django.contrib.auth.models import Group
@@ -22,12 +23,14 @@ from .keys import recall_key, zone3_key
 from .models import (
     CorrectionRequest,
     EngineSnapshot,
+    EngineAction,
     EvidenceRow,
     FindingDecision,
     RecallDecision,
     ReviewItem,
     Zone3Decision,
 )
+from .engine_worker import EngineWorkerError, build_allowlisted_command, execute_action
 
 
 HASH = "a" * 64
@@ -259,6 +262,93 @@ class WorkspaceApiTests(TestCase):
         self.assertEqual(context.data["master_known"][0]["Act/instrument"], "Privacy Act")
         self.assertEqual(context.data["score_semantics"]["level"], "indicator")
         self.assertTrue(context.data["approval_eligibility"]["eligible"])
+
+        runs = self.client.get("/api/workspace/runs/").data
+        self.assertEqual(len(runs["results"]), 6)
+        self.assertEqual(runs["results"][0]["rows_produced"], 0)
+        self.assertIn("champion", runs)
+
+        submission = self.client.get("/api/workspace/submission/?economy=Singapore")
+        self.assertEqual(submission.status_code, 200)
+        self.assertEqual(submission.data["count"], 3)
+        self.assertEqual(len(submission.data["template_columns"]), 13)
+        self.assertIn("verification", submission.data["results"][0])
+        self.assertFalse(submission.data["final_artifacts"]["available"])
+
+    def test_engine_actions_are_superuser_only_and_deduplicated(self):
+        self.authenticate(self.citation)
+        self.assertEqual(
+            self.client.post("/api/workspace/engine/replay/", {}, format="json").status_code,
+            403,
+        )
+        admin = self.make_user("admin", "Admin User", "admin")
+        admin.is_superuser = True
+        admin.is_staff = True
+        admin.save(update_fields=("is_superuser", "is_staff"))
+        self.authenticate(admin)
+        response = self.client.post("/api/workspace/engine/replay/", {}, format="json")
+        self.assertEqual(response.status_code, 202)
+        self.assertEqual(response.data["status"], "queued")
+        self.assertEqual(
+            self.client.post("/api/workspace/engine/replay/", {}, format="json").status_code,
+            409,
+        )
+        self.assertEqual(self.client.get("/api/workspace/engine/actions/").status_code, 200)
+        invalid = self.client.post(
+            "/api/workspace/engine/run/",
+            {"economy": "Neverland", "pillar": 6},
+            format="json",
+        )
+        self.assertEqual(invalid.status_code, 400)
+
+    def test_worker_executes_only_allowlisted_commands_and_hashes_artifacts(self):
+        admin = self.make_user("worker-admin", "Worker Admin", "admin")
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "submission").mkdir()
+            final_csv = root / "submission" / "consolidated_final.csv"
+            final_json = root / "submission" / "consolidated_final.json"
+            final_csv.write_text("Economy\nSingapore\n", encoding="utf-8")
+            final_json.write_text('{"rows": [{"Economy": "Singapore"}]}', encoding="utf-8")
+            allowlist = root / "allowlist.json"
+            allowlist.write_text(
+                json.dumps(
+                    {
+                        "actions": {
+                            "replay": {
+                                "argv": [".venv/bin/python", "scripts/submission_replay.py"],
+                                "params": {},
+                                "timeout_s": 30,
+                            },
+                            "run_pipeline": {
+                                "argv": ["python", "run.py", "--economy", "{economy}"],
+                                "params": {"economy": {"enum": ["Singapore"]}},
+                            },
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+            action = EngineAction.objects.create(
+                kind=EngineAction.Kind.REPLAY,
+                arguments_json={"action": "replay"},
+                requested_by=admin,
+            )
+            with override_settings(ENGINE_ROOT=root, ENGINE_ALLOWLIST=allowlist), patch(
+                "workspace.engine_worker.subprocess.run",
+                return_value=SimpleNamespace(returncode=0, stdout="submission replay: 1", stderr=""),
+            ), patch(
+                "workspace.engine_worker.import_snapshot",
+                return_value=(self.snapshot, False),
+            ):
+                execute_action(action)
+                action.refresh_from_db()
+                self.assertEqual(action.status, EngineAction.Status.SUCCEEDED)
+                self.assertIn("submission/consolidated_final.csv", action.result_hashes_json)
+                with self.assertRaises(EngineWorkerError):
+                    build_allowlisted_command(
+                        {"action": "run_pipeline", "economy": "Singapore; rm -rf /"}
+                    )
 
     def test_source_match_supports_exact_anchor_blocked_and_queue_navigation(self):
         self.authenticate(self.citation)

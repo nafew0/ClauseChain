@@ -281,6 +281,9 @@ WORKSPACE_DECISION_WRITER = os.environ.get(
 WORKSPACE_LOCK_DIR = Path(
     os.environ.get("WORKSPACE_LOCK_DIR", BASE_DIR / "var" / "locks")
 ).resolve()
+ENGINE_ALLOWLIST = Path(
+    os.environ.get("ENGINE_ALLOWLIST", BASE_DIR.parent / "deploy" / "engine_allowlist.json")
+).resolve()
 
 # Simple JWT
 SIMPLE_JWT = {

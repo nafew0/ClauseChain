@@ -16,6 +16,9 @@ import {
   getReviewQueue,
   getReviewContext,
   getRuns,
+  getSubmission,
+  getEngineActions,
+  launchEngineAction,
   getSourceMatch,
   getSummary,
   requestCorrection,
@@ -25,6 +28,7 @@ import type {
   DecideResponse,
   EvidenceParams,
   FindingDecisionResponse,
+  SubmissionParams,
   ReviewQueueParams,
   WorkspaceQueue,
 } from '@/types/workspace'
@@ -42,6 +46,9 @@ export const workspaceKeys = {
   proofAsset: (assetUrl: string) =>
     [...workspaceKeys.all, 'proof-asset', assetUrl] as const,
   runs: () => [...workspaceKeys.all, 'runs'] as const,
+  submission: (params: SubmissionParams) =>
+    [...workspaceKeys.all, 'submission', params] as const,
+  actions: () => [...workspaceKeys.all, 'engine-actions'] as const,
   history: (domain: 'findings' | 'recall' | 'zone3', key: string) =>
     [...workspaceKeys.all, 'history', domain, key] as const,
   reviewContext: (queue: WorkspaceQueue, stableKey: string) =>
@@ -106,7 +113,71 @@ export function useProofAsset(assetUrl: string | null | undefined) {
 }
 
 export function useRuns() {
-  return useQuery({ queryKey: workspaceKeys.runs(), queryFn: getRuns })
+  return useQuery({
+    queryKey: workspaceKeys.runs(),
+    queryFn: getRuns,
+    refetchInterval: (query) =>
+      query.state.data?.actions.some((action) => ['queued', 'running'].includes(action.status))
+        ? 3_000
+        : false,
+  })
+}
+
+export function useSubmission(params: SubmissionParams = {}) {
+  return useQuery({
+    queryKey: workspaceKeys.submission(params),
+    queryFn: () => getSubmission(params),
+  })
+}
+
+export function useEngineActions() {
+  return useQuery({
+    queryKey: workspaceKeys.actions(),
+    queryFn: getEngineActions,
+    refetchInterval: (query) =>
+      query.state.data?.results.some((action) => ['queued', 'running'].includes(action.status))
+        ? 3_000
+        : false,
+  })
+}
+
+export function useLaunchEngineAction() {
+  const queryClient = useQueryClient()
+  const { toast, update } = useToast()
+  return useMutation({
+    mutationFn: ({ kind, payload }: {
+      kind: 'replay' | 'refresh' | 'run'
+      payload?: { economy?: string; pillar?: 6 | 7 }
+    }) => launchEngineAction(kind, payload),
+    onMutate: ({ kind }) => ({
+      toastId: toast({
+        title: `${kind === 'run' ? 'Pipeline run' : kind} queued…`,
+        description: 'Waiting for the dedicated engine worker to claim the action.',
+        variant: 'info',
+        duration: 0,
+      }),
+    }),
+    onSuccess: async (action, _variables, context) => {
+      if (context?.toastId) {
+        update(context.toastId, {
+          title: 'Engine action queued',
+          description: `${action.kind} · ${action.id.slice(0, 8)}. Status will refresh automatically.`,
+          variant: 'success',
+          duration: 5_000,
+        })
+      }
+      await queryClient.invalidateQueries({ queryKey: workspaceKeys.all })
+    },
+    onError: (error, _variables, context) => {
+      if (!context?.toastId) return
+      update(context.toastId, {
+        title: 'Engine action was not queued',
+        description: errorMessage(error),
+        variant: 'error',
+        duration: 7_000,
+      })
+    },
+  })
 }
 
 export function useDecisionHistory(

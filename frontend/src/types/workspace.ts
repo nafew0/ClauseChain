@@ -213,15 +213,93 @@ export interface SourceMatchDetail {
   }
 }
 
+export interface EngineAction {
+  id: string
+  kind: 'refresh' | 'replay' | 'run'
+  status: 'queued' | 'running' | 'succeeded' | 'failed'
+  arguments: JsonObject
+  requested_by: string
+  requested_at: string
+  started_at: string | null
+  finished_at: string | null
+  stdout: string
+  result_hashes: JsonObject
+  error: string
+}
+
 export interface RunRecord {
   run_name: string
-  envelope: JsonObject
-  cost: JsonObject
+  run_id: string | null
+  country: string
+  pillar: number
+  generated_at: string | null
+  rows_produced: number
+  discovery_counts: { NEW: number; KNOWN: number }
+  warnings: JsonValue[]
+  warning_count: number
+  model_version: string
+  elapsed_seconds: number | null
+  total_usd: number | null
+  models: JsonObject
+  pipeline_stats: JsonObject
   source_hash: string
 }
 
 export interface RunsResponse {
   results: RunRecord[]
+  champion: JsonObject
+  actions: EngineAction[]
+  can_launch: boolean
+}
+
+export interface SubmissionParams extends EvidenceParams {
+  q?: string
+  review?: 'pending' | 'approved' | 'rejected'
+}
+
+export interface SubmissionRow {
+  finding_key: string
+  template: Record<string, JsonValue>
+  row: JsonObject
+  verification: {
+    source_domain: string | null
+    citation_tier: string | null
+    match_mode: SourceMatchMode
+    match_label: string
+    page_or_anchor: string | number | null
+    source_sha256: string
+    access_date: string | null
+    status: string | null
+    gates: JsonObject[]
+    gates_pass: boolean
+    blocked: boolean
+  }
+  review_state: FindingReviewState
+}
+
+export interface SubmissionResponse extends PaginatedResponse<SubmissionRow> {
+  template_columns: string[]
+  snapshot: { id: string; source_hash: string; stale: boolean }
+  final_artifacts: {
+    available: boolean
+    rows: number
+    csv_sha256?: string | null
+    json_sha256?: string | null
+    identity_counts_match?: boolean
+    error?: string
+  }
+  release: {
+    id: string
+    state: 'DRAFT' | 'REVIEWING' | 'READY' | 'FROZEN' | 'SUPERSEDED'
+    snapshot_id: string | null
+    bundle_hash: string
+    created_at: string
+    frozen_at: string | null
+  } | null
+}
+
+export interface EngineActionResponse {
+  results: EngineAction[]
 }
 
 export interface FindingDecisionInput {

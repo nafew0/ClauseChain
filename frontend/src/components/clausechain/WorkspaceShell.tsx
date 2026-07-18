@@ -8,12 +8,16 @@ import {
   Wifi, Layers, FileText, Cpu, GitBranch, PackageOpen,
   ShieldCheck, Network, Gauge,
   ClipboardCheck,
+  Activity,
+  FileCheck2,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 
 const NAV_ITEMS = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', count: null },
   { href: '/review', icon: ClipboardCheck, label: 'Review', count: null },
+  { href: '/submission', icon: FileCheck2, label: 'Submission', count: null },
+  { href: '/runs', icon: Activity, label: 'Runs', count: null },
   { href: '/jurisdictions/sg/documents/SG-PDPA-2012', icon: ShieldCheck, label: 'Evidence Audit', count: null },
   { href: '/source-status', icon: Network, label: 'Source Status', count: null },
   { href: '/benchmark', icon: Gauge, label: 'Benchmark', count: null },

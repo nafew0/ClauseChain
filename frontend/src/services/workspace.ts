@@ -7,6 +7,7 @@ import {
   fixtureReviewQueue,
   fixtureReviewContext,
   fixtureSourceMatch,
+  fixtureSubmission,
   loadWorkspaceFixture,
   rejectFixtureWrite,
 } from '@/lib/workspace/fixture'
@@ -20,6 +21,8 @@ import type {
   EvidenceDetail,
   EvidenceParams,
   EvidenceRow,
+  EngineAction,
+  EngineActionResponse,
   FindingDecisionInput,
   FindingDecisionResponse,
   PaginatedResponse,
@@ -29,6 +32,8 @@ import type {
   ReviewContext,
   RunsResponse,
   SourceMatchDetail,
+  SubmissionParams,
+  SubmissionResponse,
   WorkspaceQueue,
   WorkspaceSummary,
   Zone3DecisionInput,
@@ -108,6 +113,31 @@ export async function getProofAsset(assetUrl: string): Promise<Blob> {
 export async function getRuns(): Promise<RunsResponse> {
   if (WORKSPACE_FIXTURE_MODE) return (await loadWorkspaceFixture()).runs
   const { data } = await api.get<RunsResponse>('/workspace/runs/')
+  return data
+}
+
+export async function getSubmission(
+  params: SubmissionParams = {}
+): Promise<SubmissionResponse> {
+  if (WORKSPACE_FIXTURE_MODE) return fixtureSubmission(params)
+  const { data } = await api.get<SubmissionResponse>('/workspace/submission/', {
+    params: queryParams(params),
+  })
+  return data
+}
+
+export async function getEngineActions(): Promise<EngineActionResponse> {
+  if (WORKSPACE_FIXTURE_MODE) return { results: [] }
+  const { data } = await api.get<EngineActionResponse>('/workspace/engine/actions/')
+  return data
+}
+
+export async function launchEngineAction(
+  kind: 'replay' | 'refresh' | 'run',
+  payload: { economy?: string; pillar?: 6 | 7 } = {}
+): Promise<EngineAction> {
+  if (WORKSPACE_FIXTURE_MODE) return rejectFixtureWrite()
+  const { data } = await api.post<EngineAction>(`/workspace/engine/${kind}/`, payload)
   return data
 }
 

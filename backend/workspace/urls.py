@@ -4,6 +4,10 @@ from .views import (
     CorrectionRequestView,
     EvidenceDetailView,
     EvidenceListView,
+    EngineActionsView,
+    EngineRefreshView,
+    EngineReplayView,
+    EngineRunView,
     ProofAssetView,
     DecisionHistoryView,
     FindingBulkDecisionView,
@@ -14,6 +18,7 @@ from .views import (
     RunsView,
     SummaryView,
     SourceMatchView,
+    SubmissionView,
     Zone3DecisionView,
 )
 
@@ -45,6 +50,11 @@ urlpatterns = [
         name="proof_asset",
     ),
     path("runs/", RunsView.as_view(), name="runs"),
+    path("submission/", SubmissionView.as_view(), name="submission"),
+    path("engine/actions/", EngineActionsView.as_view(), name="engine_actions"),
+    path("engine/refresh/", EngineRefreshView.as_view(), name="engine_refresh"),
+    path("engine/replay/", EngineReplayView.as_view(), name="engine_replay"),
+    path("engine/run/", EngineRunView.as_view(), name="engine_run"),
     path("decisions/findings/", FindingDecisionView.as_view(), name="finding_decision"),
     path(
         "decisions/findings/bulk/",

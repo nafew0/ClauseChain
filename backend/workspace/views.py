@@ -1,13 +1,19 @@
 from decimal import Decimal
+import csv
+import hashlib
+import json
 import re
+from urllib.parse import urlparse
 
 from django.conf import settings
+from django.db import transaction
 from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.exceptions import APIException, PermissionDenied, ValidationError
 from rest_framework.response import Response
+from rest_framework.permissions import BasePermission
 from rest_framework.views import APIView
 
 from .decision_state import effective_finding_review
@@ -21,10 +27,12 @@ from .decision_writer import (
 from .models import (
     CorrectionRequest,
     EngineSnapshot,
+    EngineAction,
     EvidenceRow,
     FindingDecision,
     RecallDecision,
     ReviewItem,
+    Release,
     RunRecord,
     Zone3Decision,
 )
@@ -47,6 +55,13 @@ class AuthoritativeWriterUnavailable(APIException):
 class DecisionConflict(APIException):
     status_code = status.HTTP_409_CONFLICT
     default_code = "decision_conflict"
+
+
+class IsSuperuserPermission(BasePermission):
+    def has_permission(self, request, view):
+        return bool(
+            request.user and request.user.is_authenticated and request.user.is_superuser
+        )
 
 
 def active_snapshot():
@@ -447,20 +462,270 @@ class ProofAssetView(APIView):
 
 class RunsView(APIView):
     def get(self, request):
-        records = RunRecord.objects.filter(snapshot=active_snapshot())
+        snapshot = active_snapshot()
+        records = RunRecord.objects.filter(snapshot=snapshot)
         return Response(
             {
-                "results": [
-                    {
-                        "run_name": record.run_name,
-                        "envelope": record.envelope_json,
-                        "cost": record.cost_json,
-                        "source_hash": record.source_hash,
-                    }
-                    for record in records
-                ]
+                "results": [serialize_run(record) for record in records],
+                "champion": snapshot.champion_json,
+                "actions": [
+                    serialize_engine_action(action)
+                    for action in EngineAction.objects.all()[:20]
+                ],
+                "can_launch": request.user.is_superuser,
             }
         )
+
+
+def serialize_run(record):
+    envelope = record.envelope_json
+    findings = envelope.get("findings") or []
+    warnings = envelope.get("warnings") or []
+    metadata = envelope.get("metadata") or {}
+    cost = record.cost_json or metadata.get("cost_report") or {}
+    discovery = {"NEW": 0, "KNOWN": 0}
+    for finding in findings:
+        tag = str(finding.get("Discovery Tag") or "").upper()
+        if tag in discovery:
+            discovery[tag] += 1
+    model_versions = sorted(
+        {
+            str(finding.get("model_version"))
+            for finding in findings
+            if finding.get("model_version")
+        }
+    )
+    return {
+        "run_name": record.run_name,
+        "run_id": envelope.get("run_id") or cost.get("run_id"),
+        "country": envelope.get("country"),
+        "pillar": envelope.get("pillar"),
+        "generated_at": envelope.get("generated_at") or cost.get("at"),
+        "rows_produced": len(findings),
+        "discovery_counts": discovery,
+        "warnings": warnings,
+        "warning_count": len(warnings),
+        "model_version": " + ".join(model_versions),
+        "elapsed_seconds": metadata.get("elapsed_seconds") or cost.get("elapsed_seconds"),
+        "total_usd": cost.get("total_usd"),
+        "models": cost.get("models") or {},
+        "pipeline_stats": metadata.get("pipeline_stats") or {},
+        "source_hash": record.source_hash,
+    }
+
+
+TEMPLATE_COLUMNS = (
+    "Economy",
+    "Law Name",
+    "Law Number / Ref",
+    "Last Amended",
+    "Indicator ID",
+    "Article / Section",
+    "Discovery Tag",
+    "Location Reference",
+    "Verbatim Snippet",
+    "Mapping Rationale",
+    "Source URL",
+    "Confidence",
+    "Notes",
+)
+
+
+def serialize_submission_row(evidence):
+    row = evidence.row_json
+    proof = row.get("citation_proof") or {}
+    gates = proof.get("gate_results") or []
+    return {
+        "finding_key": evidence.finding_key,
+        "template": {name: row.get(name) for name in TEMPLATE_COLUMNS},
+        "row": row,
+        "verification": {
+            "source_domain": urlparse(str(row.get("Source URL") or "")).hostname,
+            "citation_tier": row.get("citation_tier"),
+            "match_mode": source_match_mode(evidence),
+            "match_label": {
+                "exact": "VERBATIM · exact",
+                "anchor": "VERBATIM · anchor",
+                "blocked": "blocked",
+            }[source_match_mode(evidence)],
+            "page_or_anchor": proof.get("page_number") or proof.get("anchor"),
+            "source_sha256": source_sha256(row, evidence.source_hash),
+            "access_date": row.get("access_date"),
+            "status": row.get("Status"),
+            "gates": gates,
+            "gates_pass": bool(gates) and all(gate.get("status") == "PASS" for gate in gates),
+            "blocked": source_match_mode(evidence) == "blocked",
+        },
+        "review_state": effective_finding_review(evidence.finding_key),
+    }
+
+
+def file_sha256(path):
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def final_artifact_summary():
+    root = settings.ENGINE_ROOT / "submission"
+    csv_path = root / "consolidated_final.csv"
+    json_path = root / "consolidated_final.json"
+    if not csv_path.is_file() or not json_path.is_file():
+        return {"available": False, "rows": 0, "csv_sha256": None, "json_sha256": None}
+    try:
+        with csv_path.open(encoding="utf-8", newline="") as handle:
+            count = sum(1 for _ in csv.DictReader(handle))
+        payload = json.loads(json_path.read_text(encoding="utf-8"))
+        json_count = len(payload.get("rows") or [])
+    except (OSError, csv.Error, json.JSONDecodeError) as exc:
+        return {"available": False, "rows": 0, "error": str(exc)}
+    return {
+        "available": count == json_count,
+        "rows": count,
+        "csv_sha256": file_sha256(csv_path),
+        "json_sha256": file_sha256(json_path),
+        "identity_counts_match": count == json_count,
+    }
+
+
+def serialize_release(release):
+    if release is None:
+        return None
+    return {
+        "id": str(release.pk),
+        "state": release.state,
+        "snapshot_id": str(release.snapshot_id) if release.snapshot_id else None,
+        "bundle_hash": release.bundle_hash,
+        "created_at": release.created_at.isoformat(),
+        "frozen_at": release.frozen_at.isoformat() if release.frozen_at else None,
+    }
+
+
+class SubmissionView(APIView):
+    pagination_class = WorkspacePagination
+
+    def get(self, request):
+        snapshot = active_snapshot()
+        rows = filtered_evidence_rows(snapshot, request.query_params)
+        query = str(request.query_params.get("q") or "").strip().casefold()
+        if query:
+            rows = [
+                evidence
+                for evidence in rows
+                if query
+                in " ".join(
+                    str(evidence.row_json.get(field) or "")
+                    for field in (
+                        "Law Name", "Article / Section", "Verbatim Snippet",
+                        "Indicator ID", "Economy"
+                    )
+                ).casefold()
+            ]
+        review_filter = str(request.query_params.get("review") or "").casefold()
+        if review_filter:
+            rows = [
+                evidence
+                for evidence in rows
+                if str(effective_finding_review(evidence.finding_key).get("decision") or "pending").casefold()
+                == review_filter
+            ]
+        paginator = self.pagination_class()
+        page = paginator.paginate_queryset(rows, request, view=self)
+        return Response(
+            paginator.response_payload(
+                [serialize_submission_row(row) for row in page],
+                template_columns=list(TEMPLATE_COLUMNS),
+                snapshot={
+                    "id": str(snapshot.pk),
+                    "source_hash": snapshot.source_hash,
+                    "stale": snapshot.stale,
+                },
+                final_artifacts=final_artifact_summary(),
+                release=serialize_release(Release.objects.first()),
+            )
+        )
+
+
+def serialize_engine_action(action):
+    return {
+        "id": str(action.pk),
+        "kind": action.kind,
+        "status": action.status,
+        "arguments": action.arguments_json,
+        "requested_by": action.requested_by.full_name,
+        "requested_at": action.requested_at.isoformat(),
+        "started_at": action.started_at.isoformat() if action.started_at else None,
+        "finished_at": action.finished_at.isoformat() if action.finished_at else None,
+        "stdout": action.stdout,
+        "result_hashes": action.result_hashes_json,
+        "error": action.error,
+    }
+
+
+class EngineActionsView(APIView):
+    def get(self, request):
+        return Response(
+            {"results": [serialize_engine_action(row) for row in EngineAction.objects.all()[:50]]}
+        )
+
+
+class EngineActionCreateView(APIView):
+    permission_classes = [IsSuperuserPermission]
+    kind = None
+
+    def action_arguments(self, request):
+        raise NotImplementedError
+
+    def post(self, request):
+        arguments = self.action_arguments(request)
+        with transaction.atomic():
+            active = EngineAction.objects.select_for_update().filter(
+                kind=self.kind,
+                status__in=(EngineAction.Status.QUEUED, EngineAction.Status.RUNNING),
+            )
+            if active.exists():
+                raise DecisionConflict("An action of this type is already queued or running.")
+            action = EngineAction.objects.create(
+                kind=self.kind,
+                arguments_json=arguments,
+                requested_by=request.user,
+            )
+        return Response(serialize_engine_action(action), status=status.HTTP_202_ACCEPTED)
+
+
+class EngineReplayView(EngineActionCreateView):
+    kind = EngineAction.Kind.REPLAY
+
+    def action_arguments(self, request):
+        return {"action": "replay"}
+
+
+class EngineRefreshView(EngineActionCreateView):
+    kind = EngineAction.Kind.REFRESH
+
+    def action_arguments(self, request):
+        return {"action": "refresh_payload"}
+
+
+class EngineRunView(EngineActionCreateView):
+    kind = EngineAction.Kind.RUN
+
+    def action_arguments(self, request):
+        economy = str(request.data.get("economy") or "")
+        pillar = str(request.data.get("pillar") or "")
+        aliases = {"Singapore": "si", "Malaysia": "ma", "Australia": "au"}
+        if economy not in aliases:
+            raise ValidationError({"economy": "Choose Singapore, Malaysia, or Australia."})
+        if pillar not in {"6", "7"}:
+            raise ValidationError({"pillar": "Choose pillar 6 or 7."})
+        return {
+            "action": "run_pipeline",
+            "economy": economy,
+            "pillar": pillar,
+            "cc": aliases[economy],
+        }
 
 
 class DecisionHistoryView(APIView):

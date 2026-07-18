@@ -141,6 +141,13 @@ export default function SourceMatchWorkbench({ findingKey }: { findingKey: strin
   const rawContext = display(row.raw_context, '')
   const statusRecord = data.source.status_evidence_record
   const proofMissing = data.match.mode === 'exact' && (!data.proof_asset_url || !data.proof_asset_available)
+  const anchorProofMissing = data.match.mode === 'anchor' && (
+    !data.source.archived_copy ||
+    !data.match.anchor ||
+    !rawContext ||
+    !exactSnippet ||
+    !rawContext.toLocaleLowerCase().includes(exactSnippet.toLocaleLowerCase())
+  )
   const backHref = filters.queue ? `/review?queue=${filters.queue}` : '/review'
   const linkFor = (key: string | null) => key ? `/match/${key}${suffix}` : '#'
 
@@ -192,6 +199,8 @@ export default function SourceMatchWorkbench({ findingKey }: { findingKey: strin
               <header><div><span className="match-eyebrow">ARCHIVED SOURCE PROOF</span><h2>{data.match.mode === 'exact' ? 'Government page image' : data.match.mode === 'anchor' ? 'Official HTML anchor context' : 'Technical block'}</h2></div><ScanSearch size={22} /></header>
               {data.match.mode === 'blocked' ? (
                 <div className="match-block-panel"><ShieldAlert size={32} /><h3>This row cannot be verified here</h3><p>{data.block_reason}</p><span>No approval should be made until the citation proof is repaired and a new immutable snapshot is imported.</span></div>
+              ) : anchorProofMissing ? (
+                <div className="match-proof-error"><ShieldAlert size={24} /><strong>Archived HTML anchor proof is unavailable</strong><span>The archived source, anchor, context, and exact quote could not all be reconciled. Do not approve from this view.</span></div>
               ) : data.match.mode === 'anchor' ? (
                 <div className="match-anchor-proof"><div className="match-anchor-label"><Link2 size={15} /><code>{display(data.match.anchor)}</code><span>Exact source characters</span></div><HighlightedContext context={rawContext} snippet={exactSnippet} /></div>
               ) : proofMissing ? (
