@@ -195,3 +195,26 @@ Route `/match/[findingKey]`, linked from review rows, evidence table, act-refere
 | **PR review** | **Fable + user** | Every Sol PR against contracts; user hands-on per acceptance lists | continuous |
 
 Cut order for the 11:00 session if time runs short: D4/D5 slip; the NEW+Recall+Zone-3 tabs with staged decisions and W2-backed writes cannot slip.
+
+
+---
+
+# REV C — Reviewer roles, release lifecycle, recovery bundles (18 Jul, Sol proposal accepted with sequencing)
+
+Operating model adopted: **Server = live authoritative review system · Immutable bundles = audit trail + disaster recovery · Frozen release = authoritative submitted version.**
+
+## Accepted design
+
+1. **Role-based reviews:** `citation_reviewer`, `mapping_reviewer`, `status_reviewer`, `admin` (Django groups on `accounts.User`; a user may hold several roles). Citation and mapping approval on the same finding MUST come from different named users (engine finalization rule). Additional reviewers join without schema change.
+2. **Append-only decisions:** no decision row is ever edited or deleted; a new decision or a `CorrectionRequest` **supersedes** earlier ones (latest-per-key wins at export). The full history is the audit trail.
+3. **Decision bundles:** after accepted changes, export an immutable bundle — `decisions.json` + `recall_decisions.json` + `zone3_decisions.json` + DB decision-history dump + SHA-256 manifest — to `engine/data/review/bundles/<utc>-<hash8>/`. **Debounced** (on session end / every N decisions / every state transition), not one bundle per click — per-click durability already comes from the atomic file writes (Rev B #5). *"Signed" v1 = SHA-256 manifest committed to git; cryptographic signing (minisign) is post-20th if wanted.*
+4. **Deterministic recovery:** `submission_replay.py` must rebuild the final output from a bundle alone (no DB, no server). Fable adds a `--bundle <dir>` input to the replay path as part of W2.
+5. **Release states:** `DRAFT → REVIEWING → READY → FROZEN → SUPERSEDED` on a `Release` model. FROZEN stores: DB snapshot hash, decision-file hashes, engine manifest + git SHA, reviewer identities, final CSV/JSON hashes. **Unfreeze = admin action with a mandatory reason**, creates a new DRAFT that SUPERSEDES (never mutates) the frozen release.
+6. The user's "server stays authoritative post-freeze" stands; this architecture also permits a later switch to read-only demonstration mode without rework.
+
+## Sequencing (deadline-protected)
+
+- **Schema NOW (Sol, D1):** roles, append-only decision tables with `supersedes` FK, `Release` model + state field, bundle-pointer fields — cheap to include from the first migration, expensive to retrofit.
+- **Behavior for tomorrow 11:00:** staged citation/mapping review + atomic file writes (Rev B) — unchanged priority.
+- **Bundle export + release transitions (READY/FROZEN/unfreeze UI):** built after the review screens work, before the submission freeze — this is the freeze mechanism itself.
+- Fable W2 grows: bundle writer + `--bundle` replay input. Everything else in the Fable∥Sol matrix is unchanged.
