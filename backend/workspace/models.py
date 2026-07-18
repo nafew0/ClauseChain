@@ -5,16 +5,26 @@ from django.core.exceptions import ValidationError
 from django.db import models
 
 
+class ImmutableAuditQuerySet(models.QuerySet):
+    def delete(self):
+        raise ValidationError("Append-only audit rows cannot be deleted.")
+
+
 class ImmutableAuditModel(models.Model):
     """Reject in-place mutation of an audit row after its first insert."""
 
     class Meta:
         abstract = True
 
+    objects = models.Manager.from_queryset(ImmutableAuditQuerySet)()
+
     def save(self, *args, **kwargs):
         if not self._state.adding:
             raise ValidationError(f"{type(self).__name__} rows are append-only.")
         return super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        raise ValidationError(f"{type(self).__name__} rows are append-only.")
 
 
 class EngineSnapshot(models.Model):
@@ -149,11 +159,14 @@ class FindingDecision(SupersedingDecision):
         REJECTED = "rejected", "Rejected"
 
     finding_key = models.CharField(max_length=64)
-    queue = models.CharField(max_length=16, choices=(
-        (ReviewItem.Queue.NEW, "NEW"),
-        (ReviewItem.Queue.KNOWN, "KNOWN"),
-        (ReviewItem.Queue.ABSENCE, "Absence"),
-    ))
+    queue = models.CharField(
+        max_length=16,
+        choices=(
+            (ReviewItem.Queue.NEW, "NEW"),
+            (ReviewItem.Queue.KNOWN, "KNOWN"),
+            (ReviewItem.Queue.ABSENCE, "Absence"),
+        ),
+    )
     review_stage = models.CharField(max_length=16, choices=Stage.choices)
     decision = models.CharField(max_length=16, choices=Verdict.choices)
     citation_checked = models.BooleanField(default=False)
@@ -161,7 +174,11 @@ class FindingDecision(SupersedingDecision):
     status_checked = models.BooleanField(default=False)
     note = models.TextField(blank=True, default="")
     supersedes = models.ForeignKey(
-        "self", null=True, blank=True, on_delete=models.PROTECT, related_name="superseded_by"
+        "self",
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="superseded_by",
     )
 
     class Meta:
@@ -182,7 +199,11 @@ class RecallDecision(SupersedingDecision):
     reasoning = models.TextField(blank=True, default="")
     official_source_url = models.URLField(max_length=1000, blank=True, default="")
     supersedes = models.ForeignKey(
-        "self", null=True, blank=True, on_delete=models.PROTECT, related_name="superseded_by"
+        "self",
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="superseded_by",
     )
 
     class Meta:
@@ -200,7 +221,11 @@ class Zone3Decision(SupersedingDecision):
     score = models.DecimalField(max_digits=2, decimal_places=1)
     reasoning = models.TextField(blank=True, default="")
     supersedes = models.ForeignKey(
-        "self", null=True, blank=True, on_delete=models.PROTECT, related_name="superseded_by"
+        "self",
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="superseded_by",
     )
 
     class Meta:
@@ -214,11 +239,19 @@ class CorrectionRequest(ImmutableAuditModel):
     queue = models.CharField(max_length=16)
     explanation = models.TextField()
     requested_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="correction_requests"
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="correction_requests",
     )
     requested_at = models.DateTimeField(auto_now_add=True)
+    authoritative_file_hash = models.CharField(max_length=64, blank=True, default="")
+    writer_receipt_json = models.JSONField(default=dict)
     supersedes = models.ForeignKey(
-        "self", null=True, blank=True, on_delete=models.PROTECT, related_name="superseded_by"
+        "self",
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="superseded_by",
     )
 
     class Meta:
@@ -237,10 +270,18 @@ class Release(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     state = models.CharField(max_length=16, choices=State.choices, default=State.DRAFT)
     snapshot = models.ForeignKey(
-        EngineSnapshot, null=True, blank=True, on_delete=models.PROTECT, related_name="releases"
+        EngineSnapshot,
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="releases",
     )
     supersedes = models.OneToOneField(
-        "self", null=True, blank=True, on_delete=models.PROTECT, related_name="superseded_by"
+        "self",
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="superseded_by",
     )
     bundle_path = models.CharField(max_length=1000, blank=True, default="")
     bundle_hash = models.CharField(max_length=64, blank=True, default="")
@@ -252,7 +293,9 @@ class Release(models.Model):
     final_artifact_hashes_json = models.JSONField(default=dict)
     transition_reason = models.TextField(blank=True, default="")
     created_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="releases_created"
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="releases_created",
     )
     created_at = models.DateTimeField(auto_now_add=True)
     frozen_at = models.DateTimeField(null=True, blank=True)
@@ -275,7 +318,9 @@ class EngineAction(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     kind = models.CharField(max_length=16, choices=Kind.choices)
-    status = models.CharField(max_length=16, choices=Status.choices, default=Status.QUEUED)
+    status = models.CharField(
+        max_length=16, choices=Status.choices, default=Status.QUEUED
+    )
     arguments_json = models.JSONField(default=dict)
     requested_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     requested_at = models.DateTimeField(auto_now_add=True)

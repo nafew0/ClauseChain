@@ -38,9 +38,13 @@ def _read_json(path):
     try:
         return json.loads(path.read_text(encoding="utf-8"))
     except FileNotFoundError as exc:
-        raise SnapshotImportError(f"Required engine artifact is missing: {path}") from exc
+        raise SnapshotImportError(
+            f"Required engine artifact is missing: {path}"
+        ) from exc
     except json.JSONDecodeError as exc:
-        raise SnapshotImportError(f"Invalid JSON in engine artifact: {path}: {exc}") from exc
+        raise SnapshotImportError(
+            f"Invalid JSON in engine artifact: {path}: {exc}"
+        ) from exc
 
 
 def _run_json(command, *, cwd):
@@ -56,7 +60,9 @@ def _run_json(command, *, cwd):
         return json.loads(result.stdout)
     except (OSError, subprocess.SubprocessError, json.JSONDecodeError) as exc:
         stderr = getattr(locals().get("result", None), "stderr", "")
-        raise SnapshotImportError(f"Engine export failed: {exc}. {stderr}".strip()) from exc
+        raise SnapshotImportError(
+            f"Engine export failed: {exc}. {stderr}".strip()
+        ) from exc
 
 
 def load_engine_artifacts(engine_root=None):
@@ -112,7 +118,9 @@ def _parse_generated_at(value):
         try:
             parsed = datetime.fromisoformat(str(value))
         except (TypeError, ValueError) as exc:
-            raise SnapshotImportError(f"Payload generated_at is invalid: {value!r}") from exc
+            raise SnapshotImportError(
+                f"Payload generated_at is invalid: {value!r}"
+            ) from exc
     if timezone.is_naive(parsed):
         parsed = timezone.make_aware(parsed, datetime_timezone.utc)
     return parsed
@@ -130,7 +138,14 @@ def _cell(row, indexes, name):
 def _finding_lookup(key_map):
     lookup = {}
     absence_lookup = {}
+    by_key = {}
     for item in key_map.get("rows", []):
+        finding_key = str(item.get("finding_key") or "")
+        if not finding_key or finding_key in by_key:
+            raise SnapshotImportError(
+                f"Missing or duplicate finding_key: {finding_key!r}"
+            )
+        by_key[finding_key] = item
         identity = tuple(
             " ".join(str(item.get(key) or "").split()).casefold()
             for key in ("economy", "indicator", "law", "article")
@@ -141,9 +156,11 @@ def _finding_lookup(key_map):
         if item.get("is_absence"):
             absence_identity = identity[:3]
             if absence_identity in absence_lookup:
-                raise SnapshotImportError(f"Ambiguous absence finding identity: {absence_identity}")
+                raise SnapshotImportError(
+                    f"Ambiguous absence finding identity: {absence_identity}"
+                )
             absence_lookup[absence_identity] = item
-    return lookup, absence_lookup
+    return lookup, absence_lookup, by_key
 
 
 def _match_finding(row, headers, queue, lookup, absence_lookup):
@@ -163,13 +180,13 @@ def _match_finding(row, headers, queue, lookup, absence_lookup):
     return lookup.get(normalized)
 
 
-def _block_reason(row, headers, key_item):
+def _block_reason(row, headers, key_item, queue):
     indexes = _header_index(headers)
     guidance = str(_cell(row, indexes, "Legal-review guidance") or "")
     warnings = str(_cell(row, indexes, "Gate warnings") or "")
     if guidance.startswith("TECHNICAL BLOCK"):
         return guidance
-    if key_item and key_item.get("blocked"):
+    if queue != ReviewItem.Queue.ABSENCE and key_item and key_item.get("blocked"):
         return warnings or "Engine citation proof marks this finding as blocked."
     return ""
 
@@ -178,11 +195,17 @@ def _cost_for_run(costs, envelope):
     if not isinstance(costs, list):
         return {}
     country = str(envelope.get("country") or "").upper()
-    economy_alias = {"SG": "Singapore", "MY": "Malaysia", "MA": "Malaysia", "AU": "Australia"}
+    economy_alias = {
+        "SG": "Singapore",
+        "MY": "Malaysia",
+        "MA": "Malaysia",
+        "AU": "Australia",
+    }
     economy = economy_alias.get(country, country)
     pillar = str(envelope.get("pillar") or "")
     matches = [
-        item for item in costs
+        item
+        for item in costs
         if str(item.get("economy") or "").casefold() == economy.casefold()
         and str(item.get("pillar") or "") == pillar
     ]
@@ -195,21 +218,32 @@ def import_snapshot(artifacts=None, *, keep=5):
     sheets = payload.get("sheets") or {}
     missing_sheets = [name for name in SHEETS.values() if name not in sheets]
     if missing_sheets:
-        raise SnapshotImportError(f"Review payload is missing sheets: {', '.join(missing_sheets)}")
+        raise SnapshotImportError(
+            f"Review payload is missing sheets: {', '.join(missing_sheets)}"
+        )
 
-    source_hash = content_hash(artifacts)
+    fingerprint_artifacts = dict(artifacts)
+    fingerprint_payload = dict(payload)
+    fingerprint_payload.pop("generated_at", None)
+    fingerprint_artifacts["payload"] = fingerprint_payload
+    source_hash = content_hash(fingerprint_artifacts)
     existing = EngineSnapshot.objects.filter(source_hash=source_hash).first()
     if existing:
         if not existing.active:
             with transaction.atomic():
-                EngineSnapshot.objects.filter(active=True).update(active=False, stale=True)
-                EngineSnapshot.objects.filter(pk=existing.pk).update(active=True, stale=False)
+                EngineSnapshot.objects.filter(active=True).update(
+                    active=False, stale=True
+                )
+                EngineSnapshot.objects.filter(pk=existing.pk).update(
+                    active=True, stale=False
+                )
                 existing.refresh_from_db()
         return existing, False
 
-    lookup, absence_lookup = _finding_lookup(artifacts["key_map"])
+    lookup, absence_lookup, key_lookup = _finding_lookup(artifacts["key_map"])
     headers_json = {
-        queue: list((sheets[name] or {}).get("headers") or []) for queue, name in SHEETS.items()
+        queue: list((sheets[name] or {}).get("headers") or [])
+        for queue, name in SHEETS.items()
     }
     generated_at = _parse_generated_at(
         payload.get("generated_at") or payload.get("manifest", {}).get("generated_at")
@@ -221,14 +255,20 @@ def import_snapshot(artifacts=None, *, keep=5):
             schema_version=str(payload.get("schema_version") or "1"),
             generated_at=generated_at,
             source_hash=source_hash,
-            bundle_hash=str(payload.get("bundle_hash") or ""),
+            bundle_hash=str(
+                payload.get("bundle_hash")
+                or content_hash(payload.get("artifact_hashes") or fingerprint_artifacts)
+            ),
             engine_git_sha=str(payload.get("engine_git_sha") or ""),
             counts_json=payload.get("counts") or {},
             headers_json=headers_json,
             refuter_status=str(payload.get("refuter_status") or ""),
             champion_status=str(artifacts["champion"].get("status") or ""),
             champion_json=artifacts["champion"],
-            manifest_json=payload.get("manifest") or {},
+            manifest_json=(
+                payload.get("manifest")
+                or {"artifact_hashes": payload.get("artifact_hashes") or {}}
+            ),
             active=True,
         )
 
@@ -240,10 +280,29 @@ def import_snapshot(artifacts=None, *, keep=5):
                 key_item = None
                 stable_key = ""
                 finding_key = ""
-                if queue in (ReviewItem.Queue.NEW, ReviewItem.Queue.KNOWN, ReviewItem.Queue.ABSENCE):
-                    embedded_key = row.get("finding_key") if isinstance(row, dict) else ""
-                    key_item = _match_finding(row, headers, queue, lookup, absence_lookup) if not embedded_key else None
-                    finding_key = str(embedded_key or (key_item or {}).get("finding_key") or "")
+                if queue in (
+                    ReviewItem.Queue.NEW,
+                    ReviewItem.Queue.KNOWN,
+                    ReviewItem.Queue.ABSENCE,
+                ):
+                    indexes = _header_index(headers)
+                    embedded_key = (
+                        row.get("finding_key") or row.get("Finding key")
+                        if isinstance(row, dict)
+                        else _cell(row, indexes, "Finding key")
+                    )
+                    key_item = (
+                        _match_finding(row, headers, queue, lookup, absence_lookup)
+                        if not embedded_key
+                        else key_lookup.get(str(embedded_key))
+                    )
+                    if embedded_key and key_item is None:
+                        raise SnapshotImportError(
+                            f"Payload finding_key is absent from the proof map: {embedded_key}"
+                        )
+                    finding_key = str(
+                        embedded_key or (key_item or {}).get("finding_key") or ""
+                    )
                     stable_key = finding_key
                     if not finding_key:
                         raise SnapshotImportError(
@@ -252,18 +311,20 @@ def import_snapshot(artifacts=None, *, keep=5):
                 else:
                     indexes = _header_index(headers)
                     if queue == ReviewItem.Queue.RECALL:
-                        stable_key = recall_key(
-                            _cell(row, indexes, "Economy"),
-                            _cell(row, indexes, "Indicator"),
-                            _cell(row, indexes, "Master act/instrument"),
-                            _cell(row, indexes, "Master citation"),
-                        )
+                        stable_key = str(_cell(row, indexes, "Recall key") or "")
+                        if not stable_key:
+                            stable_key = recall_key(
+                                _cell(row, indexes, "Economy"),
+                                _cell(row, indexes, "Indicator"),
+                                _cell(row, indexes, "Master act/instrument"),
+                                _cell(row, indexes, "Master citation"),
+                            )
                     else:
                         stable_key = zone3_key(
                             _cell(row, indexes, "Economy"),
                             _cell(row, indexes, "Indicator"),
                         )
-                reason = _block_reason(row, headers, key_item)
+                reason = _block_reason(row, headers, key_item, queue)
                 review_items.append(
                     ReviewItem(
                         snapshot=snapshot,
@@ -287,7 +348,9 @@ def import_snapshot(artifacts=None, *, keep=5):
             )
             key_item = lookup.get(identity)
             if not key_item:
-                raise SnapshotImportError(f"Could not resolve consolidated finding_key: {identity}")
+                raise SnapshotImportError(
+                    f"Could not resolve consolidated finding_key: {identity}"
+                )
             evidence_rows.append(
                 EvidenceRow(
                     snapshot=snapshot,
@@ -315,7 +378,11 @@ def import_snapshot(artifacts=None, *, keep=5):
         )
 
         retained_ids = list(
-            EngineSnapshot.objects.order_by("-imported_at").values_list("pk", flat=True)[:keep]
+            EngineSnapshot.objects.order_by("-imported_at").values_list(
+                "pk", flat=True
+            )[:keep]
         )
-        EngineSnapshot.objects.exclude(pk__in=retained_ids).filter(releases__isnull=True).delete()
+        EngineSnapshot.objects.exclude(pk__in=retained_ids).filter(
+            releases__isnull=True
+        ).delete()
     return snapshot, True

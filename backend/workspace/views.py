@@ -1,6 +1,5 @@
 from decimal import Decimal
 
-from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import status
@@ -10,8 +9,10 @@ from rest_framework.views import APIView
 
 from .decision_state import effective_finding_review
 from .decision_writer import (
+    DecisionWriterConflict,
     DecisionWriterError,
     apply_authoritative_decision,
+    current_authoritative_hash,
     decision_domain_lock,
 )
 from .models import (
@@ -28,6 +29,7 @@ from .pagination import WorkspacePagination
 from .roles import has_review_role, reviewer_identity
 from .serializers import (
     CorrectionRequestWriteSerializer,
+    FindingBulkDecisionWriteSerializer,
     FindingDecisionWriteSerializer,
     RecallDecisionWriteSerializer,
     Zone3DecisionWriteSerializer,
@@ -47,7 +49,9 @@ class DecisionConflict(APIException):
 def active_snapshot():
     snapshot = EngineSnapshot.objects.filter(active=True).first()
     if snapshot is None:
-        raise APIException("No engine snapshot has been imported.", code="snapshot_unavailable")
+        raise APIException(
+            "No engine snapshot has been imported.", code="snapshot_unavailable"
+        )
     return snapshot
 
 
@@ -58,7 +62,7 @@ def latest_for(model, key_name, key):
 def serialize_decision(row, *, value_field):
     if row is None:
         return None
-    return {
+    payload = {
         "id": str(row.pk),
         value_field: str(getattr(row, value_field)),
         "reviewer_name": row.reviewer_name,
@@ -67,6 +71,14 @@ def serialize_decision(row, *, value_field):
         "authoritative_file_hash": row.authoritative_file_hash,
         "supersedes_id": str(row.supersedes_id) if row.supersedes_id else None,
     }
+    if isinstance(row, RecallDecision):
+        payload.update(
+            reasoning=row.reasoning,
+            official_source_url=row.official_source_url,
+        )
+    elif isinstance(row, Zone3Decision):
+        payload.update(score=str(row.score), reasoning=row.reasoning)
+    return payload
 
 
 def review_item_payload(item):
@@ -80,7 +92,11 @@ def review_item_payload(item):
         "block_reason": item.block_reason,
         "source_hash": item.source_hash,
     }
-    if item.queue in (ReviewItem.Queue.NEW, ReviewItem.Queue.KNOWN, ReviewItem.Queue.ABSENCE):
+    if item.queue in (
+        ReviewItem.Queue.NEW,
+        ReviewItem.Queue.KNOWN,
+        ReviewItem.Queue.ABSENCE,
+    ):
         result["review_state"] = effective_finding_review(item.finding_key)
         correction = (
             CorrectionRequest.objects.filter(finding_key=item.finding_key)
@@ -99,17 +115,23 @@ def review_item_payload(item):
         )
     elif item.queue == ReviewItem.Queue.RECALL:
         result["latest_decision"] = serialize_decision(
-            latest_for(RecallDecision, "recall_key", item.stable_key), value_field="verdict"
+            latest_for(RecallDecision, "recall_key", item.stable_key),
+            value_field="verdict",
         )
     else:
         result["latest_decision"] = serialize_decision(
-            latest_for(Zone3Decision, "score_key", item.stable_key), value_field="verdict"
+            latest_for(Zone3Decision, "score_key", item.stable_key),
+            value_field="verdict",
         )
     return result
 
 
 def item_is_decided(item):
-    if item.queue in (ReviewItem.Queue.NEW, ReviewItem.Queue.KNOWN, ReviewItem.Queue.ABSENCE):
+    if item.queue in (
+        ReviewItem.Queue.NEW,
+        ReviewItem.Queue.KNOWN,
+        ReviewItem.Queue.ABSENCE,
+    ):
         return effective_finding_review(item.finding_key)["decision"] is not None
     model, key_name = (
         (RecallDecision, "recall_key")
@@ -145,6 +167,16 @@ class SummaryView(APIView):
                 "refuter_status": snapshot.refuter_status,
                 "champion": snapshot.champion_json,
                 "progress": progress,
+                "reviewer_roles": list(
+                    request.user.groups.filter(
+                        name__in=(
+                            "citation_reviewer",
+                            "mapping_reviewer",
+                            "status_reviewer",
+                            "admin",
+                        )
+                    ).values_list("name", flat=True)
+                ),
             }
         )
 
@@ -171,9 +203,11 @@ class ReviewQueueView(APIView):
                 items.sort(
                     key=lambda item: (
                         rank.get(
-                            str(item.row_json[verdict_index]).upper()
-                            if verdict_index < len(item.row_json)
-                            else "",
+                            (
+                                str(item.row_json[verdict_index]).upper()
+                                if verdict_index < len(item.row_json)
+                                else ""
+                            ),
                             3,
                         ),
                         item.position,
@@ -208,13 +242,16 @@ class EvidenceListView(APIView):
             value = request.query_params.get(query_name)
             if value:
                 rows = [
-                    row for row in rows
-                    if str(row.row_json.get(field_name) or "").casefold() == value.casefold()
+                    row
+                    for row in rows
+                    if str(row.row_json.get(field_name) or "").casefold()
+                    == value.casefold()
                 ]
         pillar = request.query_params.get("pillar")
         if pillar:
             rows = [
-                row for row in rows
+                row
+                for row in rows
                 if str(row.row_json.get("Indicator ID") or "").startswith(f"P{pillar}-")
             ]
         paginator = self.pagination_class()
@@ -276,6 +313,76 @@ class RunsView(APIView):
         )
 
 
+class DecisionHistoryView(APIView):
+    def get(self, request, domain, key):
+        if domain == "findings":
+            rows = FindingDecision.objects.filter(finding_key=key).order_by(
+                "created_at"
+            )
+            results = [
+                {
+                    "id": str(row.pk),
+                    "stage": row.review_stage,
+                    "decision": row.decision,
+                    "checks": {
+                        "citation": row.citation_checked,
+                        "mapping": row.mapping_checked,
+                        "status": row.status_checked,
+                    },
+                    "note": row.note,
+                    "reviewer_name": row.reviewer_name,
+                    "reviewer_role": row.reviewer_role,
+                    "reviewed_at": row.reviewed_at.isoformat(),
+                    "supersedes_id": (
+                        str(row.supersedes_id) if row.supersedes_id else None
+                    ),
+                    "authoritative_file_hash": row.authoritative_file_hash,
+                }
+                for row in rows
+            ]
+            corrections = [
+                {
+                    "id": str(row.pk),
+                    "explanation": row.explanation,
+                    "reviewer_name": row.requested_by.full_name,
+                    "reviewed_at": row.requested_at.isoformat(),
+                    "supersedes_id": (
+                        str(row.supersedes_id) if row.supersedes_id else None
+                    ),
+                    "authoritative_file_hash": row.authoritative_file_hash,
+                }
+                for row in CorrectionRequest.objects.filter(finding_key=key).order_by(
+                    "requested_at"
+                )
+            ]
+            return Response(
+                {
+                    "domain": domain,
+                    "key": key,
+                    "results": results,
+                    "corrections": corrections,
+                    "effective_review": effective_finding_review(key),
+                }
+            )
+        if domain == "recall":
+            rows = RecallDecision.objects.filter(recall_key=key).order_by("created_at")
+            value_field = "verdict"
+        elif domain == "zone3":
+            rows = Zone3Decision.objects.filter(score_key=key).order_by("created_at")
+            value_field = "verdict"
+        else:
+            raise ValidationError({"domain": "Unknown decision domain."})
+        return Response(
+            {
+                "domain": domain,
+                "key": key,
+                "results": [
+                    serialize_decision(row, value_field=value_field) for row in rows
+                ],
+            }
+        )
+
+
 def require_role(user, role):
     if not has_review_role(user, role):
         raise PermissionDenied(f"The {role} reviewer role is required.")
@@ -292,11 +399,58 @@ def concurrency_check(latest, expected):
         )
 
 
-def writer_or_503(domain, payload):
+def writer_or_503(domain, decisions):
     try:
-        return apply_authoritative_decision(domain, payload)
+        return apply_authoritative_decision(
+            domain,
+            decisions,
+            expected_file_hash=current_authoritative_hash(domain),
+        )
+    except DecisionWriterConflict as exc:
+        raise DecisionConflict(
+            {
+                "detail": "The authoritative decision file changed outside this review session.",
+                "current_file_hash": exc.current_sha or None,
+            }
+        ) from exc
     except DecisionWriterError as exc:
         raise AuthoritativeWriterUnavailable(str(exc)) from exc
+
+
+def engine_finding_decisions(
+    finding_key, effective, *, reviewer_name, reviewer_role, reviewed_at, note=""
+):
+    if not effective.get("decision"):
+        return []
+    return [
+        {
+            "finding_key": finding_key,
+            "review": {
+                "decision": effective["decision"],
+                "reviewer_name": reviewer_name,
+                "reviewer_role": reviewer_role,
+                "reviewed_at": reviewed_at.isoformat(),
+                "citation_checked": effective["citation_checked"],
+                "mapping_checked": effective["mapping_checked"],
+                "status_checked": effective["status_checked"],
+                "citation_reviewer_name": effective["citation_reviewer_name"],
+                "mapping_reviewer_name": effective["mapping_reviewer_name"],
+                "status_reviewer_name": effective["status_reviewer_name"],
+                "correction_note": note or None,
+            },
+        }
+    ]
+
+
+def sheet_cell(snapshot, queue, row, header):
+    if isinstance(row, dict):
+        return row.get(header) or row.get(header.casefold().replace(" ", "_"))
+    headers = snapshot.headers_json.get(queue, [])
+    try:
+        index = headers.index(header)
+    except ValueError:
+        return None
+    return row[index] if index < len(row) else None
 
 
 class FindingDecisionView(APIView):
@@ -313,7 +467,9 @@ class FindingDecisionView(APIView):
             finding_key=data["finding_key"],
         )
         if item.blocked and data["decision"] == FindingDecision.Verdict.APPROVED:
-            raise ValidationError({"decision": "A technically blocked finding cannot be approved."})
+            raise ValidationError(
+                {"decision": "A technically blocked finding cannot be approved."}
+            )
 
         reviewer_name, reviewer_id = reviewer_identity(request.user)
         reviewed_at = timezone.now()
@@ -326,11 +482,6 @@ class FindingDecisionView(APIView):
         }
 
         with decision_domain_lock("findings"):
-            latest = latest_for(
-                FindingDecision,
-                "finding_key",
-                data["finding_key"],
-            )
             latest_stage = (
                 FindingDecision.objects.filter(
                     finding_key=data["finding_key"], review_stage=stage
@@ -342,58 +493,19 @@ class FindingDecisionView(APIView):
             effective = effective_finding_review(
                 data["finding_key"], prospective=prospective
             )
-            if (
-                effective["decision"] == "approved"
-                and effective["citation_reviewer_name"] == effective["mapping_reviewer_name"]
-            ):
-                raise ValidationError(
-                    {"review_stage": "Citation and mapping approval must come from different users."}
-                )
-            # Enforce identity separation immediately, even before status completion.
-            other_stage = (
-                FindingDecision.Stage.MAPPING
-                if stage == FindingDecision.Stage.CITATION
-                else FindingDecision.Stage.CITATION
+            validate_distinct_stage_reviewer(
+                data["finding_key"], stage, data["decision"], request.user, effective
             )
-            if stage in (FindingDecision.Stage.CITATION, FindingDecision.Stage.MAPPING):
-                other = (
-                    FindingDecision.objects.filter(
-                        finding_key=data["finding_key"],
-                        review_stage=other_stage,
-                        decision=FindingDecision.Verdict.APPROVED,
-                    )
-                    .order_by("-created_at")
-                    .first()
-                )
-                if (
-                    data["decision"] == FindingDecision.Verdict.APPROVED
-                    and other
-                    and other.created_by_id == request.user.pk
-                ):
-                    raise ValidationError(
-                        {"review_stage": "The same user cannot approve citation and mapping."}
-                    )
-
             receipt = writer_or_503(
                 "findings",
-                {
-                    "schema_version": "1",
-                    "event": {
-                        "finding_key": data["finding_key"],
-                        "queue": data["queue"],
-                        "review_stage": stage,
-                        "decision": data["decision"],
-                        "reviewer_name": reviewer_name,
-                        "reviewer_role": stage,
-                        "reviewed_at": reviewed_at.isoformat(),
-                        "citation_checked": data["citation_checked"],
-                        "mapping_checked": data["mapping_checked"],
-                        "status_checked": data["status_checked"],
-                        "note": data["note"],
-                    },
-                    "effective_review": {key: value for key, value in effective.items() if key != "stages"},
-                    "expected_file_hash": latest.authoritative_file_hash if latest else None,
-                },
+                engine_finding_decisions(
+                    data["finding_key"],
+                    effective,
+                    reviewer_name=reviewer_name,
+                    reviewer_role=stage,
+                    reviewed_at=reviewed_at,
+                    note=data["note"],
+                ),
             )
             row = FindingDecision.objects.create(
                 **data,
@@ -410,6 +522,167 @@ class FindingDecisionView(APIView):
                 "decision_id": str(row.pk),
                 "authoritative_file_hash": receipt["sha256"],
                 "review_state": effective_finding_review(row.finding_key),
+                "reviewer_id": reviewer_id,
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
+
+def validate_distinct_stage_reviewer(finding_key, stage, decision, user, effective):
+    if (
+        effective["decision"] == "approved"
+        and effective["citation_reviewer_name"].strip().casefold()
+        == effective["mapping_reviewer_name"].strip().casefold()
+    ):
+        raise ValidationError(
+            {
+                "review_stage": "Citation and mapping approval must have different reviewer names."
+            }
+        )
+    if stage not in (FindingDecision.Stage.CITATION, FindingDecision.Stage.MAPPING):
+        return
+    other_stage = (
+        FindingDecision.Stage.MAPPING
+        if stage == FindingDecision.Stage.CITATION
+        else FindingDecision.Stage.CITATION
+    )
+    other = effective["stages"].get(other_stage)
+    if (
+        decision == FindingDecision.Verdict.APPROVED
+        and other
+        and other["reviewer_user_id"] == str(user.pk)
+    ):
+        raise ValidationError(
+            {"review_stage": "The same user cannot approve citation and mapping."}
+        )
+
+
+def bulk_ineligibility(item, snapshot):
+    if snapshot.stale:
+        return "The active snapshot is stale."
+    if item.blocked:
+        return item.block_reason or "The finding is technically blocked."
+    headers = snapshot.headers_json.get(item.queue, [])
+    if isinstance(item.row_json, list) and "Gate warnings" in headers:
+        index = headers.index("Gate warnings")
+        warning = str(
+            item.row_json[index] if index < len(item.row_json) else ""
+        ).strip()
+        if warning and warning.casefold() not in ("none", "—"):
+            return "The finding has gate warnings and requires individual review."
+    evidence = EvidenceRow.objects.filter(
+        snapshot=snapshot, finding_key=item.finding_key
+    ).first()
+    if not evidence:
+        return "The finding has no consolidated evidence row."
+    row = evidence.row_json
+    if str(row.get("Status") or "") != "in_force" or not row.get("status_evidence"):
+        return "The finding lacks verified in-force status evidence."
+    if not row.get("citation_proof"):
+        return "The finding lacks a complete citation proof."
+    return ""
+
+
+class FindingBulkDecisionView(APIView):
+    def post(self, request):
+        serializer = FindingBulkDecisionWriteSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        stage = data["review_stage"]
+        require_role(request.user, stage)
+        snapshot = active_snapshot()
+        items = list(
+            ReviewItem.objects.filter(
+                snapshot=snapshot,
+                queue=ReviewItem.Queue.KNOWN,
+                finding_key__in=data["finding_keys"],
+            )
+        )
+        if len(items) != len(data["finding_keys"]):
+            found = {item.finding_key for item in items}
+            unknown = sorted(set(data["finding_keys"]) - found)
+            raise ValidationError(
+                {"finding_keys": f"Unknown/non-KNOWN finding keys: {unknown}"}
+            )
+        failures = {
+            item.finding_key: reason
+            for item in items
+            if (reason := bulk_ineligibility(item, snapshot))
+        }
+        if failures:
+            raise ValidationError({"ineligible": failures})
+
+        reviewer_name, reviewer_id = reviewer_identity(request.user)
+        reviewed_at = timezone.now()
+        expected = data.pop("expected_latest_decision_ids")
+        finding_keys = data.pop("finding_keys")
+        with decision_domain_lock("findings"):
+            engine_decisions = []
+            latest_by_key = {}
+            for key in finding_keys:
+                latest_stage = (
+                    FindingDecision.objects.filter(finding_key=key, review_stage=stage)
+                    .order_by("-created_at")
+                    .first()
+                )
+                concurrency_check(latest_stage, expected[key])
+                latest_by_key[key] = latest_stage
+                prospective = {
+                    **data,
+                    "id": "prospective",
+                    "finding_key": key,
+                    "queue": ReviewItem.Queue.KNOWN,
+                    "decision": FindingDecision.Verdict.APPROVED,
+                    "reviewer_name": reviewer_name,
+                    "reviewed_at": reviewed_at,
+                    "created_by_id": request.user.pk,
+                }
+                effective = effective_finding_review(key, prospective=prospective)
+                validate_distinct_stage_reviewer(
+                    key,
+                    stage,
+                    FindingDecision.Verdict.APPROVED,
+                    request.user,
+                    effective,
+                )
+                engine_decisions.extend(
+                    engine_finding_decisions(
+                        key,
+                        effective,
+                        reviewer_name=reviewer_name,
+                        reviewer_role=stage,
+                        reviewed_at=reviewed_at,
+                        note=data["note"],
+                    )
+                )
+            receipt = writer_or_503(
+                "findings",
+                engine_decisions,
+            )
+            rows = [
+                FindingDecision.objects.create(
+                    finding_key=key,
+                    queue=ReviewItem.Queue.KNOWN,
+                    review_stage=stage,
+                    decision=FindingDecision.Verdict.APPROVED,
+                    citation_checked=data["citation_checked"],
+                    mapping_checked=data["mapping_checked"],
+                    status_checked=data["status_checked"],
+                    note=data["note"],
+                    reviewer_name=reviewer_name,
+                    reviewer_role=stage,
+                    reviewed_at=reviewed_at,
+                    created_by=request.user,
+                    supersedes=latest_by_key[key],
+                    authoritative_file_hash=receipt["sha256"],
+                    writer_receipt_json=receipt,
+                )
+                for key in finding_keys
+            ]
+        return Response(
+            {
+                "decision_ids": [str(row.pk) for row in rows],
+                "authoritative_file_hash": receipt["sha256"],
                 "reviewer_id": reviewer_id,
             },
             status=status.HTTP_201_CREATED,
@@ -435,16 +708,17 @@ class RecallDecisionView(APIView):
             reviewed_at = timezone.now()
             receipt = writer_or_503(
                 "recall",
-                {
-                    "schema_version": "1",
-                    "decision": {
-                        **{key: str(value) if isinstance(value, Decimal) else value for key, value in data.items()},
+                [
+                    {
+                        **{
+                            key: str(value) if isinstance(value, Decimal) else value
+                            for key, value in data.items()
+                        },
                         "reviewer_name": reviewer_name,
                         "reviewer_role": "mapping",
                         "reviewed_at": reviewed_at.isoformat(),
-                    },
-                    "expected_file_hash": latest.authoritative_file_hash if latest else None,
-                },
+                    }
+                ],
             )
             row = RecallDecision.objects.create(
                 **data,
@@ -472,7 +746,7 @@ class Zone3DecisionView(APIView):
         serializer = Zone3DecisionWriteSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
-        get_object_or_404(
+        item = get_object_or_404(
             ReviewItem,
             snapshot=active_snapshot(),
             queue=ReviewItem.Queue.ZONE3,
@@ -484,19 +758,26 @@ class Zone3DecisionView(APIView):
             concurrency_check(latest, data.pop("expected_latest_decision_id"))
             reviewed_at = timezone.now()
             event = {
-                **data,
-                "score": str(data["score"]),
+                "economy": sheet_cell(
+                    item.snapshot, ReviewItem.Queue.ZONE3, item.row_json, "Economy"
+                ),
+                "indicator": sheet_cell(
+                    item.snapshot, ReviewItem.Queue.ZONE3, item.row_json, "Indicator"
+                ),
+                "action": (
+                    "approve"
+                    if data["verdict"] == Zone3Decision.Verdict.APPROVED
+                    else "override"
+                ),
+                "score": float(data["score"]),
+                "reasoning": data["reasoning"],
                 "reviewer_name": reviewer_name,
                 "reviewer_role": "mapping",
                 "reviewed_at": reviewed_at.isoformat(),
             }
             receipt = writer_or_503(
                 "zone3",
-                {
-                    "schema_version": "1",
-                    "decision": event,
-                    "expected_file_hash": latest.authoritative_file_hash if latest else None,
-                },
+                [event],
             )
             row = Zone3Decision.objects.create(
                 **data,
@@ -535,20 +816,47 @@ class CorrectionRequestView(APIView):
             queue=data["queue"],
             finding_key=data["finding_key"],
         )
-        with transaction.atomic():
+        with decision_domain_lock("findings"):
             latest = (
-                CorrectionRequest.objects.select_for_update()
-                .filter(finding_key=data["finding_key"])
+                CorrectionRequest.objects.filter(finding_key=data["finding_key"])
                 .order_by("-requested_at")
                 .first()
             )
             concurrency_check(latest, data.pop("expected_latest_correction_id"))
+            reviewed_at = timezone.now()
+            receipt = writer_or_503(
+                "findings",
+                [
+                    {
+                        "finding_key": data["finding_key"],
+                        "review": {
+                            "decision": "rejected",
+                            "reviewer_name": request.user.full_name,
+                            "reviewer_role": "correction-request",
+                            "reviewed_at": reviewed_at.isoformat(),
+                            "citation_checked": False,
+                            "mapping_checked": False,
+                            "status_checked": False,
+                            "citation_reviewer_name": "",
+                            "mapping_reviewer_name": "",
+                            "status_reviewer_name": "",
+                            "correction_note": data["explanation"],
+                        },
+                    }
+                ],
+            )
             row = CorrectionRequest.objects.create(
                 **data,
                 requested_by=request.user,
                 supersedes=latest,
+                authoritative_file_hash=receipt["sha256"],
+                writer_receipt_json=receipt,
             )
         return Response(
-            {"correction_request_id": str(row.pk), "finding_key": row.finding_key},
+            {
+                "correction_request_id": str(row.pk),
+                "finding_key": row.finding_key,
+                "authoritative_file_hash": receipt["sha256"],
+            },
             status=status.HTTP_201_CREATED,
         )
