@@ -30,8 +30,8 @@ echo "== engine venv =="
 cd "$APP_DIR/engine"
 python3.12 -m venv .venv
 .venv/bin/pip install -U pip
-.venv/bin/pip install -e ".[dev]" 2>/dev/null || .venv/bin/pip install -e . || true
-# if the project uses uv groups, prefer: uv sync --all-groups
+.venv/bin/pip install -e ".[dev]" || .venv/bin/pip install -e .
+# (must FAIL loudly on install errors; if the project uses uv groups: uv sync --all-groups)
 
 echo "== backend venv =="
 cd "$APP_DIR/backend"

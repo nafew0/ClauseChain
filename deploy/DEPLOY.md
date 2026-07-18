@@ -37,6 +37,7 @@ DB_ENGINE=django.db.backends.sqlite3
 USE_REDIS=0
 APP_ORIGIN=https://clausechain.zai.bd
 PUBLIC_APP_URL=https://clausechain.zai.bd
+TRUST_X_FORWARDED_PROTO=1
 ENGINE_ROOT=/srv/clausechain/engine
 ```
 `/srv/clausechain/frontend/.env`
@@ -53,7 +54,9 @@ venv/bin/python manage.py createsuperuser
 venv/bin/python manage.py collectstatic --noinput
 
 cd /srv/clausechain/frontend && npm ci && npm run build
-sudo chown -R www-data:www-data /srv/clausechain
+# Code stays read-only; only writable paths get www-data ownership:
+sudo chown -R www-data:www-data /srv/clausechain/backend/{db.sqlite3,media,staticfiles} 2>/dev/null || true
+sudo chown -R www-data:www-data /srv/clausechain/engine/{data,outputs,logs,submission,reports}
 ```
 
 ## 5. Services + nginx + TLS
@@ -74,6 +77,11 @@ cd /srv/clausechain/engine && .venv/bin/python -m pytest tests -q      # 112 pas
 curl -s https://clausechain.zai.bd/api/auth/user/ -o /dev/null -w "%{http_code}\n"   # 401 (auth wall up)
 ```
 Then: login over https works; one admin-terminal `run.py --economy Singapore --pillar 6` completes.
+
+## Engine data transfer (3.1 GB — manifest, not blind copy)
+Before rsync: `df -h /srv` must show ≥8 GB free. After rsync, verify with the hash
+manifest: `cd engine && find data outputs submission reports -type f | wc -l` matches
+the source count, and spot-check 5 SHA-256s against the source.
 
 ## Notes
 - Engine actions run as the API's user — `www-data` must own `/srv/clausechain/engine/data` (the decisions file is written there).
