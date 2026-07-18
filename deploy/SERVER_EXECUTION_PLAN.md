@@ -35,3 +35,54 @@ Install the three systemd units (api :8001 / web :3000 / engine worker) + target
 
 ## Rollback
 Stop the three units, `systemctl start docker` — the old stack returns as it was. Nothing in Step 0 uninstalls anything.
+
+---
+
+## DEPLOYED 19 Jul — as-built notes
+- Old stack was **Dokploy + vploy** (Docker swarm): stopped/disabled, NOT removed. Rollback: `systemctl start docker`. Old nginx configs quarantined in `/root/old-nginx-backup/`.
+- Native: nginx + TLS (certbot, auto-renew), Node 24.18, Python 3.12, **PostgreSQL 16** (Django on Postgres from day one), **Redis** (rate limiting, `USE_REDIS=1`).
+- Services: `clausechain-api` (:8001), `clausechain-web` (:3000), `clausechain-engine` (worker) — users `clausechain` / `clausechain-engine`.
+- Superuser creds: `/root/clausechain-initial-creds.txt` (change on first login, then delete the file).
+- First `engine_refresh` imported snapshot: 24 NEW / 12 absence / 17 recall / 27 zone-3 / 66 known.
+- Backups: `/etc/cron.d/clausechain-backup` → nightly `/srv/backups/`.
+
+## Updating the server after a git push (run as root, ~1 min)
+
+```bash
+ssh -p 2233 root@103.157.135.253
+cd /srv/clausechain && git pull
+
+# Backend changed (backend/**):
+cd backend && sudo -u clausechain venv/bin/python manage.py migrate \
+  && venv/bin/python manage.py collectstatic --noinput \
+  && systemctl restart clausechain-api clausechain-engine
+
+# Frontend changed (frontend/**):
+cd /srv/clausechain/frontend && npm ci --no-audit && npm run build \
+  && chown -R clausechain:clausechain .next && systemctl restart clausechain-web
+
+# Engine code changed (engine/** — no data): 
+cd /srv/clausechain/engine && ~/.local/bin/uv sync --all-groups \
+  && systemctl restart clausechain-engine
+# then re-import the workspace snapshot:
+cd /srv/clausechain/backend && sudo -u clausechain venv/bin/python manage.py engine_refresh
+
+# Engine DATA changed (rebuilt corpora/outputs on the Mac):
+# run ON the Mac:
+#   rsync -az -e "ssh -i ~/.ssh/clausechain_deploy -p 2233" \
+#     engine/data engine/outputs engine/logs engine/submission engine/reports \
+#     root@103.157.135.253:/srv/clausechain/engine/
+# then chown + engine_refresh as above.
+
+# deploy/ units or nginx changed:
+cp deploy/clausechain-*.service /etc/systemd/system/ && systemctl daemon-reload \
+  && systemctl restart clausechain-api clausechain-web clausechain-engine
+nginx -t && systemctl reload nginx   # nginx config lives at /etc/nginx/conf.d/clausechain.conf
+```
+
+Quick health check after any update:
+```bash
+systemctl is-active clausechain-api clausechain-web clausechain-engine nginx postgresql redis
+curl -s -o /dev/null -w "%{http_code}\n" https://clausechain.zai.bd/            # 200
+curl -s -o /dev/null -w "%{http_code}\n" https://clausechain.zai.bd/api/auth/user/  # 401
+```
