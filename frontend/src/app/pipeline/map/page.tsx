@@ -1,7 +1,2 @@
-import MappingRun from '@/views/MappingRun'
-
-export const metadata = { title: 'Mapping Run — ClauseChain' }
-
-export default function MappingRunPage() {
-  return <MappingRun />
-}
+import { redirect } from 'next/navigation'
+export default function MappingRunPage() { redirect('/runs') }

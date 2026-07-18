@@ -5,6 +5,7 @@ import WorkspaceShell from '@/components/clausechain/WorkspaceShell'
 import { CellDrilldownModal, ExportModal } from '@/components/clausechain/modals'
 import { JURISDICTIONS, RDTII_PILLARS, makeMatrixData } from '@/lib/clausechain/data'
 import type { MatrixCell } from '@/lib/clausechain/data'
+import { TruthBadge } from '@/components/clausechain/TruthState'
 
 type Mode = 'status' | 'confidence' | 'citations'
 
@@ -105,10 +106,11 @@ export default function RDTIIMatrix() {
 
   return (
     <WorkspaceShell breadcrumbs={[{ label: 'RDTII Matrix' }]}>
-      <div className="cc-page">
+      <div className="cc-page prototype-surface">
         {/* Header */}
         <div className="cc-page-header">
           <div>
+            <TruthBadge state="prototype" />
             <h1
               className="cc-page-title leading-[1.15] text-cc-ink-950"
               style={{ fontFamily: 'var(--cc-font-display)', fontSize: 32 }}

@@ -36,6 +36,13 @@ import type {
   SubmissionResponse,
   WorkspaceQueue,
   WorkspaceSummary,
+  OpsStatsResponse,
+  WorkspaceConfigResponse,
+  LedgerResponse,
+  RawArtifactListResponse,
+  RawArtifactResponse,
+  KnowledgeGraphSummary,
+  KnowledgeGraphSubgraph,
   Zone3DecisionInput,
 } from '@/types/workspace'
 
@@ -61,6 +68,46 @@ export async function getReviewContext(
 export async function getSummary(): Promise<WorkspaceSummary> {
   if (WORKSPACE_FIXTURE_MODE) return (await loadWorkspaceFixture()).summary
   const { data } = await api.get<WorkspaceSummary>('/workspace/summary/')
+  return data
+}
+
+export async function getOpsStats(): Promise<OpsStatsResponse> {
+  const { data } = await api.get<OpsStatsResponse>('/workspace/ops-stats/')
+  return data
+}
+
+export async function getWorkspaceConfig(): Promise<WorkspaceConfigResponse> {
+  const { data } = await api.get<WorkspaceConfigResponse>('/workspace/config/')
+  return data
+}
+
+export async function getLedger(page = 1): Promise<LedgerResponse> {
+  const { data } = await api.get<LedgerResponse>('/workspace/ledger/', { params: { page, page_size: 100 } })
+  return data
+}
+
+export async function getRawArtifacts(): Promise<RawArtifactListResponse> {
+  const { data } = await api.get<RawArtifactListResponse>('/workspace/raw/')
+  return data
+}
+
+export async function getRawArtifact(key: string): Promise<RawArtifactResponse> {
+  const { data } = await api.get<RawArtifactResponse>(`/workspace/raw/${key}/`)
+  return data
+}
+
+export async function downloadRawArtifact(key: string): Promise<Blob> {
+  const { data } = await api.get<Blob>(`/workspace/raw/${key}/download/`, { responseType: 'blob' })
+  return data
+}
+
+export async function getKnowledgeGraph(): Promise<KnowledgeGraphSummary> {
+  const { data } = await api.get<KnowledgeGraphSummary>('/workspace/knowledge-graph/')
+  return data
+}
+
+export async function getKnowledgeSubgraph(params: Record<string, string | undefined> = {}): Promise<KnowledgeGraphSubgraph> {
+  const { data } = await api.get<KnowledgeGraphSubgraph>('/workspace/knowledge-graph/subgraph/', { params: queryParams(params) })
   return data
 }
 

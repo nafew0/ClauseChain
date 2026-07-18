@@ -1,11 +1,20 @@
 'use client'
+import { useState } from 'react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { AlertTriangle, ExternalLink, FileText, Globe, RefreshCw, ShieldCheck } from 'lucide-react'
 import WorkspaceShell from '@/components/clausechain/WorkspaceShell'
 import { HashBadge, PillarCoverageStack, TrustBadge } from '@/components/clausechain/ui'
 import { DOCUMENTS, JURISDICTIONS, RDTII_PILLARS, SEED_REGISTRY } from '@/lib/clausechain/data'
+import { PageUnavailable, SnapshotBanner, TruthBadge } from '@/components/clausechain/TruthState'
+import { useWorkspaceConfig } from '@/hooks/workspace'
+import type { JsonValue } from '@/types/workspace'
 
 export default function SourceLibrary() {
+  const search = useSearchParams()
+  const view = search.get('view') ?? 'packs'
+  const configQuery = useWorkspaceConfig()
+  if (view !== 'sample') return <ConfigLibrary view={view === 'seeds' ? 'seeds' : 'packs'} query={configQuery} />
   const allDocuments = JURISDICTIONS.flatMap((jurisdiction) =>
     (DOCUMENTS[jurisdiction.code] ?? []).map((document) => ({ jurisdiction, document })),
   )
@@ -15,11 +24,12 @@ export default function SourceLibrary() {
 
   return (
     <WorkspaceShell breadcrumbs={[{ label: 'Source Library' }]}>
-      <div className="cc-page">
+      <div className="cc-page prototype-surface">
         <div className="cc-page-header">
           <div>
+            <TruthBadge state="prototype" />
             <p className="mb-1.5 text-[11px] font-medium uppercase tracking-[0.06em] text-cc-ink-500">
-              Demo source inventory
+              Sample source inventory
             </p>
             <h1 className="cc-page-title text-[32px]">Source Library</h1>
             <p className="mt-1.5 max-w-3xl text-cc-ink-500">
@@ -170,4 +180,19 @@ export default function SourceLibrary() {
       </div>
     </WorkspaceShell>
   )
+}
+
+function ConfigLibrary({ view, query }: { view: 'packs' | 'seeds'; query: ReturnType<typeof useWorkspaceConfig> }) {
+  const params = useSearchParams()
+  const [selected, setSelected] = useState((params.get('economy') ?? 'SG').toUpperCase())
+  const source = view === 'packs' ? query.data?.jurisdictions.find(item => item.code === selected) : query.data?.seeds
+  return <WorkspaceShell breadcrumbs={[{ label: 'Source Library' }, { label: view === 'packs' ? 'Jurisdiction Packs' : 'Seeds' }]}><div className="cc-page config-library"><div className="cc-page-header"><div><TruthBadge state="readonly" /><h1 className="cc-page-title text-[32px] mt-3">{view === 'packs' ? 'Jurisdiction packs' : 'Seed registry'}</h1><p className="text-cc-ink-500 mt-1.5">Real engine configuration rendered as a disabled, schema-driven form.</p></div></div><nav className="config-tabs"><Link className={view === 'packs' ? 'active' : ''} href="/jurisdictions?view=packs">Jurisdiction Packs</Link><Link className={view === 'seeds' ? 'active' : ''} href="/jurisdictions?view=seeds">Seeds</Link><Link href="/jurisdictions?view=sample">Sample Library <TruthBadge state="prototype" /></Link></nav>{query.isError || !query.data || !source ? <PageUnavailable title={query.isPending ? 'Loading real configuration…' : 'Configuration is unavailable'} /> : <><SnapshotBanner snapshot={query.data.snapshot} />{view === 'packs' ? <div className="config-economies">{query.data.jurisdictions.map(item => <button className={selected === item.code ? 'active' : ''} onClick={() => setSelected(item.code ?? 'SG')} key={item.code}>{item.code} · {String((item.parsed as Record<string, JsonValue>).name ?? item.code)}</button>)}</div> : null}<div className="config-layout"><section className="truth-data-card config-form" data-data-card><header><div><span>READ-ONLY FORM</span><h2>{source.source_path}</h2></div><TruthBadge state="readonly" /></header><ReadonlyValue value={source.parsed} path="root" /></section><section className="truth-data-card config-raw" data-data-card><header><div><span>EXACT SOURCE · SHA-256 {source.sha256.slice(0, 12)}…</span><h2>{view === 'packs' ? 'YAML this form represents' : 'JSON this form represents'}</h2></div></header><pre>{source.raw_text}</pre></section></div></>}</div></WorkspaceShell>
+}
+
+function ReadonlyValue({ value, path }: { value: JsonValue; path: string }) {
+  if (Array.isArray(value)) return <fieldset><legend>{path.split('.').at(-1)}</legend>{value.map((item, index) => <ReadonlyValue key={`${path}.${index}`} value={item} path={`${path}.${index}`} />)}</fieldset>
+  if (value && typeof value === 'object') return <fieldset><legend>{path === 'root' ? 'Configuration' : path.split('.').at(-1)}</legend>{Object.entries(value).map(([key, item]) => <ReadonlyValue key={`${path}.${key}`} value={item} path={`${path}.${key}`} />)}</fieldset>
+  const label = path.split('.').at(-1) ?? path
+  if (typeof value === 'boolean') return <label className="config-field"><span>{label}</span><input type="checkbox" checked={value} disabled /></label>
+  return <label className="config-field"><span>{label}</span><input value={value == null ? '' : String(value)} disabled /></label>
 }

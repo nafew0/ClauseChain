@@ -209,6 +209,7 @@ function QueueSpecificEvidence({ queue, record }: { queue: WorkspaceQueue; recor
   }
   return (
     <>
+      {queue === 'new' && text(record['Refuter verdict']).toUpperCase() === 'SPLIT' ? <div className="review-split-dissent"><AlertTriangle size={17} /><div><strong>Refuter dissent requires a human ruling</strong><span>{text(record['Refuter panel reasoning'])}</span></div></div> : null}
       <EvidenceSection title="Exact source quote">
         <blockquote className="cc-verbatim">{text(record['Exact source snippet'])}</blockquote>
       </EvidenceSection>
@@ -470,7 +471,17 @@ export default function ReviewWorkbench() {
   const summary = useSummary()
   const queueQuery = useReviewQueue(queue, { page_size: 200 })
   const loadError = summary.error ?? queueQuery.error
-  const records = useMemo(() => (queueQuery.data?.results ?? []).map((item) => ({ item, record: rowRecord(queueQuery.data?.headers ?? [], item.row) })), [queueQuery.data])
+  const records = useMemo(() => (queueQuery.data?.results ?? []).map((item) => ({ item, record: rowRecord(queueQuery.data?.headers ?? [], item.row) })).sort((left, right) => {
+    const leftDecided = queue === 'recall' || queue === 'zone3' ? Boolean(left.item.latest_decision) : Boolean(left.item.review_state?.decision)
+    const rightDecided = queue === 'recall' || queue === 'zone3' ? Boolean(right.item.latest_decision) : Boolean(right.item.review_state?.decision)
+    if (leftDecided !== rightDecided) return leftDecided ? 1 : -1
+    if (queue === 'new') {
+      const rank: Record<string, number> = { SPLIT: 0, KEEP: 1, REJECT: 2 }
+      const difference = (rank[text(left.record['Refuter verdict']).toUpperCase()] ?? 3) - (rank[text(right.record['Refuter verdict']).toUpperCase()] ?? 3)
+      if (difference) return difference
+    }
+    return left.item.position - right.item.position
+  }), [queue, queueQuery.data])
   const filtered = useMemo(() => {
     const needle = filter.trim().toLocaleLowerCase()
     if (!needle) return records

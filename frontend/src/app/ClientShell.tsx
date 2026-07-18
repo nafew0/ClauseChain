@@ -16,6 +16,11 @@ const NO_NAVBAR_PATHS = [
   '/source-status',
   '/jurisdictions',
   '/pipeline',
+  '/runs',
+  '/submission',
+  '/match',
+  '/raw-data',
+  '/knowledge-graph',
 ]
 
 export default function ClientShell({ children }: { children: React.ReactNode }) {

@@ -7,7 +7,7 @@ from urllib.parse import urlparse
 
 from django.conf import settings
 from django.db import transaction
-from django.http import FileResponse, Http404
+from django.http import FileResponse, Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import status
@@ -34,6 +34,7 @@ from .models import (
     ReviewItem,
     Release,
     RunRecord,
+    SnapshotArtifact,
     Zone3Decision,
 )
 from .pagination import WorkspacePagination
@@ -71,6 +72,19 @@ def active_snapshot():
             "No engine snapshot has been imported.", code="snapshot_unavailable"
         )
     return snapshot
+
+
+def snapshot_identity(snapshot):
+    return {
+        "id": str(snapshot.pk),
+        "schema_version": snapshot.schema_version,
+        "generated_at": snapshot.generated_at.isoformat(),
+        "imported_at": snapshot.imported_at.isoformat(),
+        "source_hash": snapshot.source_hash,
+        "bundle_hash": snapshot.bundle_hash,
+        "engine_git_sha": snapshot.engine_git_sha,
+        "stale": snapshot.stale,
+    }
 
 
 def latest_for(model, key_name, key):
@@ -176,20 +190,12 @@ class SummaryView(APIView):
             }
         return Response(
             {
-                "snapshot": {
-                    "id": str(snapshot.pk),
-                    "schema_version": snapshot.schema_version,
-                    "generated_at": snapshot.generated_at.isoformat(),
-                    "imported_at": snapshot.imported_at.isoformat(),
-                    "source_hash": snapshot.source_hash,
-                    "bundle_hash": snapshot.bundle_hash,
-                    "engine_git_sha": snapshot.engine_git_sha,
-                    "stale": snapshot.stale,
-                },
+                "snapshot": snapshot_identity(snapshot),
                 "counts": snapshot.counts_json,
                 "refuter_status": snapshot.refuter_status,
                 "champion": snapshot.champion_json,
                 "progress": progress,
+                "runs": [serialize_run(record) for record in snapshot.run_records.all()],
                 "reviewer_roles": list(
                     request.user.groups.filter(
                         name__in=(
@@ -202,6 +208,146 @@ class SummaryView(APIView):
                 ),
             }
         )
+
+
+def artifact_payload(artifact, *, include_content=False):
+    payload = {
+        "key": artifact.key,
+        "category": artifact.category,
+        "source_path": artifact.source_path,
+        "media_type": artifact.media_type,
+        "byte_size": artifact.byte_size,
+        "sha256": artifact.sha256,
+        "generated_at": artifact.generated_at.isoformat() if artifact.generated_at else None,
+        "imported_at": artifact.imported_at.isoformat(),
+    }
+    if include_content:
+        payload.update(raw_text=artifact.raw_text, parsed=artifact.parsed_json)
+    return payload
+
+
+class OpsStatsView(APIView):
+    def get(self, request):
+        snapshot = active_snapshot()
+        artifact = get_object_or_404(snapshot.artifacts, key="ops-stats")
+        return Response({"snapshot": snapshot_identity(snapshot), "ops_stats": artifact.parsed_json, "artifact": artifact_payload(artifact)})
+
+
+class WorkspaceConfigView(APIView):
+    def get(self, request):
+        snapshot = active_snapshot()
+        jurisdictions = []
+        for code in ("sg", "my", "au"):
+            artifact = get_object_or_404(snapshot.artifacts, key=f"jurisdiction-{code}")
+            jurisdictions.append({**artifact_payload(artifact, include_content=True), "code": code.upper()})
+        seeds = get_object_or_404(snapshot.artifacts, key="seeds")
+        return Response({"snapshot": snapshot_identity(snapshot), "jurisdictions": jurisdictions, "seeds": artifact_payload(seeds, include_content=True)})
+
+
+class RawArtifactListView(APIView):
+    def get(self, request):
+        snapshot = active_snapshot()
+        return Response({"snapshot": snapshot_identity(snapshot), "results": [artifact_payload(row) for row in snapshot.artifacts.all()]})
+
+
+class RawArtifactDetailView(APIView):
+    def get(self, request, artifact_key):
+        snapshot = active_snapshot()
+        artifact = get_object_or_404(snapshot.artifacts, key=artifact_key)
+        return Response({"snapshot": snapshot_identity(snapshot), "artifact": artifact_payload(artifact, include_content=True)})
+
+
+class RawArtifactDownloadView(APIView):
+    def get(self, request, artifact_key):
+        snapshot = active_snapshot()
+        artifact = get_object_or_404(snapshot.artifacts, key=artifact_key)
+        suffix = ".yaml" if artifact.media_type == "application/yaml" else ".json"
+        response = HttpResponse(artifact.raw_text.encode("utf-8"), content_type=f"{artifact.media_type}; charset=utf-8")
+        response["Content-Disposition"] = f'attachment; filename="{artifact.key}{suffix}"'
+        response["X-Content-SHA256"] = artifact.sha256
+        response["X-Content-Type-Options"] = "nosniff"
+        return response
+
+
+def serialize_ledger_event(row):
+    if isinstance(row, FindingDecision):
+        return {"id": str(row.pk), "event_type": "finding_decision", "domain": "findings", "key": row.finding_key, "action": row.decision, "stage": row.review_stage, "reviewer_name": row.reviewer_name, "reviewer_role": row.reviewer_role, "occurred_at": row.reviewed_at.isoformat(), "authoritative_file_hash": row.authoritative_file_hash, "writer_receipt": row.writer_receipt_json, "supersedes_id": str(row.supersedes_id) if row.supersedes_id else None}
+    if isinstance(row, RecallDecision):
+        return {"id": str(row.pk), "event_type": "recall_decision", "domain": "recall", "key": row.recall_key, "action": row.verdict, "reviewer_name": row.reviewer_name, "reviewer_role": row.reviewer_role, "occurred_at": row.reviewed_at.isoformat(), "authoritative_file_hash": row.authoritative_file_hash, "writer_receipt": row.writer_receipt_json, "supersedes_id": str(row.supersedes_id) if row.supersedes_id else None}
+    if isinstance(row, Zone3Decision):
+        return {"id": str(row.pk), "event_type": "zone3_decision", "domain": "zone3", "key": row.score_key, "action": row.verdict, "score": str(row.score), "reviewer_name": row.reviewer_name, "reviewer_role": row.reviewer_role, "occurred_at": row.reviewed_at.isoformat(), "authoritative_file_hash": row.authoritative_file_hash, "writer_receipt": row.writer_receipt_json, "supersedes_id": str(row.supersedes_id) if row.supersedes_id else None}
+    if isinstance(row, CorrectionRequest):
+        return {"id": str(row.pk), "event_type": "correction_request", "domain": "findings", "key": row.finding_key, "action": "correction_requested", "reviewer_name": row.requested_by.full_name, "reviewer_role": "requester", "occurred_at": row.requested_at.isoformat(), "authoritative_file_hash": row.authoritative_file_hash, "writer_receipt": row.writer_receipt_json, "supersedes_id": str(row.supersedes_id) if row.supersedes_id else None}
+    return {"id": str(row.pk), "event_type": "release", "domain": "release", "key": str(row.pk), "action": row.state, "reviewer_name": row.created_by.full_name, "reviewer_role": "release_owner", "occurred_at": row.created_at.isoformat(), "authoritative_file_hash": row.bundle_hash, "writer_receipt": {}, "bundle_manifest": row.engine_manifest_json, "final_artifact_hashes": row.final_artifact_hashes_json, "snapshot_id": str(row.snapshot_id) if row.snapshot_id else None, "supersedes_id": str(row.supersedes_id) if row.supersedes_id else None}
+
+
+class LedgerView(APIView):
+    pagination_class = WorkspacePagination
+
+    def get(self, request):
+        rows = [*FindingDecision.objects.all(), *RecallDecision.objects.all(), *Zone3Decision.objects.all(), *CorrectionRequest.objects.all(), *Release.objects.all()]
+        rows.sort(key=lambda row: getattr(row, "reviewed_at", None) or getattr(row, "requested_at", None) or row.created_at, reverse=True)
+        paginator = self.pagination_class()
+        page = paginator.paginate_queryset(rows, request, view=self)
+        return Response(paginator.response_payload([serialize_ledger_event(row) for row in page]))
+
+
+def graph_artifact(snapshot):
+    return get_object_or_404(snapshot.artifacts, key="neo4j-graph-snapshot")
+
+
+class KnowledgeGraphView(APIView):
+    def get(self, request):
+        snapshot = active_snapshot()
+        artifact = graph_artifact(snapshot)
+        graph = artifact.parsed_json or {}
+        return Response({"snapshot": snapshot_identity(snapshot), "artifact": artifact_payload(artifact), "status": graph.get("status", "unavailable"), "origin": graph.get("origin", "neo4j"), "extracted_at": graph.get("extracted_at"), "schema_version": graph.get("schema_version"), "checks": graph.get("checks") or {}, "counts": graph.get("counts") or {}, "expected": graph.get("expected") or {}, "reason": graph.get("reason"), "node_count": len(graph.get("nodes") or []), "edge_count": len(graph.get("edges") or []), "lenses": ["sg-pdpa-p6-i4", "p7-i5", "new-baseline", "cross-references"]})
+
+
+class KnowledgeGraphSubgraphView(APIView):
+    def get(self, request):
+        snapshot = active_snapshot()
+        graph = graph_artifact(snapshot).parsed_json or {}
+        nodes = list(graph.get("nodes") or [])[:500]
+        edges = list(graph.get("edges") or [])[:1000]
+        economy = str(request.query_params.get("economy") or "").casefold()
+        indicator = str(request.query_params.get("indicator") or "").casefold()
+        law = str(request.query_params.get("law") or "").casefold()
+        finding_key = str(request.query_params.get("finding_key") or "")
+        relationship = str(request.query_params.get("relationship") or "").upper()
+        lens = str(request.query_params.get("lens") or "")
+        if relationship and relationship not in {"HAS_SECTION", "HAS_PROVISION", "MAPS_TO", "EVIDENCED_BY", "KNOWN_AS", "NEW_RELATIVE_TO", "CROSS_REFERENCES", "AMENDS", "REPEALS", "SUPERSEDES", "EXCEPTION_TO", "QUALIFIES"}:
+            raise ValidationError({"relationship": "Unknown relationship type."})
+        if lens == "sg-pdpa-p6-i4":
+            economy, law = "singapore", "personal data protection"
+        elif lens == "p7-i5":
+            indicator = "p7-i5"
+        elif lens == "new-baseline":
+            relationship = "NEW_RELATIVE_TO"
+        elif lens == "cross-references":
+            relationship = "CROSS_REFERENCES"
+        elif lens:
+            raise ValidationError({"lens": "Unknown graph lens."})
+        if relationship:
+            edges = [edge for edge in edges if edge.get("type") == relationship]
+            connected = {value for edge in edges for value in (edge.get("source"), edge.get("target"))}
+            nodes = [node for node in nodes if node.get("id") in connected]
+        if any((economy, indicator, law, finding_key)):
+            seeds = set()
+            for node in nodes:
+                props = node.get("properties") or {}
+                haystack = {key: str(value).casefold() for key, value in props.items()}
+                if economy and economy not in haystack.get("economy", ""): continue
+                if law and law not in (haystack.get("law_name", "") + " " + haystack.get("law", "")): continue
+                if indicator and indicator not in haystack.get("indicator", ""): continue
+                if finding_key and finding_key != str(props.get("finding_key") or ""): continue
+                seeds.add(node.get("id"))
+            for _ in range(2):
+                seeds.update(value for edge in edges if edge.get("source") in seeds or edge.get("target") in seeds for value in (edge.get("source"), edge.get("target")))
+            nodes = [node for node in nodes if node.get("id") in seeds]
+            node_ids = {node.get("id") for node in nodes}
+            edges = [edge for edge in edges if edge.get("source") in node_ids and edge.get("target") in node_ids]
+        return Response({"snapshot": snapshot_identity(snapshot), "status": graph.get("status", "unavailable"), "nodes": nodes[:500], "edges": edges[:1000], "caps": {"nodes": 500, "edges": 1000}})
 
 
 class ReviewQueueView(APIView):

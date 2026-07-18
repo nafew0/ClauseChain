@@ -21,6 +21,13 @@ import {
   launchEngineAction,
   getSourceMatch,
   getSummary,
+  getOpsStats,
+  getWorkspaceConfig,
+  getLedger,
+  getRawArtifacts,
+  getRawArtifact,
+  getKnowledgeGraph,
+  getKnowledgeSubgraph,
   requestCorrection,
 } from '@/services/workspace'
 import type {
@@ -36,6 +43,13 @@ import type {
 export const workspaceKeys = {
   all: ['workspace'] as const,
   summary: () => [...workspaceKeys.all, 'summary'] as const,
+  ops: () => [...workspaceKeys.all, 'ops'] as const,
+  config: () => [...workspaceKeys.all, 'config'] as const,
+  ledger: (page: number) => [...workspaceKeys.all, 'ledger', page] as const,
+  raw: () => [...workspaceKeys.all, 'raw'] as const,
+  rawArtifact: (key: string) => [...workspaceKeys.all, 'raw-artifact', key] as const,
+  graph: () => [...workspaceKeys.all, 'graph'] as const,
+  subgraph: (params: Record<string, string | undefined>) => [...workspaceKeys.all, 'subgraph', params] as const,
   review: (queue: WorkspaceQueue, params: ReviewQueueParams) =>
     [...workspaceKeys.all, 'review', queue, params] as const,
   evidence: (params: EvidenceParams) => [...workspaceKeys.all, 'evidence', params] as const,
@@ -69,6 +83,14 @@ export function useReviewContext(
 export function useSummary() {
   return useQuery({ queryKey: workspaceKeys.summary(), queryFn: getSummary })
 }
+
+export function useOpsStats() { return useQuery({ queryKey: workspaceKeys.ops(), queryFn: getOpsStats }) }
+export function useWorkspaceConfig() { return useQuery({ queryKey: workspaceKeys.config(), queryFn: getWorkspaceConfig }) }
+export function useLedger(page = 1) { return useQuery({ queryKey: workspaceKeys.ledger(page), queryFn: () => getLedger(page) }) }
+export function useRawArtifacts() { return useQuery({ queryKey: workspaceKeys.raw(), queryFn: getRawArtifacts }) }
+export function useRawArtifact(key: string | null) { return useQuery({ queryKey: workspaceKeys.rawArtifact(key ?? ''), queryFn: () => getRawArtifact(key!), enabled: Boolean(key) }) }
+export function useKnowledgeGraph() { return useQuery({ queryKey: workspaceKeys.graph(), queryFn: getKnowledgeGraph }) }
+export function useKnowledgeSubgraph(params: Record<string, string | undefined>) { return useQuery({ queryKey: workspaceKeys.subgraph(params), queryFn: () => getKnowledgeSubgraph(params) }) }
 
 export function useReviewQueue(queue: WorkspaceQueue, params: ReviewQueueParams = {}) {
   return useQuery({

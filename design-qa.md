@@ -50,3 +50,47 @@
 - P3: after D6 navigation cleanup, the sidebar can become shorter and even closer to the reference's judge-facing information architecture.
 
 final result: passed
+
+---
+
+# D6-R Judge-Facing Finishing Pass — QA
+
+## Truth-state sweep
+
+- LIVE — ENGINE DATA: Dashboard, Review, Source Match, Runs, Submission, Source Acquisition, Corpus Eligibility, Extraction, Ledger and Raw Data.
+- READ-ONLY — REAL DATA: Jurisdiction Packs, Seeds and Knowledge Graph.
+- PROTOTYPE — SAMPLE DATA: Evidence Audit, Source Status, Benchmark, RDTII Matrix, Source Trace and the Sample Source Library tab. The prototype surface applies a badge to both the page header and its data cards.
+- Mapping Run and Export Output are server redirects to Runs and Submission respectively.
+- No LIVE or READ-ONLY screen imports the ClauseChain sample-data module.
+
+## Imported data cross-check
+
+- Active snapshot: `8b24739d-05d4-4090-95bc-61636ba674ba`.
+- Snapshot fingerprint: `28fe68fa9c3db17ae60e1fbf7c204c90c94b5df18862acc59846b7753a18589e`.
+- Immutable artifacts: 19.
+- Fresh `ops_stats.json`: 45 acquisition artifacts, 24 eligibility instrument records and 24 extraction instrument records.
+- Six stored run envelopes are exposed by the Dashboard summary contract.
+- Raw Data resets artifact/query state when the snapshot changes and virtualizes exact source lines; copy and download continue to operate on the complete immutable content.
+
+## Neo4j honesty check
+
+- The read-only exporter connected and produced a real graph snapshot, but parity is currently `parity_failed`.
+- All four checks are false: expected graph schema, SourceArtifact count, per-economy provision counts and finding resolution.
+- The current Neo4j instance has no `GraphMetadata` schema version and does not match the authoritative graph-validation report. The UI therefore suppresses VERIFIED language, renders a red parity warning and makes no GraphRAG-lift claim.
+- This failure does not invalidate the authoritative PostgreSQL snapshot or legal approval path.
+
+## Automated verification
+
+- Django workspace suite: 24 tests passed against PostgreSQL.
+- `makemigrations --check --dry-run`: no pending model changes.
+- TypeScript: `npx tsc --noEmit` passed.
+- ESLint: passed.
+- Production fixture guard and `next build`: passed; all 35 application routes prerendered or compiled successfully.
+- `git diff --check`: passed.
+
+## Visual QA status
+
+- Capture: `design-qa-evidence/d6r-dashboard.png` records the required fail-closed loading/unavailable presentation; it is not an authenticated real-data approval capture.
+- Authenticated captures for Dashboard, pipeline screens, Ledger, Raw Data, Knowledge Graph, config tabs and mobile remain pending. The in-app browser security policy blocked the temporary QA login; no sample data or fabricated capture was substituted. The temporary non-superuser QA account was deleted immediately afterward.
+
+final result: implementation and automated gates passed; authenticated visual captures pending; Neo4j parity failed truthfully

@@ -1,7 +1,2 @@
-import ExportOutput from '@/views/ExportOutput'
-
-export const metadata = { title: 'Export Output — ClauseChain' }
-
-export default function ExportOutputPage() {
-  return <ExportOutput />
-}
+import { redirect } from 'next/navigation'
+export default function ExportOutputPage() { redirect('/submission') }

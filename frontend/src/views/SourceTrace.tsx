@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from 'react'
 import WorkspaceShell from '@/components/clausechain/WorkspaceShell'
 import PipelineStepper from '@/components/clausechain/PipelineStepper'
 import { TRACE_HIGHLIGHTS, TraceHighlight } from '@/lib/clausechain/data'
+import { TruthBadge } from '@/components/clausechain/TruthState'
 
 // ── Segment types ────────────────────────────────────────────
 interface Seg    { text: string; highlightId?: string }
@@ -166,12 +167,13 @@ export default function SourceTrace() {
       <PipelineStepper activeId="verify" />
 
       <div
-        className="cc-page cc-pipeline-page"
+        className="cc-page cc-pipeline-page prototype-surface"
         onClick={() => { setShowPopover(null); setActiveSpan(null) }}
       >
         {/* ── Page header ── */}
         <div className="cc-page-header" style={{ alignItems: 'flex-start', marginBottom: 16 }}>
           <div>
+            <TruthBadge state="prototype" />
             <h1 style={{ fontFamily: 'var(--cc-font-display)', fontWeight: 700, fontSize: 22, color: 'var(--cc-ink-950)', margin: 0 }}>
               Source Trace
             </h1>

@@ -42,6 +42,101 @@ export interface WorkspaceSummary {
   champion: JsonObject
   progress: Record<WorkspaceQueue, ReviewProgress>
   reviewer_roles: string[]
+  runs?: RunRecord[]
+}
+
+export interface SnapshotArtifactMeta {
+  key: string
+  category: string
+  source_path: string
+  media_type: string
+  byte_size: number
+  sha256: string
+  generated_at: string | null
+  imported_at: string
+}
+
+export interface SnapshotArtifactDetail extends SnapshotArtifactMeta {
+  raw_text: string
+  parsed: JsonValue
+}
+
+export interface RawArtifactListResponse {
+  snapshot: SnapshotIdentity
+  results: SnapshotArtifactMeta[]
+}
+
+export interface RawArtifactResponse {
+  snapshot: SnapshotIdentity
+  artifact: SnapshotArtifactDetail
+}
+
+export interface OpsStats {
+  schema_version: number
+  generated_at: string
+  acquisition: JsonObject[]
+  eligibility: JsonObject[]
+  extraction: JsonObject[]
+}
+
+export interface OpsStatsResponse {
+  snapshot: SnapshotIdentity
+  ops_stats: OpsStats
+  artifact: SnapshotArtifactMeta
+}
+
+export interface ConfigSource extends SnapshotArtifactDetail { code?: string }
+export interface WorkspaceConfigResponse {
+  snapshot: SnapshotIdentity
+  jurisdictions: ConfigSource[]
+  seeds: ConfigSource
+}
+
+export interface LedgerEvent {
+  id: string
+  event_type: string
+  domain: string
+  key: string
+  action: string
+  stage?: string
+  score?: string
+  reviewer_name: string
+  reviewer_role: string
+  occurred_at: string
+  authoritative_file_hash: string
+  writer_receipt: JsonObject
+  bundle_manifest?: JsonObject
+  final_artifact_hashes?: JsonObject
+  snapshot_id?: string | null
+  supersedes_id: string | null
+}
+
+export type LedgerResponse = PaginatedResponse<LedgerEvent>
+
+export interface GraphNode { id: string; labels: string[]; properties: JsonObject }
+export interface GraphEdge { id: string; source: string; target: string; type: string; properties: JsonObject }
+export interface KnowledgeGraphSummary {
+  snapshot: SnapshotIdentity
+  artifact: SnapshotArtifactMeta
+  status: 'verified' | 'parity_failed' | 'unavailable'
+  origin: string
+  extracted_at: string | null
+  schema_version: number | null
+  checks: Record<string, boolean>
+  counts: JsonObject
+  expected: JsonObject
+  reason: string | null
+  node_count: number
+  edge_count: number
+  lenses: string[]
+}
+
+export interface KnowledgeGraphSubgraph {
+  snapshot: SnapshotIdentity
+  status: string
+  nodes: GraphNode[]
+  edges: GraphEdge[]
+  caps: { nodes: number; edges: number }
 }
 
 export interface FindingStageState {

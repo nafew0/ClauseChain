@@ -10,6 +10,8 @@ import {
   ClipboardCheck,
   Activity,
   FileCheck2,
+  Braces,
+  Share2,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 
@@ -23,12 +25,14 @@ const NAV_ITEMS = [
   { href: '/benchmark', icon: Gauge, label: 'Benchmark', count: null },
   { href: '/matrix', icon: Table2, label: 'RDTII Matrix', count: null },
   { href: '/ledger', icon: BookOpen, label: 'Ledger', count: null },
+  { href: '/raw-data', icon: Braces, label: 'Raw Data', count: null },
+  { href: '/knowledge-graph', icon: Share2, label: 'Knowledge Graph', count: null },
   { href: '/jurisdictions', icon: Globe, label: 'Source Library', count: 3 },
 ]
 
 const PIPELINE_ITEMS = [
-  { href: '/pipeline/crawl',    icon: Wifi,        label: 'Crawl Console' },
-  { href: '/pipeline/harvest',  icon: Layers,      label: 'Harvest Review' },
+  { href: '/pipeline/crawl',    icon: Wifi,        label: 'Source Acquisition' },
+  { href: '/pipeline/harvest',  icon: Layers,      label: 'Corpus Eligibility' },
   { href: '/pipeline/extract',  icon: FileText,    label: 'Extraction' },
   { href: '/pipeline/map',      icon: Cpu,         label: 'Mapping Run' },
   { href: '/pipeline/trace',    icon: GitBranch,   label: 'Source Trace' },

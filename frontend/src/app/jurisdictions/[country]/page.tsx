@@ -1,5 +1,4 @@
-import ProtectedRoute from '@/components/ProtectedRoute'
-import JurisdictionDetail from '@/views/JurisdictionDetail'
+import { redirect } from 'next/navigation'
 
 interface Props {
   params: Promise<{ country: string }>
@@ -7,9 +6,5 @@ interface Props {
 
 export default async function JurisdictionPage({ params }: Props) {
   const { country } = await params
-  return (
-    <ProtectedRoute>
-      <JurisdictionDetail country={country} />
-    </ProtectedRoute>
-  )
+  redirect(`/jurisdictions?view=packs&economy=${encodeURIComponent(country.toUpperCase())}`)
 }

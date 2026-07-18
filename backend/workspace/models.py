@@ -57,6 +57,39 @@ class EngineSnapshot(models.Model):
         ]
 
 
+class SnapshotArtifact(ImmutableAuditModel):
+    """Exact immutable input captured for one engine snapshot."""
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    snapshot = models.ForeignKey(
+        EngineSnapshot, on_delete=models.CASCADE, related_name="artifacts"
+    )
+    key = models.SlugField(max_length=160)
+    category = models.CharField(max_length=32)
+    source_path = models.CharField(max_length=1000, blank=True, default="")
+    media_type = models.CharField(max_length=100, default="application/json")
+    byte_size = models.PositiveBigIntegerField(default=0)
+    sha256 = models.CharField(max_length=64)
+    raw_text = models.TextField(blank=True, default="")
+    parsed_json = models.JSONField(default=dict)
+    generated_at = models.DateTimeField(null=True, blank=True)
+    imported_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["category", "key"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["snapshot", "key"], name="workspace_snapshot_artifact_key_uniq"
+            )
+        ]
+        indexes = [
+            models.Index(
+                fields=["snapshot", "category", "key"],
+                name="ws_artifact_snapshot_cat_idx",
+            )
+        ]
+
+
 class ReviewItem(models.Model):
     class Queue(models.TextChoices):
         NEW = "new", "NEW"

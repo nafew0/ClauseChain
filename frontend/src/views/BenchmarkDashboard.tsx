@@ -4,6 +4,7 @@ import { AlertTriangle, Check, Gauge, Pause, Play, RefreshCw, ShieldCheck, X } f
 import WorkspaceShell from '@/components/clausechain/WorkspaceShell'
 import { BENCHMARK_METRICS, REGRESSION_CASES } from '@/lib/clausechain/data'
 import type { BenchmarkMetric, RegressionCase } from '@/lib/clausechain/data'
+import { TruthBadge } from '@/components/clausechain/TruthState'
 
 const STATUS_CLASS: Record<BenchmarkMetric['status'], string> = {
   pass: 'bg-[#ECFDF5] text-[#047857]',
@@ -49,9 +50,10 @@ export default function BenchmarkDashboard() {
 
   return (
     <WorkspaceShell breadcrumbs={[{ label: 'Benchmark' }]}>
-      <div className="cc-page">
+      <div className="cc-page prototype-surface">
         <div className="cc-page-header">
           <div>
+            <TruthBadge state="prototype" />
             <h1 className="cc-page-title text-[32px]">
               Benchmark Dashboard
             </h1>

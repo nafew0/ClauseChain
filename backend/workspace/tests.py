@@ -28,6 +28,7 @@ from .models import (
     FindingDecision,
     RecallDecision,
     ReviewItem,
+    SnapshotArtifact,
     Zone3Decision,
 )
 from .engine_worker import EngineWorkerError, build_allowlisted_command, execute_action
@@ -159,6 +160,28 @@ def minimal_artifacts():
         "champion": {"status": "FAIL", "failures": ["human review pending"]},
         "costs": [],
         "runs": {f"run-{index}": {"country": "SG", "pillar": 6} for index in range(6)},
+        "ops_stats": {
+            "schema_version": 1,
+            "generated_at": "2026-07-18T12:00:00Z",
+            "acquisition": [{"id": "artifact-1", "economy": None, "sha256": HASH}],
+            "eligibility": [{"instrument": "Privacy Act", "units": 10, "evidence_eligible": 9}],
+            "extraction": [{"instrument": "Privacy Act", "methods": {"native_text": 10}}],
+        },
+        "configs": {
+            "jurisdictions": {
+                code: {"jurisdiction": code, "name": name}
+                for code, name in (("SG", "Singapore"), ("MY", "Malaysia"), ("AU", "Australia"))
+            },
+            "seeds": {"economies": {"Singapore": []}},
+        },
+        "graph_snapshot": {
+            "status": "verified",
+            "origin": "neo4j",
+            "schema_version": 3,
+            "checks": {"schema": True},
+            "nodes": [{"id": "p1", "labels": ["Provision"], "properties": {"economy": "Singapore", "law_name": "Privacy Act", "finding_key": "1" * 64}}],
+            "edges": [],
+        },
     }
 
 
@@ -274,6 +297,39 @@ class WorkspaceApiTests(TestCase):
         self.assertEqual(len(submission.data["template_columns"]), 13)
         self.assertIn("verification", submission.data["results"][0])
         self.assertFalse(submission.data["final_artifacts"]["available"])
+
+    def test_d6r_read_apis_are_real_read_only_and_path_safe(self):
+        self.authenticate(self.citation)
+        summary = self.client.get("/api/workspace/summary/")
+        self.assertEqual(len(summary.data["runs"]), 6)
+        ops = self.client.get("/api/workspace/ops-stats/")
+        self.assertEqual(ops.status_code, 200)
+        self.assertEqual(ops.data["ops_stats"]["acquisition"][0]["id"], "artifact-1")
+        config = self.client.get("/api/workspace/config/")
+        self.assertEqual([row["code"] for row in config.data["jurisdictions"]], ["SG", "MY", "AU"])
+        self.assertEqual(self.client.post("/api/workspace/config/", {}, format="json").status_code, 405)
+        manifest = self.client.get("/api/workspace/raw/")
+        self.assertGreaterEqual(manifest.data["count"] if "count" in manifest.data else len(manifest.data["results"]), 1)
+        artifact = self.snapshot.artifacts.get(key="ops-stats")
+        detail = self.client.get("/api/workspace/raw/ops-stats/")
+        self.assertEqual(detail.data["artifact"]["sha256"], artifact.sha256)
+        download = self.client.get("/api/workspace/raw/ops-stats/download/")
+        self.assertEqual(download["X-Content-SHA256"], artifact.sha256)
+        self.assertEqual(download.content.decode("utf-8"), artifact.raw_text)
+        self.assertEqual(self.client.get("/api/workspace/raw/../../etc/passwd/").status_code, 404)
+        graph = self.client.get("/api/workspace/knowledge-graph/")
+        self.assertEqual(graph.data["status"], "verified")
+        subgraph = self.client.get("/api/workspace/knowledge-graph/subgraph/?economy=Singapore")
+        self.assertLessEqual(len(subgraph.data["nodes"]), 500)
+        invalid = self.client.get("/api/workspace/knowledge-graph/subgraph/?relationship=DELETE")
+        self.assertEqual(invalid.status_code, 400)
+        self.assertEqual(self.client.post("/api/workspace/knowledge-graph/", {}, format="json").status_code, 405)
+
+    def test_snapshot_artifacts_are_append_only(self):
+        artifact = self.snapshot.artifacts.get(key="ops-stats")
+        artifact.raw_text = "mutated"
+        with self.assertRaises(DjangoValidationError):
+            artifact.save()
 
     def test_engine_actions_are_superuser_only_and_deduplicated(self):
         self.authenticate(self.citation)

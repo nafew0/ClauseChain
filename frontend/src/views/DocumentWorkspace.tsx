@@ -14,6 +14,7 @@ import {
 import WorkspaceShell from '@/components/clausechain/WorkspaceShell'
 import { ConfidenceBar, HashBadge, TrustBadge, VerificationChainV2 } from '@/components/clausechain/ui'
 import { EVIDENCE_AUDIT_CASE, JURISDICTIONS, SOURCE_STATUS_EDGES } from '@/lib/clausechain/data'
+import { TruthBadge } from '@/components/clausechain/TruthState'
 
 interface Props {
   country: string
@@ -53,11 +54,12 @@ export default function DocumentWorkspace({ country, docId }: Props) {
       ]}
     >
       <div
-        className="grid gap-4 p-4"
+        className="grid gap-4 p-4 prototype-surface"
         style={{ gridTemplateColumns: 'minmax(360px, 0.96fr) minmax(340px, 0.9fr) minmax(440px, 1.05fr)', height: 'calc(100vh - 56px)', overflow: 'hidden' }}
       >
         <section className="flex min-w-0 flex-col overflow-hidden rounded-2xl border border-cc-ink-200 bg-white">
           <div className="border-b border-cc-ink-200 px-5 py-4">
+            <TruthBadge state="prototype" />
             <div className="mb-2 flex items-center gap-2">
               <span className="inline-flex items-center gap-1 rounded-full bg-[#ECFDF5] px-2.5 py-1 text-[11px] font-medium text-[#047857]">
                 <ShieldCheck size={12} /> Official source

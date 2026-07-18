@@ -16,6 +16,7 @@ import PipelineStepper from '@/components/clausechain/PipelineStepper'
 import { HashBadge, TrustBadge } from '@/components/clausechain/ui'
 import { SOURCE_STATUS_EDGES, SOURCE_STATUS_NODES } from '@/lib/clausechain/data'
 import type { SourceStatus } from '@/lib/clausechain/data'
+import { TruthBadge } from '@/components/clausechain/TruthState'
 
 const NODE_ICON: Record<SourceStatus['kind'], React.ReactNode> = {
   official_statute: <ShieldCheck size={16} />,
@@ -69,9 +70,10 @@ export default function SourceStatusGraph() {
     <WorkspaceShell breadcrumbs={[{ label: 'Source Status' }]}>
       <PipelineStepper activeId="authority" />
 
-      <div className="cc-page">
+      <div className="cc-page prototype-surface">
         <div className="cc-page-header">
           <div>
+            <TruthBadge state="prototype" />
             <h1 className="cc-page-title text-[32px]">
               Source Status Graph
             </h1>
