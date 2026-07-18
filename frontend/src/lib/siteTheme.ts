@@ -16,7 +16,7 @@ interface ThemeState {
 const WHITE_RGB: Rgb = { r: 255, g: 255, b: 255 }
 const FOREGROUND_RGB: Rgb = { r: 15, g: 23, b: 42 }
 const DEFAULT_SITE_COLORS: ThemeColors = {
-  primary: '#f79945',
+  primary: '#1d6fb8',
   secondary: '#bc5eb3',
   accent: '#5b2d62',
 }
@@ -28,8 +28,8 @@ export const DEFAULT_SITE_THEME_ID = 'quest-default'
 export const SITE_THEME_PRESETS = [
   {
     id: 'quest-default',
-    name: 'reactdjango Core',
-    description: 'Apricot and orchid with a deep plum accent.',
+    name: 'ClauseChain ESCAP',
+    description: 'ESCAP authority blue with orchid and deep plum accents.',
     colors: DEFAULT_SITE_COLORS,
   },
   {

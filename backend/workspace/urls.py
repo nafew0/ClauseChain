@@ -4,6 +4,7 @@ from .views import (
     CorrectionRequestView,
     EvidenceDetailView,
     EvidenceListView,
+    ProofAssetView,
     DecisionHistoryView,
     FindingBulkDecisionView,
     FindingDecisionView,
@@ -12,6 +13,7 @@ from .views import (
     ReviewQueueView,
     RunsView,
     SummaryView,
+    SourceMatchView,
     Zone3DecisionView,
 )
 
@@ -31,6 +33,16 @@ urlpatterns = [
         "evidence/<str:finding_key>/",
         EvidenceDetailView.as_view(),
         name="evidence_detail",
+    ),
+    path(
+        "source-match/<str:finding_key>/",
+        SourceMatchView.as_view(),
+        name="source_match",
+    ),
+    path(
+        "proof/<str:filename>/",
+        ProofAssetView.as_view(),
+        name="proof_asset",
     ),
     path("runs/", RunsView.as_view(), name="runs"),
     path("decisions/findings/", FindingDecisionView.as_view(), name="finding_decision"),

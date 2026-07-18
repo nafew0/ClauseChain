@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import Link from 'next/link'
+import axios from 'axios'
 import {
   AnimatePresence,
   LazyMotion,
@@ -74,6 +76,15 @@ function text(value: unknown, fallback = '—') {
   if (value === null || value === undefined || value === '') return fallback
   if (typeof value === 'object') return JSON.stringify(value, null, 2)
   return String(value)
+}
+
+function reviewLoadError(error: unknown) {
+  if (axios.isAxiosError(error)) {
+    const detail = error.response?.data?.detail
+    if (typeof detail === 'string') return detail
+    if (!error.response) return 'The review API is unavailable. Start the backend and try again.'
+  }
+  return error instanceof Error ? error.message : 'The review workspace could not be loaded.'
 }
 
 function parseJson(value: unknown) {
@@ -283,6 +294,7 @@ function ReferenceDrawer({ open, onClose, record, context, loading }: {
                       <strong>{text(row.row['Law Name'])} · {text(row.row['Article / Section'])}</strong>
                       <p>{text(row.row['Verbatim Snippet']).slice(0, 240)}</p>
                       <span>{row.same_law ? 'Same law' : 'Same indicator'}</span>
+                      <Link href={`/match/${row.finding_key}?economy=${encodeURIComponent(text(row.row['Economy'], ''))}&indicator=${encodeURIComponent(text(row.row['Indicator ID'], ''))}`}>Open Source Match <ExternalLink size={12} /></Link>
                     </article>
                   )) : <p className="review-muted">No related evidence rows in this snapshot.</p>}
                 </section>
@@ -457,6 +469,7 @@ export default function ReviewWorkbench() {
   const [selectedKnown, setSelectedKnown] = useState<Set<string>>(new Set())
   const summary = useSummary()
   const queueQuery = useReviewQueue(queue, { page_size: 200 })
+  const loadError = summary.error ?? queueQuery.error
   const records = useMemo(() => (queueQuery.data?.results ?? []).map((item) => ({ item, record: rowRecord(queueQuery.data?.headers ?? [], item.row) })), [queueQuery.data])
   const filtered = useMemo(() => {
     const needle = filter.trim().toLocaleLowerCase()
@@ -543,7 +556,11 @@ export default function ReviewWorkbench() {
             })}
           </nav>
 
-          <div className={cn('review-layout', mobileRailOpen && 'mobile-list-open')}>
+          {loadError ? <section className="review-load-error" role="alert">
+            <AlertTriangle size={22} />
+            <div><strong>Review data is not ready</strong><p>{reviewLoadError(loadError)}</p></div>
+            <button onClick={() => void Promise.all([summary.refetch(), queueQuery.refetch()])}>Try again</button>
+          </section> : <div className={cn('review-layout', mobileRailOpen && 'mobile-list-open')}>
             <aside className="review-rail" aria-label={`${queue} review queue`}>
               <div className="review-rail-tools">
                 <label><Search size={15} /><input value={filter} onChange={(event) => { const value = event.target.value; setFilter(value); setUrl(queue, selected?.item.stable_key, value) }} placeholder="Filter this queue…" /><Filter size={14} /></label>
@@ -571,7 +588,7 @@ export default function ReviewWorkbench() {
 
             <main className="review-canvas">
               {selected ? <m.div key={selected.item.stable_key} initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: .22 }}>
-                <div className="review-canvas-toolbar"><button className="review-mobile-back" onClick={() => setMobileRailOpen(true)}><ArrowLeft size={17} /> Queue</button><div><span>{reviewId(selected.record, selected.item)}</span><span>{selectedIndex + 1} of {filtered.length}</span></div><button className="review-reference-button" onClick={() => setDrawerOpen(true)}><BookOpenCheck size={16} /> Act reference <ChevronRight size={15} /></button></div>
+                <div className="review-canvas-toolbar"><button className="review-mobile-back" onClick={() => setMobileRailOpen(true)}><ArrowLeft size={17} /> Queue</button><div className="review-toolbar-meta"><span>{reviewId(selected.record, selected.item)}</span><span>{selectedIndex + 1} of {filtered.length}</span></div><div className="review-toolbar-actions">{selected.item.finding_key ? <Link className="review-reference-button" href={`/match/${selected.item.finding_key}?queue=${queue}`}><FileCheck2 size={16} /> Source Match</Link> : null}<button className="review-reference-button" onClick={() => setDrawerOpen(true)}><BookOpenCheck size={16} /> Act reference <ChevronRight size={15} /></button></div></div>
                 <article className={cn('review-focus-card', selected.item.blocked && 'blocked')}>
                   <header>
                     <div><span className="review-eyebrow">{text(selected.record['Economy'])} · {text(selected.record['Indicator'])}</span><h2>{itemTitle(selected.record)}</h2><p>{text(selected.record['Article/section'] ?? selected.record['Master citation'] ?? selected.record['Indicator question'])}</p></div>
@@ -585,7 +602,7 @@ export default function ReviewWorkbench() {
                 {history.data && history.data.results.length ? <section className="review-history"><h3><History size={16} /> Append-only history</h3>{history.data.results.slice().reverse().map((entry) => <article key={entry.id}><strong>{'stage' in entry ? entry.stage : entry.verdict}</strong><span>{entry.reviewer_name} · {new Date(entry.reviewed_at).toLocaleString()}</span></article>)}</section> : null}
               </m.div> : queueQuery.isPending ? <div className="review-canvas-loading" /> : <div className="review-empty"><Menu size={24} /><h2>No rows match this filter</h2><button onClick={() => setFilter('')}>Clear filter</button></div>}
             </main>
-          </div>
+          </div>}
           {selected ? <ReferenceDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} record={selected.record} context={context.data} loading={context.isPending} /> : null}
         </div>
       </MotionConfig>

@@ -8,6 +8,7 @@ import type {
   ReviewQueueParams,
   ReviewQueueResponse,
   ReviewContext,
+  SourceMatchDetail,
   WorkspaceFixture,
   WorkspaceQueue,
 } from '@/types/workspace'
@@ -220,6 +221,58 @@ export async function fixtureEvidenceRow(findingKey: string): Promise<EvidenceDe
       mapping_reviewer_name: '',
       status_reviewer_name: '',
       stages: {},
+    },
+  }
+}
+
+export async function fixtureSourceMatch(
+  findingKey: string,
+  params: EvidenceParams = {}
+): Promise<SourceMatchDetail> {
+  await loadWorkspaceFixture()
+  const evidence = await fixtureEvidenceRow(findingKey)
+  const proof = (evidence.row['citation_proof'] ?? {}) as Record<string, unknown>
+  const alignment = String(proof.alignment_status ?? '')
+  const mode = evidence.blocked || ['unaligned', 'ambiguous', 'review'].includes(alignment)
+    ? 'blocked'
+    : alignment === 'anchor' ? 'anchor' : alignment === 'exact' ? 'exact' : 'blocked'
+  const filtered = (await fixtureEvidence(params)).results
+  const index = Math.max(0, filtered.findIndex((row) => row.finding_key === findingKey))
+  const sourceArtifact = String(evidence.row['source_artifact_id'] ?? evidence.source_hash)
+  return {
+    ...evidence,
+    blocked: mode === 'blocked',
+    block_reason: mode === 'blocked' ? 'A complete citation proof is not available.' : '',
+    proof_asset_url: mode === 'exact' ? evidence.proof_asset_url : null,
+    proof_asset_available: Boolean(mode === 'exact' && evidence.proof_asset_url),
+    source_sha256: String(proof.source_sha256 ?? sourceArtifact).replace(/^sha256:/, ''),
+    match: {
+      mode,
+      label: mode === 'exact' ? 'VERBATIM · exact' : mode === 'anchor' ? 'VERBATIM · anchor' : 'blocked',
+      alignment_status: alignment || null,
+      alignment_score: Number(proof.alignment_score ?? 0) || null,
+      page_number: Number(proof.page_number ?? 0) || null,
+      anchor: String(proof.anchor ?? '') || null,
+      article_path: Array.isArray(proof.article_path) ? proof.article_path.map(String) : [],
+      span_ids: Array.isArray(proof.span_ids) ? proof.span_ids.map(String) : [],
+      bboxes: Array.isArray(proof.bboxes) ? proof.bboxes as never[] : [],
+      verified_at: String(proof.verified_at ?? '') || null,
+    },
+    source: {
+      official_url: String(evidence.row['Source URL'] ?? '') || null,
+      archived_copy: String(evidence.row['archived_copy'] ?? '') || null,
+      access_date: String(evidence.row['access_date'] ?? '') || null,
+      status: String(evidence.row['Status'] ?? '') || null,
+      status_evidence: String(evidence.row['status_evidence'] ?? '') || null,
+      status_evidence_record: (evidence.row['status_evidence_record'] ?? null) as never,
+      citation_tier: String(evidence.row['citation_tier'] ?? '') || null,
+      source_artifact_id: sourceArtifact || null,
+    },
+    navigation: {
+      position: index + 1,
+      total: filtered.length || 1,
+      previous_key: index > 0 ? filtered[index - 1].finding_key : null,
+      next_key: index + 1 < filtered.length ? filtered[index + 1].finding_key : null,
     },
   }
 }

@@ -32,6 +32,7 @@ from .models import (
 
 HASH = "a" * 64
 RECEIPT = {"sha256": "b" * 64, "path": "data/review/decisions.json"}
+PROOF_FILENAME = f"{'c' * 64}.png"
 
 
 def minimal_artifacts():
@@ -61,7 +62,7 @@ def minimal_artifacts():
             "article": "s. 26",
             "is_absence": False,
             "blocked": False,
-            "proof_asset": "assets/one.png",
+            "proof_asset": f"assets/{PROOF_FILENAME}",
         },
         {
             "finding_key": "2" * 64,
@@ -95,8 +96,21 @@ def minimal_artifacts():
             "status_evidence": "Official current compilation",
             "status_evidence_record": {"status": "in_force", "conflicting": False},
             "citation_proof": (
-                None if item["is_absence"] else {"alignment_status": "exact"}
+                None
+                if item["is_absence"]
+                else {
+                    "alignment_status": "exact" if item["finding_key"] == "1" * 64 else "anchor",
+                    "alignment_score": 1.0,
+                    "source_sha256": "d" * 64,
+                    "article_path": ["section 26"],
+                }
             ),
+            "Source URL": "https://official.example/statute",
+            "archived_copy": "data/raw/statute.html",
+            "access_date": "2026-07-18",
+            "citation_tier": "[verified]",
+            "Verbatim Snippet": "An exact statutory quotation.",
+            "raw_context": "Context before. An exact statutory quotation. Context after.",
             "search_coverage_manifest": (
                 {
                     "portals": ["Official register"],
@@ -232,7 +246,10 @@ class WorkspaceApiTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["count"], 2)
         response = self.client.get(f"/api/workspace/evidence/{'1' * 64}/")
-        self.assertEqual(response.data["proof_asset_url"], "/proof/one.png")
+        self.assertEqual(
+            response.data["proof_asset_url"],
+            f"/api/workspace/proof/{PROOF_FILENAME}/",
+        )
         self.assertEqual(
             self.client.get("/api/workspace/runs/").data["results"].__len__(), 6
         )
@@ -242,6 +259,50 @@ class WorkspaceApiTests(TestCase):
         self.assertEqual(context.data["master_known"][0]["Act/instrument"], "Privacy Act")
         self.assertEqual(context.data["score_semantics"]["level"], "indicator")
         self.assertTrue(context.data["approval_eligibility"]["eligible"])
+
+    def test_source_match_supports_exact_anchor_blocked_and_queue_navigation(self):
+        self.authenticate(self.citation)
+        exact_key = "1" * 64
+        anchor_key = "2" * 64
+        blocked_key = "3" * 64
+
+        response = self.client.get(
+            f"/api/workspace/source-match/{exact_key}/?queue=new"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["match"]["mode"], "exact")
+        self.assertEqual(response.data["match"]["label"], "VERBATIM · exact")
+        self.assertEqual(response.data["source_sha256"], "d" * 64)
+        self.assertEqual(response.data["navigation"]["total"], 1)
+
+        response = self.client.get(f"/api/workspace/source-match/{anchor_key}/")
+        self.assertEqual(response.data["match"]["mode"], "anchor")
+        self.assertIsNone(response.data["proof_asset_url"])
+        self.assertIn("Context before", response.data["row"]["raw_context"])
+
+        response = self.client.get(f"/api/workspace/source-match/{blocked_key}/")
+        self.assertEqual(response.data["match"]["mode"], "blocked")
+        self.assertTrue(response.data["blocked"])
+        self.assertTrue(response.data["block_reason"])
+
+    def test_proof_asset_is_authenticated_and_served_from_engine_archive(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            asset_dir = root / "submission" / "review" / "assets"
+            asset_dir.mkdir(parents=True)
+            (asset_dir / PROOF_FILENAME).write_bytes(b"png-proof")
+            url = f"/api/workspace/proof/{PROOF_FILENAME}/"
+            with override_settings(ENGINE_ROOT=root):
+                self.client.force_authenticate(user=None)
+                self.assertEqual(self.client.get(url).status_code, 401)
+                self.authenticate(self.citation)
+                response = self.client.get(url)
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(b"".join(response.streaming_content), b"png-proof")
+                self.assertEqual(
+                    self.client.get("/api/workspace/proof/not-a-proof.png/").status_code,
+                    404,
+                )
 
     @patch("workspace.views.apply_authoritative_decision", return_value=RECEIPT)
     def test_staged_reviews_require_distinct_users_and_are_append_only(self, writer):

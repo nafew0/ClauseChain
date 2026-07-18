@@ -12,9 +12,11 @@ import {
   getDecisionHistory,
   getEvidence,
   getEvidenceRow,
+  getProofAsset,
   getReviewQueue,
   getReviewContext,
   getRuns,
+  getSourceMatch,
   getSummary,
   requestCorrection,
 } from '@/services/workspace'
@@ -35,6 +37,10 @@ export const workspaceKeys = {
   evidence: (params: EvidenceParams) => [...workspaceKeys.all, 'evidence', params] as const,
   evidenceRow: (findingKey: string) =>
     [...workspaceKeys.all, 'evidence-row', findingKey] as const,
+  sourceMatch: (findingKey: string, params: EvidenceParams) =>
+    [...workspaceKeys.all, 'source-match', findingKey, params] as const,
+  proofAsset: (assetUrl: string) =>
+    [...workspaceKeys.all, 'proof-asset', assetUrl] as const,
   runs: () => [...workspaceKeys.all, 'runs'] as const,
   history: (domain: 'findings' | 'recall' | 'zone3', key: string) =>
     [...workspaceKeys.all, 'history', domain, key] as const,
@@ -76,6 +82,26 @@ export function useEvidenceRow(findingKey: string | null | undefined) {
     queryKey: workspaceKeys.evidenceRow(findingKey ?? ''),
     queryFn: () => getEvidenceRow(findingKey!),
     enabled: Boolean(findingKey),
+  })
+}
+
+export function useSourceMatch(
+  findingKey: string | null | undefined,
+  params: EvidenceParams = {}
+) {
+  return useQuery({
+    queryKey: workspaceKeys.sourceMatch(findingKey ?? '', params),
+    queryFn: () => getSourceMatch(findingKey!, params),
+    enabled: Boolean(findingKey),
+  })
+}
+
+export function useProofAsset(assetUrl: string | null | undefined) {
+  return useQuery({
+    queryKey: workspaceKeys.proofAsset(assetUrl ?? ''),
+    queryFn: () => getProofAsset(assetUrl!),
+    enabled: Boolean(assetUrl),
+    staleTime: Number.POSITIVE_INFINITY,
   })
 }
 

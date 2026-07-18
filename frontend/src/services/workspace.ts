@@ -6,6 +6,7 @@ import {
   fixtureEvidenceRow,
   fixtureReviewQueue,
   fixtureReviewContext,
+  fixtureSourceMatch,
   loadWorkspaceFixture,
   rejectFixtureWrite,
 } from '@/lib/workspace/fixture'
@@ -27,6 +28,7 @@ import type {
   ReviewQueueResponse,
   ReviewContext,
   RunsResponse,
+  SourceMatchDetail,
   WorkspaceQueue,
   WorkspaceSummary,
   Zone3DecisionInput,
@@ -81,6 +83,25 @@ export async function getEvidence(
 export async function getEvidenceRow(findingKey: string): Promise<EvidenceDetail> {
   if (WORKSPACE_FIXTURE_MODE) return fixtureEvidenceRow(findingKey)
   const { data } = await api.get<EvidenceDetail>(`/workspace/evidence/${findingKey}/`)
+  return data
+}
+
+export async function getSourceMatch(
+  findingKey: string,
+  params: EvidenceParams = {}
+): Promise<SourceMatchDetail> {
+  if (WORKSPACE_FIXTURE_MODE) return fixtureSourceMatch(findingKey, params)
+  const { data } = await api.get<SourceMatchDetail>(
+    `/workspace/source-match/${findingKey}/`,
+    { params: queryParams(params) }
+  )
+  return data
+}
+
+export async function getProofAsset(assetUrl: string): Promise<Blob> {
+  const { data } = await api.get<Blob>(assetUrl.replace(/^\/api/, ''), {
+    responseType: 'blob',
+  })
   return data
 }
 

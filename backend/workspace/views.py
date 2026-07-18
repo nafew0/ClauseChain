@@ -1,5 +1,8 @@
 from decimal import Decimal
+import re
 
+from django.conf import settings
+from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import status
@@ -236,29 +239,7 @@ class EvidenceListView(APIView):
     pagination_class = WorkspacePagination
 
     def get(self, request):
-        rows = list(active_snapshot().evidence_rows.all())
-        filters = {
-            "economy": "Economy",
-            "indicator": "Indicator ID",
-            "tag": "Discovery Tag",
-            "status": "Status",
-        }
-        for query_name, field_name in filters.items():
-            value = request.query_params.get(query_name)
-            if value:
-                rows = [
-                    row
-                    for row in rows
-                    if str(row.row_json.get(field_name) or "").casefold()
-                    == value.casefold()
-                ]
-        pillar = request.query_params.get("pillar")
-        if pillar:
-            rows = [
-                row
-                for row in rows
-                if str(row.row_json.get("Indicator ID") or "").startswith(f"P{pillar}-")
-            ]
+        rows = filtered_evidence_rows(active_snapshot(), request.query_params)
         paginator = self.pagination_class()
         page = paginator.paginate_queryset(rows, request, view=self)
         return Response(
@@ -280,7 +261,139 @@ class EvidenceListView(APIView):
 def proof_url(proof_asset):
     if not proof_asset:
         return None
-    return "/proof/" + proof_asset.removeprefix("assets/")
+    filename = proof_asset.removeprefix("assets/")
+    if not PROOF_ASSET_PATTERN.fullmatch(filename):
+        return None
+    return f"/api/workspace/proof/{filename}/"
+
+
+PROOF_ASSET_PATTERN = re.compile(r"[0-9a-f]{64}\.png", re.IGNORECASE)
+EVIDENCE_FILTERS = {
+    "economy": "Economy",
+    "indicator": "Indicator ID",
+    "tag": "Discovery Tag",
+    "status": "Status",
+}
+
+
+def filtered_evidence_rows(snapshot, params):
+    """Apply the shared evidence filter grammar used by list and match navigation."""
+    rows = list(snapshot.evidence_rows.all())
+    queue = params.get("queue")
+    if queue:
+        if queue not in ReviewItem.Queue.values:
+            raise ValidationError({"queue": "Unknown review queue."})
+        queue_keys = set(
+            snapshot.review_items.filter(queue=queue)
+            .exclude(finding_key="")
+            .values_list("finding_key", flat=True)
+        )
+        rows = [row for row in rows if row.finding_key in queue_keys]
+    for query_name, field_name in EVIDENCE_FILTERS.items():
+        value = params.get(query_name)
+        if value:
+            rows = [
+                row
+                for row in rows
+                if str(row.row_json.get(field_name) or "").casefold()
+                == value.casefold()
+            ]
+    pillar = params.get("pillar")
+    if pillar:
+        rows = [
+            row
+            for row in rows
+            if str(row.row_json.get("Indicator ID") or "").startswith(f"P{pillar}-")
+        ]
+    return rows
+
+
+def source_sha256(row, fallback):
+    proof = row.get("citation_proof") or {}
+    value = str(
+        proof.get("source_sha256")
+        or row.get("source_artifact_id")
+        or fallback
+        or ""
+    )
+    return value.removeprefix("sha256:")
+
+
+def source_match_mode(evidence):
+    proof = evidence.row_json.get("citation_proof") or {}
+    alignment = str(proof.get("alignment_status") or "").casefold()
+    if evidence.blocked or alignment in {"unaligned", "ambiguous", "review"}:
+        return "blocked"
+    if alignment == "anchor":
+        return "anchor"
+    if alignment == "exact":
+        return "exact"
+    return "blocked"
+
+
+def source_match_block_reason(evidence):
+    review_item = (
+        ReviewItem.objects.filter(
+            snapshot=evidence.snapshot, finding_key=evidence.finding_key
+        )
+        .exclude(block_reason="")
+        .first()
+    )
+    if review_item:
+        return review_item.block_reason
+    proof = evidence.row_json.get("citation_proof") or {}
+    alignment = proof.get("alignment_status")
+    if alignment in {"unaligned", "ambiguous", "review"}:
+        return f"Citation alignment is {alignment}; technical review is required."
+    return "A complete citation proof is not available for this evidence row."
+
+
+def serialize_source_match(evidence, *, navigation):
+    row = evidence.row_json
+    proof = row.get("citation_proof") or {}
+    mode = source_match_mode(evidence)
+    asset_url = proof_url(evidence.proof_asset) if mode == "exact" else None
+    return {
+        "finding_key": evidence.finding_key,
+        "row": row,
+        "blocked": mode == "blocked",
+        "block_reason": source_match_block_reason(evidence) if mode == "blocked" else "",
+        "proof_asset_url": asset_url,
+        "proof_asset_available": bool(
+            asset_url
+            and (settings.ENGINE_ROOT / "submission" / "review" / evidence.proof_asset).is_file()
+        ),
+        "source_hash": evidence.source_hash,
+        "source_sha256": source_sha256(row, evidence.source_hash),
+        "match": {
+            "mode": mode,
+            "label": {
+                "exact": "VERBATIM · exact",
+                "anchor": "VERBATIM · anchor",
+                "blocked": "blocked",
+            }[mode],
+            "alignment_status": proof.get("alignment_status"),
+            "alignment_score": proof.get("alignment_score"),
+            "page_number": proof.get("page_number"),
+            "anchor": proof.get("anchor"),
+            "article_path": proof.get("article_path") or [],
+            "span_ids": proof.get("span_ids") or [],
+            "bboxes": proof.get("bboxes") or [],
+            "verified_at": proof.get("verified_at"),
+        },
+        "source": {
+            "official_url": row.get("Source URL"),
+            "archived_copy": row.get("archived_copy"),
+            "access_date": row.get("access_date"),
+            "status": row.get("Status"),
+            "status_evidence": row.get("status_evidence"),
+            "status_evidence_record": row.get("status_evidence_record"),
+            "citation_tier": row.get("citation_tier"),
+            "source_artifact_id": row.get("source_artifact_id"),
+        },
+        "review_state": effective_finding_review(evidence.finding_key),
+        "navigation": navigation,
+    }
 
 
 class EvidenceDetailView(APIView):
@@ -298,6 +411,38 @@ class EvidenceDetailView(APIView):
                 "review_state": effective_finding_review(row.finding_key),
             }
         )
+
+
+class SourceMatchView(APIView):
+    def get(self, request, finding_key):
+        snapshot = active_snapshot()
+        evidence = get_object_or_404(
+            EvidenceRow, snapshot=snapshot, finding_key=finding_key
+        )
+        rows = filtered_evidence_rows(snapshot, request.query_params)
+        keys = [row.finding_key for row in rows]
+        try:
+            index = keys.index(finding_key)
+        except ValueError:
+            keys = [finding_key]
+            index = 0
+        navigation = {
+            "position": index + 1,
+            "total": len(keys),
+            "previous_key": keys[index - 1] if index > 0 else None,
+            "next_key": keys[index + 1] if index + 1 < len(keys) else None,
+        }
+        return Response(serialize_source_match(evidence, navigation=navigation))
+
+
+class ProofAssetView(APIView):
+    def get(self, request, filename):
+        if not PROOF_ASSET_PATTERN.fullmatch(filename):
+            raise Http404
+        path = settings.ENGINE_ROOT / "submission" / "review" / "assets" / filename
+        if not path.is_file():
+            raise Http404
+        return FileResponse(path.open("rb"), content_type="image/png")
 
 
 class RunsView(APIView):

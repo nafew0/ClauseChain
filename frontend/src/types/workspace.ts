@@ -168,6 +168,49 @@ export interface EvidenceParams {
   pillar?: string | number
   tag?: string
   status?: string
+  queue?: WorkspaceQueue
+}
+
+export type SourceMatchMode = 'exact' | 'anchor' | 'blocked'
+
+export interface SourceMatchDetail {
+  finding_key: string
+  row: JsonObject
+  blocked: boolean
+  block_reason: string
+  proof_asset_url: string | null
+  proof_asset_available: boolean
+  source_hash: string
+  source_sha256: string
+  match: {
+    mode: SourceMatchMode
+    label: string
+    alignment_status: string | null
+    alignment_score: number | null
+    page_number: number | null
+    anchor: string | null
+    article_path: string[]
+    span_ids: string[]
+    bboxes: JsonValue[]
+    verified_at: string | null
+  }
+  source: {
+    official_url: string | null
+    archived_copy: string | null
+    access_date: string | null
+    status: string | null
+    status_evidence: string | null
+    status_evidence_record: JsonObject | null
+    citation_tier: string | null
+    source_artifact_id: string | null
+  }
+  review_state: FindingReviewState
+  navigation: {
+    position: number
+    total: number
+    previous_key: string | null
+    next_key: string | null
+  }
 }
 
 export interface RunRecord {
