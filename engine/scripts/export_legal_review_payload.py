@@ -108,7 +108,25 @@ def _load_refuter_verdicts() -> tuple[dict[tuple, dict], bool]:
     return verdicts, bool(verdicts) and versions == {"full-indicator-v2"}
 
 
+def _engine_git_sha() -> str:
+    import subprocess
+    try:
+        return subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True,
+                              text=True, timeout=10).stdout.strip()[:40]
+    except Exception:  # noqa: BLE001
+        return "unknown"
+
+
+def _sha256_file(path: str) -> str:
+    import hashlib
+    p = Path(path)
+    return hashlib.sha256(p.read_bytes()).hexdigest() if p.is_file() else ""
+
+
 def build_payload() -> dict:
+    from packages.core.finalization import finding_key as _fkey
+    from packages.core.schemas import MappedFinding
+
     configs = indicator_configs()
     refuter_verdicts, refuter_ok = _load_refuter_verdicts()
     findings: list[dict] = []
@@ -121,7 +139,7 @@ def build_payload() -> dict:
         "Article/section", "Exact source snippet", "Surrounding source context",
         "System mapping rationale", "Official source URL", "Proof location", "Alignment",
         "Status evidence", "Gate warnings", "Legal-review guidance",
-    ] + REVIEW_FIELDS
+    ] + REVIEW_FIELDS + ["Finding key"]
 
     known_rows: list[list] = []
     new_rows: list[list] = []
@@ -140,7 +158,7 @@ def build_payload() -> dict:
                 question(cfg), finding.get("Law Name"), finding.get("Source URL"),
                 _display(finding.get("status_evidence"), 1200),
                 _display(manifest, 5000), legal_comment(indicator_id, cfg, absence=True),
-            ] + review_blanks())
+            ] + review_blanks() + [_fkey(MappedFinding.model_validate(finding))])
             continue
         counters["new" if tag == "NEW" else "known"] += 1
         prefix = "N" if tag == "NEW" else "K"
@@ -167,6 +185,7 @@ def build_payload() -> dict:
                 f"{v.get('persona')}/{v.get('failure_mode', 'none')}: {v.get('reason', '')[:220]}"
                 for v in votes)
             row = row[:14] + [item.get("verdict", "NOT RUN"), reasoning] + row[14:]
+        row = row + [_fkey(MappedFinding.model_validate(finding))]
         (new_rows if tag == "NEW" else known_rows).append(row)
 
     misses = json.loads(Path("data/review/recall_adjudication.json").read_text())
@@ -175,15 +194,19 @@ def build_payload() -> dict:
         "Master citation", "Technical class", "Emitted under", "Proposed verdict",
         "Plain-language system rationale", "Reviewer verdict", "Reviewer reasoning",
         "Reviewer official source URL", "Reviewer name", "Reviewer role", "Review date",
+        "Recall key",
     ]
     recall_rows = []
     for index, miss in enumerate(misses.get("misses", []), 1):
         cfg = configs.get(miss.get("gold_indicator", ""), {})
+        import hashlib as _h
+        recall_key = _h.sha256("\x1f".join([str(miss.get("economy")), str(miss.get("gold_indicator")),
+                                             str(miss.get("act")), str(miss.get("ref"))]).encode()).hexdigest()
         recall_rows.append([
             f"M{index:03d}", miss.get("economy"), miss.get("gold_indicator"), question(cfg),
             miss.get("act"), miss.get("ref"), miss.get("class"),
             ", ".join(miss.get("emitted_under") or []) or "—", miss.get("proposed_verdict"),
-            _recall_rationale(miss), "", "", "", "", "", "",
+            _recall_rationale(miss), "", "", "", "", "", "", recall_key,
         ])
 
     zone_headers = [
@@ -243,10 +266,19 @@ def build_payload() -> dict:
     absence_headers = [
         "Absence ID", "Economy", "Indicator", "Indicator question", "Configured governing instrument",
         "Official source URL", "Status evidence", "Search coverage manifest", "Review guidance",
-    ] + REVIEW_FIELDS
+    ] + REVIEW_FIELDS + ["Finding key"]
+
+    from datetime import datetime, timezone
 
     payload = {
-        "generated_at": "2026-07-16",
+        "schema_version": 2,
+        "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "engine_git_sha": _engine_git_sha(),
+        "artifact_hashes": {
+            "consolidated_json": _sha256_file("submission/consolidated.json"),
+            "decisions_template": _sha256_file("submission/review/decisions.template.json"),
+            "recall_adjudication": _sha256_file("data/review/recall_adjudication.json"),
+        },
         "counts": {
             "new": len(new_rows), "known": len(known_rows), "absence": len(absence_rows),
             "recall": len(recall_rows), "zone3": len(zone_rows), "master": len(master_rows),

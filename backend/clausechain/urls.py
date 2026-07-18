@@ -11,6 +11,7 @@ urlpatterns = [
     path("api/auth/", include("accounts.urls")),
     path("api/admin/", include("accounts.admin_urls")),
     path("api/", include("subscriptions.urls")),
+    path("api/workspace/", include("workspace.urls")),
     # Add your app URLs here:
     # path("api/", include("myapp.urls")),
 ]

@@ -33,9 +33,13 @@ def main() -> int:
     parser.add_argument("--out", default="ui_export.zip")
     args = parser.parse_args()
 
+    from scripts.export_finding_key_map import main as _  # noqa: F401 (ensure importable)
     from scripts.export_legal_review_payload import build_payload
 
     payload = build_payload()
+    import subprocess as _sp
+    _sp.run([sys.executable, "scripts/export_finding_key_map.py", "--out",
+             "/tmp/finding_key_map.json"], check=True)
 
     entries: dict[str, bytes] = {
         "review_payload.json": json.dumps(payload, indent=1, ensure_ascii=False).encode(),
@@ -43,6 +47,7 @@ def main() -> int:
         "decisions.template.json": Path("submission/review/decisions.template.json").read_bytes(),
         "champion_validation.json": Path("reports/champion_validation.json").read_bytes(),
         "runs/cost_report.json": Path("logs/cost_report.json").read_bytes(),
+        "finding_key_map.json": Path("/tmp/finding_key_map.json").read_bytes(),
     }
     for run in RUNS:
         entries[f"runs/{run}/output.json"] = Path(f"outputs/{run}/output.json").read_bytes()

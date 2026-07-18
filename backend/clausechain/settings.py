@@ -162,6 +162,7 @@ INSTALLED_APPS = [
     # Local apps
     "accounts",
     "subscriptions",
+    "workspace.apps.WorkspaceConfig",
 ]
 
 MIDDLEWARE = [
@@ -264,6 +265,19 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 20,
 }
+
+# ClauseChain engine integration.  The backend treats these artifacts as the
+# authoritative review state and never imports engine modules into the Django
+# process.  Production points ENGINE_ROOT at the separately deployed engine.
+ENGINE_ROOT = Path(os.environ.get("ENGINE_ROOT", BASE_DIR.parent / "engine")).resolve()
+ENGINE_PYTHON = os.environ.get(
+    "ENGINE_PYTHON",
+    str(ENGINE_ROOT / ".venv" / "bin" / "python"),
+)
+WORKSPACE_DECISION_WRITER = os.environ.get(
+    "WORKSPACE_DECISION_WRITER",
+    str(ENGINE_ROOT / "scripts" / "apply_decisions.py"),
+)
 
 # Simple JWT
 SIMPLE_JWT = {

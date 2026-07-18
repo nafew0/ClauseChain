@@ -1,0 +1,47 @@
+{
+  "_doc": "Engine-action allowlist (App Dev Plan Rev B #4). The worker executes ONLY these actions, argv built from the template with validated params, shell=False, cwd=ENGINE_ROOT, stdout/stderr captured to the EngineAction row with a SHA-256 of each produced artifact. Anything not listed is refused.",
+  "actions": {
+    "refresh_payload": {
+      "argv": [".venv/bin/python", "scripts/export_ui_bundle.py", "--out", "ui_export.zip"],
+      "params": {},
+      "timeout_s": 600
+    },
+    "apply_decisions": {
+      "argv": [".venv/bin/python", "scripts/apply_decisions.py", "--domain", "{domain}", "--input", "{input_file}"],
+      "params": {
+        "domain": {"enum": ["findings", "recall", "zone3"]},
+        "input_file": {"pattern": "^/srv/clausechain/backend/var/decision_batches/[A-Za-z0-9_.-]+\\.json$"}
+      },
+      "optional_flags": {"expected_sha": ["--expected-sha", "{expected_sha}"], "bundle_after": ["--bundle-after"]},
+      "timeout_s": 60
+    },
+    "export_bundle": {
+      "argv": [".venv/bin/python", "-c", "import sys; sys.path.insert(0,'.'); from scripts.apply_decisions import export_bundle; from pathlib import Path; import json; print(json.dumps(export_bundle(Path('.'))))"],
+      "params": {},
+      "timeout_s": 60
+    },
+    "replay": {
+      "argv": [".venv/bin/python", "scripts/submission_replay.py"],
+      "params": {},
+      "optional_flags": {"bundle": ["--bundle", "{bundle}"]},
+      "param_constraints": {"bundle": {"pattern": "^data/review/bundles/[A-Za-z0-9-]+$"}},
+      "timeout_s": 300
+    },
+    "champion_validate": {
+      "argv": [".venv/bin/python", "scripts/champion_validate.py"],
+      "params": {},
+      "timeout_s": 900
+    },
+    "run_pipeline": {
+      "_doc": "superuser-only at the API layer (G4); spend cap is the backstop",
+      "argv": [".venv/bin/python", "run.py", "--economy", "{economy}", "--pillar", "{pillar}", "--out", "outputs/final_{cc}_p{pillar}"],
+      "params": {
+        "economy": {"enum": ["Singapore", "Malaysia", "Australia"]},
+        "pillar": {"enum": ["6", "7"]},
+        "cc": {"enum": ["si", "ma", "au"]}
+      },
+      "timeout_s": 3600,
+      "exclusive": true
+    }
+  }
+}

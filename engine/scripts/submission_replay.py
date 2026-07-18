@@ -19,10 +19,14 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--candidates", default="submission/consolidated.json")
     parser.add_argument("--decisions", default="data/review/decisions.json")
+    parser.add_argument("--bundle", help="Rev C recovery: a data/review/bundles/<id>/ dir — "
+                        "decisions are read from it instead of the live file")
     parser.add_argument("--graph", default="data/graph_v2.db")
     parser.add_argument("--out", default="submission")
     args = parser.parse_args()
     candidate_path, decision_path = Path(args.candidates), Path(args.decisions)
+    if args.bundle:  # deterministic rebuild from an immutable bundle (server-loss recovery)
+        decision_path = Path(args.bundle) / "decisions.json"
     candidate_bytes, decision_bytes = candidate_path.read_bytes(), decision_path.read_bytes()
     candidates = [MappedFinding.model_validate(r) for r in json.loads(candidate_bytes)["rows"]]
     decision_items = json.loads(decision_bytes)
