@@ -13,6 +13,7 @@ import {
   getEvidence,
   getEvidenceRow,
   getReviewQueue,
+  getReviewContext,
   getRuns,
   getSummary,
   requestCorrection,
@@ -37,6 +38,19 @@ export const workspaceKeys = {
   runs: () => [...workspaceKeys.all, 'runs'] as const,
   history: (domain: 'findings' | 'recall' | 'zone3', key: string) =>
     [...workspaceKeys.all, 'history', domain, key] as const,
+  reviewContext: (queue: WorkspaceQueue, stableKey: string) =>
+    [...workspaceKeys.all, 'review-context', queue, stableKey] as const,
+}
+
+export function useReviewContext(
+  queue: WorkspaceQueue,
+  stableKey: string | null | undefined
+) {
+  return useQuery({
+    queryKey: workspaceKeys.reviewContext(queue, stableKey ?? ''),
+    queryFn: () => getReviewContext(queue, stableKey!),
+    enabled: Boolean(stableKey),
+  })
 }
 
 export function useSummary() {
@@ -153,11 +167,16 @@ export function useDecide() {
       })
       await queryClient.invalidateQueries({ queryKey: workspaceKeys.all })
     },
-    onError: (error, _request, context) => {
+    onError: async (error, _request, context) => {
+      if (axios.isAxiosError(error) && error.response?.status === 409) {
+        await queryClient.invalidateQueries({ queryKey: workspaceKeys.all })
+      }
       if (!context?.toastId) return
       update(context.toastId, {
-        title: 'Review not saved',
-        description: errorMessage(error),
+        title: axios.isAxiosError(error) && error.response?.status === 409 ? 'Review changed—reconsider required' : 'Review not saved',
+        description: axios.isAxiosError(error) && error.response?.status === 409
+          ? `${errorMessage(error)} Your draft note has been preserved; authoritative history was refreshed.`
+          : errorMessage(error),
         variant: 'error',
         duration: 7_000,
       })

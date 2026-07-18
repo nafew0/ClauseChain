@@ -7,11 +7,13 @@ import {
   Search, Bell, Settings, LogOut, Command,
   Wifi, Layers, FileText, Cpu, GitBranch, PackageOpen,
   ShieldCheck, Network, Gauge,
+  ClipboardCheck,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 
 const NAV_ITEMS = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', count: null },
+  { href: '/review', icon: ClipboardCheck, label: 'Review', count: null },
   { href: '/jurisdictions/sg/documents/SG-PDPA-2012', icon: ShieldCheck, label: 'Evidence Audit', count: null },
   { href: '/source-status', icon: Network, label: 'Source Status', count: null },
   { href: '/benchmark', icon: Gauge, label: 'Benchmark', count: null },
@@ -51,7 +53,7 @@ export default function WorkspaceShell({ children, breadcrumbs = [] }: Workspace
         style={{ height: '100vh', position: 'sticky', top: 0 }}
       >
         {/* Brand */}
-        <div className="cc-sidebar-brand flex items-center px-4 pt-6 pb-6">
+        <div className="cc-sidebar-brand flex items-center px-4 pt-5 pb-5">
           <img
             src="/branding/logo.svg"
             alt="ClauseChain"
@@ -78,14 +80,14 @@ export default function WorkspaceShell({ children, breadcrumbs = [] }: Workspace
                 title={label}
                 className={`cc-nav-link flex items-center gap-2.5 px-2.5 py-2 rounded-[10px] text-sm font-medium transition-colors ${
                   active
-                    ? 'bg-cc-teal-50 text-cc-teal-600'
+                    ? 'bg-[#EDF5FC] text-[#14548F]'
                     : 'text-cc-ink-700 hover:bg-cc-ink-100 hover:text-cc-ink-900'
                 }`}
               >
                 <Icon size={16} />
                 <span className="cc-nav-text flex-1">{label}</span>
                 {count != null && (
-                  <span className={`cc-nav-count text-xs tabular-nums ${active ? 'text-cc-teal-600' : 'text-cc-ink-500'}`}>
+                  <span className={`cc-nav-count text-xs tabular-nums ${active ? 'text-[#14548F]' : 'text-cc-ink-500'}`}>
                     {count}
                   </span>
                 )}
@@ -124,7 +126,7 @@ export default function WorkspaceShell({ children, breadcrumbs = [] }: Workspace
           <div className="flex items-center gap-2.5 px-2.5 py-2">
             <div
               className="w-7 h-7 rounded-full grid place-items-center text-white text-xs font-semibold shrink-0"
-              style={{ background: 'linear-gradient(135deg, var(--cc-teal-500), #2563EB)' }}
+              style={{ background: '#1D6FB8' }}
             >
               {initials}
             </div>
@@ -151,8 +153,8 @@ export default function WorkspaceShell({ children, breadcrumbs = [] }: Workspace
           style={{ background: 'rgba(255,255,255,0.85)', backdropFilter: 'saturate(180%) blur(12px)' }}
         >
           {/* Breadcrumbs */}
-          <nav className="cc-breadcrumbs flex items-center gap-1.5 text-[13px] text-cc-ink-500 min-w-0 flex-1">
-            <Link href="/dashboard" className="flex items-center shrink-0 opacity-80 hover:opacity-100 transition-opacity">
+          <nav className="cc-breadcrumbs flex items-center gap-2 text-[13px] text-cc-ink-500 min-w-0 flex-1">
+            <Link href="/dashboard" aria-label="ClauseChain dashboard" className="flex items-center shrink-0 opacity-80 hover:opacity-100 transition-opacity">
               <img
                 src="/branding/logo.svg"
                 alt="ClauseChain"
@@ -161,6 +163,8 @@ export default function WorkspaceShell({ children, breadcrumbs = [] }: Workspace
                 className="h-[1.35rem] w-auto object-contain"
               />
             </Link>
+            <span className="h-5 w-px bg-cc-ink-200" aria-hidden="true" />
+            <img src="/branding/escap-logo.png" alt="United Nations ESCAP" className="h-5 w-auto object-contain" />
             {breadcrumbs.map((crumb, i) => (
               <span key={i} className="flex items-center gap-1.5 min-w-0">
                 <ChevronRight size={12} className="text-cc-ink-300 shrink-0" />
@@ -187,10 +191,10 @@ export default function WorkspaceShell({ children, breadcrumbs = [] }: Workspace
             </span>
           </button>
 
-          <button className="p-2 rounded-lg text-cc-ink-600 hover:bg-cc-ink-100 hover:text-cc-ink-900 transition-colors">
+          <button aria-label="Notifications" className="p-2 rounded-lg text-cc-ink-600 hover:bg-cc-ink-100 hover:text-cc-ink-900 transition-colors">
             <Bell size={16} />
           </button>
-          <Link href="/profile" className="p-2 rounded-lg text-cc-ink-600 hover:bg-cc-ink-100 hover:text-cc-ink-900 transition-colors">
+          <Link href="/profile" aria-label="Profile settings" className="p-2 rounded-lg text-cc-ink-600 hover:bg-cc-ink-100 hover:text-cc-ink-900 transition-colors">
             <Settings size={16} />
           </Link>
         </header>

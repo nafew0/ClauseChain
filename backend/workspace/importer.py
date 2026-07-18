@@ -28,6 +28,10 @@ SHEETS = {
     ReviewItem.Queue.ZONE3: "Zone-3 Scores",
     ReviewItem.Queue.KNOWN: "KNOWN Findings",
 }
+REFERENCE_SHEETS = {
+    "indicator_criteria": "Indicator Criteria",
+    "master_known": "Master Known",
+}
 
 
 class SnapshotImportError(RuntimeError):
@@ -216,7 +220,8 @@ def import_snapshot(artifacts=None, *, keep=5):
     artifacts = artifacts or load_engine_artifacts()
     payload = artifacts["payload"]
     sheets = payload.get("sheets") or {}
-    missing_sheets = [name for name in SHEETS.values() if name not in sheets]
+    required_sheets = [*SHEETS.values(), *REFERENCE_SHEETS.values()]
+    missing_sheets = [name for name in required_sheets if name not in sheets]
     if missing_sheets:
         raise SnapshotImportError(
             f"Review payload is missing sheets: {', '.join(missing_sheets)}"
@@ -226,6 +231,9 @@ def import_snapshot(artifacts=None, *, keep=5):
     fingerprint_payload = dict(payload)
     fingerprint_payload.pop("generated_at", None)
     fingerprint_artifacts["payload"] = fingerprint_payload
+    # A contract salt prevents a pre-D3 snapshot (whose source artifacts are
+    # identical but whose reference sheets were not stored) from being reused.
+    fingerprint_artifacts["workspace_contract"] = "d3-reference-context-v1"
     source_hash = content_hash(fingerprint_artifacts)
     existing = EngineSnapshot.objects.filter(source_hash=source_hash).first()
     if existing:
@@ -245,6 +253,13 @@ def import_snapshot(artifacts=None, *, keep=5):
         queue: list((sheets[name] or {}).get("headers") or [])
         for queue, name in SHEETS.items()
     }
+    reference_json = {
+        key: {
+            "headers": list((sheets[name] or {}).get("headers") or []),
+            "rows": list((sheets[name] or {}).get("rows") or []),
+        }
+        for key, name in REFERENCE_SHEETS.items()
+    }
     generated_at = _parse_generated_at(
         payload.get("generated_at") or payload.get("manifest", {}).get("generated_at")
     )
@@ -262,6 +277,7 @@ def import_snapshot(artifacts=None, *, keep=5):
             engine_git_sha=str(payload.get("engine_git_sha") or ""),
             counts_json=payload.get("counts") or {},
             headers_json=headers_json,
+            reference_json=reference_json,
             refuter_status=str(payload.get("refuter_status") or ""),
             champion_status=str(artifacts["champion"].get("status") or ""),
             champion_json=artifacts["champion"],

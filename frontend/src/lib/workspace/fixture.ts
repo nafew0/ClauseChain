@@ -1,3 +1,4 @@
+import { rowRecord } from '@/types/workspace'
 import type {
   DecisionHistory,
   EvidenceDetail,
@@ -6,6 +7,7 @@ import type {
   PaginatedResponse,
   ReviewQueueParams,
   ReviewQueueResponse,
+  ReviewContext,
   WorkspaceFixture,
   WorkspaceQueue,
 } from '@/types/workspace'
@@ -74,6 +76,108 @@ export async function fixtureReviewQueue(
   }
   const page = pageSlice(results, params.page, params.page_size)
   return { ...source, ...page }
+}
+
+export async function fixtureReviewContext(
+  queue: WorkspaceQueue,
+  stableKey: string
+): Promise<ReviewContext> {
+  const fixture = await loadWorkspaceFixture()
+  const source = fixture.queues[queue]
+  const item = source.results.find((candidate) => candidate.stable_key === stableKey)
+  if (!item) throw new Error(`Fixture review item not found: ${queue}/${stableKey}`)
+  const record = rowRecord(source.headers, item.row)
+  const economy = String(record['Economy'] ?? '')
+  const indicator = String(record['Indicator'] ?? record['Indicator ID'] ?? '')
+  const law = String(
+    record['Law/instrument'] ??
+      record['Configured governing instrument'] ??
+      record['Master act/instrument'] ??
+      ''
+  )
+  const criteriaSheet = fixture.references.indicator_criteria
+  const criteria = criteriaSheet.rows
+    .map((row) => rowRecord(criteriaSheet.headers, row))
+    .find((row) => String(row['Indicator'] ?? '') === indicator) ?? null
+  const knownSheet = fixture.references.master_known
+  const masterKnown = knownSheet.rows
+    .map((row) => rowRecord(knownSheet.headers, row))
+    .filter(
+      (row) =>
+        String(row['Economy'] ?? '') === economy &&
+        String(row['Indicator'] ?? '') === indicator
+    )
+  const related = fixture.evidence
+    .filter(
+      ({ row }) =>
+        (String(row['Economy'] ?? '') === economy &&
+          String(row['Indicator ID'] ?? '') === indicator) ||
+        (Boolean(law) && String(row['Law Name'] ?? '') === law)
+    )
+    .map((evidence) => ({
+      ...evidence,
+      same_law: Boolean(law) && String(evidence.row['Law Name'] ?? '') === law,
+      same_indicator:
+        String(evidence.row['Economy'] ?? '') === economy &&
+        String(evidence.row['Indicator ID'] ?? '') === indicator,
+    }))
+  const zoneSource = fixture.queues.zone3
+  const zoneItem = zoneSource.results.find((candidate) => {
+    const row = rowRecord(zoneSource.headers, candidate.row)
+    return row['Economy'] === economy && row['Indicator'] === indicator
+  })
+  const zoneRecord = zoneItem ? rowRecord(zoneSource.headers, zoneItem.row) : null
+  const evidence = item.finding_key
+    ? fixture.evidence.find((candidate) => candidate.finding_key === item.finding_key)
+    : null
+  const isAbsence = queue === 'absence'
+  const eligible =
+    !fixture.summary.snapshot.stale &&
+    !item.blocked &&
+    (queue === 'recall' ||
+      queue === 'zone3' ||
+      Boolean(
+        evidence &&
+          evidence.row['Status'] === 'in_force' &&
+          evidence.row['status_evidence'] &&
+          evidence.row['status_evidence_record'] &&
+          (isAbsence
+            ? evidence.row['search_coverage_manifest']
+            : evidence.row['citation_proof'])
+      ))
+  return {
+    queue,
+    stable_key: stableKey,
+    snapshot: {
+      id: fixture.summary.snapshot.id,
+      source_hash: fixture.summary.snapshot.source_hash,
+      stale: fixture.summary.snapshot.stale,
+    },
+    indicator_criteria: criteria,
+    master_known: masterKnown,
+    related_evidence: related,
+    zone3: zoneItem && zoneRecord
+      ? {
+          score_key: zoneItem.stable_key,
+          deterministic_score: Number(zoneRecord['Deterministic score'] ?? 0),
+          effective_score: Number(zoneRecord['Deterministic score'] ?? 0),
+          source: 'deterministic',
+          reviewer_name: null,
+          reviewed_at: null,
+        }
+      : null,
+    approval_eligibility: {
+      eligible,
+      reason: eligible ? '' : item.block_reason || 'Currentness, proof, or coverage is incomplete.',
+    },
+    score_semantics: {
+      level: 'indicator',
+      finding_has_independent_score: false,
+      allowed_scores: [0, 0.5, 1],
+      explanation:
+        'A finding is an evidence row. The 0, 0.5, or 1 score is decided once at indicator level, using all approved evidence and the methodology.',
+    },
+  }
 }
 
 function equalFilter(actual: unknown, expected: string | undefined) {

@@ -37,6 +37,7 @@ class EngineSnapshot(models.Model):
     engine_git_sha = models.CharField(max_length=64, blank=True, default="")
     counts_json = models.JSONField(default=dict)
     headers_json = models.JSONField(default=dict)
+    reference_json = models.JSONField(default=dict)
     refuter_status = models.TextField(blank=True, default="")
     champion_status = models.CharField(max_length=16, blank=True, default="")
     champion_json = models.JSONField(default=dict)

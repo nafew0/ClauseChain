@@ -124,7 +124,11 @@ def main():
                 "source_hash": content_hash(row),
             }
             if queue in ("new", "known", "absence"):
-                item.update(review_state=empty_review, latest_correction=None)
+                item.update(
+                    review_state=empty_review,
+                    latest_correction=None,
+                    approval_eligibility={"eligible": not bool(reason), "reason": reason},
+                )
             else:
                 item.update(latest_decision=None)
             results.append(item)
@@ -190,6 +194,10 @@ def main():
                 "cost": run_cost(envelope),
                 "source_hash": content_hash(envelope),
             } for name, envelope in runs.items()]
+        },
+        "references": {
+            "indicator_criteria": payload["sheets"]["Indicator Criteria"],
+            "master_known": payload["sheets"]["Master Known"],
         },
     }
     TARGET.parent.mkdir(parents=True, exist_ok=True)

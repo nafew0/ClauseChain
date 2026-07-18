@@ -8,6 +8,7 @@ from .views import (
     FindingBulkDecisionView,
     FindingDecisionView,
     RecallDecisionView,
+    ReviewContextView,
     ReviewQueueView,
     RunsView,
     SummaryView,
@@ -20,6 +21,11 @@ app_name = "workspace"
 urlpatterns = [
     path("summary/", SummaryView.as_view(), name="summary"),
     path("review/<str:queue>/", ReviewQueueView.as_view(), name="review_queue"),
+    path(
+        "review-context/<str:queue>/<str:stable_key>/",
+        ReviewContextView.as_view(),
+        name="review_context",
+    ),
     path("evidence/", EvidenceListView.as_view(), name="evidence"),
     path(
         "evidence/<str:finding_key>/",

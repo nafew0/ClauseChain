@@ -96,6 +96,7 @@ export interface ReviewItem {
   review_state?: FindingReviewState
   latest_correction?: LatestCorrection | null
   latest_decision?: DomainDecision | null
+  approval_eligibility?: { eligible: boolean; reason: string }
 }
 
 export interface PaginatedResponse<T> {
@@ -128,6 +129,35 @@ export interface EvidenceRow {
 
 export interface EvidenceDetail extends EvidenceRow {
   review_state: FindingReviewState
+}
+
+export interface RelatedEvidence extends Omit<EvidenceRow, 'source_hash'> {
+  same_law: boolean
+  same_indicator: boolean
+}
+
+export interface ReviewContext {
+  queue: WorkspaceQueue
+  stable_key: string
+  snapshot: { id: string; source_hash: string; stale: boolean }
+  indicator_criteria: JsonObject | null
+  master_known: JsonObject[]
+  related_evidence: RelatedEvidence[]
+  zone3: {
+    score_key: string
+    deterministic_score: number | null
+    effective_score: number | null
+    source: 'deterministic' | 'reviewer'
+    reviewer_name: string | null
+    reviewed_at: string | null
+  } | null
+  approval_eligibility: { eligible: boolean; reason: string }
+  score_semantics: {
+    level: 'indicator'
+    finding_has_independent_score: false
+    allowed_scores: Zone3Score[]
+    explanation: string
+  }
 }
 
 export interface EvidenceParams {
@@ -269,6 +299,10 @@ export interface WorkspaceFixture {
   queues: Record<WorkspaceQueue, ReviewQueueResponse>
   evidence: EvidenceRow[]
   runs: RunsResponse
+  references: {
+    indicator_criteria: { headers: string[]; rows: (JsonValue[] | JsonObject)[] }
+    master_known: { headers: string[]; rows: (JsonValue[] | JsonObject)[] }
+  }
 }
 
 export type DecideRequest =

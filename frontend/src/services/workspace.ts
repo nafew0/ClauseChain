@@ -5,6 +5,7 @@ import {
   fixtureEvidence,
   fixtureEvidenceRow,
   fixtureReviewQueue,
+  fixtureReviewContext,
   loadWorkspaceFixture,
   rejectFixtureWrite,
 } from '@/lib/workspace/fixture'
@@ -24,6 +25,7 @@ import type {
   RecallDecisionInput,
   ReviewQueueParams,
   ReviewQueueResponse,
+  ReviewContext,
   RunsResponse,
   WorkspaceQueue,
   WorkspaceSummary,
@@ -36,6 +38,17 @@ function queryParams<T extends object>(values: T) {
       .filter(([, value]) => value !== undefined && value !== null && value !== '')
       .map(([key, value]) => [key, typeof value === 'boolean' ? (value ? '1' : '0') : value])
   )
+}
+
+export async function getReviewContext(
+  queue: WorkspaceQueue,
+  stableKey: string
+): Promise<ReviewContext> {
+  if (WORKSPACE_FIXTURE_MODE) return fixtureReviewContext(queue, stableKey)
+  const { data } = await api.get<ReviewContext>(
+    `/workspace/review-context/${queue}/${stableKey}/`
+  )
+  return data
 }
 
 export async function getSummary(): Promise<WorkspaceSummary> {

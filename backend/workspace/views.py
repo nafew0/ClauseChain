@@ -98,6 +98,11 @@ def review_item_payload(item):
         ReviewItem.Queue.ABSENCE,
     ):
         result["review_state"] = effective_finding_review(item.finding_key)
+        eligibility_reason = finding_ineligibility(item, item.snapshot)
+        result["approval_eligibility"] = {
+            "eligible": not bool(eligibility_reason),
+            "reason": eligibility_reason,
+        }
         correction = (
             CorrectionRequest.objects.filter(finding_key=item.finding_key)
             .order_by("-requested_at")
@@ -453,6 +458,177 @@ def sheet_cell(snapshot, queue, row, header):
     return row[index] if index < len(row) else None
 
 
+def sheet_record(sheet, row):
+    """Return a sheet row as a named record without changing the stored snapshot."""
+    if isinstance(row, dict):
+        return row
+    return dict(zip(sheet.get("headers") or [], row))
+
+
+def finding_ineligibility(item, snapshot):
+    """Mechanical approval gate shared by individual and bulk decisions."""
+    if snapshot.stale:
+        return "The active snapshot is stale. Refresh before recording a decision."
+    if item.blocked:
+        return item.block_reason or "The evidence is technically blocked."
+
+    evidence = EvidenceRow.objects.filter(
+        snapshot=snapshot, finding_key=item.finding_key
+    ).first()
+    if not evidence:
+        return "The finding has no consolidated evidence row."
+    if evidence.blocked:
+        return "The consolidated evidence row is technically blocked."
+    row = evidence.row_json
+    if str(row.get("Status") or "").strip() != "in_force":
+        return "The source is not verified as in force."
+    if not row.get("status_evidence") or not row.get("status_evidence_record"):
+        return "The finding lacks complete currentness evidence."
+    status_record = row.get("status_evidence_record") or {}
+    if status_record.get("conflicting"):
+        return "The currentness evidence is conflicting."
+
+    if item.queue == ReviewItem.Queue.ABSENCE:
+        manifest = row.get("search_coverage_manifest")
+        if not isinstance(manifest, dict):
+            return "The absence conclusion lacks a search-coverage manifest."
+        if manifest.get("unresolved_failures"):
+            return "The absence search has unresolved acquisition failures."
+        if not manifest.get("portals") or not manifest.get("instruments"):
+            return "The absence search coverage is incomplete."
+        instrument_results = manifest.get("instrument_results") or []
+        if any(
+            not result.get("evidence_eligible")
+            or result.get("legal_status") != "in_force"
+            for result in instrument_results
+        ):
+            return "The absence coverage includes an ineligible or non-current instrument."
+    else:
+        proof = row.get("citation_proof")
+        if not isinstance(proof, dict):
+            return "The finding lacks a complete citation proof."
+        if proof.get("alignment_status") in ("unaligned", "ambiguous", "review", None):
+            return "The source citation is unresolved or ambiguously aligned."
+        failed_gates = [
+            gate.get("gate_id")
+            for gate in proof.get("gate_results") or []
+            if gate.get("status") != "PASS"
+        ]
+        if failed_gates:
+            return f"Evidence gates are not passing: {', '.join(filter(None, failed_gates))}."
+    return ""
+
+
+class ReviewContextView(APIView):
+    def get(self, request, queue, stable_key):
+        if queue not in ReviewItem.Queue.values:
+            raise ValidationError({"queue": "Unknown review queue."})
+        snapshot = active_snapshot()
+        item = get_object_or_404(
+            ReviewItem, snapshot=snapshot, queue=queue, stable_key=stable_key
+        )
+        item_record = sheet_record(
+            {"headers": snapshot.headers_json.get(queue, [])}, item.row_json
+        )
+        economy = str(item_record.get("Economy") or "")
+        indicator = str(item_record.get("Indicator") or item_record.get("Indicator ID") or "")
+        law = str(
+            item_record.get("Law/instrument")
+            or item_record.get("Configured governing instrument")
+            or item_record.get("Master act/instrument")
+            or ""
+        )
+
+        criteria_sheet = snapshot.reference_json.get("indicator_criteria") or {}
+        criteria = [
+            sheet_record(criteria_sheet, row)
+            for row in criteria_sheet.get("rows") or []
+            if str(sheet_record(criteria_sheet, row).get("Indicator") or "") == indicator
+        ]
+        master_sheet = snapshot.reference_json.get("master_known") or {}
+        master_known = [
+            sheet_record(master_sheet, row)
+            for row in master_sheet.get("rows") or []
+            if str(sheet_record(master_sheet, row).get("Economy") or "") == economy
+            and str(sheet_record(master_sheet, row).get("Indicator") or "") == indicator
+        ]
+
+        related = []
+        for evidence in snapshot.evidence_rows.all():
+            row = evidence.row_json
+            same_indicator = (
+                str(row.get("Economy") or "") == economy
+                and str(row.get("Indicator ID") or "") == indicator
+            )
+            same_law = bool(law) and str(row.get("Law Name") or "") == law
+            if same_indicator or same_law:
+                related.append(
+                    {
+                        "finding_key": evidence.finding_key,
+                        "row": row,
+                        "blocked": evidence.blocked,
+                        "proof_asset_url": proof_url(evidence.proof_asset),
+                        "same_law": same_law,
+                        "same_indicator": same_indicator,
+                    }
+                )
+
+        zone_item = None
+        for candidate in snapshot.review_items.filter(queue=ReviewItem.Queue.ZONE3):
+            record = sheet_record(
+                {"headers": snapshot.headers_json.get(ReviewItem.Queue.ZONE3, [])},
+                candidate.row_json,
+            )
+            if record.get("Economy") == economy and record.get("Indicator") == indicator:
+                zone_item = candidate
+                break
+        zone3 = None
+        if zone_item:
+            zone_record = sheet_record(
+                {"headers": snapshot.headers_json.get(ReviewItem.Queue.ZONE3, [])},
+                zone_item.row_json,
+            )
+            latest = latest_for(Zone3Decision, "score_key", zone_item.stable_key)
+            zone3 = {
+                "score_key": zone_item.stable_key,
+                "deterministic_score": zone_record.get("Deterministic score"),
+                "effective_score": float(latest.score) if latest else zone_record.get("Deterministic score"),
+                "source": "reviewer" if latest else "deterministic",
+                "reviewer_name": latest.reviewer_name if latest else None,
+                "reviewed_at": latest.reviewed_at.isoformat() if latest else None,
+            }
+
+        return Response(
+            {
+                "queue": queue,
+                "stable_key": stable_key,
+                "snapshot": {
+                    "id": str(snapshot.pk),
+                    "source_hash": snapshot.source_hash,
+                    "stale": snapshot.stale,
+                },
+                "indicator_criteria": criteria[0] if criteria else None,
+                "master_known": master_known,
+                "related_evidence": related,
+                "zone3": zone3,
+                "approval_eligibility": {
+                    "eligible": not bool(finding_ineligibility(item, snapshot))
+                    if queue in (ReviewItem.Queue.NEW, ReviewItem.Queue.KNOWN, ReviewItem.Queue.ABSENCE)
+                    else not snapshot.stale and not item.blocked,
+                    "reason": finding_ineligibility(item, snapshot)
+                    if queue in (ReviewItem.Queue.NEW, ReviewItem.Queue.KNOWN, ReviewItem.Queue.ABSENCE)
+                    else (item.block_reason if item.blocked else ("The active snapshot is stale." if snapshot.stale else "")),
+                },
+                "score_semantics": {
+                    "level": "indicator",
+                    "finding_has_independent_score": False,
+                    "allowed_scores": [0, 0.5, 1],
+                    "explanation": "A finding is an evidence row. The 0, 0.5, or 1 score is decided once at indicator level, using all approved evidence and the methodology.",
+                },
+            }
+        )
+
+
 class FindingDecisionView(APIView):
     def post(self, request):
         serializer = FindingDecisionWriteSerializer(data=request.data)
@@ -460,15 +636,19 @@ class FindingDecisionView(APIView):
         data = serializer.validated_data
         stage = data["review_stage"]
         require_role(request.user, stage)
+        snapshot = active_snapshot()
         item = get_object_or_404(
             ReviewItem,
-            snapshot=active_snapshot(),
+            snapshot=snapshot,
             queue=data["queue"],
             finding_key=data["finding_key"],
         )
-        if item.blocked and data["decision"] == FindingDecision.Verdict.APPROVED:
+        if snapshot.stale:
+            raise ValidationError({"snapshot": "The active snapshot is stale."})
+        reason = finding_ineligibility(item, snapshot)
+        if reason and data["decision"] == FindingDecision.Verdict.APPROVED:
             raise ValidationError(
-                {"decision": "A technically blocked finding cannot be approved."}
+                {"decision": reason}
             )
 
         reviewer_name, reviewer_id = reviewer_identity(request.user)
@@ -563,10 +743,9 @@ def validate_distinct_stage_reviewer(finding_key, stage, decision, user, effecti
 
 
 def bulk_ineligibility(item, snapshot):
-    if snapshot.stale:
-        return "The active snapshot is stale."
-    if item.blocked:
-        return item.block_reason or "The finding is technically blocked."
+    reason = finding_ineligibility(item, snapshot)
+    if reason:
+        return reason
     headers = snapshot.headers_json.get(item.queue, [])
     if isinstance(item.row_json, list) and "Gate warnings" in headers:
         index = headers.index("Gate warnings")
@@ -575,16 +754,6 @@ def bulk_ineligibility(item, snapshot):
         ).strip()
         if warning and warning.casefold() not in ("none", "—"):
             return "The finding has gate warnings and requires individual review."
-    evidence = EvidenceRow.objects.filter(
-        snapshot=snapshot, finding_key=item.finding_key
-    ).first()
-    if not evidence:
-        return "The finding has no consolidated evidence row."
-    row = evidence.row_json
-    if str(row.get("Status") or "") != "in_force" or not row.get("status_evidence"):
-        return "The finding lacks verified in-force status evidence."
-    if not row.get("citation_proof"):
-        return "The finding lacks a complete citation proof."
     return ""
 
 
@@ -708,12 +877,17 @@ class RecallDecisionView(APIView):
         serializer = RecallDecisionWriteSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
-        get_object_or_404(
+        snapshot = active_snapshot()
+        if snapshot.stale:
+            raise ValidationError({"snapshot": "The active snapshot is stale."})
+        item = get_object_or_404(
             ReviewItem,
-            snapshot=active_snapshot(),
+            snapshot=snapshot,
             queue=ReviewItem.Queue.RECALL,
             stable_key=data["recall_key"],
         )
+        if item.blocked:
+            raise ValidationError({"verdict": item.block_reason or "The recall item is blocked."})
         reviewer_name, reviewer_id = reviewer_identity(request.user)
         with decision_domain_lock("recall"):
             latest = latest_for(RecallDecision, "recall_key", data["recall_key"])
@@ -759,12 +933,17 @@ class Zone3DecisionView(APIView):
         serializer = Zone3DecisionWriteSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
+        snapshot = active_snapshot()
+        if snapshot.stale:
+            raise ValidationError({"snapshot": "The active snapshot is stale."})
         item = get_object_or_404(
             ReviewItem,
-            snapshot=active_snapshot(),
+            snapshot=snapshot,
             queue=ReviewItem.Queue.ZONE3,
             stable_key=data["score_key"],
         )
+        if item.blocked:
+            raise ValidationError({"score": item.block_reason or "The score item is blocked."})
         reviewer_name, reviewer_id = reviewer_identity(request.user)
         with decision_domain_lock("zone3"):
             latest = latest_for(Zone3Decision, "score_key", data["score_key"])
@@ -823,9 +1002,12 @@ class CorrectionRequestView(APIView):
             or has_review_role(request.user, "status")
         ):
             raise PermissionDenied("A reviewer role is required.")
+        snapshot = active_snapshot()
+        if snapshot.stale:
+            raise ValidationError({"snapshot": "The active snapshot is stale."})
         get_object_or_404(
             ReviewItem,
-            snapshot=active_snapshot(),
+            snapshot=snapshot,
             queue=data["queue"],
             finding_key=data["finding_key"],
         )

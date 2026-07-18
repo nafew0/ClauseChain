@@ -35,6 +35,13 @@ class FindingDecisionWriteSerializer(ConcurrencySerializer):
                     required_check: f"{required_check} is required for an approved {stage} review."
                 }
             )
+        if (
+            attrs["decision"] == FindingDecision.Verdict.REJECTED
+            and not attrs["note"].strip()
+        ):
+            raise serializers.ValidationError(
+                {"note": "A rejection requires a written reason."}
+            )
         return attrs
 
 
@@ -92,6 +99,16 @@ class RecallDecisionWriteSerializer(ConcurrencySerializer):
     official_source_url = serializers.URLField(
         required=False, allow_blank=True, default=""
     )
+
+    def validate(self, attrs):
+        if (
+            attrs["verdict"] == RecallDecision.Verdict.NEEDS_CORRECTION
+            and not attrs["reasoning"].strip()
+        ):
+            raise serializers.ValidationError(
+                {"reasoning": "A correction verdict requires a written reason."}
+            )
+        return attrs
 
 
 class Zone3DecisionWriteSerializer(ConcurrencySerializer):

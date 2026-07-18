@@ -92,6 +92,20 @@ def minimal_artifacts():
             "Article / Section": item["article"],
             "Discovery Tag": "KNOWN",
             "Status": "in_force",
+            "status_evidence": "Official current compilation",
+            "status_evidence_record": {"status": "in_force", "conflicting": False},
+            "citation_proof": (
+                None if item["is_absence"] else {"alignment_status": "exact"}
+            ),
+            "search_coverage_manifest": (
+                {
+                    "portals": ["Official register"],
+                    "instruments": [item["law"]],
+                    "unresolved_failures": [],
+                }
+                if item["is_absence"]
+                else None
+            ),
         }
         for item in key_rows
     ]
@@ -113,6 +127,14 @@ def minimal_artifacts():
                     "rows": [["Singapore", "P7-I3"]],
                 },
                 "KNOWN Findings": {"headers": common_headers, "rows": [known_row]},
+                "Indicator Criteria": {
+                    "headers": ["Indicator", "Legal question", "Scoring criteria", "Exclusions", "Polarity"],
+                    "rows": [["P6-I4", "Are transfers conditional?", '{"1":"Yes","0":"No"}', "[]", "positive"]],
+                },
+                "Master Known": {
+                    "headers": ["Economy", "Indicator", "Methodology score", "Act/instrument", "Article references"],
+                    "rows": [["Singapore", "P6-I4", "1", "Privacy Act", "s. 26"]],
+                },
             },
         },
         "key_map": {"rows": key_rows},
@@ -131,6 +153,9 @@ class SnapshotImportTests(TestCase):
         self.assertEqual(snapshot.review_items.count(), 5)
         self.assertEqual(snapshot.evidence_rows.count(), 3)
         self.assertEqual(snapshot.run_records.count(), 6)
+        self.assertEqual(
+            snapshot.reference_json["indicator_criteria"]["rows"][0][0], "P6-I4"
+        )
         self.assertFalse(
             snapshot.review_items.get(queue=ReviewItem.Queue.ABSENCE).blocked
         )
@@ -211,6 +236,12 @@ class WorkspaceApiTests(TestCase):
         self.assertEqual(
             self.client.get("/api/workspace/runs/").data["results"].__len__(), 6
         )
+        context = self.client.get(f"/api/workspace/review-context/new/{'1' * 64}/")
+        self.assertEqual(context.status_code, 200)
+        self.assertEqual(context.data["indicator_criteria"]["Indicator"], "P6-I4")
+        self.assertEqual(context.data["master_known"][0]["Act/instrument"], "Privacy Act")
+        self.assertEqual(context.data["score_semantics"]["level"], "indicator")
+        self.assertTrue(context.data["approval_eligibility"]["eligible"])
 
     @patch("workspace.views.apply_authoritative_decision", return_value=RECEIPT)
     def test_staged_reviews_require_distinct_users_and_are_append_only(self, writer):
@@ -415,7 +446,55 @@ class WorkspaceApiTests(TestCase):
         writer.assert_not_called()
 
     @patch("workspace.views.apply_authoritative_decision", return_value=RECEIPT)
+    def test_rejection_requires_reason_and_stale_snapshot_blocks_writes(self, writer):
+        self.authenticate(self.citation)
+        payload = {
+            "finding_key": "1" * 64,
+            "queue": "new",
+            "review_stage": "citation",
+            "decision": "rejected",
+            "expected_latest_decision_id": None,
+        }
+        response = self.client.post(
+            "/api/workspace/decisions/findings/", payload, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("note", response.data)
+        self.snapshot.stale = True
+        self.snapshot.save(update_fields=["stale"])
+        payload.update(decision="approved", citation_checked=True, note="")
+        response = self.client.post(
+            "/api/workspace/decisions/findings/", payload, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+        writer.assert_not_called()
+
+    @patch("workspace.views.apply_authoritative_decision", return_value=RECEIPT)
+    def test_individual_approval_fails_closed_on_missing_proof(self, writer):
+        evidence = EvidenceRow.objects.get(finding_key="1" * 64)
+        evidence.row_json = {**evidence.row_json, "citation_proof": None}
+        evidence.save(update_fields=["row_json"])
+        self.authenticate(self.citation)
+        response = self.client.post(
+            "/api/workspace/decisions/findings/",
+            {
+                "finding_key": "1" * 64,
+                "queue": "new",
+                "review_stage": "citation",
+                "decision": "approved",
+                "citation_checked": True,
+                "expected_latest_decision_id": None,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        writer.assert_not_called()
+
+    @patch("workspace.views.apply_authoritative_decision", return_value=RECEIPT)
     def test_bulk_known_approval_fails_closed_on_incomplete_proof(self, writer):
+        evidence = EvidenceRow.objects.get(finding_key="2" * 64)
+        evidence.row_json = {**evidence.row_json, "citation_proof": None}
+        evidence.save(update_fields=["row_json"])
         self.authenticate(self.citation)
         response = self.client.post(
             "/api/workspace/decisions/findings/bulk/",
