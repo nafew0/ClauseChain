@@ -2,7 +2,6 @@ import fcntl
 import json
 import os
 import subprocess
-import tempfile
 from contextlib import contextmanager
 from pathlib import Path
 
@@ -28,7 +27,9 @@ def decision_domain_lock(domain):
         .sha256(str(settings.ENGINE_ROOT).encode("utf-8"))
         .hexdigest()[:12]
     )
-    lock_path = Path(tempfile.gettempdir()) / f"clausechain-{root_hash}-{domain}.lock"
+    lock_dir = Path(settings.WORKSPACE_LOCK_DIR)
+    lock_dir.mkdir(parents=True, exist_ok=True)
+    lock_path = lock_dir / f"clausechain-{root_hash}-{domain}.lock"
     with lock_path.open("a+") as lock_file:
         fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
         try:

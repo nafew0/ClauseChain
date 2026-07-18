@@ -278,6 +278,9 @@ WORKSPACE_DECISION_WRITER = os.environ.get(
     "WORKSPACE_DECISION_WRITER",
     str(ENGINE_ROOT / "scripts" / "apply_decisions.py"),
 )
+WORKSPACE_LOCK_DIR = Path(
+    os.environ.get("WORKSPACE_LOCK_DIR", BASE_DIR / "var" / "locks")
+).resolve()
 
 # Simple JWT
 SIMPLE_JWT = {

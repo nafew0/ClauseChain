@@ -9,6 +9,7 @@
   },
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/assert-no-production-fixtures.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"

@@ -39,6 +39,7 @@ APP_ORIGIN=https://clausechain.zai.bd
 PUBLIC_APP_URL=https://clausechain.zai.bd
 TRUST_X_FORWARDED_PROTO=1
 ENGINE_ROOT=/srv/clausechain/engine
+WORKSPACE_LOCK_DIR=/srv/clausechain/backend/var/locks
 ```
 `/srv/clausechain/frontend/.env`
 ```
@@ -56,6 +57,7 @@ venv/bin/python manage.py collectstatic --noinput
 cd /srv/clausechain/frontend && npm ci && npm run build
 # Code stays read-only; only writable paths get www-data ownership:
 sudo chown -R www-data:www-data /srv/clausechain/backend/{db.sqlite3,media,staticfiles} 2>/dev/null || true
+sudo install -d -o www-data -g www-data -m 0750 /srv/clausechain/backend/var/locks
 sudo chown -R www-data:www-data /srv/clausechain/engine/{data,outputs,logs,submission,reports}
 ```
 

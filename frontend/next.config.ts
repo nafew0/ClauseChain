@@ -2,6 +2,11 @@ import type { NextConfig } from 'next'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const rawBackendUrl = process.env.BACKEND_URL?.trim()
+const workspaceFixtureMode = process.env.NEXT_PUBLIC_WORKSPACE_FIXTURE_MODE?.trim() === '1'
+
+if (!isDevelopment && workspaceFixtureMode) {
+  throw new Error('NEXT_PUBLIC_WORKSPACE_FIXTURE_MODE is development-only and cannot be built for production.')
+}
 
 if (!isDevelopment && !rawBackendUrl) {
   throw new Error('BACKEND_URL must be set in production.')

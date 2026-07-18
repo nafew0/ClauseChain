@@ -496,16 +496,17 @@ class FindingDecisionView(APIView):
             validate_distinct_stage_reviewer(
                 data["finding_key"], stage, data["decision"], request.user, effective
             )
+            engine_decisions = engine_finding_decisions(
+                data["finding_key"],
+                effective,
+                reviewer_name=reviewer_name,
+                reviewer_role=stage,
+                reviewed_at=reviewed_at,
+                note=data["note"],
+            )
             receipt = writer_or_503(
                 "findings",
-                engine_finding_decisions(
-                    data["finding_key"],
-                    effective,
-                    reviewer_name=reviewer_name,
-                    reviewer_role=stage,
-                    reviewed_at=reviewed_at,
-                    note=data["note"],
-                ),
+                engine_decisions,
             )
             row = FindingDecision.objects.create(
                 **data,
@@ -523,6 +524,10 @@ class FindingDecisionView(APIView):
                 "authoritative_file_hash": receipt["sha256"],
                 "review_state": effective_finding_review(row.finding_key),
                 "reviewer_id": reviewer_id,
+                "outcome": (
+                    "engine_decision_written" if engine_decisions else "stage_recorded"
+                ),
+                "engine_exported": bool(engine_decisions),
             },
             status=status.HTTP_201_CREATED,
         )
@@ -684,6 +689,14 @@ class FindingBulkDecisionView(APIView):
                 "decision_ids": [str(row.pk) for row in rows],
                 "authoritative_file_hash": receipt["sha256"],
                 "reviewer_id": reviewer_id,
+                "outcome": (
+                    "engine_decision_written" if engine_decisions else "stage_recorded"
+                ),
+                "engine_exported": bool(engine_decisions),
+                "review_states": {
+                    row.finding_key: effective_finding_review(row.finding_key)
+                    for row in rows
+                },
             },
             status=status.HTTP_201_CREATED,
         )

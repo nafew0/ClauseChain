@@ -24,6 +24,19 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+### Workspace data modes
+
+The workspace uses the authenticated Django API by default. For API-off frontend work only,
+regenerate the fixture from the current root-level `ui_export.zip`, then opt in explicitly:
+
+```bash
+python3 scripts/build-workspace-fixture.py
+NEXT_PUBLIC_WORKSPACE_FIXTURE_MODE=1 npm run dev
+```
+
+Fixture mode is read-only and is refused by `npm run build`; API errors never silently fall
+back to fixture data.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

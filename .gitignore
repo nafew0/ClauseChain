@@ -43,6 +43,7 @@ yarn-error.log*
 *.pid
 *.seed
 *.pid.lock
+backend/var/
 
 # OS
 .DS_Store

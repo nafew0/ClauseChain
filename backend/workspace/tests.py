@@ -16,6 +16,7 @@ from .importer import SnapshotImportError, import_snapshot
 from .decision_writer import (
     DecisionWriterConflict,
     apply_authoritative_decision,
+    decision_domain_lock,
 )
 from .keys import recall_key, zone3_key
 from .models import (
@@ -229,6 +230,8 @@ class WorkspaceApiTests(TestCase):
             format="json",
         )
         self.assertEqual(citation_response.status_code, 201, citation_response.data)
+        self.assertEqual(citation_response.data["outcome"], "stage_recorded")
+        self.assertFalse(citation_response.data["engine_exported"])
         citation_row = FindingDecision.objects.get()
         self.assertIsNone(citation_response.data["review_state"]["decision"])
         with self.assertRaises(DjangoValidationError):
@@ -248,6 +251,8 @@ class WorkspaceApiTests(TestCase):
             format="json",
         )
         self.assertEqual(mapping_response.status_code, 201, mapping_response.data)
+        self.assertEqual(mapping_response.data["outcome"], "engine_decision_written")
+        self.assertTrue(mapping_response.data["engine_exported"])
         self.assertEqual(mapping_response.data["review_state"]["decision"], "approved")
         self.assertEqual(FindingDecision.objects.count(), 2)
         self.assertEqual(writer.call_count, 2)
@@ -461,6 +466,9 @@ class WorkspaceApiTests(TestCase):
             format="json",
         )
         self.assertEqual(response.status_code, 201, response.data)
+        self.assertEqual(response.data["outcome"], "engine_decision_written")
+        self.assertTrue(response.data["engine_exported"])
+        self.assertEqual(response.data["review_states"]["2" * 64]["decision"], "approved")
         self.assertEqual(FindingDecision.objects.count(), 2)
         engine_batch = writer.call_args.args[1]
         self.assertEqual(len(engine_batch), 1)
@@ -549,6 +557,14 @@ class AppendOnlyModelTests(TestCase):
 
 
 class EngineWriterContractTests(TestCase):
+    def test_app_lock_uses_configured_persistent_directory(self):
+        with tempfile.TemporaryDirectory() as temp_dir, override_settings(
+            WORKSPACE_LOCK_DIR=Path(temp_dir) / "locks"
+        ):
+            with decision_domain_lock("findings"):
+                lock_files = list((Path(temp_dir) / "locks").glob("*.lock"))
+                self.assertEqual(len(lock_files), 1)
+
     def test_real_w2_recall_writer_round_trip_and_sha_conflict(self):
         writer = settings.WORKSPACE_DECISION_WRITER
         engine_python = settings.ENGINE_PYTHON

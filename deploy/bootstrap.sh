@@ -38,6 +38,7 @@ cd "$APP_DIR/backend"
 python3.12 -m venv venv
 venv/bin/pip install -U pip
 venv/bin/pip install -r requirements.txt gunicorn
+sudo install -d -o www-data -g www-data -m 0750 "$APP_DIR/backend/var/locks"
 
 echo "== frontend build (run after frontend/.env exists) =="
 echo "   cd $APP_DIR/frontend && npm ci && npm run build"
