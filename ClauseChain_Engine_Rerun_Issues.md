@@ -42,3 +42,10 @@ findings (incl. ChatGPT deep-research results) as they arrive.
 - [ ] Re-upload window: 20 Jul Bangkok — final artifacts regenerate via submission_replay
 
 6. **Multilingual handling** (user, Act 709 check): MY amendment A1727 is Malay-primary — anchor parse must handle "Seksyen 12A" patterns; snippet policy for non-English sources = original-language verbatim + unofficial English in the appended column. D9 economies (CN/RU/TH/LA/MN/ID) inherit: BGE-M3 cross-lingual retrieval, native-text mapping, per-language section grammars via extra_section_patterns.
+
+7. **Deep-research P6 candidates (user ChatGPT report, triaged by Fable):**
+   - ACQUIRE: SG PDP Regulations 2021 (S 63/2021) regs 10-12 -> P6-I4 (subsidiary machinery under s. 26); SSO /SL/ route
+   - ACQUIRE: NSW HRIP Act 2002 Sch 1 cl 14 (HPP 14) + Vic Health Records Act 2001 HPP 9 -> AU P6-I4 state conditional-transfer (also explains AU P6-I1/I2 gold=0.5); needs whitelist + connectors for legislation.nsw.gov.au / legislation.vic.gov.au (state-level, mark in Notes)
+   - ANCHOR: MY A1727 s. 12 (deletes s. 129(1)/(3)(h)/(4) whitelist gate; commenced 1 Apr 2025, P.U.(B) 522/2024) -> P6-I4 regime-change evidence + status fact
+   - CURATED 6.5 rows (engine does not extract; manual, human-approved): CPTPP Art 14.11, RCEP Art 12.15, DEPA 4.3, SADEA Art 23, KSDPA 14.14, UKSDEA 8.61-F, AUKFTA 14.10 per economy with official treaty URLs
+   - CONFIRMS: our 4 approved absences (SG/MY/AU I1-I3 negatives) + A002 resolution = Companies Act s. 199 under P6-I2 (already in corpus)
