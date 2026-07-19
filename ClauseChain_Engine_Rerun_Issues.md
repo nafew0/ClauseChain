@@ -22,6 +22,13 @@ findings (incl. ChatGPT deep-research results) as they arrive.
      that CPC s. 40 lacks a row; check both during the rerun sweep.
 4. *(Fable, from N012 analysis)* Snippet-span regression test to lock #1 once fixed.
 
+5. **Recall levers for the rerun** (from the 91% approval-rate signal — gates proved
+   over-conservative; the refuter+human net absorbs noise safely):
+   - Raise/remove `SCREEN_CAP_PER_INDICATOR` (60 of ~120–180 candidates screened today)
+   - Re-adjudicate the old 78-row NEW set through the CURRENT gates (recover G7-bug-era kills)
+   - Instrument hunt (Fable web-hunt + user ChatGPT deep research) -> new seeds
+   - Post-mortem the gate-rejection log for salvageable rows
+
 ## Awaiting user input
 - ChatGPT deep-research instrument/section list (per indicator × economy) → will be triaged
   into seeds/hunt lists here before the rerun.
