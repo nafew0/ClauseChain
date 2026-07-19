@@ -10,6 +10,8 @@ languages: { primary: en, supported: [en] }
 # EITHER. Non-official domains are never evidence (G3) — only upgrade targets.
 whitelist_source: data/official_domains.json
 official_sources:
+  - { name: Singapore Government treaty texts (MTI/isomer), domain: isomer-user-content.by.gov.sg, source_type: official_treaty_or_state_register, authority_rank: 90 }
+  - { name: Enterprise Singapore, domain: www.enterprisesg.gov.sg, source_type: official_treaty_or_state_register, authority_rank: 90 }
   - { name: Singapore Statutes Online, domain: sso.agc.gov.sg, source_type: official_statute_database, authority_rank: 100 }
   - { name: PDPC, domain: pdpc.gov.sg, source_type: regulator_guidance, authority_rank: 60 }
   - { name: IMDA, domain: imda.gov.sg, source_type: sectoral_regulator, authority_rank: 60 }

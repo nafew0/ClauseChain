@@ -6,6 +6,9 @@ languages: { primary: en, supported: [en] }
 
 whitelist_source: data/official_domains.json   # mined from ESCAP References — see sg.yaml note
 official_sources:
+  - { name: DFAT treaty portal, domain: www.dfat.gov.au, source_type: official_treaty_or_state_register, authority_rank: 90 }
+  - { name: NSW legislation, domain: legislation.nsw.gov.au, source_type: official_treaty_or_state_register, authority_rank: 90 }
+  - { name: Victorian legislation, domain: www.legislation.vic.gov.au, source_type: official_treaty_or_state_register, authority_rank: 90 }
   - { name: Federal Register of Legislation, domain: legislation.gov.au, source_type: official_statute_database, authority_rank: 100 }
   - { name: OAIC, domain: oaic.gov.au, source_type: regulator_guidance, authority_rank: 60 }
   # added 7-Jul from ESCAP-citation mining:

@@ -6,6 +6,7 @@ languages: { primary: en, supported: [en, ms] }
 
 whitelist_source: data/official_domains.json   # mined from ESCAP References — see sg.yaml note
 official_sources:
+  - { name: MITI FTA portal, domain: fta.miti.gov.my, source_type: official_treaty_or_state_register, authority_rank: 90 }
   - { name: Laws of Malaysia (AGC), domain: lom.agc.gov.my, source_type: official_statute_database, authority_rank: 100 }
   - { name: Federal Gazette, domain: federalgazette.agc.gov.my, source_type: official_gazette, authority_rank: 100 }
   - { name: Personal Data Protection Department, domain: pdp.gov.my, source_type: regulator_guidance, authority_rank: 60 }
