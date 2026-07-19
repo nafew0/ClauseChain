@@ -54,3 +54,15 @@ findings (incl. ChatGPT deep-research results) as they arrive.
      normal pipeline -> review. Treaties: CPTPP 14.11, RCEP 12.15, DEPA 4.3,
      SADEA 23, KSDPA 14.14, UKSDEA 8.61-F, AUKFTA 14.10
    - CONFIRMS: our 4 approved absences (SG/MY/AU I1-I3 negatives) + A002 resolution = Companies Act s. 199 under P6-I2 (already in corpus)
+
+8. **Deep-research P7 candidates (triaged, tiered for tonight vs finals):**
+   TONIGHT (easy official routes — SSO /SL/, legislation.gov.au, direct PDP/NACSA PDFs):
+   - SG new anchors in held acts: PDPA ss. 22/26B/26D (breach regime, P7-I1), s. 11(5) (P7-I4); GST Act s. 84 + ITA s. 65B + PDPA Ninth Sch + Customs Act ss. 103/110A (P7-I5 warrantless); CPC s. 25 court-gated safeguard row
+   - SG acquire (SL): S 63/2021 (also P7-I1/I4), S 64/2021 breach regs; Cybersecurity SL S 519/2018, S 680/2025, S 490/2026 (P7-I2)
+   - SG P7-I3 sectoral SL sweep (10): S 328/2023, S 307/2015, S 555/2021, S 53/2010, S 148/2016, S 1009/2024, S 845/2024, S 329/2016, S 332/2016, S 151/2017, S 848/2015
+   - MY acquire: PDP Commissioner Circulars 1/2025 (DPO -> P7-I4) + 2/2025 (breach + 2yr retention), DPIA Guideline 2026, P.U.(B) 522/2024 (status facts); Act 854 regs P.U.(A) 219-221/2024 (NACSA PDFs); AMLA Act 613 (ss. 17/25/31/37), ITA Act 53 2025 text (ss. 80/82), Companies Act 777 (ss. 245/341/531); PDPA ss. 113-115/121 anchors (warrantless vs court-gated pair)
+   - AU acquire: **Cyber Security Act 2024 (No. 98) + 3 Rules (F2025L00276-278)** (P7-I2 — postdates master gold 0.5: record + currentness note); Privacy Amendment Act 2024; APP Code 2017 (agency Privacy Officer, P7-I4); AML/CTF Act (ss. 107/108/111/167), Corporations Act (s. 286), TAA 1953 (Sch 1 353-10/15, 382-5), Fair Work Act s. 535, NACC Act (ss. 58/63), Crimes Act 1914 (3ZQN warrantless vs 3ZQO court-gated), Surveillance Devices Act 2004 (ss. 28-33), ASIO s. 25 (AG-issued = executive, drives 1), TIA ss. 175-180 (internal authorisations)
+   - NSW/Vic (portals already being added for P6): NSW HRIP s. 25 + SD Act 2007 ss. 31-33; Vic HR Act HPP 4.2 + SD Act 1999 ss. 26-28
+   FINALS (T2 — 4 new state portals): Qld PPRA ss. 343-344, Tas PPSD ss. 23-25, WA SDA ss. 20-21, NT SDA ss. 33-39, ACT/SA (unverified by report)
+   VERIFY-ON-PORTAL ourselves (report could not): MY Employment Act 265 s. 61(2), EPF Act 452 s. 42(2), CMA Act 588 ss. 247-252, MACC Act 694 ss. 30/31/36
+   ZONE-3 NOTES: AU P7-I2 gold 0.5 predates Cyber Security Act 2024 (Nov 2024) — record evidence + currentness note; MY P7-I4 circulars (Jun 2025) postdate gold; P7-I4 thresholds -> 0.5 tier per rubric
