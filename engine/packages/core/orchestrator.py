@@ -127,6 +127,9 @@ def _governing_props(corpus: list[dict], law_name: str) -> dict:
 def _coverage_manifest(economy: str, indicator_id: str, cfg: dict, pack: dict,
                        warnings: list[str], corpus: list[dict], candidates: list | None = None
                        ) -> SearchCoverageManifest:
+    from packages.core.acquisition import (format_acquisition_failure,
+                                           unresolved_seed_acquisitions)
+    from packages.discovery.diff import laws_match
     from packages.retrieval.hybrid import build_query_pack
 
     instruments: dict[str, dict] = {}
@@ -151,6 +154,20 @@ def _coverage_manifest(economy: str, indicator_id: str, cfg: dict, pack: dict,
     for record in instruments.values():
         if not record["source_artifact_id"]:
             unresolved.append(f"{record['instrument']}: missing SourceArtifact")
+    # A dead or never-attempted configured source is a search-coverage failure,
+    # never proof of legal absence.  An alternate successfully loaded official
+    # copy of the same instrument satisfies the failed URL (e.g. an SSO print-view
+    # acquisition replacing a blocked ordinary landing-page fetch).
+    acquisition_failures = unresolved_seed_acquisitions(
+        economy, indicator_id, ENGINE_ROOT)
+    loaded_laws = [record["instrument"] for record in instruments.values()
+                   if record.get("source_artifact_id")
+                   and record.get("legal_status") == "in_force"
+                   and record.get("evidence_eligible") is True]
+    for failure in acquisition_failures:
+        if any(laws_match(failure.get("act", ""), law) for law in loaded_laws):
+            continue
+        unresolved.append(format_acquisition_failure(failure))
     return SearchCoverageManifest(
         economy=economy,
         indicator_id=indicator_id,

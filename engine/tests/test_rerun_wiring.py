@@ -354,6 +354,99 @@ def test_fingerprint_binds_version_profile_and_grammars():
         fpm.EXTRACTION_VERSION = old
 
 
+def test_fingerprint_binds_fail_closed_seed_expectations():
+    from packages.core.fingerprint import processing_fingerprint
+    from packages.ingest.seed_profiles import seed_fingerprint_config
+
+    chapter_14 = {"source_type": "treaty",
+                  "expected_citations": ["Art. 14.11"],
+                  "expected_phrases": ["cross-border transfer of information"]}
+    chapter_12 = {**chapter_14, "expected_citations": ["Art. 12.15"]}
+    first = processing_fingerprint(
+        "same-source-sha", "treaty", config=seed_fingerprint_config(chapter_14))
+    second = processing_fingerprint(
+        "same-source-sha", "treaty", config=seed_fingerprint_config(chapter_12))
+    assert first != second
+
+
+# ---------------------------------------------- acquisition/absence integrity
+def _write_acquisition_fixture(root: Path) -> None:
+    seeds = {"economies": {"Australia": [
+        {"act": "CPTPP Chapter 14", "url": "https://dfat.example/cptpp.pdf",
+         "indicator_code": "P6-I5", "source_type": "treaty"},
+        {"act": "Cybersecurity Act", "url": "https://register.example/cyber.pdf",
+         "indicator_code": "P7-I2", "source_type": "act"},
+    ]}}
+    (root / "data/raw/au").mkdir(parents=True)
+    (root / "data/seeds.json").write_text(json.dumps(seeds))
+    (root / "data/raw/au/seeds_manifest.json").write_text(json.dumps({
+        "https://dfat.example/cptpp.pdf": {
+            "act": "CPTPP Chapter 14", "indicator_code": "P6-I5",
+            "status": "dead", "http_status": 403, "error": "TLS refused",
+        },
+        "https://register.example/cyber.pdf": {
+            "act": "Cybersecurity Act", "indicator_code": "P7-I2",
+            "status": "dead", "http_status": 503,
+        },
+    }))
+
+
+def test_dead_seed_is_indicator_scoped_unresolved_coverage(tmp_path, monkeypatch):
+    import packages.core.orchestrator as orchestrator
+
+    _write_acquisition_fixture(tmp_path)
+    monkeypatch.setattr(orchestrator, "ENGINE_ROOT", tmp_path)
+    coverage = orchestrator._coverage_manifest(
+        "Australia", "P6-I5",
+        {"question": "Has the economy joined no binding transfer agreement?"},
+        {"official_sources": [{"name": "DFAT", "domain": "dfat.example"}]},
+        [], [], [],
+    )
+    assert any("ACQUISITION_UNRESOLVED P6-I5" in failure
+               and "CPTPP Chapter 14" in failure
+               and "http_status=403" in failure
+               for failure in coverage.unresolved_failures)
+    assert not any("Cybersecurity Act" in failure
+                   for failure in coverage.unresolved_failures)
+    assert coverage.complete is False
+
+
+def test_missing_seed_inventory_fails_closed(tmp_path, monkeypatch):
+    import packages.core.orchestrator as orchestrator
+
+    monkeypatch.setattr(orchestrator, "ENGINE_ROOT", tmp_path)
+    coverage = orchestrator._coverage_manifest(
+        "Australia", "P6-I5", {"question": "binding agreement?"},
+        {"official_sources": [{"name": "DFAT", "domain": "dfat.example"}]},
+        [], [], [],
+    )
+    assert any("seed inventory" in failure and "inventory_unavailable" in failure
+               for failure in coverage.unresolved_failures)
+    assert coverage.complete is False
+
+
+def test_loaded_official_copy_satisfies_failed_seed_url(tmp_path, monkeypatch):
+    import packages.core.orchestrator as orchestrator
+
+    _write_acquisition_fixture(tmp_path)
+    monkeypatch.setattr(orchestrator, "ENGINE_ROOT", tmp_path)
+    corpus = [{
+        "provision_id": "p1", "text": "Each Party shall allow cross-border transfer.",
+        "props": {"law_name": "CPTPP Chapter 14", "source_artifact_id": "artifact-1",
+                  "legal_status": "in_force", "evidence_eligible": True,
+                  "source_type": "treaty"},
+    }]
+    coverage = orchestrator._coverage_manifest(
+        "Australia", "P6-I5",
+        {"question": "Has the economy joined no binding transfer agreement?"},
+        {"official_sources": [{"name": "DFAT", "domain": "dfat.example"}]},
+        [], corpus, [],
+    )
+    assert not any("ACQUISITION_UNRESOLVED" in failure
+                   for failure in coverage.unresolved_failures)
+    assert coverage.complete is True
+
+
 def test_expected_evidence_fails_closed():
     from packages.ingest.seed_profiles import missing_expectations
 

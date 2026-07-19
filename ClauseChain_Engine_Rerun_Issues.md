@@ -34,7 +34,7 @@ findings (incl. ChatGPT deep-research results) as they arrive.
   into seeds/hunt lists here before the rerun.
 
 ## Rerun checklist (when fixes land)
-- [x] Fix #1 + #2 with tests → engine suite green (139 tests; snippet finalize + SSO line-breaks)
+- [x] Fix #1 + #2 with tests → engine suite green (148 tests; snippet finalize + SSO line-breaks)
 - [ ] Add #3 sections to hunt/verify lists; confirm corpus contains them
 - [ ] Full 6-run sweep → refuter v2 → regenerate payload/workbook → engine_refresh on server
 - [ ] Preserve today's decisions (decisions.json is append-only supersession — re-approved rows
@@ -44,7 +44,7 @@ findings (incl. ChatGPT deep-research results) as they arrive.
 ## Sol-review blockers (19 Jul, second pass) — status
 - [x] **P6-I5 treaty eligibility**: `legal_controls` accepts data-declared `source_type: treaty`
       (in-force only; bill/draft/commentary patterns still apply). Treaty units are scoped by
-      config — only `allow_treaty_sources: true` indicators (P6-I5 alone) may cite them.
+      config — only `allowed_source_types: [treaty]` indicators (P6-I5 alone) may cite them.
 - [x] **Treaty grammar in real builders**: `SECTION_GRAMMARS`/`CITATION_TEMPLATES` registry in
       pdf_act + `packages/ingest/seed_profiles.py`; all three builders parse profile-driven
       (treaty → "Art. {label}", MY pack adds `section_grammars: [malay]` for Seksyen/Perkara).
@@ -56,17 +56,19 @@ findings (incl. ChatGPT deep-research results) as they arrive.
       truncation recorded in indicator_stats.caps + run warnings.
 - [x] **Snippet ordering**: `finalize_snippet()` constructs the exported text BEFORE `run_gates`;
       post-gate mutation deleted; contract test forbids regression.
-- [x] **Incremental guard**: `restamp_artifact_generation` — unchanged bytes (sha256) skip
-      re-extraction/OCR; restamped units survive the generation prune (MY/AU/SG-seeds paths).
-- [x] **Builder-level integration tests**: tests/test_rerun_wiring.py (17) — treaty eligibility +
+- [x] **Incremental guard**: `restamp_artifact_generation` reuses extraction only when the
+      processing fingerprint matches (source SHA-256 + extractor version + parser profile +
+      OCR/grammar + expected-evidence configuration); restamped units survive generation prune.
+- [x] **Builder-level integration tests**: tests/test_rerun_wiring.py (25) — treaty eligibility +
       DFAT-style Article parse, Seksyen parse, MY research-PDF profile, SG SL parse + URL routing,
       snippet-first-then-gate, cap recording, reconciliation-without-refetch, restamp.
 - [ ] **Proof runs**: refreshed manifests + one new source per economy in corpus (builds running);
       one real treaty → eligible RuleUnit + CitationProof (proof script after builds).
 - [!] **DFAT (AU treaties) network-blocked** from BD (Akamai TLS fingerprinting, IPv4 TCP ok /
       TLS refused for non-browsers — both Mac + server): seeds_fetch got a generic Playwright
-      real-browser fallback; if still blocked the rows stay recorded `dead` in reconciliation
-      (explicit, not silent) and AU P6-I5 falls back to absence handling.
+      real-browser fallback; if still blocked the rows stay recorded `dead` in reconciliation.
+      They become `ACQUISITION_UNRESOLVED` in the P6-I5 SearchCoverageManifest and mechanically
+      block any absence/score-1 approval. Network failure is never treated as legal absence.
 
 6. **Multilingual handling** (user, Act 709 check): MY amendment A1727 is Malay-primary — anchor parse must handle "Seksyen 12A" patterns; snippet policy for non-English sources = original-language verbatim + unofficial English in the appended column. D9 economies (CN/RU/TH/LA/MN/ID) inherit: BGE-M3 cross-lingual retrieval, native-text mapping, per-language section grammars via extra_section_patterns.
 

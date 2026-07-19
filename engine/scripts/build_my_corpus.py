@@ -55,7 +55,7 @@ def main() -> int:
     fetch_seeds("Malaysia", ("P6", "P7"))
     manifest = json.loads(manifest_path.read_text())
     pack = yaml.safe_load(Path("configs/jurisdictions/my.yaml").read_text())
-    from packages.ingest.seed_profiles import seed_parse_profile
+    from packages.ingest.seed_profiles import seed_fingerprint_config, seed_parse_profile
 
     pack_grammars = pack.get("section_grammars") or []
     status_assertions = pack.get("status_assertions") or {}
@@ -211,7 +211,8 @@ def main() -> int:
         from packages.core.fingerprint import processing_fingerprint
 
         fingerprint = processing_fingerprint(artifact.sha256, profile["source_type"],
-                                             pack_grammars, ("ocr:hybrid_accuracy",))
+                                             pack_grammars, ("ocr:hybrid_accuracy",),
+                                             config=seed_fingerprint_config(entry))
         if not only_act:
             restamp_counts = [st.restamp_artifact_generation("Malaysia", fingerprint, generation)
                               if hasattr(st, "restamp_artifact_generation") else 0

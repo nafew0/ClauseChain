@@ -178,6 +178,43 @@ def test_absence_manifest_requires_proof_every_instrument_was_searched():
     assert complete.complete is True
 
 
+def test_named_approval_cannot_finalize_absence_with_failed_acquisition(tmp_path):
+    pdf = tmp_path / "governing.pdf"
+    _pdf(pdf, "Official governing instrument")
+    artifact = source_artifact_from_file(
+        pdf, original_url="https://official.example/governing.pdf",
+        source_type="act", status_evidence=_status(),
+        official_domains={"official.example"}, expected_mime="application/pdf")
+    coverage = SearchCoverageManifest(
+        economy="Australia", indicator_id="P6-I5", portals=["DFAT"],
+        instruments=["Governing Act"], queries=["binding data transfer agreement"],
+        instrument_results=[{"instrument": "Governing Act", "searched": True,
+                             "source_artifact_id": artifact.id}],
+        unresolved_failures=[
+            "ACQUISITION_UNRESOLVED P6-I5: CPTPP Chapter 14 | status=dead"
+        ],
+    )
+    review = ReviewDecision(
+        decision="approved", reviewer_name="Named Reviewer", reviewer_role="Legal",
+        reviewed_at=datetime.now(timezone.utc), citation_checked=True,
+        mapping_checked=True, status_checked=True)
+    finding = MappedFinding(
+        Economy="Australia", **{
+            "Law Name": "Governing Act", "Indicator ID": "P6-I5",
+            "Article / Section": "n/a", "Discovery Tag": "KNOWN",
+            "Location Reference": "n/a",
+            "Verbatim Snippet": "NO_EVIDENCE_FOUND_PENDING_REVIEW",
+            "Mapping Rationale": "No evidence found after configured search.",
+            "Source URL": artifact.retrieved_url, "Confidence": 0.6,
+            "Status": "in_force",
+        },
+        source_artifact_id=artifact.id, status_evidence_record=_status(),
+        search_coverage_manifest=coverage, review=review,
+        reviewer_decision="approved")
+    with pytest.raises(FinalizationError, match="complete SearchCoverageManifest"):
+        validate_final_finding(finding, {artifact.id: artifact})
+
+
 def test_sparse_retrieval_cannot_leak_ineligible_nodes():
     from packages.retrieval.hybrid import retrieve_for_indicator
 

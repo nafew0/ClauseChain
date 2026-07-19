@@ -58,3 +58,17 @@ def missing_expectations(entry: dict, units: list) -> list[str]:
         if want and not any(want in str(u.text).lower() for u in units):
             missing.append(str(phrase))
     return missing
+
+
+def seed_fingerprint_config(entry: dict) -> dict:
+    """Seed fields whose change must invalidate a cached extraction.
+
+    In particular, an already-extracted wrong chapter must not bypass a newly
+    added fail-closed expected citation/phrase merely because source bytes stayed
+    unchanged.
+    """
+    return {
+        "expected_citations": sorted(str(v) for v in entry.get("expected_citations") or []),
+        "expected_phrases": sorted(str(v) for v in entry.get("expected_phrases") or []),
+        "citation_template": seed_parse_profile(entry)["citation_template"],
+    }

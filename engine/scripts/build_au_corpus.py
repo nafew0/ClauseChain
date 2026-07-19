@@ -146,7 +146,7 @@ def load_au_seed_document(url: str, entry: dict, stores, generation: str,
     Returns unit count (0 = recorded skip; the reconciliation report keeps it visible)."""
     from packages.core.legal_controls import content_eligibility
     from packages.extractors.pdf_align import align_to_pdf
-    from packages.ingest.seed_profiles import seed_parse_profile
+    from packages.ingest.seed_profiles import seed_fingerprint_config, seed_parse_profile
     from packages.extractors.pdf_act import parse_act_text
     from urllib.parse import urlparse
 
@@ -197,7 +197,9 @@ def load_au_seed_document(url: str, entry: dict, stores, generation: str,
         return 0
     from packages.core.fingerprint import processing_fingerprint
 
-    fingerprint = processing_fingerprint(artifact.sha256, profile["source_type"])
+    fingerprint = processing_fingerprint(
+        artifact.sha256, profile["source_type"],
+        config=seed_fingerprint_config(entry))
     restamp_counts = [st.restamp_artifact_generation("Australia", fingerprint, generation)
                       if hasattr(st, "restamp_artifact_generation") else 0
                       for st in stores]
@@ -336,8 +338,9 @@ def main() -> int:
             import hashlib as _hl
 
             from packages.core.fingerprint import processing_fingerprint as _pfp
+            from packages.ingest.seed_profiles import seed_fingerprint_config as _seed_fp_config
 
-            vol_fps = {sha: _pfp(sha, "act") for sha in
+            vol_fps = {sha: _pfp(sha, "act", config=_seed_fp_config(entry)) for sha in
                        (_hl.sha256(Path(p).read_bytes()).hexdigest()
                         for _, p in meta["pdfs"])}
             per_store = [[st.restamp_artifact_generation("Australia", fp, generation)

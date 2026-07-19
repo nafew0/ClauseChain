@@ -58,7 +58,7 @@ def load_act(act_ref: str, law_number_ref: str | None, stores, generation: str,
     if accessed.tzinfo is None:
         accessed = accessed.replace(tzinfo=timezone.utc)
     artifact = source_artifact_from_file(
-        manifest["html_path"], original_url=manifest["url"], source_type="act",
+        manifest["html_path"], original_url=manifest["url"], source_type=source_type,
         status_evidence=status, accessed_at=accessed, register_id=act_ref,
         version_id=doc.current_as_at, official_domains={"sso.agc.gov.sg"},
         expected_mime="text/html",
@@ -120,7 +120,7 @@ def load_seed_documents(stores, generation: str, loaded_refs: set[str]) -> int:
     from packages.core.legal_controls import content_eligibility, evidence_eligibility
     from packages.extractors.pdf import extract_pdf, materialize_page_evidence
     from packages.extractors.pdf_act import parse_act_text
-    from packages.ingest.seed_profiles import seed_parse_profile
+    from packages.ingest.seed_profiles import seed_fingerprint_config, seed_parse_profile
 
     fetch_seeds("Singapore", ("P6", "P7"))
     manifest = json.loads(Path("data/raw/sg/seeds_manifest.json").read_text())
@@ -184,7 +184,9 @@ def load_seed_documents(stores, generation: str, loaded_refs: set[str]) -> int:
             continue
         from packages.core.fingerprint import processing_fingerprint
 
-        fingerprint = processing_fingerprint(artifact.sha256, profile["source_type"])
+        fingerprint = processing_fingerprint(
+            artifact.sha256, profile["source_type"],
+            config=seed_fingerprint_config(entry))
         restamp_counts = [st.restamp_artifact_generation("Singapore", fingerprint, generation)
                           if hasattr(st, "restamp_artifact_generation") else 0
                           for st in stores]

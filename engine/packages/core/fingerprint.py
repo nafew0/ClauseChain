@@ -13,6 +13,7 @@ match; any mismatch falls through to a fresh extraction.
 from __future__ import annotations
 
 import hashlib
+import json
 
 # Bump whenever extractor/parser behavior changes so cached RuleUnits from the
 # previous behavior can never satisfy an incremental rebuild.
@@ -23,12 +24,16 @@ EXTRACTION_VERSION = "2026-07-19.1"
 
 def processing_fingerprint(content_sha256: str, source_type: str = "act",
                            grammars: list[str] | tuple[str, ...] = (),
-                           extras: list[str] | tuple[str, ...] = ()) -> str:
+                           extras: list[str] | tuple[str, ...] = (),
+                           config: dict | None = None) -> str:
+    config_json = json.dumps(config or {}, ensure_ascii=False, sort_keys=True,
+                             separators=(",", ":"))
     basis = "\x1f".join([
         content_sha256,
         EXTRACTION_VERSION,
         source_type,
         ",".join(sorted(str(g) for g in grammars or ())),
         ",".join(str(e) for e in extras or ()),
+        config_json,
     ])
     return hashlib.sha256(basis.encode("utf-8")).hexdigest()

@@ -87,7 +87,9 @@ def fetch_seeds(economy: str, only_pillars: tuple[str, ...] | None = None,
                 continue
             meta_fields = {"act": row.get("act"), "indicator_code": row.get("indicator_code"),
                            "policy": row.get("policy"), "coverage": row.get("coverage"),
-                           "source_type": row.get("source_type"), "cluster": row.get("cluster")}
+                           "source_type": row.get("source_type"), "cluster": row.get("cluster"),
+                           "expected_citations": row.get("expected_citations"),
+                           "expected_phrases": row.get("expected_phrases")}
             prior = manifest.get(url)
             if prior and prior.get("status") == "ok":
                 recon["already_ok"] += 1

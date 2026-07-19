@@ -70,7 +70,7 @@
 
 **DON'T**
 - ❌ Use **secondary sources** (news, law-firm articles, Wikipedia, commentary) as the legal basis. They are *leads only* → use them to find the primary source; if kept, put them in `Notes`. *(Exception: indicators 3.4/5.3/9.1 permit de-facto/secondary evidence — out of P6/P7 scope.)*
-- ❌ Record an **international agreement** (CPTPP, RCEP, FTAs) as a domestic measure. *(Only the non-regulatory 6.5 concerns treaty membership, and we don't extract it.)*
+- ❌ Record an **international agreement** (CPTPP, RCEP, FTAs) as a domestic measure. *(Exception: P6-I5 uses an official, in-force treaty text solely as evidence of a binding data-transfer commitment; rubric source-type scoping prevents treaty provisions from entering domestic-law indicators.)*
 - ❌ Cite Google, a search page, or a third-party database as the `Source URL`. *(A third-party host is acceptable only as an archived-copy fallback when the official link is dead — still name the official instrument.)*
 - ❌ Assume "Act > regulation" decides relevance, or that **horizontal > sectoral**. Coverage ≠ rank; controlling-evidence is decided case-by-case.
 
