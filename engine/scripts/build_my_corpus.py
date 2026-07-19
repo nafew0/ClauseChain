@@ -141,7 +141,10 @@ def main() -> int:
         if register_key in processed_registers:
             print(f"  DUPLICATE seed skipped for {act_name[:52]}")
             continue
-        processed_registers.add(register_key)
+        # NOTE: the register key is claimed only on SUCCESSFUL load/restamp below.
+        # A failed or ineligible acquisition (e.g. a non-official mirror of A1727
+        # retried alive by reconciliation) must not shadow the official copy of
+        # the same instrument appearing later in the manifest (20 Jul regression).
         if only_act and act_name not in targeted_purged:
             for st in stores:
                 purge = getattr(st, "purge_instrument_provisions", None)
@@ -220,6 +223,7 @@ def main() -> int:
             if restamp_counts and all(c > 0 for c in restamp_counts):
                 loaded_acts += 1
                 total += restamp_counts[0]
+                processed_registers.add(register_key)
                 print(f"  {act_name[:58]:58s} -> unchanged, {restamp_counts[0]} units restamped")
                 continue
         try:
@@ -309,6 +313,7 @@ def main() -> int:
         if units:
             loaded_acts += 1
             total += len(units)
+            processed_registers.add(register_key)
             print(f"  {act_name[:58]:58s} -> {len(units):4d} units")
 
     # Derived provisions from a prior generation must never remain active merely

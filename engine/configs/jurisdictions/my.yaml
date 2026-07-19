@@ -73,6 +73,49 @@ governing_instruments:
 # A2: explicit official currentness facts. Absence from this registry means
 # `unknown` and blocks retrieval/export; a live URL alone is never a status fact.
 status_assertions:
+  "PDP Commissioner Circular 1/2025 - Appointment of Data Protection Officer":
+    status: in_force
+    fact_url: "https://www.pdp.gov.my/ppdpv1/en/pekeliling-pesuruhjaya/"
+    fact_text: "Issued by the Personal Data Protection Commissioner under Act 709; published on the Commissioner's official circulars register, effective 2025 alongside the A1727 DPO obligations."
+    effective_date: "2025-06-01"
+  "PDP Commissioner Circular 2/2025 - Personal Data Breach Notification":
+    status: in_force
+    fact_url: "https://www.pdp.gov.my/ppdpv1/en/pekeliling-pesuruhjaya/"
+    fact_text: "Issued by the Personal Data Protection Commissioner under Act 709; published on the Commissioner's official circulars register, operationalising the s. 12B breach-notification duty commenced 1 June 2025."
+    effective_date: "2025-06-01"
+  "PDP Data Protection Impact Assessment Guideline 2026":
+    status: in_force
+    fact_url: "https://www.pdp.gov.my/ppdpv1/en/garis-panduan/"
+    fact_text: "Commissioner-issued guideline on the official PDP guidance register, current publication (2026)."
+  "PDPA (Amendment) Act 2024 Commencement Order P.U.(B) 522/2024":
+    status: in_force
+    fact_url: "https://www.pdp.gov.my/ppdpv1/wp-content/uploads/2024/12/PENETAPAN-TARIKH-PERMULAAN-KUAT-KUASA.pdf"
+    fact_text: "Federal Gazette P.U. (B) 522/2024 is itself the commencement instrument appointing 1 January, 1 April and 1 June 2025 for Act A1727."
+    effective_date: "2024-12-17"
+  "Cyber Security (Risk Assessment and Audit) Regulations 2024":
+    status: in_force
+    fact_url: "https://nacsa.gov.my/act854.php"
+    fact_text: "NACSA's official Act 854 page publishes the subsidiary regulations gazetted with the Act's commencement (26 August 2024)."
+    effective_date: "2024-08-26"
+  "Cyber Security (Notification of Incident) Regulations 2024":
+    status: in_force
+    fact_url: "https://nacsa.gov.my/act854.php"
+    fact_text: "NACSA's official Act 854 page publishes the subsidiary regulations gazetted with the Act's commencement (26 August 2024)."
+    effective_date: "2024-08-26"
+  "Cyber Security (Licensing of Service Provider) Regulations 2024":
+    status: in_force
+    fact_url: "https://nacsa.gov.my/act854.php"
+    fact_text: "NACSA's official Act 854 page publishes the subsidiary regulations gazetted with the Act's commencement (26 August 2024)."
+    effective_date: "2024-08-26"
+  "613":
+    status: in_force
+    fact_url: "https://lom.agc.gov.my/act-detail.php?type=principal&act=613"
+    fact_text: "Laws of Malaysia official portal lists the Anti-Money Laundering, Anti-Terrorism Financing and Proceeds of Unlawful Activities Act 2001 (Act 613) as a principal act in force."
+  "777":
+    status: in_force
+    fact_url: "https://lom.agc.gov.my/act-detail.php?type=principal&act=777"
+    fact_text: "Laws of Malaysia official portal lists the Companies Act 2016 (Act 777) as a principal act in force."
+
   "CPTPP Chapter 14 (Malaysia MITI text)":
     status: in_force
     fact_url: "https://fta.miti.gov.my/index.php/pages/view/CPTPP"

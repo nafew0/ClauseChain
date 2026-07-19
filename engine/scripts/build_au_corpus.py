@@ -131,7 +131,10 @@ def resolve_seed_pdf(url: str, file: str) -> tuple[str, str] | None:
             pdf_file = Path(file).with_suffix(".resolved.pdf")
             if not pdf_file.is_file():
                 time.sleep(2.0)
-                resp = httpx.get(pdf_url, follow_redirects=True, timeout=120, headers=H)
+                try:
+                    resp = httpx.get(pdf_url, follow_redirects=True, timeout=120, headers=H)
+                except httpx.HTTPError:
+                    continue  # transient network failure: try the next linked PDF
                 if resp.status_code != 200 or resp.content[:5] != b"%PDF-":
                     continue
                 pdf_file.write_bytes(resp.content)
@@ -301,7 +304,11 @@ def main() -> int:
                 # profile-driven loader instead of being silently skipped.
                 if entry.get("status") == "ok" and (relevant or fetch_all) and url not in done:
                     done.add(url)
-                    count = load_au_seed_document(url, entry, stores, generation, pack)
+                    try:
+                        count = load_au_seed_document(url, entry, stores, generation, pack)
+                    except Exception as error:  # noqa: BLE001 — one doc must not kill the build
+                        print(f"  FAILED {(entry.get('act') or '')[:50]}: {str(error)[:90]}")
+                        count = 0
                     if count:
                         acts += 1
                         total += count
@@ -312,7 +319,12 @@ def main() -> int:
                 continue
             done.add(tid)
             time.sleep(1.5)
-            meta = acquire_au_act(client, tid, out_dir)
+            try:
+                meta = acquire_au_act(client, tid, out_dir)
+            except Exception as error:  # noqa: BLE001 — transient portal disconnects (20 Jul)
+                print(f"  SKIP {act_name[:52]} ({tid}) — acquisition error: {str(error)[:80]}")
+                build_complete = False
+                continue
             if not meta:
                 print(f"  SKIP {act_name[:56]} ({tid}) — version/pdf unavailable")
                 build_complete = False
