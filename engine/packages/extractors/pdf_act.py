@@ -54,6 +54,13 @@ def _plausible_heading(heading_text: str, act_name: str) -> bool:
     if len(act_tokens) >= 3 and len(act_tokens - head_tokens) <= 1:
         return False  # running header/footer (page number + act name)
     return True
+# Treaty/agreement grammar (rerun-fix #4): "Article 14.11  Cross-Border Transfer..."
+# Use via parse_act_text(extra_section_patterns=TREATY_SECTION_PATTERNS,
+#                        citation_template="Art. {label}") — data-driven, no per-row code.
+TREATY_SECTION_PATTERNS = [
+    re.compile(r"^\s{0,6}Article\s+(\d{1,3}(?:\.\d{1,2})?[A-Z]?(?:-[A-Z])?)\s*[:.\-\u2013\u2014]?\s+(\S.{0,110})", re.I),
+]
+
 _SUBSECTION = re.compile(r"\((\d{1,2})\)\s")
 
 

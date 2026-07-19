@@ -11,7 +11,10 @@ import re
 from pydantic import BaseModel, Field, PrivateAttr
 
 SCREEN_BATCH_SIZE = 12
-SCREEN_CAP_PER_INDICATOR = 60   # logged, not silent (envelope warning)
+import os as _os
+
+# Rerun-fix #6: recall lever — cap raised and env-overridable (still logged, never silent)
+SCREEN_CAP_PER_INDICATOR = int(_os.getenv("SCREEN_CAP_PER_INDICATOR", "200"))
 
 GOLDEN_RULES = """LEGAL RULES (ESCAP RDTII methodology — binding):
 - Map on legal FUNCTION, not keywords. A transfer CONDITION is 6.4 (conditional flow), NOT a 6.1 ban.

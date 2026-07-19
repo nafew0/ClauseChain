@@ -72,7 +72,7 @@ def _parse_section(chunk: str, part: str) -> Section | None:
         if text:
             subsections.append(Subsection(label=number, text=text, anchor=sec_id))
 
-    full_text = " ".join(s.text for s in subsections)
+    full_text = "\n".join(s.text for s in subsections)  # keep subsection line-breaks (rerun-fix #2)
     return Section(sec_id=sec_id, number=number, heading=heading, part=part,
                    text=full_text, subsections=subsections)
 

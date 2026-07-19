@@ -112,7 +112,13 @@ indicators:
     methodology_number: "6.5"
     name: Not in agreement with binding commitments on data transfer
     policy_name: Not in agreement with binding commitments on data transfer
-    regulatory: false        # NON-REGULATORY: treaty databases, engine does NOT extract from statutes
+    regulatory: true         # rerun-fix #5 (19 Jul): treaty texts now flow through the normal
+                             # pipeline via seeds (official treaty PDFs) — no manual rows
+    positive_cues:
+      - "cross-border transfer of information by electronic means"
+      - "shall not prohibit or restrict the cross-border transfer of information"
+      - "shall allow the cross-border transfer of information"
+      - "transfer of information by electronic means where this activity is for the conduct of the business"
     question: Has the economy joined NO agreement with binding cross-border data-transfer commitments?
     sources:
       - "CoE Convention 108 chart: https://www.coe.int/en/web/conventions/full-list?module=signatures-by-treaty&treatynum=108"

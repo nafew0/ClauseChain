@@ -24,6 +24,25 @@ def _normalize(text: str) -> str:
     return _WS.sub(" ", text).strip().lower()
 
 
+def extend_to_clause_boundary(snippet: str, source: str, max_extra: int = 300) -> str:
+    """Rerun-fix #1 (19 Jul): a mapper-chosen span may stop before the operative
+    object phrase ("...search to be made" | "for a document or thing"). Extend a
+    source-exact snippet forward to the next clause boundary: sentence-terminal
+    punctuation, a semicolon/colon, or the next top-level subsection marker."""
+    pos = source.find(snippet)
+    if pos < 0 or not snippet:
+        return snippet
+    end = pos + len(snippet)
+    if snippet.rstrip().endswith((".", ";", ":")):
+        return snippet
+    window = source[end:end + max_extra]
+    boundary = len(window)
+    for m in re.finditer(r"[.;:](?:\s|$)|\(\d{1,2}\)\s", window):
+        boundary = m.start() + (1 if window[m.start()] in ".;:" else 0)
+        break
+    return source[pos:end + boundary].rstrip()
+
+
 def source_exact_slice(snippet: str, source_text: str) -> str | None:
     """E3-lite (P3.5): return the SOURCE's own characters for a claimed snippet.
 

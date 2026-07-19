@@ -21,6 +21,10 @@ from packages.ingest.xlsx import read_rows, sheet_names
 
 _REF_NUMBER = r"\d+(?:\.\d+){0,2}[A-Z]{0,2}(?:\s*\(\s*\w{1,3}\s*\))*"
 _REF_PATTERNS = [
+    # Malay statutory citation forms (rerun-fix #3): "Seksyen 12A", "Perkara 5", "Peraturan 4"
+    (re.compile(rf"\b[Ss]eksyen\s+({_REF_NUMBER})"), "s."),
+    (re.compile(rf"\b[Pp]erkara\s+({_REF_NUMBER})"), "Art."),
+    (re.compile(rf"\b[Pp]eraturan\s+({_REF_NUMBER})"), "reg."),
     (re.compile(rf"\bArticles?\s+({_REF_NUMBER})", re.I), "Art."),
     (re.compile(rf"\bArt\.?\s*({_REF_NUMBER})", re.I), "Art."),
     (re.compile(rf"\bSections?\s+({_REF_NUMBER})", re.I), "s."),

@@ -409,11 +409,12 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                     f"REJECTED OCR citation-token disagreement: {indicator_id} {props.get('article_section')}"
                 )
                 continue
-            from packages.verifier.gates import source_exact_slice
+            from packages.verifier.gates import extend_to_clause_boundary, source_exact_slice
 
             exact = source_exact_slice(decision.verbatim_snippet, candidate.text)
             if exact:
-                decision.verbatim_snippet = exact[:400]  # source characters, not LLM copy
+                # source characters, extended to the clause boundary (never mid-phrase)
+                decision.verbatim_snippet = extend_to_clause_boundary(exact, candidate.text)[:700]
             tag, why = known.tag(economy, props.get("law_name", ""),
                                  props.get("article_section", ""))
             status = props.get("legal_status") or "unknown"
