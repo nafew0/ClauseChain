@@ -40,3 +40,5 @@ findings (incl. ChatGPT deep-research results) as they arrive.
 - [ ] Preserve today's decisions (decisions.json is append-only supersession — re-approved rows
       keep their receipts; NEW rows from the rerun enter as pending)
 - [ ] Re-upload window: 20 Jul Bangkok — final artifacts regenerate via submission_replay
+
+6. **Multilingual handling** (user, Act 709 check): MY amendment A1727 is Malay-primary — anchor parse must handle "Seksyen 12A" patterns; snippet policy for non-English sources = original-language verbatim + unofficial English in the appended column. D9 economies (CN/RU/TH/LA/MN/ID) inherit: BGE-M3 cross-lingual retrieval, native-text mapping, per-language section grammars via extra_section_patterns.
