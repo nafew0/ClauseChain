@@ -204,18 +204,22 @@ def main() -> int:
                                           {"name": act_name, "url": url, "file": file})
             print(f"  INELIGIBLE {act_name[:52]}: NON_OFFICIAL_ARCHIVE")
             continue
-        # Incremental guard (19 Jul): unchanged bytes (same sha256) -> provisions
-        # already extracted in a prior generation are restamped and kept; no
-        # re-parse, no OCR, no embedding churn. --only-act rebuilds bypass this.
+        # Incremental guard (19 Jul): reuse ONLY on a full processing-fingerprint
+        # match (source sha + extraction version + parse profile + OCR profile);
+        # and ONLY when EVERY active store restamps (parity — a store without the
+        # contract forces a fresh extraction for all). --only-act bypasses.
+        from packages.core.fingerprint import processing_fingerprint
+
+        fingerprint = processing_fingerprint(artifact.sha256, profile["source_type"],
+                                             pack_grammars, ("ocr:hybrid_accuracy",))
         if not only_act:
-            restamped = sum(
-                st.restamp_artifact_generation("Malaysia", artifact.sha256, generation)
-                for st in stores if hasattr(st, "restamp_artifact_generation"))
-            if restamped:
+            restamp_counts = [st.restamp_artifact_generation("Malaysia", fingerprint, generation)
+                              if hasattr(st, "restamp_artifact_generation") else 0
+                              for st in stores]
+            if restamp_counts and all(c > 0 for c in restamp_counts):
                 loaded_acts += 1
-                total += restamped // max(1, len([s for s in stores
-                                                  if hasattr(s, "restamp_artifact_generation")]))
-                print(f"  {act_name[:58]:58s} -> unchanged, {restamped} units restamped")
+                total += restamp_counts[0]
+                print(f"  {act_name[:58]:58s} -> unchanged, {restamp_counts[0]} units restamped")
                 continue
         try:
             pages = extract_pdf(file, ocr_engine=ocr)
@@ -237,6 +241,16 @@ def main() -> int:
                                    citation_template=profile["citation_template"])
         except Exception as error:  # noqa: BLE001 — one bad PDF must not kill the build
             print(f"  FAILED {act_name[:50]}: {error}")
+            build_complete = False
+            continue
+        # Fail closed on declared expectations (Sol review #4): a research seed that
+        # names its required provision/phrase must actually yield it, or the source
+        # is NOT loaded and the build is marked incomplete.
+        from packages.ingest.seed_profiles import missing_expectations
+
+        missing = missing_expectations(entry, units)
+        if missing:
+            print(f"  FAILED EXPECTED_EVIDENCE {act_name[:45]}: missing {missing}")
             build_complete = False
             continue
         minimum_units = max(3, len(pages) // 5)
@@ -265,6 +279,7 @@ def main() -> int:
             unit.metadata["legal_status"] = status.status
             unit.metadata["evidence_eligible"] = eligible
             unit.metadata["source_type"] = profile["source_type"]
+            unit.metadata["processing_fingerprint"] = fingerprint
             unit.metadata["build_generation"] = generation
             unit.metadata["status_evidence"] = status.model_dump(mode="json")
             unit.source_artifact_id = artifact.id

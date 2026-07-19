@@ -1267,7 +1267,13 @@
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P6-I5",
     "cluster": "Data governance",
-    "source_type": "treaty"
+    "source_type": "treaty",
+    "expected_citations": [
+     "Art. 14.11"
+    ],
+    "expected_phrases": [
+     "cross-border transfer of information"
+    ]
    },
    {
     "act": "RCEP Chapter 12 (Malaysia MITI text)",
@@ -1276,7 +1282,10 @@
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P6-I5",
     "cluster": "Data governance",
-    "source_type": "treaty"
+    "source_type": "treaty",
+    "expected_phrases": [
+     "cross-border transfer of information"
+    ]
    }
   ],
   "Singapore": [
@@ -2488,7 +2497,10 @@
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P6-I5",
     "cluster": "Data governance",
-    "source_type": "treaty"
+    "source_type": "treaty",
+    "expected_phrases": [
+     "cross-border transfer of information"
+    ]
    },
    {
     "act": "Singapore-Australia Digital Economy Agreement",
@@ -2497,7 +2509,10 @@
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P6-I5",
     "cluster": "Data governance",
-    "source_type": "treaty"
+    "source_type": "treaty",
+    "expected_phrases": [
+     "cross-border transfer of information"
+    ]
    },
    {
     "act": "Korea-Singapore Digital Partnership Agreement",
@@ -2506,7 +2521,10 @@
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P6-I5",
     "cluster": "Data governance",
-    "source_type": "treaty"
+    "source_type": "treaty",
+    "expected_phrases": [
+     "cross-border transfer of information"
+    ]
    },
    {
     "act": "RCEP Chapter 12 (Enterprise Singapore text)",
@@ -2515,7 +2533,10 @@
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P6-I5",
     "cluster": "Data governance",
-    "source_type": "treaty"
+    "source_type": "treaty",
+    "expected_phrases": [
+     "cross-border transfer of information"
+    ]
    }
   ],
   "Australia": [
@@ -3526,7 +3547,13 @@
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P6-I5",
     "cluster": "Data governance",
-    "source_type": "treaty"
+    "source_type": "treaty",
+    "expected_citations": [
+     "Art. 14.11"
+    ],
+    "expected_phrases": [
+     "cross-border transfer of information"
+    ]
    },
    {
     "act": "RCEP text (DFAT)",
@@ -3535,7 +3562,10 @@
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P6-I5",
     "cluster": "Data governance",
-    "source_type": "treaty"
+    "source_type": "treaty",
+    "expected_phrases": [
+     "cross-border transfer of information"
+    ]
    },
    {
     "act": "Australia-Singapore Digital Economy Agreement",
@@ -3544,7 +3574,10 @@
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P6-I5",
     "cluster": "Data governance",
-    "source_type": "treaty"
+    "source_type": "treaty",
+    "expected_phrases": [
+     "cross-border transfer of information"
+    ]
    },
    {
     "act": "Australia-UK FTA Chapter 14",
@@ -3553,7 +3586,10 @@
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P6-I5",
     "cluster": "Data governance",
-    "source_type": "treaty"
+    "source_type": "treaty",
+    "expected_phrases": [
+     "cross-border transfer of information"
+    ]
    }
   ]
  }

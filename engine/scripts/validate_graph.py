@@ -43,7 +43,8 @@ def main() -> int:
     rows = conn.execute("select json_extract(props,'$.economy'),props from nodes where label='Provision'")
     for economy, props_json in rows:
         props = json.loads(props_json); counts[economy] = counts.get(economy, 0) + 1
-        eligible, reason = evidence_eligibility(props.get("law_name", ""), "act",
+        eligible, reason = evidence_eligibility(props.get("law_name", ""),
+                                                props.get("source_type") or "act",
                                                 props.get("legal_status", "unknown"))
         if not eligible:
             errors.append(f"ineligible provision {props.get('id')}: {reason}")
@@ -54,10 +55,24 @@ def main() -> int:
         if not props.get("content_sha256"):
             errors.append(f"provision {props.get('id')} lacks source hash")
         if economy == "Australia":
-            if not props.get("structure_artifact_id") or props.get("structure_artifact_id") not in artifacts:
-                errors.append(f"AU provision {props.get('id')} lacks structure SourceArtifact")
-            if not props.get("compilation_bundle_id"):
-                errors.append(f"AU provision {props.get('id')} lacks compilation bundle")
+            # Source-class-aware contract (Sol review #4b, 19 Jul): the EPUB+PDF
+            # compilation-bundle requirement applies to Federal Register
+            # compilations only. State-register acts and treaty PDFs are direct
+            # official PDFs — their integrity contract is exact PDF alignment.
+            artifact = artifacts.get(props.get("source_artifact_id"))
+            source_host = ""
+            if artifact is not None:
+                from urllib.parse import urlparse
+                source_host = (urlparse(getattr(artifact, "retrieved_url", "")
+                                        or getattr(artifact, "original_url", "")).hostname or "")
+            federal = source_host.endswith("legislation.gov.au")
+            if federal:
+                if not props.get("structure_artifact_id") or props.get("structure_artifact_id") not in artifacts:
+                    errors.append(f"AU provision {props.get('id')} lacks structure SourceArtifact")
+                if not props.get("compilation_bundle_id"):
+                    errors.append(f"AU provision {props.get('id')} lacks compilation bundle")
+            elif props.get("pdf_alignment") != "exact":
+                errors.append(f"AU non-federal provision {props.get('id')} lacks exact PDF alignment")
     report = {"status": "FAIL" if errors else "PASS", "provisions": counts,
               "source_artifacts": len(artifacts), "schema_version": schema_version,
               "errors": errors}

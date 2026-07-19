@@ -164,20 +164,33 @@ def load_seed_documents(stores, generation: str, loaded_refs: set[str]) -> int:
             continue
         from urllib.parse import urlparse
 
+        # G3 integrity (Sol review #3): domains come from the pack's pre-approved
+        # official_sources list, never from the URL being processed.
+        pack_domains = {s["domain"] for s in pack.get("official_sources", [])}
+        host = urlparse(url).hostname or ""
+        if not any(host == d or host.endswith("." + d.removeprefix("www."))
+                   or ("www." + host.removeprefix("www.")) == d for d in pack_domains):
+            print(f"  INELIGIBLE {act_name[:52]}: SOURCE_DOMAIN_NOT_PREAPPROVED ({host})")
+            continue
         artifact = source_artifact_from_file(
             file, original_url=url, retrieved_url=url,
             source_type=profile["source_type"], status_evidence=status,
             accessed_at=datetime.now(timezone.utc),
-            official_domains={urlparse(url).hostname or ""},
+            official_domains=pack_domains,
             expected_mime="application/pdf",
         )
-        restamped = sum(st.restamp_artifact_generation("Singapore", artifact.sha256, generation)
-                        for st in stores if hasattr(st, "restamp_artifact_generation"))
-        if restamped:
-            n = restamped // max(1, len([s for s in stores
-                                         if hasattr(s, "restamp_artifact_generation")]))
-            total += n
-            print(f"  {act_name[:58]:58s} -> unchanged, {n} units restamped")
+        if not artifact.official:
+            print(f"  INELIGIBLE {act_name[:52]}: NON_OFFICIAL_ARCHIVE")
+            continue
+        from packages.core.fingerprint import processing_fingerprint
+
+        fingerprint = processing_fingerprint(artifact.sha256, profile["source_type"])
+        restamp_counts = [st.restamp_artifact_generation("Singapore", fingerprint, generation)
+                          if hasattr(st, "restamp_artifact_generation") else 0
+                          for st in stores]
+        if restamp_counts and all(c > 0 for c in restamp_counts):
+            total += restamp_counts[0]
+            print(f"  {act_name[:58]:58s} -> unchanged, {restamp_counts[0]} units restamped")
             continue
         try:
             pages = extract_pdf(file)
@@ -194,6 +207,12 @@ def load_seed_documents(stores, generation: str, loaded_refs: set[str]) -> int:
         except Exception as error:  # noqa: BLE001
             print(f"  FAILED {act_name[:50]}: {error}")
             continue
+        from packages.ingest.seed_profiles import missing_expectations
+
+        missing = missing_expectations(entry, units)
+        if missing:
+            print(f"  FAILED EXPECTED_EVIDENCE {act_name[:45]}: missing {missing}")
+            continue
         for unit in units:
             unit.metadata["archived_copy"] = file
             unit.metadata["access_date"] = entry.get("access_date")
@@ -201,6 +220,7 @@ def load_seed_documents(stores, generation: str, loaded_refs: set[str]) -> int:
             unit.metadata["legal_status"] = status.status
             unit.metadata["evidence_eligible"] = eligible
             unit.metadata["source_type"] = profile["source_type"]
+            unit.metadata["processing_fingerprint"] = fingerprint
             unit.metadata["build_generation"] = generation
             unit.metadata["status_evidence"] = status.model_dump(mode="json")
             unit.source_artifact_id = artifact.id

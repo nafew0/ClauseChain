@@ -258,14 +258,9 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
         for cap in retrieval_caps:
             warnings.append(f"{indicator_id}: retrieval union capped at {cap['limit']} of "
                             f"{cap['input_count']} candidates (cap logged, not silent)")
-        # Treaty scoping (config-driven): units from a declared-treaty source are
-        # evidence ONLY for indicators whose rubric opts in (P6-I5 commitments in
-        # international agreements). Domestic-law indicators never cite treaties.
-        if not cfg.get("allow_treaty_sources"):
-            def _stype(c):
-                props = c.props or {}
-                return props.get("source_type") or (props.get("metadata") or {}).get("source_type")
-            candidates = [c for c in candidates if _stype(c) != "treaty"]
+        # Source-type scoping now happens INSIDE retrieval, before ranking/caps
+        # (rubric `allowed_source_types`; default excludes treaties) — see
+        # packages/retrieval/hybrid.py.
         indicator_stats = {"candidate_count": len(candidates), "resolved_known_anchors": 0,
                            "candidate_recall": None, "screen_survival_recall": None,
                            "mapper_survival_recall": None, "gate_survival_recall": None,
@@ -386,7 +381,7 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
             )
             from packages.verifier.gates import (citation_tier, g2_location, g5_whole_rule,
                                                  g6_meaning_support, g7_indicator_fit,
-                                                 g8_counter_and_dangling)
+                                                 g8_counter_and_dangling, g9_span_length)
 
             fit = g7_indicator_fit(indicator_id, decision.verbatim_snippet,
                                    candidate.text, props.get("law_name", ""))
@@ -405,6 +400,7 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                 g6_meaning_support(decision.rationale, decision.verbatim_snippet, candidate.text),
                 g8_counter_and_dangling(decision.verbatim_snippet, candidate.text,
                                         props.get("law_name", ""), same_act_sections),
+                g9_span_length(decision.verbatim_snippet),
             ])
             ok = ok and all(g.status != "FAIL" for g in gate_results)
             for g in gate_results:

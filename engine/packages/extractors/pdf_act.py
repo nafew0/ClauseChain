@@ -111,9 +111,11 @@ def parse_act_text(pages: list, economy: str, act_name: str, act_ref: str,
         lines = lines[enactment_starts[-1]:]
 
     # Pass 1: find section starts with the monotonic filter; adaptive layout —
-    # both patterns are tried and the one yielding more sections wins.
+    # every pattern is tried and the one yielding more sections wins. A declared
+    # profile grammar (extra_section_patterns) is tried FIRST so equal-yield ties
+    # resolve to the declared grammar, not the Commonwealth default.
     best: list[dict] = []
-    for pattern in _SECTION_PATTERNS + (extra_section_patterns or []):
+    for pattern in (extra_section_patterns or []) + _SECTION_PATTERNS:
         sections: list[dict] = []
         last_key = (0, -1, -1, "")
         for index, (page_no, line) in enumerate(lines):

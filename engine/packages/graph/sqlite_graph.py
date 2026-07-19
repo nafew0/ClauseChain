@@ -150,6 +150,7 @@ class SqliteGraphStore:
              "archived_copy": rule_unit.metadata.get("archived_copy"),
              "access_date": rule_unit.metadata.get("access_date"),
              "content_sha256": rule_unit.metadata.get("content_sha256"),
+             "processing_fingerprint": rule_unit.metadata.get("processing_fingerprint"),
              "source_type": rule_unit.metadata.get("source_type"),
              "extraction": rule_unit.metadata.get("extraction"),
              "confidence": rule_unit.extraction_confidence,
@@ -272,18 +273,20 @@ class SqliteGraphStore:
         conn.commit()
         return len(rows)
 
-    def restamp_artifact_generation(self, economy: str, content_sha256: str,
+    def restamp_artifact_generation(self, economy: str, fingerprint: str,
                                     generation: str) -> int:
-        """Incremental-processing guard (19 Jul): a source document whose bytes are
-        unchanged (same sha256) keeps its already-extracted provisions — the builder
-        skips re-extraction/OCR and this restamps them into the current generation
-        so the end-of-build prune retains them."""
+        """Incremental-processing guard (19 Jul): provisions are reused ONLY on a
+        full processing-fingerprint match (source sha + extraction version + parse
+        profile — see packages/core/fingerprint.py); the builder then skips
+        re-extraction/OCR and this restamps them into the current generation so the
+        end-of-build prune retains them. A parser/grammar change bumps the version,
+        misses the match, and forces a fresh extraction."""
         conn = self._connect()
         rows = conn.execute(
             "SELECT id, props FROM nodes WHERE label='Provision' "
             "AND json_extract(props,'$.economy')=? "
-            "AND json_extract(props,'$.content_sha256')=?",
-            (economy, content_sha256),
+            "AND json_extract(props,'$.processing_fingerprint')=?",
+            (economy, fingerprint),
         ).fetchall()
         if not rows:
             return 0

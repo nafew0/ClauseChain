@@ -160,6 +160,15 @@ def load_au_seed_document(url: str, entry: dict, stores, generation: str,
             return 0
         source_url, file = resolved
     profile = seed_parse_profile(entry)
+    # G3 integrity (Sol review #3): official domains come from the jurisdiction
+    # pack's pre-approved list — never from the URL being processed.
+    pack_domains = {s["domain"] for s in pack.get("official_sources", [])}
+    source_host = (urlparse(source_url).hostname or "")
+    if not any(source_host == d or source_host.endswith("." + d.removeprefix("www."))
+               or ("www." + source_host.removeprefix("www.")) == d
+               for d in pack_domains):
+        print(f"  INELIGIBLE {act_name[:52]}: SOURCE_DOMAIN_NOT_PREAPPROVED ({source_host})")
+        return 0
     assertion = (pack.get("status_assertions") or {}).get(act_name) or {}
     status = resolve_status(
         fact_url=assertion.get("fact_url", source_url),
@@ -177,19 +186,24 @@ def load_au_seed_document(url: str, entry: dict, stores, generation: str,
                                       {"name": act_name, "url": url, "file": file})
         print(f"  INELIGIBLE {act_name[:52]}: {reason}")
         return 0
-    official_domains = {urlparse(source_url).hostname or ""}
     artifact = source_artifact_from_file(
         file, original_url=url, retrieved_url=source_url,
         source_type=profile["source_type"], status_evidence=status,
-        accessed_at=datetime.now(timezone.utc), official_domains=official_domains,
+        accessed_at=datetime.now(timezone.utc), official_domains=pack_domains,
         expected_mime="application/pdf",
     )
-    restamped = sum(st.restamp_artifact_generation("Australia", artifact.sha256, generation)
-                    for st in stores if hasattr(st, "restamp_artifact_generation"))
-    if restamped:
-        print(f"  {act_name[:58]:58s} -> unchanged, {restamped} units restamped")
-        return restamped // max(1, len([s for s in stores
-                                        if hasattr(s, "restamp_artifact_generation")]))
+    if not artifact.official:
+        print(f"  INELIGIBLE {act_name[:52]}: NON_OFFICIAL_ARCHIVE")
+        return 0
+    from packages.core.fingerprint import processing_fingerprint
+
+    fingerprint = processing_fingerprint(artifact.sha256, profile["source_type"])
+    restamp_counts = [st.restamp_artifact_generation("Australia", fingerprint, generation)
+                      if hasattr(st, "restamp_artifact_generation") else 0
+                      for st in stores]
+    if restamp_counts and all(c > 0 for c in restamp_counts):
+        print(f"  {act_name[:58]:58s} -> unchanged, {restamp_counts[0]} units restamped")
+        return restamp_counts[0]
     pages = extract_pdf(file)
     content_ok, content_reason = content_eligibility([p.text for p in pages])
     if not content_ok:
@@ -201,6 +215,12 @@ def load_au_seed_document(url: str, entry: dict, stores, generation: str,
                            source_url=source_url,
                            extra_section_patterns=profile["extra_section_patterns"],
                            citation_template=profile["citation_template"])
+    from packages.ingest.seed_profiles import missing_expectations
+
+    missing = missing_expectations(entry, units)
+    if missing:
+        print(f"  FAILED EXPECTED_EVIDENCE {act_name[:45]}: missing {missing}")
+        return 0
     # The parsed text IS the official PDF — verify and stamp exact alignment the
     # same way the EPUB oracle path does (AU evidence must be PDF-aligned).
     align_to_pdf(units, [file])
@@ -212,6 +232,7 @@ def load_au_seed_document(url: str, entry: dict, stores, generation: str,
         unit.metadata["legal_status"] = status.status
         unit.metadata["evidence_eligible"] = eligible
         unit.metadata["source_type"] = profile["source_type"]
+        unit.metadata["processing_fingerprint"] = fingerprint
         unit.metadata["build_generation"] = generation
         unit.metadata["status_evidence"] = status.model_dump(mode="json")
         unit.source_artifact_id = artifact.id
@@ -309,22 +330,26 @@ def main() -> int:
                                               {"name": meta["name"] or act_name, "url": url})
                 print(f"  INELIGIBLE {act_name[:52]}: {reason}")
                 continue
-            # Incremental guard (19 Jul): if EVERY volume's bytes are unchanged, the
-            # prior generation's provisions are restamped and extraction is skipped.
+            # Incremental guard (19 Jul): reuse only on a full processing-fingerprint
+            # match for EVERY volume, and only when EVERY active store restamps
+            # (parity — a store without the contract forces fresh extraction).
             import hashlib as _hl
-            restamp_stores = [st for st in stores
-                              if hasattr(st, "restamp_artifact_generation")]
-            if restamp_stores:
-                vol_shas = [_hl.sha256(Path(p).read_bytes()).hexdigest()
-                            for _, p in meta["pdfs"]]
-                counts = [sum(st.restamp_artifact_generation("Australia", sha, generation)
-                              for st in restamp_stores) for sha in vol_shas]
-                if counts and all(c > 0 for c in counts):
-                    acts += 1
-                    total += sum(counts) // len(restamp_stores)
-                    print(f"  {(meta['name'] or act_name)[:52]:52s} -> unchanged, "
-                          f"{sum(counts) // len(restamp_stores)} units restamped")
-                    continue
+
+            from packages.core.fingerprint import processing_fingerprint as _pfp
+
+            vol_fps = {sha: _pfp(sha, "act") for sha in
+                       (_hl.sha256(Path(p).read_bytes()).hexdigest()
+                        for _, p in meta["pdfs"])}
+            per_store = [[st.restamp_artifact_generation("Australia", fp, generation)
+                          if hasattr(st, "restamp_artifact_generation") else 0
+                          for fp in vol_fps.values()] for st in stores]
+            if per_store and all(c > 0 for counts in per_store for c in counts):
+                restamped = sum(per_store[0])
+                acts += 1
+                total += restamped
+                print(f"  {(meta['name'] or act_name)[:52]:52s} -> unchanged, "
+                      f"{restamped} units restamped")
+                continue
             artifacts, evidence_by_index = [], {}
             for pdf_index, (vol, pdf_path) in enumerate(meta["pdfs"], start=1):
                 suffix = f"/{vol}" if vol else ""
@@ -405,6 +430,8 @@ def main() -> int:
                 unit.metadata["legal_status"] = status.status
                 unit.metadata["evidence_eligible"] = True
                 unit.metadata["source_type"] = "act"
+                unit.metadata["processing_fingerprint"] = vol_fps.get(artifact.sha256) \
+                    or _pfp(artifact.sha256, "act")
                 unit.metadata["build_generation"] = generation
                 unit.metadata["status_evidence"] = status.model_dump(mode="json")
                 unit.source_artifact_id = artifact.id

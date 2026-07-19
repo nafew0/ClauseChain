@@ -40,3 +40,21 @@ def seed_parse_profile(entry: dict,
         "extra_section_patterns": patterns or None,
         "citation_template": CITATION_TEMPLATES.get(source_type, "s. {label}"),
     }
+
+
+def missing_expectations(entry: dict, units: list) -> list[str]:
+    """Fail-closed acquisition check (Sol review #4, 19 Jul): a research seed may
+    declare the provisions it exists to supply — `expected_citations` (article
+    prefixes, e.g. "Art. 14.11") and/or `expected_phrases` (operative text). If any
+    declared expectation is absent from the parsed units, the builder must NOT load
+    the document (e.g. a landing page resolved to the wrong chapter PDF)."""
+    missing: list[str] = []
+    for cite in entry.get("expected_citations") or []:
+        want = str(cite).strip()
+        if want and not any(str(u.article_section).startswith(want) for u in units):
+            missing.append(want)
+    for phrase in entry.get("expected_phrases") or []:
+        want = str(phrase).strip().lower()
+        if want and not any(want in str(u.text).lower() for u in units):
+            missing.append(str(phrase))
+    return missing

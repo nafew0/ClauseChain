@@ -154,6 +154,21 @@ def retrieve_for_indicator(
     `corpus` = [{'provision_id', 'text', 'props'}] — the full loaded corpus for
     the economy (dense leg scans it all; it is small by design).
     """
+    # Source-type scoping BEFORE any ranking or cap (Sol review #5, 19 Jul): an
+    # indicator sees only its allowed evidence classes, so excluded classes can
+    # never consume union-cap capacity. Rubric YAML declares
+    # `allowed_source_types: [treaty]` (P6-I5); absent -> all domestic classes,
+    # never treaties.
+    allowed = indicator_cfg.get("allowed_source_types")
+    allowed = {str(s).strip().lower() for s in allowed} if allowed else None
+
+    def _source_ok(props: dict | None) -> bool:
+        props = props or {}
+        stype = (props.get("source_type")
+                 or (props.get("metadata") or {}).get("source_type") or "act")
+        return stype in allowed if allowed is not None else stype != "treaty"
+
+    corpus = [row for row in corpus if _source_ok(row.get("props"))]
     queries = build_query_pack(indicator_id, indicator_cfg)
     by_id: dict[str, Candidate] = {}
 
@@ -181,6 +196,8 @@ def retrieve_for_indicator(
             if not hit.get("props", {}).get("evidence_eligible", False):
                 continue
             if hit.get("props", {}).get("legal_status") != "in_force":
+                continue
+            if not _source_ok(hit.get("props")):
                 continue
             cand = by_id.setdefault(
                 hit["provision_id"],

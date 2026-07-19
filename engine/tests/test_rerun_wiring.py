@@ -226,13 +226,47 @@ def test_treaty_candidates_scoped_to_optin_indicators():
 
     rubric = yaml.safe_load(
         (Path(__file__).resolve().parents[1] / "configs/rdtii/pillar_6.yaml").read_text())
-    assert rubric["indicators"]["P6-I5"].get("allow_treaty_sources") is True
-    assert not rubric["indicators"]["P6-I1"].get("allow_treaty_sources")
+    assert rubric["indicators"]["P6-I5"].get("allowed_source_types") == ["treaty"]
+    assert not rubric["indicators"]["P6-I1"].get("allowed_source_types")
     for pillar in ("6", "7"):
         r = yaml.safe_load((Path(__file__).resolve().parents[1] /
                             f"configs/rdtii/pillar_{pillar}.yaml").read_text())
-        optins = [k for k, v in r["indicators"].items() if v.get("allow_treaty_sources")]
+        optins = [k for k, v in r["indicators"].items() if v.get("allowed_source_types")]
         assert optins == (["P6-I5"] if pillar == "6" else [])
+
+
+def test_source_type_filter_applies_before_ranking_and_caps():
+    from packages.retrieval import hybrid
+
+    class StubStore:
+        def search_provisions(self, *a, **k):
+            return []
+
+    class StubCache:
+        def ensure(self, *a, **k):
+            pass
+
+        def dense_top(self, *a, **k):
+            return []
+
+    corpus = (
+        [{"provision_id": f"d{i}", "text": "cross-border transfer of information",
+          "props": {"evidence_eligible": True, "legal_status": "in_force",
+                    "source_type": "act"}} for i in range(3)]
+        + [{"provision_id": f"t{i}", "text": "cross-border transfer of information",
+            "props": {"evidence_eligible": True, "legal_status": "in_force",
+                      "source_type": "treaty"}} for i in range(3)]
+    )
+    cue = {"positive_cues": ["cross-border transfer of information"]}
+    # domestic indicator (no allowlist): treaties never enter, even before caps
+    got = hybrid.retrieve_for_indicator(StubStore(), StubCache(), corpus,
+                                        "P6-I1", cue, "Singapore")
+    assert {c.provision_id for c in got} == {"d0", "d1", "d2"}
+    # treaty-only indicator: ONLY treaty units — a domestic statute cannot reach P6-I5
+    got = hybrid.retrieve_for_indicator(
+        StubStore(), StubCache(), corpus, "P6-I5",
+        {**cue, "allowed_source_types": ["treaty"]}, "Singapore")
+    assert {c.provision_id for c in got} == {"t0", "t1", "t2"}
 
 
 # ------------------------------------------------- manifest reconciliation
@@ -277,21 +311,83 @@ def test_fetch_seeds_reconciles_metadata_without_refetch(tmp_path, monkeypatch):
 
 
 # ----------------------------------------------------------- restamp guard
-def test_restamp_keeps_unchanged_artifact_units_across_generations(tmp_path):
+def test_restamp_requires_full_processing_fingerprint(tmp_path):
+    from packages.core.fingerprint import processing_fingerprint
     from packages.core.schemas import RuleUnit
     from packages.graph.sqlite_graph import SqliteGraphStore
 
     store = SqliteGraphStore(db_path=str(tmp_path / "g.db"))
+    fp = processing_fingerprint("abc123", "act", ["malay"], ("ocr:hybrid_accuracy",))
     unit = RuleUnit(
         id="my:test:s1", document_id="my:test", economy="Malaysia",
         law_name="Test Act", article_section="s. 1",
         text="A person must not process personal data without consent under this Act.",
         source_url="https://example.gov.my/a.pdf", location_reference="page 1",
-        metadata={"content_sha256": "abc123", "build_generation": "g1",
-                  "legal_status": "in_force", "evidence_eligible": True},
+        metadata={"content_sha256": "abc123", "processing_fingerprint": fp,
+                  "build_generation": "g1", "legal_status": "in_force",
+                  "evidence_eligible": True},
     )
     store.upsert_rule_unit(unit)
-    assert store.restamp_artifact_generation("Malaysia", "abc123", "g2") == 1
+    # identical fingerprint (same bytes + extraction version + profile) -> reuse
+    assert store.restamp_artifact_generation("Malaysia", fp, "g2") == 1
     assert store.prune_economy_generation("Malaysia", "g2") == 0  # survived
-    assert store.restamp_artifact_generation("Malaysia", "missing", "g3") == 0
-    assert store.prune_economy_generation("Malaysia", "g3") == 1  # changed doc pruned
+    # SAME source bytes but changed parser profile -> fingerprint miss -> rebuild
+    fp_other_profile = processing_fingerprint("abc123", "act", [], ("ocr:hybrid_accuracy",))
+    assert fp_other_profile != fp
+    assert store.restamp_artifact_generation("Malaysia", fp_other_profile, "g3") == 0
+    assert store.prune_economy_generation("Malaysia", "g3") == 1  # stale parse pruned
+
+
+def test_fingerprint_binds_version_profile_and_grammars():
+    import packages.core.fingerprint as fpm
+
+    base = fpm.processing_fingerprint("sha", "act", ["malay"])
+    assert fpm.processing_fingerprint("sha", "act", ["malay"]) == base
+    assert fpm.processing_fingerprint("sha2", "act", ["malay"]) != base   # bytes
+    assert fpm.processing_fingerprint("sha", "treaty", ["malay"]) != base  # profile
+    assert fpm.processing_fingerprint("sha", "act", []) != base            # grammars
+    old = fpm.EXTRACTION_VERSION
+    try:
+        fpm.EXTRACTION_VERSION = "9999-01-01.0"
+        assert fpm.processing_fingerprint("sha", "act", ["malay"]) != base  # version
+    finally:
+        fpm.EXTRACTION_VERSION = old
+
+
+def test_expected_evidence_fails_closed():
+    from packages.ingest.seed_profiles import missing_expectations
+
+    profile = seed_parse_profile({"source_type": "treaty"})
+    text = ("Article 1: Definitions\nFor the purposes of this Chapter the term "
+            "covered person means a person of a Party as defined in this agreement.\n")
+    units = parse_act_text(_pages(text), economy="Australia",
+                           act_name="Wrong Chapter", act_ref="wrong",
+                           source_url="https://example.gov.au/ch1.pdf",
+                           extra_section_patterns=profile["extra_section_patterns"],
+                           citation_template=profile["citation_template"])
+    entry = {"expected_citations": ["Art. 14.11"],
+             "expected_phrases": ["cross-border transfer of information"]}
+    missing = missing_expectations(entry, units)
+    assert "Art. 14.11" in missing and "cross-border transfer of information" in missing
+    # the right chapter satisfies both declarations
+    good = ("Article 14.11: Cross-Border Transfer of Information by Electronic Means\n"
+            "1. Each Party shall allow the cross-border transfer of information by "
+            "electronic means, including personal information, for business.\n")
+    good_units = parse_act_text(_pages(good), economy="Australia",
+                                act_name="CPTPP Chapter 14", act_ref="c14",
+                                source_url="https://example.gov.au/ch14.pdf",
+                                extra_section_patterns=profile["extra_section_patterns"],
+                                citation_template=profile["citation_template"])
+    assert missing_expectations(entry, good_units) == []
+
+
+def test_long_span_flagged_not_truncated():
+    from packages.verifier.gates import g9_span_length
+
+    # one giant clause with NO internal boundary: kept whole + WARN flag
+    source = "the data user shall " + "and ".join(f"obligation {i} " for i in range(80))
+    final = finalize_snippet(source, source)
+    assert len(final) > 700  # never character-truncated
+    flag = g9_span_length(final)
+    assert flag.status == "WARN" and "REVIEW_REQUIRED_LONG_SPAN" in flag.reason
+    assert g9_span_length("short snippet.").status == "PASS"

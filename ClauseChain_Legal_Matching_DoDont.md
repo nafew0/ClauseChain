@@ -6,7 +6,7 @@
 |---|---|
 | Companion to | `ClauseChain_Round1_Build_Guide.md` (architecture), `ClauseChain_PRD_Application.md` |
 | Source of truth | RDTII 2.1 Guide + internal guide + the 1/4/5 June workshop worked examples (Juntong, Nikita) + **ESCAP 10 June mail** (master-vs-inventory NEW/KNOWN baseline ruling) |
-| Scope | Pillars 6 & 7 (P6-I1…I4 + P7-I1…I5). `P6-I5`=6.5 is non-regulatory — not extracted. |
+| Scope | Pillars 6 & 7 (P6-I1…I5 + P7-I1…I5). `P6-I5`=6.5 **(updated 19 Jul)**: extracted from official treaty texts (state-register PDFs via the seeds pipeline; rubric `allowed_source_types: [treaty]` — treaty evidence for 6.5 only, domestic indicators never cite treaties). |
 | How to use | §13 example bank → few-shot prompt examples · §3–§9 rules → system-prompt rules + `pillar_*.yaml` exclusions · §12 checklist → verification gates + eval |
 
 > **Mental model.** Every output row answers one question: *"Does this exact, current, official, domestic legal provision satisfy this RDTII indicator's legal test — and can a lawyer verify it from the citation in seconds?"* Each DO/DON'T below removes one way that answer goes wrong.
@@ -177,7 +177,7 @@ These are the exact confusions the RDTII team flagged. Encode each as a `pillar_
 | P6-I2 | mirrors 6.1 (personal data OR horizontal; or ≥2 non-personal/specific) | single non-personal/specific-data storage rule | no local-storage requirement |
 | P6-I3 | **any** infrastructure requirement (local data centre/server as a **precondition of service**, or transfer conditioned on infrastructure) | — | none — and rules on **already-established** data centres (security controls, registration) are recorded but scored **0**; data-centre **licensing** → 9.4, not 6.3 |
 | P6-I4 | conditions cover **personal data** (any coverage) OR apply **horizontally** (even non-personal) | non-personal/specific data or sectoral only | no conditions |
-| P6-I5 | no binding data-transfer agreement (treaty DBs; not extracted) | — | ≥1 binding agreement |
+| P6-I5 | no binding data-transfer agreement | — | ≥1 binding agreement — **evidenced from official treaty texts** (CPTPP Art. 14.11-type commitments; official state-register copies via seeds; updated 19 Jul) |
 | P7-I1 | **lacks** comprehensive DP framework | **sectoral-only**; or **horizontal-but-thin** (e.g. missing rectification → "not comprehensive enough" — Juntong, 5 Jun; organizers invite going deeper than the binary) | comprehensive horizontal framework exists |
 | P7-I2 | **lacks** any cybersecurity framework | **non-dedicated framework** (relies on other laws for incident monitoring/detection/prevention/mitigation) **and/or dedicated but sectoral-only** | dedicated **horizontal** framework exists |
 | P7-I3 | minimum retention **period specified** (keep ≥ X days/months/years) | — | none; a retention requirement **without a specified minimum period is still RECORDED but scored 0** ("not longer than necessary" is never 7.3 — guide fn.35) |

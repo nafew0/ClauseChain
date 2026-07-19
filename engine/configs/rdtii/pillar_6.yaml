@@ -114,8 +114,10 @@ indicators:
     policy_name: Not in agreement with binding commitments on data transfer
     regulatory: true         # rerun-fix #5 (19 Jul): treaty texts now flow through the normal
                              # pipeline via seeds (official treaty PDFs) — no manual rows
-    allow_treaty_sources: true   # ONLY indicator whose rubric cites international
-                                 # agreements as primary evidence; all others stay domestic-law
+    # Indicator-scoped evidence policy (not an engine limitation): 6.5's rubric
+    # evidence class IS the international agreement; domestic indicators never
+    # see treaty units (retrieval filters BEFORE ranking/caps).
+    allowed_source_types: [treaty]
     positive_cues:
       - "cross-border transfer of information by electronic means"
       - "shall not prohibit or restrict the cross-border transfer of information"

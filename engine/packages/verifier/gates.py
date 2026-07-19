@@ -56,8 +56,25 @@ def finalize_snippet(claimed: str, source_text: str, max_len: int = 700) -> str:
     if len(snippet) > max_len:
         head = snippet[:max_len]
         cut = max(head.rfind(". "), head.rfind("; "), head.rfind(": "))
-        snippet = head[:cut + 1].rstrip() if cut >= int(max_len * 0.5) else head.rstrip()
+        if cut >= int(max_len * 0.5):
+            snippet = head[:cut + 1].rstrip()
+        # else: NO clause boundary in range — never character-truncate (Sol #6);
+        # the over-long snippet is returned whole and g9_span_length flags it
+        # REVIEW_REQUIRED_LONG_SPAN downstream.
     return snippet
+
+
+def g9_span_length(snippet: str, max_len: int = 700) -> GateResult:
+    """Long-span review flag (Sol review #6, 19 Jul): a snippet that could not be
+    closed on a clause boundary within the export budget is surfaced for human
+    review instead of being silently cut mid-clause."""
+    if len(snippet) <= max_len:
+        return GateResult(gate_id="G9", status="PASS",
+                          reason=f"snippet within export budget ({len(snippet)} chars)")
+    return GateResult(
+        gate_id="G9", status="WARN",
+        reason=(f"REVIEW_REQUIRED_LONG_SPAN: {len(snippet)} chars with no clause "
+                f"boundary inside {max_len} — export kept whole, review before submission"))
 
 
 def source_exact_slice(snippet: str, source_text: str) -> str | None:
