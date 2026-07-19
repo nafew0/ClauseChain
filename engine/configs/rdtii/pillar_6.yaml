@@ -118,6 +118,19 @@ indicators:
     # evidence class IS the international agreement; domestic indicators never
     # see treaty units (retrieval filters BEFORE ranking/caps).
     allowed_source_types: [treaty]
+    # 6.5 is absence-scored like 7.1/7.2: the QUESTION asks "joined NO agreement?"
+    # but the EVIDENCE row documents the agreement that exists. Without this the
+    # mapper rejects every treaty article for proving the opposite of the question
+    # (observed: SG P6-I5 77 candidates -> 0 mapped, 20 Jul first sweep).
+    polarity: framework_absent_scores_high
+    legal_test: >
+      applies=true when the treaty provision states a BINDING cross-border
+      data-transfer commitment (e.g. "shall allow the cross-border transfer of
+      information by electronic means", "shall not prohibit or restrict the
+      cross-border transfer of information", location-of-computing-facilities
+      disciplines). The row records that the economy HAS such a commitment;
+      the 6.5 score (1 = no binding agreement, 0 = at least one) is applied at
+      scoring time, not by your mapping decision.
     positive_cues:
       - "cross-border transfer of information by electronic means"
       - "shall not prohibit or restrict the cross-border transfer of information"
