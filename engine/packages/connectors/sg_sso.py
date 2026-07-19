@@ -111,13 +111,17 @@ def _session() -> httpx.Client:
     return _SESSION
 
 
-def fetch_act_full(act_ref: str, timeout: float = 180.0) -> FetchResult:
-    """Fetch the WHOLE act as one HTML document via the portal's print view,
+def fetch_act_full(act_ref: str, timeout: float = 180.0, kind: str = "Act") -> FetchResult:
+    """Fetch the WHOLE instrument as one HTML document via the portal's print view,
     with backoff-retry when the CloudFront anti-bot blocks us (403/429).
 
-    `act_ref` is the SSO act path segment, e.g. "PDPA2012", "CA2018".
+    `act_ref` is the SSO path segment, e.g. "PDPA2012", "CA2018". `kind` selects
+    the portal collection: "Act" (default) or "SL" (subsidiary legislation —
+    same print-view markup, verified 19 Jul on PDPA2012-S63-2021).
     """
-    url = f"{BASE}/Act/{act_ref}"
+    if kind not in ("Act", "SL"):
+        raise ValueError(f"Unsupported SSO collection {kind!r} (Act|SL)")
+    url = f"{BASE}/{kind}/{act_ref}"
     params = {"ViewType": "Print", "PrintType": "html", "ProvIds": "all-.,toc-."}
     attempts = 1 + len(BLOCK_BACKOFFS_S)
     result: FetchResult | None = None
@@ -149,7 +153,7 @@ def fetch_act_full(act_ref: str, timeout: float = 180.0) -> FetchResult:
     return result  # still blocked; caller raises
 
 
-def acquire_act(act_ref: str, out_dir: str | Path = "data/raw/sg") -> dict:
+def acquire_act(act_ref: str, out_dir: str | Path = "data/raw/sg", kind: str = "Act") -> dict:
     """Fetch + archive an act with provenance; cache-aware (one fetch per day per act).
 
     Returns the manifest dict: {act_ref, url, final_url, sha256, access_date,
@@ -165,7 +169,7 @@ def acquire_act(act_ref: str, out_dir: str | Path = "data/raw/sg") -> dict:
             return manifest  # already archived today — don't hammer the portal
 
     time.sleep(POLITE_DELAY_S)
-    result = fetch_act_full(act_ref)
+    result = fetch_act_full(act_ref, kind=kind)
     if result.looks_blocked:
         raise RuntimeError(
             f"sso.agc.gov.sg blocked the fetch for {act_ref} "

@@ -43,6 +43,23 @@ def extend_to_clause_boundary(snippet: str, source: str, max_extra: int = 300) -
     return source[pos:end + boundary].rstrip()
 
 
+def finalize_snippet(claimed: str, source_text: str, max_len: int = 700) -> str:
+    """Construct the FINAL exported snippet before any gate runs (Sol review, 19 Jul):
+    source-exact slice -> clause-boundary extension -> boundary-aware length cap.
+    The text this returns is exactly what gates verify and exactly what is exported;
+    there is no post-gate mutation. A claim not found source-exact is returned as-is
+    so G1 rejects it on the same text the export would have carried."""
+    exact = source_exact_slice(claimed, source_text)
+    if exact is None:
+        return claimed
+    snippet = extend_to_clause_boundary(exact, source_text)
+    if len(snippet) > max_len:
+        head = snippet[:max_len]
+        cut = max(head.rfind(". "), head.rfind("; "), head.rfind(": "))
+        snippet = head[:cut + 1].rstrip() if cut >= int(max_len * 0.5) else head.rstrip()
+    return snippet
+
+
 def source_exact_slice(snippet: str, source_text: str) -> str | None:
     """E3-lite (P3.5): return the SOURCE's own characters for a claimed snippet.
 

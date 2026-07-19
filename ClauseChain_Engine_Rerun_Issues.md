@@ -34,12 +34,39 @@ findings (incl. ChatGPT deep-research results) as they arrive.
   into seeds/hunt lists here before the rerun.
 
 ## Rerun checklist (when fixes land)
-- [ ] Fix #1 + #2 with tests → engine suite green
+- [x] Fix #1 + #2 with tests → engine suite green (139 tests; snippet finalize + SSO line-breaks)
 - [ ] Add #3 sections to hunt/verify lists; confirm corpus contains them
 - [ ] Full 6-run sweep → refuter v2 → regenerate payload/workbook → engine_refresh on server
 - [ ] Preserve today's decisions (decisions.json is append-only supersession — re-approved rows
       keep their receipts; NEW rows from the rerun enter as pending)
 - [ ] Re-upload window: 20 Jul Bangkok — final artifacts regenerate via submission_replay
+
+## Sol-review blockers (19 Jul, second pass) — status
+- [x] **P6-I5 treaty eligibility**: `legal_controls` accepts data-declared `source_type: treaty`
+      (in-force only; bill/draft/commentary patterns still apply). Treaty units are scoped by
+      config — only `allow_treaty_sources: true` indicators (P6-I5 alone) may cite them.
+- [x] **Treaty grammar in real builders**: `SECTION_GRAMMARS`/`CITATION_TEMPLATES` registry in
+      pdf_act + `packages/ingest/seed_profiles.py`; all three builders parse profile-driven
+      (treaty → "Art. {label}", MY pack adds `section_grammars: [malay]` for Seksyen/Perkara).
+- [x] **Manifest reconciliation**: every build re-walks seeds.json (cached ok rows never
+      refetched, metadata refreshed, new rows fetched); summary → data/raw/{cc}/seeds_reconciliation.json.
+- [x] **SG subsidiary legislation**: sg_sso `kind="SL"` print-view route (same parser — verified
+      live on PDPA2012-S63-2021) + seeds phase in build_sg_corpus (SL + treaty PDFs).
+- [x] **Union cap**: env `UNION_CAP_PER_INDICATOR` (default 400, was silent 120); every
+      truncation recorded in indicator_stats.caps + run warnings.
+- [x] **Snippet ordering**: `finalize_snippet()` constructs the exported text BEFORE `run_gates`;
+      post-gate mutation deleted; contract test forbids regression.
+- [x] **Incremental guard**: `restamp_artifact_generation` — unchanged bytes (sha256) skip
+      re-extraction/OCR; restamped units survive the generation prune (MY/AU/SG-seeds paths).
+- [x] **Builder-level integration tests**: tests/test_rerun_wiring.py (17) — treaty eligibility +
+      DFAT-style Article parse, Seksyen parse, MY research-PDF profile, SG SL parse + URL routing,
+      snippet-first-then-gate, cap recording, reconciliation-without-refetch, restamp.
+- [ ] **Proof runs**: refreshed manifests + one new source per economy in corpus (builds running);
+      one real treaty → eligible RuleUnit + CitationProof (proof script after builds).
+- [!] **DFAT (AU treaties) network-blocked** from BD (Akamai TLS fingerprinting, IPv4 TCP ok /
+      TLS refused for non-browsers — both Mac + server): seeds_fetch got a generic Playwright
+      real-browser fallback; if still blocked the rows stay recorded `dead` in reconciliation
+      (explicit, not silent) and AU P6-I5 falls back to absence handling.
 
 6. **Multilingual handling** (user, Act 709 check): MY amendment A1727 is Malay-primary — anchor parse must handle "Seksyen 12A" patterns; snippet policy for non-English sources = original-language verbatim + unofficial English in the appended column. D9 economies (CN/RU/TH/LA/MN/ID) inherit: BGE-M3 cross-lingual retrieval, native-text mapping, per-language section grammars via extra_section_patterns.
 

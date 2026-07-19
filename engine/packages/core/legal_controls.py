@@ -14,7 +14,8 @@ INELIGIBLE_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     ("COMPANY_POLICY", re.compile(r"\b(company|corporate) policy\b", re.I)),
 )
 
-ELIGIBLE_SOURCE_TYPES = {"act", "statute", "regulation", "official_code", "official_instrument"}
+ELIGIBLE_SOURCE_TYPES = {"act", "statute", "regulation", "official_code", "official_instrument",
+                         "treaty"}
 INELIGIBLE_SOURCE_TYPES = {
     "bill": "BILL_OR_DRAFT", "draft": "BILL_OR_DRAFT",
     "consultation": "CONSULTATION", "international_agreement": "INTERNATIONAL_AGREEMENT",
@@ -28,6 +29,11 @@ def evidence_eligibility(law_name: str, source_type: str = "statute",
     if source_type in INELIGIBLE_SOURCE_TYPES:
         return False, INELIGIBLE_SOURCE_TYPES[source_type]
     for reason, pattern in INELIGIBLE_PATTERNS:
+        # A seed that DECLARES source_type "treaty" (official state register, P6-I5
+        # rubric's own primary source) is not disqualified by treaty words in its
+        # name; the name heuristic exists for undeclared/defaulted source types.
+        if reason == "INTERNATIONAL_AGREEMENT" and source_type == "treaty":
+            continue
         if pattern.search(law_name):
             return False, reason
     if legal_status != "in_force":

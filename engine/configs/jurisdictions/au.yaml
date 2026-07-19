@@ -66,3 +66,37 @@ gold_aliases:
 governing_instruments:
   default: { law: "Privacy Act 1988", url: "https://www.legislation.gov.au/C2004A03712/latest" }
   P7-I2:   { law: "Security of Critical Infrastructure Act 2018", url: "https://www.legislation.gov.au/C2018A00029/latest" }
+
+status_assertions:   # non-Federal-Register seeds (state portals, DFAT treaties) — 19 Jul
+  "CPTPP official documents (DFAT)":
+    status: in_force
+    fact_url: "https://www.dfat.gov.au/trade/agreements/in-force/cptpp"
+    fact_text: "DFAT lists the CPTPP under agreements in force; it entered into force for Australia on 30 December 2018."
+    effective_date: "2018-12-30"
+  "RCEP text (DFAT)":
+    status: in_force
+    fact_url: "https://www.dfat.gov.au/trade/agreements/in-force/rcep"
+    fact_text: "DFAT lists RCEP under agreements in force; it entered into force for Australia on 1 January 2022."
+    effective_date: "2022-01-01"
+  "Australia-Singapore Digital Economy Agreement":
+    status: in_force
+    fact_url: "https://www.dfat.gov.au/trade/services-and-digital-trade/australia-and-singapore-digital-economy-agreement"
+    fact_text: "DFAT records the Australia-Singapore Digital Economy Agreement as in force since 8 December 2020."
+    effective_date: "2020-12-08"
+  "Australia-UK FTA Chapter 14":
+    status: in_force
+    fact_url: "https://www.dfat.gov.au/trade/agreements/in-force/aukfta"
+    fact_text: "DFAT lists the Australia-UK FTA under agreements in force; it entered into force on 31 May 2023."
+    effective_date: "2023-05-31"
+  "Health Records and Information Privacy Act 2002 (NSW)":
+    status: in_force
+    fact_url: "https://legislation.nsw.gov.au/view/whole/html/inforce/current/act-2002-071"
+    fact_text: "NSW legislation portal serves this as the whole act, in-force current view."
+  "Surveillance Devices Act 2007 (NSW)":
+    status: in_force
+    fact_url: "https://legislation.nsw.gov.au/view/whole/html/inforce/current/act-2007-064"
+    fact_text: "NSW legislation portal serves this as the whole act, in-force current view."
+  "Health Records Act 2001 (Vic)":
+    status: in_force
+    fact_url: "https://www.legislation.vic.gov.au/in-force/acts/health-records-act-2001"
+    fact_text: "Victorian legislation portal lists the Health Records Act 2001 among Acts in force."

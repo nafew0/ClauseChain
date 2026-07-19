@@ -252,11 +252,24 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
     for indicator_id, cfg in rubric.get("indicators", {}).items():
         if cfg.get("regulatory") is False:
             continue  # 6.5: non-regulatory — engine does not extract
-        candidates = retrieve_for_indicator(store, cache, corpus, indicator_id, cfg, economy)
+        retrieval_caps: list[dict] = []
+        candidates = retrieve_for_indicator(store, cache, corpus, indicator_id, cfg, economy,
+                                            caps_out=retrieval_caps)
+        for cap in retrieval_caps:
+            warnings.append(f"{indicator_id}: retrieval union capped at {cap['limit']} of "
+                            f"{cap['input_count']} candidates (cap logged, not silent)")
+        # Treaty scoping (config-driven): units from a declared-treaty source are
+        # evidence ONLY for indicators whose rubric opts in (P6-I5 commitments in
+        # international agreements). Domestic-law indicators never cite treaties.
+        if not cfg.get("allow_treaty_sources"):
+            def _stype(c):
+                props = c.props or {}
+                return props.get("source_type") or (props.get("metadata") or {}).get("source_type")
+            candidates = [c for c in candidates if _stype(c) != "treaty"]
         indicator_stats = {"candidate_count": len(candidates), "resolved_known_anchors": 0,
                            "candidate_recall": None, "screen_survival_recall": None,
                            "mapper_survival_recall": None, "gate_survival_recall": None,
-                           "injected_anchor_count": 0, "caps": []}
+                           "injected_anchor_count": 0, "caps": retrieval_caps}
         # KNOWN-RECALL INJECTION (reviewer, 9 Jul): every master-known (law+section)
         # for this economy must reach the mapper regardless of retrieval rank. Missing
         # from the corpus entirely -> loud warning (a recall hole to fix, never silent).
@@ -355,6 +368,13 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
             if candidate.provision_id in gold_anchor_ids:
                 mapped_anchor_ids.add(candidate.provision_id)
             props = candidate.props
+            # The exported snippet is constructed FIRST (source-exact slice ->
+            # clause-boundary extension -> boundary-aware cap); every gate below
+            # verifies that exact final text. No mutation happens after gating.
+            from packages.verifier.gates import finalize_snippet
+
+            decision.verbatim_snippet = finalize_snippet(
+                decision.verbatim_snippet, candidate.text)
             gate_results, ok = run_gates(
                 snippet=decision.verbatim_snippet,
                 source_text=candidate.text,
@@ -409,12 +429,6 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                     f"REJECTED OCR citation-token disagreement: {indicator_id} {props.get('article_section')}"
                 )
                 continue
-            from packages.verifier.gates import extend_to_clause_boundary, source_exact_slice
-
-            exact = source_exact_slice(decision.verbatim_snippet, candidate.text)
-            if exact:
-                # source characters, extended to the clause boundary (never mid-phrase)
-                decision.verbatim_snippet = extend_to_clause_boundary(exact, candidate.text)[:700]
             tag, why = known.tag(economy, props.get("law_name", ""),
                                  props.get("article_section", ""))
             status = props.get("legal_status") or "unknown"

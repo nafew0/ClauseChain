@@ -15,11 +15,15 @@ import math
 from dataclasses import dataclass, field
 from pathlib import Path
 
-# generous caps that bound LLM cost without behaving like top-k relevance cuts
+import os as _os
+
+# generous caps that bound LLM cost without behaving like top-k relevance cuts;
+# the union cap is env-tunable and every truncation is recorded in run stats
+# (Sol review, 19 Jul: no silent recall limits).
 SPARSE_LIMIT_PER_QUERY = 40
 DENSE_LIMIT_PER_QUERY = 40
 DENSE_MIN_SIMILARITY = 0.25
-UNION_CAP_PER_INDICATOR = 120
+UNION_CAP_PER_INDICATOR = int(_os.getenv("UNION_CAP_PER_INDICATOR", "400"))
 
 
 def build_query_pack(indicator_id: str, indicator_cfg: dict) -> list[str]:
@@ -143,6 +147,7 @@ def retrieve_for_indicator(
     indicator_id: str,
     indicator_cfg: dict,
     economy: str,
+    caps_out: list | None = None,
 ) -> list[Candidate]:
     """Union of sparse (graph full-text) and dense (cosine) hits for one indicator.
 
@@ -197,6 +202,9 @@ def retrieve_for_indicator(
             cand.matched_queries.append(query)
 
     candidates = sorted(by_id.values(), key=lambda c: c.combined, reverse=True)
+    if len(candidates) > UNION_CAP_PER_INDICATOR and caps_out is not None:
+        caps_out.append({"stage": "retrieval_union", "limit": UNION_CAP_PER_INDICATOR,
+                         "input_count": len(candidates)})
     return candidates[:UNION_CAP_PER_INDICATOR]
 
 

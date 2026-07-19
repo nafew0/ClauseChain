@@ -47,13 +47,17 @@ def main() -> int:
     only_act = next((arg.split("=", 1)[1] for arg in sys.argv
                      if arg.startswith("--only-act=")), None)
     manifest_path = Path("data/raw/my/seeds_manifest.json")
-    if not manifest_path.is_file():  # fresh clone: fetch the seed documents first
-        from packages.connectors.seeds_fetch import fetch_seeds
+    # Manifest reconciliation (19 Jul): EVERY build re-walks seeds.json — cached
+    # successes are never refetched, but new research rows are acquired and prior
+    # entries get their metadata (source_type, cluster, ...) refreshed.
+    from packages.connectors.seeds_fetch import fetch_seeds
 
-        print("[seeds] no MY manifest — fetching P6/P7 seed documents (first run only)")
-        fetch_seeds("Malaysia", ("P6", "P7"))
+    fetch_seeds("Malaysia", ("P6", "P7"))
     manifest = json.loads(manifest_path.read_text())
     pack = yaml.safe_load(Path("configs/jurisdictions/my.yaml").read_text())
+    from packages.ingest.seed_profiles import seed_parse_profile
+
+    pack_grammars = pack.get("section_grammars") or []
     status_assertions = pack.get("status_assertions") or {}
     official_domains = {s["domain"] for s in pack.get("official_sources", [])}
     gold = gold_act_norms()
@@ -172,7 +176,8 @@ def main() -> int:
             effective_date=(assertion or {}).get("effective_date"),
             explicit_status=(assertion or {}).get("status"),
         )
-        eligible, reason = evidence_eligibility(act_name, "act", status.status)
+        profile = seed_parse_profile(entry, pack_grammars)
+        eligible, reason = evidence_eligibility(act_name, profile["source_type"], status.status)
         if not eligible:
             for st in stores:
                 if hasattr(st, "add_discovery_lead"):
@@ -186,7 +191,7 @@ def main() -> int:
         except ValueError:
             accessed = datetime.now(timezone.utc)
         artifact = source_artifact_from_file(
-            file, original_url=url, retrieved_url=url, source_type="act",
+            file, original_url=url, retrieved_url=url, source_type=profile["source_type"],
             status_evidence=status, accessed_at=accessed,
             register_id=act_no.group(1) if act_no else None,
             official_domains=official_domains,
@@ -199,6 +204,19 @@ def main() -> int:
                                           {"name": act_name, "url": url, "file": file})
             print(f"  INELIGIBLE {act_name[:52]}: NON_OFFICIAL_ARCHIVE")
             continue
+        # Incremental guard (19 Jul): unchanged bytes (same sha256) -> provisions
+        # already extracted in a prior generation are restamped and kept; no
+        # re-parse, no OCR, no embedding churn. --only-act rebuilds bypass this.
+        if not only_act:
+            restamped = sum(
+                st.restamp_artifact_generation("Malaysia", artifact.sha256, generation)
+                for st in stores if hasattr(st, "restamp_artifact_generation"))
+            if restamped:
+                loaded_acts += 1
+                total += restamped // max(1, len([s for s in stores
+                                                  if hasattr(s, "restamp_artifact_generation")]))
+                print(f"  {act_name[:58]:58s} -> unchanged, {restamped} units restamped")
+                continue
         try:
             pages = extract_pdf(file, ocr_engine=ocr)
             content_ok, content_reason = content_eligibility([p.text for p in pages])
@@ -214,7 +232,9 @@ def main() -> int:
             page_artifacts, text_spans = materialize_page_evidence(pages, artifact.id)
             units = parse_act_text(pages, economy="Malaysia", act_name=act_name,
                                    act_ref=Path(file).stem.replace("seed_", ""),
-                                   source_url=artifact.retrieved_url)
+                                   source_url=artifact.retrieved_url,
+                                   extra_section_patterns=profile["extra_section_patterns"],
+                                   citation_template=profile["citation_template"])
         except Exception as error:  # noqa: BLE001 — one bad PDF must not kill the build
             print(f"  FAILED {act_name[:50]}: {error}")
             build_complete = False
@@ -244,6 +264,7 @@ def main() -> int:
             unit.metadata["content_sha256"] = artifact.sha256
             unit.metadata["legal_status"] = status.status
             unit.metadata["evidence_eligible"] = eligible
+            unit.metadata["source_type"] = profile["source_type"]
             unit.metadata["build_generation"] = generation
             unit.metadata["status_evidence"] = status.model_dump(mode="json")
             unit.source_artifact_id = artifact.id

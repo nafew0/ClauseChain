@@ -82,3 +82,25 @@ hunt_instruments:
 governing_instruments:
   default: { law: "Personal Data Protection Act 2012", url: "https://sso.agc.gov.sg/Act/PDPA2012" }
   P7-I2:   { law: "Cybersecurity Act 2018", url: "https://sso.agc.gov.sg/Act/CA2018" }
+
+status_assertions:   # treaty seeds on official SG-government file hosts — 19 Jul
+  "Digital Economy Partnership Agreement":
+    status: in_force
+    fact_url: "https://www.mti.gov.sg/Trade/Digital-Economy-Agreements/The-Digital-Economy-Partnership-Agreement"
+    fact_text: "MTI records DEPA as in force for Singapore since 7 January 2021."
+    effective_date: "2021-01-07"
+  "Singapore-Australia Digital Economy Agreement":
+    status: in_force
+    fact_url: "https://www.mti.gov.sg/Trade/Digital-Economy-Agreements/The-Singapore-Australia-Digital-Economy-Agreement"
+    fact_text: "MTI records the Singapore-Australia Digital Economy Agreement as in force since 8 December 2020."
+    effective_date: "2020-12-08"
+  "Korea-Singapore Digital Partnership Agreement":
+    status: in_force
+    fact_url: "https://www.mti.gov.sg/Trade/Digital-Economy-Agreements/The-Korea-Singapore-Digital-Partnership-Agreement"
+    fact_text: "MTI records the Korea-Singapore Digital Partnership Agreement as in force since 14 January 2023."
+    effective_date: "2023-01-14"
+  "RCEP Chapter 12 (Enterprise Singapore text)":
+    status: in_force
+    fact_url: "https://www.enterprisesg.gov.sg/regional-comprehensive-economic-partnership"
+    fact_text: "Enterprise Singapore publishes the RCEP legal text; RCEP entered into force for Singapore on 1 January 2022."
+    effective_date: "2022-01-01"

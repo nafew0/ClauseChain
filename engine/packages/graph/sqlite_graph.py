@@ -150,6 +150,7 @@ class SqliteGraphStore:
              "archived_copy": rule_unit.metadata.get("archived_copy"),
              "access_date": rule_unit.metadata.get("access_date"),
              "content_sha256": rule_unit.metadata.get("content_sha256"),
+             "source_type": rule_unit.metadata.get("source_type"),
              "extraction": rule_unit.metadata.get("extraction"),
              "confidence": rule_unit.extraction_confidence,
              "pdf_alignment": rule_unit.metadata.get("pdf_alignment"),
@@ -268,6 +269,31 @@ class SqliteGraphStore:
             conn.execute("DELETE FROM provisions_fts WHERE provision_id=?", (node_id,))
             conn.execute("DELETE FROM edges WHERE src=? OR dst=?", (node_id, node_id))
             conn.execute("DELETE FROM nodes WHERE id=?", (node_id,))
+        conn.commit()
+        return len(rows)
+
+    def restamp_artifact_generation(self, economy: str, content_sha256: str,
+                                    generation: str) -> int:
+        """Incremental-processing guard (19 Jul): a source document whose bytes are
+        unchanged (same sha256) keeps its already-extracted provisions — the builder
+        skips re-extraction/OCR and this restamps them into the current generation
+        so the end-of-build prune retains them."""
+        conn = self._connect()
+        rows = conn.execute(
+            "SELECT id, props FROM nodes WHERE label='Provision' "
+            "AND json_extract(props,'$.economy')=? "
+            "AND json_extract(props,'$.content_sha256')=?",
+            (economy, content_sha256),
+        ).fetchall()
+        if not rows:
+            return 0
+        import json as _json
+        conn.execute("BEGIN")
+        for node_id, props_raw in rows:
+            props = _json.loads(props_raw)
+            props["build_generation"] = generation
+            conn.execute("UPDATE nodes SET props=? WHERE id=?",
+                         (_json.dumps(props, ensure_ascii=False), node_id))
         conn.commit()
         return len(rows)
 

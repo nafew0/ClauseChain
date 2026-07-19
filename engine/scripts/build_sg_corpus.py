@@ -39,9 +39,11 @@ def corpus_acts() -> list[tuple[str, str | None]]:
     return [(a["ref"], a.get("number")) for a in pack.get("corpus_acts", [])]
 
 
-def load_act(act_ref: str, law_number_ref: str | None, stores, generation: str) -> int:
+def load_act(act_ref: str, law_number_ref: str | None, stores, generation: str,
+             kind: str = "Act", source_type: str = "act") -> int:
     cached = Path(f"data/raw/sg/{act_ref}.manifest.json")
-    manifest = __import__("json").loads(cached.read_text()) if cached.is_file() else acquire_act(act_ref)
+    manifest = (__import__("json").loads(cached.read_text()) if cached.is_file()
+                else acquire_act(act_ref, kind=kind))
     html = Path(manifest["html_path"]).read_text(encoding="utf-8")
     doc = parse_sso_act(html, manifest["url"])
     units = build_rule_units(doc, economy="Singapore", act_ref=act_ref,
@@ -69,6 +71,7 @@ def load_act(act_ref: str, law_number_ref: str | None, stores, generation: str) 
         unit.metadata["content_sha256"] = manifest["sha256"]
         unit.metadata["legal_status"] = status.status
         unit.metadata["evidence_eligible"] = True
+        unit.metadata["source_type"] = source_type
         unit.metadata["build_generation"] = generation
         unit.metadata["status_evidence"] = status.model_dump(mode="json")
         unit.source_artifact_id = artifact.id
@@ -96,6 +99,134 @@ def load_act(act_ref: str, law_number_ref: str | None, stores, generation: str) 
     return len(units)
 
 
+def _sso_ref(url: str) -> tuple[str, str] | None:
+    """sso.agc.gov.sg URL -> (collection, ref): /Act/PDPA2012 or /SL/PDPA2012-S63-2021."""
+    import re
+
+    m = re.search(r"sso\.agc\.gov\.sg/(Act|SL)/([A-Za-z0-9.\-]+)", url)
+    return (m.group(1), m.group(2)) if m else None
+
+
+def load_seed_documents(stores, generation: str, loaded_refs: set[str]) -> int:
+    """Seeds-manifest phase (Sol review, 19 Jul): P6/P7 seed rows beyond the core
+    corpus_acts — SSO subsidiary legislation via the same print-view parser, and
+    treaty PDFs via the generic PDF extractor with the treaty grammar. Everything
+    is profile-driven from seeds.json data; nothing here names a target."""
+    import json
+    import yaml as _yaml
+
+    from packages.connectors.seeds_fetch import fetch_seeds
+    from packages.connectors.sg_sso import acquire_act
+    from packages.core.legal_controls import content_eligibility, evidence_eligibility
+    from packages.extractors.pdf import extract_pdf, materialize_page_evidence
+    from packages.extractors.pdf_act import parse_act_text
+    from packages.ingest.seed_profiles import seed_parse_profile
+
+    fetch_seeds("Singapore", ("P6", "P7"))
+    manifest = json.loads(Path("data/raw/sg/seeds_manifest.json").read_text())
+    pack = _yaml.safe_load((Path(__file__).resolve().parents[1] /
+                            "configs/jurisdictions/sg.yaml").read_text())
+    assertions = pack.get("status_assertions") or {}
+    total = 0
+    for url, entry in manifest.items():
+        if not str(entry.get("indicator_code", "")).startswith(("P6", "P7")):
+            continue
+        act_name = (entry.get("act") or "").strip()
+        profile = seed_parse_profile(entry)
+        sso = _sso_ref(url)
+        if sso:
+            collection, ref = sso
+            if ref in loaded_refs:
+                continue  # already loaded from corpus_acts
+            loaded_refs.add(ref)
+            try:
+                total += load_act(ref, None, stores, generation, kind=collection,
+                                  source_type=profile["source_type"])
+            except Exception as error:  # noqa: BLE001 — one blocked fetch must not kill the build
+                print(f"  FAILED SSO {collection}/{ref}: {error}")
+            continue
+        # Non-SSO official document (treaty PDF on a whitelisted state domain)
+        if entry.get("status") != "ok" or not str(entry.get("file", "")).endswith(".pdf"):
+            continue
+        file = entry["file"]
+        assertion = assertions.get(act_name) or {}
+        status = resolve_status(
+            fact_url=assertion.get("fact_url", url),
+            fact_text=assertion.get("fact_text",
+                                    "Official source archived; currentness not yet asserted"),
+            current_as_at=assertion.get("current_as_at"),
+            effective_date=assertion.get("effective_date"),
+            explicit_status=assertion.get("status"),
+        )
+        eligible, reason = evidence_eligibility(act_name, profile["source_type"], status.status)
+        if not eligible:
+            print(f"  INELIGIBLE {act_name[:52]}: {reason}")
+            continue
+        from urllib.parse import urlparse
+
+        artifact = source_artifact_from_file(
+            file, original_url=url, retrieved_url=url,
+            source_type=profile["source_type"], status_evidence=status,
+            accessed_at=datetime.now(timezone.utc),
+            official_domains={urlparse(url).hostname or ""},
+            expected_mime="application/pdf",
+        )
+        restamped = sum(st.restamp_artifact_generation("Singapore", artifact.sha256, generation)
+                        for st in stores if hasattr(st, "restamp_artifact_generation"))
+        if restamped:
+            n = restamped // max(1, len([s for s in stores
+                                         if hasattr(s, "restamp_artifact_generation")]))
+            total += n
+            print(f"  {act_name[:58]:58s} -> unchanged, {n} units restamped")
+            continue
+        try:
+            pages = extract_pdf(file)
+            content_ok, content_reason = content_eligibility([p.text for p in pages])
+            if not content_ok:
+                print(f"  INELIGIBLE {act_name[:52]}: {content_reason}")
+                continue
+            page_artifacts, text_spans = materialize_page_evidence(pages, artifact.id)
+            units = parse_act_text(pages, economy="Singapore", act_name=act_name,
+                                   act_ref=Path(file).stem.replace("seed_", ""),
+                                   source_url=url,
+                                   extra_section_patterns=profile["extra_section_patterns"],
+                                   citation_template=profile["citation_template"])
+        except Exception as error:  # noqa: BLE001
+            print(f"  FAILED {act_name[:50]}: {error}")
+            continue
+        for unit in units:
+            unit.metadata["archived_copy"] = file
+            unit.metadata["access_date"] = entry.get("access_date")
+            unit.metadata["content_sha256"] = artifact.sha256
+            unit.metadata["legal_status"] = status.status
+            unit.metadata["evidence_eligible"] = eligible
+            unit.metadata["source_type"] = profile["source_type"]
+            unit.metadata["build_generation"] = generation
+            unit.metadata["status_evidence"] = status.model_dump(mode="json")
+            unit.source_artifact_id = artifact.id
+            unit.raw_context = unit.raw_context or unit.text
+            import re as _re
+
+            pm = _re.search(r"page\s+(\d+)", unit.location_reference, _re.I)
+            page_no = int(pm.group(1)) if pm else None
+            unit.linked_span_ids = ([s.id for s in text_spans if s.page_number == page_no]
+                                    if page_no else [])
+        for st in stores:
+            if hasattr(st, "upsert_source_artifact"):
+                st.upsert_source_artifact(artifact)
+            if hasattr(st, "upsert_page_artifacts"):
+                st.upsert_page_artifacts(page_artifacts)
+                st.upsert_text_spans(text_spans)
+            if hasattr(st, "upsert_rule_units"):
+                st.upsert_rule_units(units)
+            else:
+                for unit in units:
+                    st.upsert_rule_unit(unit)
+        total += len(units)
+        print(f"  {act_name[:52]:52s} [{profile['source_type']:>7s}] -> {len(units):5d} units")
+    return total
+
+
 def main() -> int:
     backend = (os.getenv("GRAPH_BACKEND") or "sqlite").lower()
     primary = get_graph_store()
@@ -112,8 +243,13 @@ def main() -> int:
 
     total = 0
     generation = datetime.now(timezone.utc).isoformat()
+    loaded_refs: set[str] = set()
     for act_ref, number in corpus_acts():
         total += load_act(act_ref, number, stores, generation)
+        loaded_refs.add(act_ref)
+
+    # Seeds phase: subsidiary legislation + treaty PDFs from the research seeds.
+    total += load_seed_documents(stores, generation, loaded_refs)
 
     for store in stores:
         if hasattr(store, "prune_economy_generation"):

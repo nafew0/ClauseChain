@@ -1176,7 +1176,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I4",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "official_instrument"
    },
    {
     "act": "PDP Commissioner Circular 2/2025 - Personal Data Breach Notification",
@@ -1184,7 +1185,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I1",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "official_instrument"
    },
    {
     "act": "PDP Data Protection Impact Assessment Guideline 2026",
@@ -1192,7 +1194,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I4",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "official_instrument"
    },
    {
     "act": "PDPA (Amendment) Act 2024 Commencement Order P.U.(B) 522/2024",
@@ -1200,7 +1203,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I1",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "regulation"
    },
    {
     "act": "Cyber Security (Risk Assessment and Audit) Regulations 2024",
@@ -1208,7 +1212,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I2",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "regulation"
    },
    {
     "act": "Cyber Security (Notification of Incident) Regulations 2024",
@@ -1216,7 +1221,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I2",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "regulation"
    },
    {
     "act": "Cyber Security (Licensing of Service Provider) Regulations 2024",
@@ -1224,7 +1230,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I2",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "regulation"
    },
    {
     "act": "Anti-Money Laundering Act 2001 (Act 613)",
@@ -1232,7 +1239,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I5",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "act"
    },
    {
     "act": "Income Tax Act 1967 (Act 53) 2025 text",
@@ -1240,7 +1248,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I3",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "act"
    },
    {
     "act": "Companies Act 2016 (Act 777)",
@@ -1248,7 +1257,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I3",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "act"
    },
    {
     "act": "CPTPP Chapter 14 (Malaysia MITI text)",
@@ -1256,7 +1266,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P6-I5",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "treaty"
    },
    {
     "act": "RCEP Chapter 12 (Malaysia MITI text)",
@@ -1264,7 +1275,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P6-I5",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "treaty"
    }
   ],
   "Singapore": [
@@ -2322,7 +2334,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P6-I4",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "regulation"
    },
    {
     "act": "Personal Data Protection (Notification of Data Breaches) Regulations 2021",
@@ -2330,7 +2343,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I1",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "regulation"
    },
    {
     "act": "Cybersecurity (Provider-Owned CII) Regulations 2018",
@@ -2338,7 +2352,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I2",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "regulation"
    },
    {
     "act": "Cybersecurity (Systems of Temporary Cybersecurity Concern) Regulations 2025",
@@ -2346,7 +2361,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I2",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "regulation"
    },
    {
     "act": "Cybersecurity (Providers of Essential Service - Third-Party-Owned CII) Regulations 2026",
@@ -2354,7 +2370,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I2",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "regulation"
    },
    {
     "act": "Accountants (Prevention of Money Laundering) Rules 2023",
@@ -2362,7 +2379,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I3",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "regulation"
    },
    {
     "act": "Legal Profession (Prevention of Money Laundering) Rules 2015",
@@ -2370,7 +2388,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I3",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "regulation"
    },
    {
     "act": "Estate Agents (Prevention of Money Laundering) Regulations 2021",
@@ -2378,7 +2397,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I3",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "regulation"
    },
    {
     "act": "Casino Control (Credit) Regulations 2010",
@@ -2386,7 +2406,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I3",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "regulation"
    },
    {
     "act": "Employment (Employment Records, KETs and Pay Slips) Regulations 2016",
@@ -2394,7 +2415,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I3",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "regulation"
    },
    {
     "act": "Platform Workers (Records and Earnings Slips) Regulations 2024",
@@ -2402,7 +2424,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I3",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "regulation"
    },
    {
     "act": "Platform Workers (Platform Work Associations) Regulations 2024",
@@ -2410,7 +2433,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I3",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "regulation"
    },
    {
     "act": "Health Products (Therapeutic Products) Regulations 2016",
@@ -2418,7 +2442,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I3",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "regulation"
    },
    {
     "act": "Health Products (Clinical Research Materials) Regulations 2016",
@@ -2426,7 +2451,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I3",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "regulation"
    },
    {
     "act": "Trustees (Transparency and Effective Control) Regulations 2017",
@@ -2434,7 +2460,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I3",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "regulation"
    },
    {
     "act": "Securities and Futures (Central Depository System) Regulations 2015",
@@ -2442,7 +2469,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I3",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "regulation"
    },
    {
     "act": "Customs Act 1960",
@@ -2450,7 +2478,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I5",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "act"
    },
    {
     "act": "Digital Economy Partnership Agreement",
@@ -2458,7 +2487,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P6-I5",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "treaty"
    },
    {
     "act": "Singapore-Australia Digital Economy Agreement",
@@ -2466,7 +2496,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P6-I5",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "treaty"
    },
    {
     "act": "Korea-Singapore Digital Partnership Agreement",
@@ -2474,7 +2505,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P6-I5",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "treaty"
    },
    {
     "act": "RCEP Chapter 12 (Enterprise Singapore text)",
@@ -2482,7 +2514,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P6-I5",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "treaty"
    }
   ],
   "Australia": [
@@ -3348,7 +3381,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I2",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "act"
    },
    {
     "act": "Cyber Security (Ransomware Payment Reporting) Rules 2025",
@@ -3356,7 +3390,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I2",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "regulation"
    },
    {
     "act": "Cyber Security (Security Standards for Smart Devices) Rules 2025",
@@ -3364,7 +3399,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I2",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "regulation"
    },
    {
     "act": "Cyber Security (Cyber Incident Review Board) Rules 2025",
@@ -3372,7 +3408,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I2",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "regulation"
    },
    {
     "act": "Privacy and Other Legislation Amendment Act 2024",
@@ -3380,7 +3417,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I1",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "act"
    },
    {
     "act": "Privacy (Australian Government Agencies - Governance) APP Code 2017",
@@ -3388,7 +3426,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I4",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "official_code"
    },
    {
     "act": "Anti-Money Laundering and Counter-Terrorism Financing Act 2006",
@@ -3396,7 +3435,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I3",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "act"
    },
    {
     "act": "Corporations Act 2001",
@@ -3404,7 +3444,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I3",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "act"
    },
    {
     "act": "Taxation Administration Act 1953",
@@ -3412,7 +3453,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I3",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "act"
    },
    {
     "act": "Fair Work Act 2009",
@@ -3420,7 +3462,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I3",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "act"
    },
    {
     "act": "National Anti-Corruption Commission Act 2022",
@@ -3428,7 +3471,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I5",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "act"
    },
    {
     "act": "Crimes Act 1914",
@@ -3436,7 +3480,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I5",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "act"
    },
    {
     "act": "Surveillance Devices Act 2004",
@@ -3444,7 +3489,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I5",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "act"
    },
    {
     "act": "Health Records and Information Privacy Act 2002 (NSW)",
@@ -3452,7 +3498,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P6-I4",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "act"
    },
    {
     "act": "Surveillance Devices Act 2007 (NSW)",
@@ -3460,7 +3507,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P7-I5",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "act"
    },
    {
     "act": "Health Records Act 2001 (Vic)",
@@ -3468,7 +3516,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P6-I4",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "act"
    },
    {
     "act": "CPTPP official documents (DFAT)",
@@ -3476,7 +3525,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P6-I5",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "treaty"
    },
    {
     "act": "RCEP text (DFAT)",
@@ -3484,7 +3534,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P6-I5",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "treaty"
    },
    {
     "act": "Australia-Singapore Digital Economy Agreement",
@@ -3492,7 +3543,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P6-I5",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "treaty"
    },
    {
     "act": "Australia-UK FTA Chapter 14",
@@ -3500,7 +3552,8 @@
     "coverage": "Personal data / records",
     "policy": "Deep-research P6/P7 delta (19 Jul)",
     "indicator_code": "P6-I5",
-    "cluster": "Data governance"
+    "cluster": "Data governance",
+    "source_type": "treaty"
    }
   ]
  }

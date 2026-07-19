@@ -3,6 +3,7 @@ source_format: pdf        # statute PDFs (native/OCR) -> extractors/pdf_act.py  
 name: Malaysia
 un_name: Malaysia
 languages: { primary: en, supported: [en, ms] }
+section_grammars: [malay]   # Seksyen/Perkara headings in official bilingual PDFs (rerun-fix #6)
 
 whitelist_source: data/official_domains.json   # mined from ESCAP References — see sg.yaml note
 official_sources:
@@ -72,6 +73,16 @@ governing_instruments:
 # A2: explicit official currentness facts. Absence from this registry means
 # `unknown` and blocks retrieval/export; a live URL alone is never a status fact.
 status_assertions:
+  "CPTPP Chapter 14 (Malaysia MITI text)":
+    status: in_force
+    fact_url: "https://fta.miti.gov.my/index.php/pages/view/CPTPP"
+    fact_text: "MITI's FTA portal lists the CPTPP as in force for Malaysia since 29 November 2022 and publishes the authentic chapter texts."
+    effective_date: "2022-11-29"
+  "RCEP Chapter 12 (Malaysia MITI text)":
+    status: in_force
+    fact_url: "https://fta.miti.gov.my/index.php/pages/view/rcep"
+    fact_text: "MITI's FTA portal lists RCEP as in force for Malaysia since 18 March 2022 and publishes the authentic chapter texts."
+    effective_date: "2022-03-18"
   "709":
     status: in_force
     fact_url: "https://www.pdp.gov.my/ppdpv1/en/akta/pdp-act-2010-en/"

@@ -108,17 +108,148 @@ def validate_compilation_bundle(meta: dict) -> str:
     return f"au-compilation:{register}:{date}"
 
 
+def _same_site(host_a: str, host_b: str) -> bool:
+    """Same official site incl. subdomains: content.legislation.vic.gov.au belongs
+    to legislation.vic.gov.au; unrelated hosts never match."""
+    a = host_a.lower().strip(".").removeprefix("www.")
+    b = host_b.lower().strip(".").removeprefix("www.")
+    return bool(a and b and (a == b or a.endswith("." + b) or b.endswith("." + a)))
+
+
+def resolve_seed_pdf(url: str, file: str) -> tuple[str, str] | None:
+    """HTML seed -> the official PDF it links (same site). Returns (pdf_url, path)."""
+    import re as _re
+    from urllib.parse import urljoin, urlparse
+
+    try:
+        html = Path(file).read_text(encoding="utf-8", errors="ignore")
+    except OSError:
+        return None
+    for link in _re.findall(r'href="([^"]+\.pdf[^"]*)"', html, _re.I):
+        pdf_url = urljoin(url, link)
+        if _same_site(urlparse(pdf_url).hostname or "", urlparse(url).hostname or ""):
+            pdf_file = Path(file).with_suffix(".resolved.pdf")
+            if not pdf_file.is_file():
+                time.sleep(2.0)
+                resp = httpx.get(pdf_url, follow_redirects=True, timeout=120, headers=H)
+                if resp.status_code != 200 or resp.content[:5] != b"%PDF-":
+                    continue
+                pdf_file.write_bytes(resp.content)
+            return pdf_url, str(pdf_file)
+    return None
+
+
+def load_au_seed_document(url: str, entry: dict, stores, generation: str,
+                          pack: dict) -> int:
+    """Non-Federal-Register AU seed (state portal act, DFAT treaty PDF): parse the
+    archived official document through the generic extractors, profile-driven.
+    Returns unit count (0 = recorded skip; the reconciliation report keeps it visible)."""
+    from packages.core.legal_controls import content_eligibility
+    from packages.extractors.pdf_align import align_to_pdf
+    from packages.ingest.seed_profiles import seed_parse_profile
+    from packages.extractors.pdf_act import parse_act_text
+    from urllib.parse import urlparse
+
+    act_name = (entry.get("act") or "").strip()
+    file = entry.get("file", "")
+    source_url = url
+    if not file.lower().endswith(".pdf"):
+        resolved = resolve_seed_pdf(url, file)
+        if not resolved:
+            print(f"  SKIP {act_name[:56]} — no official PDF resolvable from HTML seed")
+            return 0
+        source_url, file = resolved
+    profile = seed_parse_profile(entry)
+    assertion = (pack.get("status_assertions") or {}).get(act_name) or {}
+    status = resolve_status(
+        fact_url=assertion.get("fact_url", source_url),
+        fact_text=assertion.get("fact_text",
+                                "Official source archived; legal currentness not yet asserted"),
+        current_as_at=assertion.get("current_as_at"),
+        effective_date=assertion.get("effective_date"),
+        explicit_status=assertion.get("status"),
+    )
+    eligible, reason = evidence_eligibility(act_name, profile["source_type"], status.status)
+    if not eligible:
+        for st in stores:
+            if hasattr(st, "add_discovery_lead"):
+                st.add_discovery_lead(f"au:{Path(file).stem}", reason or "INELIGIBLE",
+                                      {"name": act_name, "url": url, "file": file})
+        print(f"  INELIGIBLE {act_name[:52]}: {reason}")
+        return 0
+    official_domains = {urlparse(source_url).hostname or ""}
+    artifact = source_artifact_from_file(
+        file, original_url=url, retrieved_url=source_url,
+        source_type=profile["source_type"], status_evidence=status,
+        accessed_at=datetime.now(timezone.utc), official_domains=official_domains,
+        expected_mime="application/pdf",
+    )
+    restamped = sum(st.restamp_artifact_generation("Australia", artifact.sha256, generation)
+                    for st in stores if hasattr(st, "restamp_artifact_generation"))
+    if restamped:
+        print(f"  {act_name[:58]:58s} -> unchanged, {restamped} units restamped")
+        return restamped // max(1, len([s for s in stores
+                                        if hasattr(s, "restamp_artifact_generation")]))
+    pages = extract_pdf(file)
+    content_ok, content_reason = content_eligibility([p.text for p in pages])
+    if not content_ok:
+        print(f"  INELIGIBLE {act_name[:52]}: {content_reason}")
+        return 0
+    page_artifacts, text_spans = materialize_page_evidence(pages, artifact.id)
+    units = parse_act_text(pages, economy="Australia", act_name=act_name,
+                           act_ref=Path(file).stem.replace("seed_", ""),
+                           source_url=source_url,
+                           extra_section_patterns=profile["extra_section_patterns"],
+                           citation_template=profile["citation_template"])
+    # The parsed text IS the official PDF — verify and stamp exact alignment the
+    # same way the EPUB oracle path does (AU evidence must be PDF-aligned).
+    align_to_pdf(units, [file])
+    for unit in units:
+        unit.metadata["archived_copy"] = file
+        unit.metadata["access_date"] = entry.get("access_date")
+        unit.metadata["inventory_url"] = url
+        unit.metadata["content_sha256"] = artifact.sha256
+        unit.metadata["legal_status"] = status.status
+        unit.metadata["evidence_eligible"] = eligible
+        unit.metadata["source_type"] = profile["source_type"]
+        unit.metadata["build_generation"] = generation
+        unit.metadata["status_evidence"] = status.model_dump(mode="json")
+        unit.source_artifact_id = artifact.id
+        unit.raw_context = unit.raw_context or unit.text
+        import re as _re4
+        pm = _re4.search(r"page\s+(\d+)", unit.location_reference, _re4.I)
+        page_no = int(pm.group(1)) if pm else None
+        unit.linked_span_ids = ([s.id for s in text_spans if s.page_number == page_no]
+                                if page_no else [])
+    for st in stores:
+        if hasattr(st, "upsert_source_artifact"):
+            st.upsert_source_artifact(artifact)
+        if hasattr(st, "upsert_page_artifacts"):
+            st.upsert_page_artifacts(page_artifacts)
+            st.upsert_text_spans(text_spans)
+        if hasattr(st, "upsert_rule_units"):
+            st.upsert_rule_units(units)
+        else:
+            for unit in units:
+                st.upsert_rule_unit(unit)
+    print(f"  {act_name[:52]:52s} [{profile['source_type']:>7s}] -> {len(units):5d} units")
+    return len(units)
+
+
 def main() -> int:
+    import yaml
+
     fetch_all = "--all" in sys.argv
     manifest_path = Path("data/raw/au/seeds_manifest.json")
-    if not manifest_path.is_file():  # fresh clone: fetch seed landing pages first
-        from packages.connectors.seeds_fetch import fetch_seeds
+    # Manifest reconciliation (19 Jul): every build re-walks seeds.json (cached
+    # successes untouched; new research rows fetched; metadata refreshed).
+    from packages.connectors.seeds_fetch import fetch_seeds
 
-        print("[seeds] no AU manifest — fetching P6/P7 seeds (first run only)")
-        fetch_seeds("Australia", ("P6", "P7"))
+    fetch_seeds("Australia", ("P6", "P7"))
     manifest = json.loads(manifest_path.read_text())
     gold = gold_act_norms()
     out_dir = Path("data/raw/au")
+    pack = yaml.safe_load(Path("configs/jurisdictions/au.yaml").read_text())
 
     from packages.graph.store import get_graph_store
 
@@ -141,7 +272,20 @@ def main() -> int:
                         or any(g in normalize_law(act_name) or normalize_law(act_name) in g
                                for g in gold))
             tid = title_id(url)
-            if not tid or tid in done or not (relevant or fetch_all):
+            if not tid:
+                # State-portal acts and treaty texts (Sol review, 19 Jul): official
+                # documents outside the Federal Register flow through the generic
+                # profile-driven loader instead of being silently skipped.
+                if entry.get("status") == "ok" and (relevant or fetch_all) and url not in done:
+                    done.add(url)
+                    count = load_au_seed_document(url, entry, stores, generation, pack)
+                    if count:
+                        acts += 1
+                        total += count
+                    else:
+                        build_complete = False
+                continue
+            if tid in done or not (relevant or fetch_all):
                 continue
             done.add(tid)
             time.sleep(1.5)
@@ -165,6 +309,22 @@ def main() -> int:
                                               {"name": meta["name"] or act_name, "url": url})
                 print(f"  INELIGIBLE {act_name[:52]}: {reason}")
                 continue
+            # Incremental guard (19 Jul): if EVERY volume's bytes are unchanged, the
+            # prior generation's provisions are restamped and extraction is skipped.
+            import hashlib as _hl
+            restamp_stores = [st for st in stores
+                              if hasattr(st, "restamp_artifact_generation")]
+            if restamp_stores:
+                vol_shas = [_hl.sha256(Path(p).read_bytes()).hexdigest()
+                            for _, p in meta["pdfs"]]
+                counts = [sum(st.restamp_artifact_generation("Australia", sha, generation)
+                              for st in restamp_stores) for sha in vol_shas]
+                if counts and all(c > 0 for c in counts):
+                    acts += 1
+                    total += sum(counts) // len(restamp_stores)
+                    print(f"  {(meta['name'] or act_name)[:52]:52s} -> unchanged, "
+                          f"{sum(counts) // len(restamp_stores)} units restamped")
+                    continue
             artifacts, evidence_by_index = [], {}
             for pdf_index, (vol, pdf_path) in enumerate(meta["pdfs"], start=1):
                 suffix = f"/{vol}" if vol else ""
@@ -209,11 +369,16 @@ def main() -> int:
                     aligned, n_units = align_to_pdf(units, [p for _, p in meta["pdfs"]])
                     print(f"    xhtml oracle: {n_units} units, {aligned} PDF-aligned")
                 if not units:  # fallback: regex parse of the authorised PDF
+                    from packages.extractors.pdf_align import align_to_pdf as _align
+
                     for vol, pdf in meta["pdfs"]:
                         vol_units = extract_act_pdf(pdf, economy="Australia",
                                                     act_name=meta["name"] or act_name,
                                                     act_ref=f"{meta['register_id']}v{vol}" if vol else meta["register_id"],
                                                     source_url=meta["source_url"])
+                        # text originates from this authorised PDF — verify + stamp
+                        # exact alignment so the AU aligned-evidence gate applies uniformly
+                        _align(vol_units, [pdf])
                         if vol:
                             for u in vol_units:
                                 u.location_reference = f"vol {vol}, {u.location_reference}"
@@ -239,6 +404,7 @@ def main() -> int:
                 unit.metadata["access_date"] = artifact.accessed_at.date().isoformat()
                 unit.metadata["legal_status"] = status.status
                 unit.metadata["evidence_eligible"] = True
+                unit.metadata["source_type"] = "act"
                 unit.metadata["build_generation"] = generation
                 unit.metadata["status_evidence"] = status.model_dump(mode="json")
                 unit.source_artifact_id = artifact.id

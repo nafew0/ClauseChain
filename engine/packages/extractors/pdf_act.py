@@ -61,6 +61,22 @@ TREATY_SECTION_PATTERNS = [
     re.compile(r"^\s{0,6}Article\s+(\d{1,3}(?:\.\d{1,2})?[A-Z]?(?:-[A-Z])?)\s*[:.\-\u2013\u2014]?\s+(\S.{0,110})", re.I),
 ]
 
+# Malay-language statute grammar (rerun-fix #6 wiring): official Malaysian acts print
+# bilingual or Malay-only compilations ("Seksyen 12A.", "Perkara 5."). Citations stay
+# in the Commonwealth "s. N" convention the known index and gold data use.
+MALAY_SECTION_PATTERNS = [
+    re.compile(r"^\s{0,6}Seksyen\s+(\d{1,3}[A-Z]{0,2})\.?\s+(\S.{0,110})", re.I),
+    re.compile(r"^\s{0,6}Perkara\s+(\d{1,3}[A-Z]{0,2})\.?\s+(\S.{0,110})", re.I),
+]
+
+# Named grammar registry: jurisdiction packs / seed profiles select by name \u2014 the
+# engine stays generic, target-specific knowledge lives in data (yaml/seeds).
+SECTION_GRAMMARS: dict[str, list[re.Pattern]] = {
+    "treaty": TREATY_SECTION_PATTERNS,
+    "malay": MALAY_SECTION_PATTERNS,
+}
+CITATION_TEMPLATES: dict[str, str] = {"treaty": "Art. {label}"}
+
 _SUBSECTION = re.compile(r"\((\d{1,2})\)\s")
 
 
