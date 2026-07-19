@@ -46,6 +46,26 @@ def evidence_rows(run_dir: Path) -> dict[str, list[dict]]:
     return rows
 
 
+def master_gold_scores(economy: str) -> dict[str, float]:
+    """ESCAP's own recorded score per indicator (the answer key for our 3 economies).
+    Generic: read from known_index, never hardcoded. Used as a TRIPWIRE — any
+    det-vs-gold divergence auto-flags for human adjudication (19 Jul rule after
+    13 silent mismatches passed the persona panel unanimously)."""
+    import json as _json
+    from pathlib import Path as _P
+
+    gold: dict[str, float] = {}
+    idx = _json.loads(_P("data/known_index.json").read_text())["economies"]
+    for e in idx.get(economy, []):
+        code = str(e.get("indicator_code") or "")
+        if e.get("source") == "master" and code and code not in gold:
+            try:
+                gold[code] = float(str(e.get("score", "")).strip())
+            except (TypeError, ValueError):
+                continue
+    return gold
+
+
 def deterministic_score(indicator_id: str, rows: list[dict]) -> tuple[float, str]:
     """Official 0/0.5/1 criteria over the evidence rows (DoDont §9.1)."""
     real = [r for r in rows if r["Article / Section"] not in ("n/a", "")]
@@ -147,21 +167,30 @@ def main() -> int:
         rows_by_ind = evidence_rows(run_dir)
 
         report, matrix = {}, []
+        gold_map = master_gold_scores(economy)
         for indicator_id, cfg in cfg_all.items():
             if cfg.get("regulatory") is False:
                 continue
             rows = rows_by_ind.get(indicator_id, [])
             det, det_reason = deterministic_score(indicator_id, rows)
+            gold = gold_map.get(indicator_id)
+            diverges = gold is not None and abs(det - gold) > 0.01
             judges = persona_scores(llm, indicator_id, cfg, rows)
             scores = [j["score"] for j in judges if j.get("score") is not None]
             matrix.append(scores)
             band = (min(scores + [det]), max(scores + [det])) if scores else (det, det)
             report[indicator_id] = {
                 "deterministic": det, "deterministic_reason": det_reason,
+                "master_gold": gold,
+                "gold_divergence": bool(diverges),
+                "gold_divergence_note": (
+                    f"det {det} vs master gold {gold} — human adjudication required; "
+                    "check evidence currentness vs master baseline before approving"
+                ) if diverges else None,
                 "judges": judges,
                 "band": list(band),
                 "spread": round(band[1] - band[0], 2),
-                "flag_for_review": band[1] != band[0],
+                "flag_for_review": bool(band[1] != band[0]) or bool(diverges),
                 "reviewer_decision": "pending",
             }
         alpha = krippendorff_alpha(matrix)

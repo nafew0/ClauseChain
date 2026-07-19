@@ -52,3 +52,18 @@ def test_screen_cap_default_raised():
     from packages.rdtii.mapper import SCREEN_CAP_PER_INDICATOR
 
     assert SCREEN_CAP_PER_INDICATOR >= 200
+
+
+def test_zone3_gold_tripwire():
+    """Any det-vs-master-gold divergence must auto-flag (the Z005 lesson: even a
+    unanimous persona panel can be wrong; the answer key is the tripwire)."""
+    import sys
+    from pathlib import Path
+
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    from scripts.zone3_score import deterministic_score, master_gold_scores
+
+    gold = master_gold_scores("Australia")
+    assert gold.get("P7-I1") == 0.0  # AU has the Privacy Act — master agrees
+    det, _ = deterministic_score("P7-I1", [])  # thin evidence -> det claims 1
+    assert abs(det - gold["P7-I1"]) > 0.01  # divergence detected -> would flag

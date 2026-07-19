@@ -211,7 +211,8 @@ def build_payload() -> dict:
 
     zone_headers = [
         "Score ID", "Economy", "Indicator", "Indicator question", "Deterministic score",
-        "Deterministic reason", "Judge scores", "Judge reasoning", "Agreement alpha",
+        "Deterministic reason", "Master gold score", "Gold divergence",
+        "Judge scores", "Judge reasoning", "Agreement alpha",
         "Score band", "Spread", "Flagged for review", "Reviewer score", "Reviewer decision",
         "Reviewer reasoning", "Reviewer name", "Reviewer role", "Review date",
     ]
@@ -226,6 +227,8 @@ def build_payload() -> dict:
                 f"Z{zone_index:03d}", payload.get("economy"), indicator_id,
                 question(configs.get(indicator_id, {})), result.get("deterministic"),
                 result.get("deterministic_reason"),
+                result.get("master_gold"),
+                (result.get("gold_divergence_note") or "") if result.get("gold_divergence") else "agrees",
                 ", ".join(f"{judge.get('persona')}: {judge.get('score')}" for judge in judges),
                 " || ".join(f"{judge.get('persona')}: {judge.get('reason', '')}" for judge in judges),
                 payload.get("krippendorff_alpha"), json.dumps(result.get("band")),
