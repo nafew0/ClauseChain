@@ -3,55 +3,37 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
-  LayoutDashboard, Table2, BookOpen, Globe, ChevronRight,
-  Search, Bell, Settings, LogOut, Command,
-  Wifi, Layers, FileText, Cpu, GitBranch, PackageOpen,
-  ShieldCheck, Network, Gauge,
-  ClipboardCheck,
-  Activity,
-  FileCheck2,
-  Braces,
-  Share2,
+  ChevronRight,
+  Search, Bell, LogOut, Command,
+  ShieldCheck,
+  UserRound,
+  LoaderCircle,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
-
-const NAV_ITEMS = [
-  { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', count: null },
-  { href: '/review', icon: ClipboardCheck, label: 'Review', count: null },
-  { href: '/submission', icon: FileCheck2, label: 'Submission', count: null },
-  { href: '/runs', icon: Activity, label: 'Runs', count: null },
-  { href: '/jurisdictions/sg/documents/SG-PDPA-2012', icon: ShieldCheck, label: 'Evidence Audit', count: null },
-  { href: '/source-status', icon: Network, label: 'Source Status', count: null },
-  { href: '/benchmark', icon: Gauge, label: 'Benchmark', count: null },
-  { href: '/matrix', icon: Table2, label: 'RDTII Matrix', count: null },
-  { href: '/ledger', icon: BookOpen, label: 'Ledger', count: null },
-  { href: '/raw-data', icon: Braces, label: 'Raw Data', count: null },
-  { href: '/knowledge-graph', icon: Share2, label: 'Knowledge Graph', count: null },
-  { href: '/jurisdictions', icon: Globe, label: 'Source Library', count: 3 },
-]
-
-const PIPELINE_ITEMS = [
-  { href: '/pipeline/crawl',    icon: Wifi,        label: 'Source Acquisition' },
-  { href: '/pipeline/harvest',  icon: Layers,      label: 'Corpus Eligibility' },
-  { href: '/pipeline/extract',  icon: FileText,    label: 'Extraction' },
-  { href: '/pipeline/map',      icon: Cpu,         label: 'Mapping Run' },
-  { href: '/pipeline/trace',    icon: GitBranch,   label: 'Source Trace' },
-  { href: '/pipeline/export',   icon: PackageOpen, label: 'Export Output' },
-]
+import { WORKSPACE_NAV_ITEMS, workspaceItemIsActive } from '@/lib/navigation'
 
 interface Crumb { label: string; href?: string }
 
 interface WorkspaceShellProps {
   children: React.ReactNode
   breadcrumbs?: Crumb[]
+  contentMode?: 'scroll' | 'contained'
 }
 
-export default function WorkspaceShell({ children, breadcrumbs = [] }: WorkspaceShellProps) {
+export default function WorkspaceShell({ children, breadcrumbs = [], contentMode = 'scroll' }: WorkspaceShellProps) {
   const pathname = usePathname() ?? ''
-  const { user, logout } = useAuth()
+  const { user, logout, signingOut } = useAuth()
   const [cmdOpen, setCmdOpen] = useState(false)
+  const comingSoonItems = WORKSPACE_NAV_ITEMS.filter(item => item.state === 'prototype')
+  // Open the group automatically when the current page lives inside it.
+  const [comingSoonOpen, setComingSoonOpen] = useState(() =>
+    comingSoonItems.some(item => workspaceItemIsActive(pathname, item.href)))
 
   const initials = user?.email?.slice(0, 2).toUpperCase() ?? 'CC'
+  const signOut = () => {
+    setCmdOpen(false)
+    void logout()
+  }
 
   return (
     <div className="cc-workspace-shell flex h-screen overflow-hidden bg-cc-ink-50" style={{ fontFamily: 'var(--cc-font-display)' }}>
@@ -76,11 +58,8 @@ export default function WorkspaceShell({ children, breadcrumbs = [] }: Workspace
           <span className="cc-sidebar-section-label px-2.5 pb-1.5 text-[11px] font-medium tracking-widest uppercase text-cc-ink-500">
             Workspace
           </span>
-          {NAV_ITEMS.map(({ href, icon: Icon, label, count }) => {
-            const active =
-              href === '/jurisdictions'
-                ? pathname === '/jurisdictions' || /^\/jurisdictions\/[^/]+$/.test(pathname)
-                : pathname === href || (href !== '/dashboard' && pathname.startsWith(`${href}/`))
+          {WORKSPACE_NAV_ITEMS.filter(item => item.section === 'workspace' && item.state !== 'prototype').map(({ href, icon: Icon, label }) => {
+            const active = workspaceItemIsActive(pathname, href)
             return (
               <Link
                 key={href}
@@ -94,11 +73,6 @@ export default function WorkspaceShell({ children, breadcrumbs = [] }: Workspace
               >
                 <Icon size={16} />
                 <span className="cc-nav-text flex-1">{label}</span>
-                {count != null && (
-                  <span className={`cc-nav-count text-xs tabular-nums ${active ? 'text-[#14548F]' : 'text-cc-ink-500'}`}>
-                    {count}
-                  </span>
-                )}
               </Link>
             )
           })}
@@ -109,8 +83,8 @@ export default function WorkspaceShell({ children, breadcrumbs = [] }: Workspace
           <span className="cc-sidebar-section-label px-2.5 pt-3 pb-1.5 text-[11px] font-medium tracking-widest uppercase text-cc-ink-500">
             Pipeline
           </span>
-          {PIPELINE_ITEMS.map(({ href, icon: Icon, label }) => {
-            const active = pathname.startsWith(href)
+          {WORKSPACE_NAV_ITEMS.filter(item => item.section === 'pipeline' && item.state !== 'prototype').map(({ href, icon: Icon, label }) => {
+            const active = workspaceItemIsActive(pathname, href)
             return (
               <Link
                 key={href}
@@ -129,6 +103,41 @@ export default function WorkspaceShell({ children, breadcrumbs = [] }: Workspace
           })}
         </nav>
 
+        {/* Coming soon (prototype screens, collapsed to keep the menu focused) */}
+        <nav className="flex flex-col gap-1 px-3 mt-2">
+          <button
+            type="button"
+            onClick={() => setComingSoonOpen(open => !open)}
+            aria-expanded={comingSoonOpen}
+            className="cc-sidebar-section-label flex items-center gap-1 px-2.5 pt-3 pb-1.5 text-[11px] font-medium tracking-widest uppercase text-cc-ink-500 hover:text-cc-ink-700 transition-colors"
+          >
+            <ChevronRight
+              size={12}
+              className={`transition-transform ${comingSoonOpen ? 'rotate-90' : ''}`}
+            />
+            Coming soon
+          </button>
+          {comingSoonOpen && comingSoonItems.map(({ href, icon: Icon, label }) => {
+            const active = workspaceItemIsActive(pathname, href)
+            return (
+              <Link
+                key={href}
+                href={href}
+                title={`${label} — prototype sample data`}
+                className={`cc-nav-link flex items-center gap-2.5 px-2.5 py-2 rounded-[10px] text-sm font-medium transition-colors ${
+                  active
+                    ? 'bg-cc-ink-100 text-cc-ink-900'
+                    : 'text-cc-ink-500 hover:bg-cc-ink-100 hover:text-cc-ink-700'
+                }`}
+              >
+                <Icon size={16} />
+                <span className="cc-nav-text flex-1">{label}</span>
+                <span className="cc-nav-state" title="Prototype sample data">P</span>
+              </Link>
+            )
+          })}
+        </nav>
+
         {/* Footer */}
         <div className="cc-sidebar-footer mt-auto px-3 py-4 border-t border-cc-ink-200">
           <div className="flex items-center gap-2.5 px-2.5 py-2">
@@ -139,15 +148,17 @@ export default function WorkspaceShell({ children, breadcrumbs = [] }: Workspace
               {initials}
             </div>
             <div className="cc-sidebar-user-copy flex-1 min-w-0">
-              <p className="text-sm font-medium text-cc-ink-900 truncate">{user?.email ?? 'analyst'}</p>
+              <p className="text-sm font-medium text-cc-ink-900 truncate">{signingOut ? 'Signing out…' : (user?.email ?? 'analyst')}</p>
               <p className="text-xs text-cc-ink-500 font-mono">UN Hackathon 2026</p>
             </div>
             <button
-              onClick={() => logout?.()}
+              onClick={signOut}
+              disabled={signingOut}
               className="p-1.5 rounded-lg text-cc-ink-500 hover:text-cc-ink-900 hover:bg-cc-ink-100 transition-colors"
-              title="Sign out"
+              title={signingOut ? 'Signing out' : 'Sign out'}
+              aria-label={signingOut ? 'Signing out' : 'Sign out'}
             >
-              <LogOut size={14} />
+              {signingOut ? <LoaderCircle size={14} className="animate-spin" /> : <LogOut size={14} />}
             </button>
           </div>
         </div>
@@ -202,13 +213,14 @@ export default function WorkspaceShell({ children, breadcrumbs = [] }: Workspace
           <button aria-label="Notifications" className="p-2 rounded-lg text-cc-ink-600 hover:bg-cc-ink-100 hover:text-cc-ink-900 transition-colors">
             <Bell size={16} />
           </button>
-          <Link href="/profile" aria-label="Profile settings" className="p-2 rounded-lg text-cc-ink-600 hover:bg-cc-ink-100 hover:text-cc-ink-900 transition-colors">
-            <Settings size={16} />
+          {user?.is_superuser ? <Link href="/admin" aria-label="Admin panel" className="p-2 rounded-lg text-cc-ink-600 hover:bg-cc-ink-100 hover:text-cc-ink-900 transition-colors"><ShieldCheck size={16} /></Link> : null}
+          <Link href="/profile" aria-label="Profile" className="p-2 rounded-lg text-cc-ink-600 hover:bg-cc-ink-100 hover:text-cc-ink-900 transition-colors">
+            <UserRound size={16} />
           </Link>
         </header>
 
         {/* Page content */}
-        <main className="flex-1 overflow-y-auto">
+        <main className={`flex min-h-0 flex-1 flex-col ${contentMode === 'contained' ? 'overflow-hidden' : 'overflow-y-auto'}`}>
           {children}
         </main>
       </div>
@@ -236,7 +248,7 @@ export default function WorkspaceShell({ children, breadcrumbs = [] }: Workspace
             </div>
             <div className="p-2 max-h-[50vh] overflow-y-auto">
               <p className="px-3 py-2.5 text-[11px] font-medium tracking-widest uppercase text-cc-ink-500">Quick Navigation</p>
-              {NAV_ITEMS.map(({ href, icon: Icon, label }) => (
+              {WORKSPACE_NAV_ITEMS.map(({ href, icon: Icon, label }) => (
                 <Link
                   key={href}
                   href={href}
