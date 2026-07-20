@@ -169,6 +169,11 @@ def retrieve_for_indicator(
         return stype in allowed if allowed is not None else stype != "treaty"
 
     corpus = [row for row in corpus if _source_ok(row.get("props"))]
+    if not corpus:
+        # No unit of an allowed source class exists for this economy (e.g. AU
+        # P6-I5 while every treaty acquisition is blocked): zero candidates —
+        # the absence path + ACQUISITION_UNRESOLVED coverage take over.
+        return []
     queries = build_query_pack(indicator_id, indicator_cfg)
     by_id: dict[str, Candidate] = {}
 

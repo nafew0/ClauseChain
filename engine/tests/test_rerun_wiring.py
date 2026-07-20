@@ -267,6 +267,13 @@ def test_source_type_filter_applies_before_ranking_and_caps():
         StubStore(), StubCache(), corpus, "P6-I5",
         {**cue, "allowed_source_types": ["treaty"]}, "Singapore")
     assert {c.provision_id for c in got} == {"t0", "t1", "t2"}
+    # ZERO units of the allowed class (AU while DFAT is blocked): empty result,
+    # no dense-leg crash on an empty matrix (20 Jul AU P6 AxisError)
+    domestic_only = [r for r in corpus if r["props"]["source_type"] == "act"]
+    got = hybrid.retrieve_for_indicator(
+        StubStore(), StubCache(), domestic_only, "P6-I5",
+        {**cue, "allowed_source_types": ["treaty"]}, "Australia")
+    assert got == []
 
 
 # ------------------------------------------------- manifest reconciliation
