@@ -7,12 +7,30 @@ from __future__ import annotations
 
 import re
 import unicodedata
+from dataclasses import dataclass
 from datetime import date, datetime
 from urllib.parse import urlparse
 
 from packages.core.schemas import GateResult
 
 _WS = re.compile(r"\s+")
+SNIPPET_SOFT_LIMIT = 700
+SNIPPET_HARD_LIMIT = 3_000
+
+
+@dataclass(frozen=True)
+class FinalizedSnippet:
+    """A source-exact snippet plus the mechanically proven closure result."""
+
+    text: str
+    source_start: int | None
+    source_end: int | None
+    closure_code: str
+    reason: str
+
+    @property
+    def passed(self) -> bool:
+        return self.closure_code in {"PASS_CLOSED", "PASS_LONG_BUT_CLOSED"}
 
 
 def _normalize(text: str) -> str:
@@ -24,60 +42,253 @@ def _normalize(text: str) -> str:
     return _WS.sub(" ", text).strip().lower()
 
 
+_LEGISLATIVE_ABBREVIATION = re.compile(
+    r"(?:^|\s)(?:s|ss|art|arts|no|nos|cl|cls|reg|regs|sch|para|paras|pt|vol|ch)\.$",
+    re.IGNORECASE,
+)
+_DANGLING_CONNECTOR = re.compile(r"\b(?:and|or)\s*$", re.IGNORECASE)
+_INCOMPLETE_REFERENCE = re.compile(
+    r"\b(?:section|subsection|paragraph|subparagraph|article|regulation|schedule|clause|part)\s*$",
+    re.IGNORECASE,
+)
+
+
+def _is_real_sentence_stop(source: str, index: int) -> bool:
+    """Return true only for a sentence-closing full stop, not legal notation."""
+    if source[index] not in ".!?":
+        return False
+    if source[index] == ".":
+        if index and index + 1 < len(source):
+            if source[index - 1].isdigit() and source[index + 1].isdigit():
+                return False  # 474.17, 2.1, etc.
+        prefix = source[max(0, index - 16):index + 1]
+        if _LEGISLATIVE_ABBREVIATION.search(prefix):
+            return False
+        token = re.search(r"(?:^|\s)([A-Z])\.$", prefix)
+        if token:
+            return False  # an initial such as "A. Smith"
+    suffix = source[index + 1:index + 8]
+    return not suffix or bool(re.match(r"^[\]\)\}\"'’”]*\s", suffix))
+
+
+def _balanced_structure(text: str) -> bool:
+    pairs = {")": "(", "]": "[", "}": "{"}
+    stack: list[str] = []
+    for char in text:
+        if char in "([{":
+            stack.append(char)
+        elif char in pairs:
+            if not stack or stack.pop() != pairs[char]:
+                return False
+    return not stack
+
+
+def _open_ending_code(text: str) -> str | None:
+    stripped = text.rstrip().rstrip('"\'’”)]}')
+    if stripped.endswith(":") or stripped.endswith(("—", "–")):
+        return "FAIL_OPEN_LIST"
+    if _DANGLING_CONNECTOR.search(stripped) or _INCOMPLETE_REFERENCE.search(stripped):
+        return "FAIL_DANGLING_CONNECTOR"
+    if not _balanced_structure(text):
+        return "FAIL_UNBALANCED_STRUCTURE"
+    return None
+
+
+_LIST_CHILD = re.compile(r"\(\s*(?:[a-z]|[ivxlcdm]{1,6})\s*\)", re.IGNORECASE)
+_STRUCTURAL_LABEL = re.compile(
+    r"(?<!\w)\(\s*(?:\d+[A-Z]?|[a-z]|[ivxlcdm]{1,6})\s*\)\s+",
+    re.IGNORECASE,
+)
+
+
+def _containing_paragraph_start(source: str, claimed_start: int) -> int:
+    """Expand a fragment to its containing sentence/labelled paragraph start."""
+    previous_stop = 0
+    for index in range(claimed_start - 1, -1, -1):
+        if _is_real_sentence_stop(source, index):
+            previous_stop = index + 1
+            break
+    blank = source.rfind("\n\n", previous_stop, claimed_start)
+    base = blank + 2 if blank >= 0 else previous_stop
+    while base < claimed_start and source[base].isspace():
+        base += 1
+
+    # A subsection/paragraph label is a stronger boundary than a flattened
+    # heading.  A child following ':'/'—'/and/or still depends on its introducer,
+    # so retain the containing passage in that case.
+    labels = list(_STRUCTURAL_LABEL.finditer(source, base, claimed_start))
+    if labels:
+        label_start = labels[-1].start()
+        introducer = source[base:label_start].rstrip()
+        if not (introducer.endswith((":", "—", "–"))
+                or _DANGLING_CONNECTOR.search(introducer)):
+            base = label_start
+    return base
+
+
+def _list_has_later_child(source: str, start: int, stop: int) -> bool:
+    """Do not close at an early child sentence of a colon-introduced list."""
+    passage = source[start:stop]
+    colon = passage.find(":")
+    if colon < 0 or not _LIST_CHILD.search(passage[colon + 1:]):
+        return False
+    lookahead = source[stop:stop + 800]
+    if re.match(r"\s*(?:Explanation|Note|Example)\b", lookahead, re.IGNORECASE):
+        return False
+    return bool(_LIST_CHILD.search(lookahead))
+
+
+def _semantic_child_end(
+    claimed: str, source: str, claimed_end: int, semantic_blocks: list[dict] | None
+) -> int:
+    """Return the minimum source offset needed to include immediate child blocks."""
+    if not semantic_blocks:
+        return claimed_end
+    normalized_claim = _normalize(claimed)
+    ranks = {"section": 0, "subsection": 1, "paragraph": 2,
+             "subparagraph": 3, "subsubparagraph": 4, "item": 2}
+    owner = None
+    for index, block in enumerate(semantic_blocks):
+        text = str(block.get("text") or "")
+        if normalized_claim in _normalize(text) or _normalize(text) in normalized_claim:
+            owner = index
+            break
+    if owner is None:
+        return claimed_end
+    owner_block = semantic_blocks[owner]
+    owner_text = str(owner_block.get("text") or "")
+    if ":" not in owner_text and not claimed.rstrip().endswith(":"):
+        return claimed_end
+    owner_rank = ranks.get(str(owner_block.get("class") or "").casefold(), 1)
+    children: list[dict] = []
+    for block in semantic_blocks[owner + 1:]:
+        css = str(block.get("class") or "").casefold()
+        rank = ranks.get(css)
+        text = str(block.get("text") or "")
+        if rank is not None and rank <= owner_rank:
+            break
+        if rank is None and not _LIST_CHILD.match(text.strip()):
+            break
+        children.append(block)
+    if not children:
+        return claimed_end
+    tail = source[claimed_end:]
+    last_text = str(children[-1].get("text") or "")
+    located = source_exact_span(last_text, tail)
+    return claimed_end + located[2] if located else claimed_end
+
+
+def finalize_snippet_result(
+    claimed: str,
+    source_text: str,
+    *,
+    soft_limit: int = SNIPPET_SOFT_LIMIT,
+    hard_limit: int = SNIPPET_HARD_LIMIT,
+    semantic_blocks: list[dict] | None = None,
+) -> FinalizedSnippet:
+    """Close a mapper quote at a genuine source sentence/paragraph boundary.
+
+    The soft limit is presentation guidance only.  A colon/list introduction,
+    dangling connector, unmatched structure, or partial word is followed through
+    its immediate children until a real sentence stop.  The returned characters
+    always come from ``source_text``.  Unprovable/over-limit passages are marked
+    FAIL so they can never enter an export.
+    """
+    located = source_exact_span(claimed, source_text)
+    if located is None:
+        return FinalizedSnippet(
+            claimed, None, None, "FAIL_UNBALANCED_STRUCTURE",
+            "mapper quote is not source-locatable; structural closure cannot be proven",
+        )
+    _, located_start, claimed_end = located
+    start = _containing_paragraph_start(source_text, located_start)
+    minimum_end = _semantic_child_end(
+        claimed, source_text, claimed_end, semantic_blocks
+    )
+
+    # A mapper may stop in the middle of a word (the CPC "an or" failure).  We
+    # deliberately begin the boundary search at its exact end and only accept a
+    # real sentence stop, so the rest of that word and all list children travel.
+    stop: int | None = None
+    for index in range(max(start, minimum_end - 1), len(source_text)):
+        if _is_real_sentence_stop(source_text, index):
+            candidate = source_text[start:index + 1]
+            if (_balanced_structure(candidate)
+                    and not _list_has_later_child(source_text, start, index + 1)):
+                stop = index + 1
+                break
+
+    if stop is None:
+        remainder = source_text[start:].rstrip()
+        code = _open_ending_code(remainder) or "FAIL_UNBALANCED_STRUCTURE"
+        return FinalizedSnippet(
+            remainder, start, start + len(remainder), code,
+            "no genuine closed sentence/paragraph boundary can be proven in canonical context",
+        )
+
+    text = source_text[start:stop]
+    open_code = _open_ending_code(text)
+    if open_code:
+        return FinalizedSnippet(
+            text, start, stop, open_code,
+            "candidate boundary leaves an open statutory structure",
+        )
+    if len(text) > hard_limit:
+        return FinalizedSnippet(
+            text, start, stop, "FAIL_CLOSURE_OVER_HARD_LIMIT",
+            f"shortest proven closed source passage is {len(text)} characters (hard limit {hard_limit})",
+        )
+    code = "PASS_LONG_BUT_CLOSED" if len(text) > soft_limit else "PASS_CLOSED"
+    return FinalizedSnippet(
+        text, start, stop, code,
+        (f"source-exact passage closes at a genuine sentence boundary ({len(text)} chars; "
+         f"soft target {soft_limit}, hard limit {hard_limit})"),
+    )
+
+
 def extend_to_clause_boundary(snippet: str, source: str, max_extra: int = 300) -> str:
-    """Rerun-fix #1 (19 Jul): a mapper-chosen span may stop before the operative
-    object phrase ("...search to be made" | "for a document or thing"). Extend a
-    source-exact snippet forward to the next clause boundary: sentence-terminal
-    punctuation, a semicolon/colon, or the next top-level subsection marker."""
-    pos = source.find(snippet)
-    if pos < 0 or not snippet:
-        return snippet
-    end = pos + len(snippet)
-    if snippet.rstrip().endswith((".", ";", ":")):
-        return snippet
-    window = source[end:end + max_extra]
-    boundary = len(window)
-    for m in re.finditer(r"[.;:](?:\s|$)|\(\d{1,2}\)\s", window):
-        boundary = m.start() + (1 if window[m.start()] in ".;:" else 0)
-        break
-    return source[pos:end + boundary].rstrip()
+    """Compatibility wrapper; closure is now paragraph-aware and never stops at ``:``/``;``."""
+    del max_extra
+    return finalize_snippet_result(snippet, source).text
 
 
 def finalize_snippet(claimed: str, source_text: str, max_len: int = 700) -> str:
-    """Construct the FINAL exported snippet before any gate runs (Sol review, 19 Jul):
-    source-exact slice -> clause-boundary extension -> boundary-aware length cap.
-    The text this returns is exactly what gates verify and exactly what is exported;
-    there is no post-gate mutation. A claim not found source-exact is returned as-is
-    so G1 rejects it on the same text the export would have carried."""
-    exact = source_exact_slice(claimed, source_text)
-    if exact is None:
-        return claimed
-    snippet = extend_to_clause_boundary(exact, source_text)
-    if len(snippet) > max_len:
-        head = snippet[:max_len]
-        cut = max(head.rfind(". "), head.rfind("; "), head.rfind(": "))
-        if cut >= int(max_len * 0.5):
-            snippet = head[:cut + 1].rstrip()
-        # else: NO clause boundary in range — never character-truncate (Sol #6);
-        # the over-long snippet is returned whole and g9_span_length flags it
-        # REVIEW_REQUIRED_LONG_SPAN downstream.
-    return snippet
+    """Compatibility wrapper returning the exact finalized text."""
+    return finalize_snippet_result(claimed, source_text, soft_limit=max_len).text
+
+
+def g9_structural_closure(result: FinalizedSnippet) -> GateResult:
+    return GateResult(
+        gate_id="G9",
+        status="PASS" if result.passed else "FAIL",
+        reason=f"{result.closure_code}: {result.reason}",
+        metadata={
+            "closure_code": result.closure_code,
+            "source_start": result.source_start,
+            "source_end": result.source_end,
+            "snippet_length": len(result.text),
+        },
+    )
 
 
 def g9_span_length(snippet: str, max_len: int = 700) -> GateResult:
-    """Long-span review flag (Sol review #6, 19 Jul): a snippet that could not be
-    closed on a clause boundary within the export budget is surfaced for human
-    review instead of being silently cut mid-clause."""
-    if len(snippet) <= max_len:
-        return GateResult(gate_id="G9", status="PASS",
-                          reason=f"snippet within export budget ({len(snippet)} chars)")
+    """Deprecated compatibility check for callers without canonical context.
+
+    New engine code must call :func:`g9_structural_closure`; length alone can no
+    longer prove a legal passage complete.
+    """
+    open_code = _open_ending_code(snippet)
+    closed = bool(snippet.rstrip().endswith((".", "!", "?"))) and open_code is None
+    code = (open_code or ("PASS_LONG_BUT_CLOSED" if len(snippet) > max_len
+                          else "PASS_CLOSED")) if closed or open_code else "FAIL_DANGLING_CONNECTOR"
     return GateResult(
-        gate_id="G9", status="WARN",
-        reason=(f"REVIEW_REQUIRED_LONG_SPAN: {len(snippet)} chars with no clause "
-                f"boundary inside {max_len} — export kept whole, review before submission"))
+        gate_id="G9", status="PASS" if code.startswith("PASS") else "FAIL",
+        reason=f"{code}: compatibility structural check ({len(snippet)} chars)",
+        metadata={"closure_code": code, "snippet_length": len(snippet)},
+    )
 
 
-def source_exact_slice(snippet: str, source_text: str) -> str | None:
+def source_exact_span(snippet: str, source_text: str) -> tuple[str, int, int] | None:
     """E3-lite (P3.5): return the SOURCE's own characters for a claimed snippet.
 
     The LLM copies quotes imperfectly (punctuation/whitespace drift). We locate the
@@ -91,18 +302,20 @@ def source_exact_slice(snippet: str, source_text: str) -> str | None:
     offset_map: list[int] = []
     prev_space = True
     for index, ch in enumerate(source_text):
-        c = unicodedata.normalize("NFKC", ch)
-        c = {"‑": "-", "–": "-", "—": "-", "‘": "'", "’": "'", "“": '"', "”": '"'}.get(c, c)
-        if c.isspace():
-            if prev_space:
-                continue
-            norm_chars.append(" ")
-            offset_map.append(index)
-            prev_space = True
-        else:
-            norm_chars.append(c.lower())
-            offset_map.append(index)
-            prev_space = False
+        normalized = unicodedata.normalize("NFKC", ch)
+        for c in normalized:
+            c = {"‑": "-", "–": "-", "—": "-", "‘": "'", "’": "'", "“": '"', "”": '"'}.get(c, c)
+            if c.isspace():
+                if prev_space:
+                    continue
+                norm_chars.append(" ")
+                offset_map.append(index)
+                prev_space = True
+            else:
+                for lowered in c.lower():
+                    norm_chars.append(lowered)
+                    offset_map.append(index)
+                prev_space = False
     norm_source = "".join(norm_chars)
     target = _normalize(snippet)
     pos = norm_source.find(target)
@@ -111,7 +324,12 @@ def source_exact_slice(snippet: str, source_text: str) -> str | None:
     start = offset_map[pos]
     end_index = pos + len(target) - 1
     end = offset_map[end_index] + 1
-    return source_text[start:end]
+    return source_text[start:end], start, end
+
+
+def source_exact_slice(snippet: str, source_text: str) -> str | None:
+    located = source_exact_span(snippet, source_text)
+    return located[0] if located else None
 
 
 def g1_span_exists(snippet: str, source_text: str) -> GateResult:
@@ -166,7 +384,7 @@ def g4_currentness(current_as_at: str | None, status: str = "in_force") -> GateR
 # quote/source/currentness but NOT legal fit — these lexical gates do, per indicator.
 _XBORDER = re.compile(r"outside|abroad|cross[- ]border|foreign|another country|other countr|place outside|out of", re.I)
 _TRANSFER = re.compile(r"transfer|transmit|send|disclos\w+ to .{0,40}(outside|abroad|foreign)", re.I)
-_RETAIN = re.compile(r"retain|keep|preserve|maintain|stor\w+", re.I)
+_RETAIN = re.compile(r"retain|keep|preserve|maintain|stor\w+|\bhold\b", re.I)
 _DURATION = re.compile(r"(period of|not less than|at least|minimum of)?\s*\w*\s*(year|month|day|week)s?", re.I)
 _RECORDS = re.compile(r"record|data|document|book|information|register", re.I)
 _INFRASTRUCTURE = re.compile(r"server|data cent(?:re|er)|comput(?:er|ing) (?:system|facility)|infrastructure|facility", re.I)
@@ -176,6 +394,12 @@ _DOMESTIC_LOCATION = re.compile(
     r"\b(?:server|data cent(?:re|er)|facility|infrastructure)\b.{0,35}"
     r"\b(?:in|within)\b(?!\s+(?:another|other|foreign))",
     re.I,
+)
+_OUTSIDE_DOMESTIC_PROHIBITION = re.compile(
+    r"\b(?:must not|shall not|may not|prohibit(?:s|ed)?)\b.{0,120}"
+    r"\b(?:hold|take|store|process|handle)\b.{0,80}\boutside\b.{0,40}"
+    r"\b(?:Australia|Malaysia|Singapore|the country|the jurisdiction)\b",
+    re.I | re.S,
 )
 _PROHIBITION = re.compile(r"\b(?:must not|shall not|may not|is prohibited|are prohibited|prohibit(?:s|ed)?)\b", re.I)
 # Statutory conditional vocabulary. Real acts phrase the condition as
@@ -187,10 +411,31 @@ _CONDITION = re.compile(
     re.I)
 _MINIMUM_DUTY = re.compile(r"\b(?:must|shall|required to|not less than|at least|minimum(?: period)? of)\b", re.I)
 _RETENTION_CEILING = re.compile(r"\b(?:need only|may (?:retain|keep)|up to|not more than|no longer than|maximum(?: period)? of)\b", re.I)
-_WARRANT = re.compile(r"warrant|court order|order of (a|the) court|judge|magistrate|judicial", re.I)
+_INDEPENDENT_JUDICIAL = re.compile(
+    r"court order|order of (?:a|the) court|judge|magistrate|judicial|"
+    r"(?:warrant.{0,100}(?:issued|granted|authori[sz]ed) by .{0,30}"
+    r"(?:court|judge|magistrate))",
+    re.I,
+)
 _WITHOUT_JUDICIAL = re.compile(
     r"\b(?:without|no need for|does not require|not required to obtain)\b"
     r".{0,35}\b(?:warrant|court order|judicial authori[sz]ation)\b|\bwarrantless\b",
+    re.I,
+)
+_GOVERNMENT_ACTOR = re.compile(
+    r"\b(?:police|law[- ]enforcement|security agency|intelligence agency|"
+    r"authori[sz]ed officer|commissioner|director[- ]general|attorney[- ]general|minister|"
+    r"inspector|magistrate|prosecutor|government|public authority|agency)\b",
+    re.I,
+)
+_ACCESS_POWER = re.compile(
+    r"\b(?:access|intercept\w*|search|seiz\w*|obtain|inspect|copy|produce|"
+    r"give|provide|disclos\w*|warrant|enter)\b",
+    re.I,
+)
+_ACCESS_OBJECT = re.compile(
+    r"\b(?:personal data|data|information|document|record|communication\w*|"
+    r"computer|device|account|book)\b",
     re.I,
 )
 
@@ -210,8 +455,14 @@ def g7_indicator_fit(indicator_id: str, snippet: str, full_text: str, law_name: 
         return GateResult(gate_id="G7", status="FAIL",
                           reason="P6-I1 requires an operative prohibition on cross-border transfer")
     if indicator_id == "P6-I2":
-        if not (_RETAIN.search(blob) and _RECORDS.search(blob)
-                and _DOMESTIC_LOCATION.search(blob) and _MINIMUM_DUTY.search(blob)):
+        positive_domestic_duty = (
+            _RETAIN.search(blob) and _RECORDS.search(blob)
+            and _DOMESTIC_LOCATION.search(blob) and _MINIMUM_DUTY.search(blob)
+        )
+        negative_extraterritorial_duty = (
+            _RECORDS.search(blob) and _OUTSIDE_DOMESTIC_PROHIBITION.search(blob)
+        )
+        if not (positive_domestic_duty or negative_extraterritorial_duty):
             return GateResult(gate_id="G7", status="FAIL",
                               reason="P6-I2 requires a mandatory domestic-copy/storage duty")
     if indicator_id == "P6-I3":
@@ -224,19 +475,35 @@ def g7_indicator_fit(indicator_id: str, snippet: str, full_text: str, law_name: 
         return GateResult(gate_id="G7", status="FAIL",
                           reason="P6-I4 requires an operative condition or safeguard for transfer")
     if indicator_id == "P7-I3":
-        if not (_RETAIN.search(blob) and _DURATION.search(blob) and _RECORDS.search(blob)):
+        if not (_RETAIN.search(blob) and _RECORDS.search(blob)
+                and _MINIMUM_DUTY.search(blob)):
             return GateResult(gate_id="G7", status="FAIL",
-                              reason="P7-I3 requires retention verb + records/data object + a minimum duration")
+                              reason="P7-I3 requires a mandatory retention verb and records/data object")
         if re.search(r"licen[cs]e|permit", snippet, re.I) and not re.search(r"record|data", snippet, re.I):
             return GateResult(gate_id="G7", status="FAIL",
                               reason="P7-I3: licence-duration provisions are not data retention")
-        if _RETENTION_CEILING.search(blob) or not _MINIMUM_DUTY.search(blob):
+        if _RETENTION_CEILING.search(blob):
             return GateResult(gate_id="G7", status="FAIL",
-                              reason="P7-I3 requires a mandatory minimum; permissive or maximum retention does not qualify")
+                              reason="P7-I3: a permissive or maximum-retention ceiling is not a minimum retention duty")
+        if not _DURATION.search(blob):
+            return GateResult(
+                gate_id="G7", status="WARN",
+                reason=("P7-I3 mandatory retention duty is recordable, but no explicit "
+                        "numeric duration is present; this supports indicator score 0 "
+                        "unless a linked provision supplies the minimum"),
+            )
     if indicator_id == "P7-I5":
-        if _WARRANT.search(blob) and not _WITHOUT_JUDICIAL.search(blob):
+        if not (_GOVERNMENT_ACTOR.search(blob) and _ACCESS_POWER.search(blob)
+                and _ACCESS_OBJECT.search(blob)):
+            return GateResult(
+                gate_id="G7", status="FAIL",
+                reason=("P7-I5 requires a government/public-authority actor, an "
+                        "operative access/search/interception power, and a data, "
+                        "communications or records object"),
+            )
+        if _INDEPENDENT_JUDICIAL.search(blob) and not _WITHOUT_JUDICIAL.search(blob):
             return GateResult(gate_id="G7", status="WARN",
-                              reason="P7-I5: access appears COURT-GATED (warrant/judicial language) — "
+                              reason="P7-I5: access appears independently COURT-GATED — "
                                      "court-order test says this supports score 0; flag for legal review")
     return GateResult(gate_id="G7", status="PASS", reason=f"{indicator_id} legal-fit checks passed")
 

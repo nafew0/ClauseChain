@@ -13,6 +13,7 @@ def _seed_root(tmp_path: Path) -> Path:
     (tmp_path / "submission/review").mkdir(parents=True)
     (tmp_path / "data/review").mkdir(parents=True)
     template = [{"finding_key": f"{i:02d}" * 32,
+                 "review_subject_hash": f"{i + 10:02d}" * 32,
                  "review": {"decision": "rejected", "reviewer_name": "", "reviewer_role": "",
                             "reviewed_at": "", "citation_checked": False, "mapping_checked": False,
                             "status_checked": False, "citation_reviewer_name": "",
@@ -31,7 +32,9 @@ def _run(root: Path, domain: str, batch: dict, extra: list[str] = []):
 
 
 def _approval(key: str) -> dict:
-    return {"finding_key": key, "review": {
+    index = int(key[:2])
+    return {"finding_key": key, "review_subject_hash": f"{index + 10:02d}" * 32,
+            "review": {
         "decision": "approved", "reviewer_name": "Nafew", "reviewer_role": "Team Lead",
         "reviewed_at": "2026-07-18T12:00:00Z", "citation_checked": True,
         "mapping_checked": True, "status_checked": True,
@@ -72,6 +75,15 @@ def test_optimistic_concurrency_conflict(tmp_path):
     code, out = _run(root, "findings", {"decisions": [_approval("01" * 32)]},
                      extra=["--expected-sha", "deadbeef"])
     assert code == 3 and out["conflict"]
+
+
+def test_stale_review_subject_is_refused(tmp_path):
+    root = _seed_root(tmp_path)
+    decision = _approval("00" * 32)
+    decision["review_subject_hash"] = "ff" * 32
+    code, out = _run(root, "findings", {"decisions": [decision]})
+    assert code == 2
+    assert "stale or missing review_subject_hash" in out["error"]
 
 
 def test_recall_zone3_and_bundle(tmp_path):

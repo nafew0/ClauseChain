@@ -40,6 +40,82 @@ H = {"User-Agent": ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit
 API = "https://api.prod.legislation.gov.au/v1"
 
 
+def _compilation_manifest_path(tid: str, out_dir: Path) -> Path:
+    return out_dir / f"{tid}.compilation.json"
+
+
+def _load_cached_compilation(tid: str, out_dir: Path) -> dict | None:
+    """Load a version-bound AU compilation for deterministic offline replay.
+
+    New acquisitions persist a compact manifest. Existing pre-manifest archives
+    are bootstrapped once from immutable SourceArtifact/provision records, then
+    use the same contract on subsequent runs.
+    """
+    path = _compilation_manifest_path(tid, out_dir)
+    if path.is_file():
+        meta = json.loads(path.read_text())
+        files = [Path(pdf_path) for _, pdf_path in meta.get("pdfs", [])]
+        if files and all(file.is_file() for file in files):
+            if meta.get("epub") and not Path(meta["epub"]).is_file():
+                meta["epub"] = None
+            return meta
+
+    import sqlite3
+
+    graph_path = Path("data/graph_v2.db")
+    if not graph_path.is_file():
+        return None
+    connection = sqlite3.connect(graph_path)
+    try:
+        artifacts = []
+        for (payload,) in connection.execute("SELECT payload FROM source_artifacts"):
+            item = json.loads(payload)
+            if tid in str(item.get("original_url", "")) and item.get("register_id"):
+                local = Path(str(item.get("local_path") or ""))
+                if local.is_file():
+                    artifacts.append(item)
+        pdf_artifacts = [item for item in artifacts
+                         if str(item.get("mime_type", "")).casefold() == "application/pdf"]
+        if not pdf_artifacts:
+            return None
+        by_register: dict[str, list[dict]] = {}
+        for item in pdf_artifacts:
+            by_register.setdefault(str(item["register_id"]), []).append(item)
+        register, selected = max(
+            by_register.items(),
+            key=lambda pair: max(str(item.get("version_id") or "") for item in pair[1]),
+        )
+        version = max(str(item.get("version_id") or "") for item in selected)
+        date = version.split(":", 1)[0]
+        selected.sort(key=lambda item: int(
+            re.search(r"vol(\d+)", str(item.get("version_id") or "vol1"), re.I).group(1)
+        ))
+        pdfs = []
+        for item in selected:
+            volume_match = re.search(r"vol(\d+)", str(item.get("version_id") or ""), re.I)
+            volume = int(volume_match.group(1)) if volume_match else 0
+            pdfs.append((volume, str(item["local_path"])))
+        epub = next((str(item["local_path"]) for item in artifacts
+                     if str(item.get("mime_type", "")).casefold() == "application/epub+zip"
+                     and item.get("register_id") == register), None)
+        node = connection.execute(
+            "SELECT props FROM nodes WHERE label='Provision' "
+            "AND json_extract(props,'$.source_url') LIKE ? LIMIT 1", (f"%{tid}%",)
+        ).fetchone()
+        props = json.loads(node[0]) if node else {}
+        meta = {
+            "title_id": tid, "register_id": register, "compilation_date": date,
+            "epub": epub, "name": props.get("law_name") or tid,
+            "compilation_no": str((props.get("metadata") or {}).get("compilation") or "n/a"),
+            "pdfs": pdfs,
+            "source_url": f"https://www.legislation.gov.au/{tid}/latest",
+        }
+        path.write_text(json.dumps(meta, indent=2))
+        return meta
+    finally:
+        connection.close()
+
+
 def gold_act_norms() -> set[str]:
     rows = json.loads(Path("data/known_index.json").read_text())["economies"]["Australia"]
     return {a for r in rows if r.get("pillar") in ("6", "7") for a in r.get("acts_norm", [])}
@@ -51,6 +127,8 @@ def title_id(url: str) -> str | None:
 
 
 def acquire_au_act(client, tid: str, out_dir: Path) -> dict | None:
+    if os.getenv("CLAUSECHAIN_OFFLINE") == "1":
+        return _load_cached_compilation(tid, out_dir)
     r = client.get(f"{API}/versions/find(titleId='{tid}',asAtSpecification='latest')")
     if r.status_code != 200:
         return None
@@ -88,11 +166,13 @@ def acquire_au_act(client, tid: str, out_dir: Path) -> dict | None:
         epub = client.get(f"https://www.legislation.gov.au/{tid}/{date}/{date}/text/original/epub")
         if epub.status_code == 200 and epub.content[:2] == b"PK":
             epub_path.write_bytes(epub.content)
-    return {"title_id": tid, "register_id": reg, "compilation_date": date,
+    meta = {"title_id": tid, "register_id": reg, "compilation_date": date,
             "epub": str(epub_path) if epub_path.is_file() else None,
             "name": v.get("name"), "compilation_no": v.get("compilationNumber"),
             "pdfs": [(vol, str(p)) for vol, p in pdf_paths],
             "source_url": f"https://www.legislation.gov.au/{tid}/latest"}
+    _compilation_manifest_path(tid, out_dir).write_text(json.dumps(meta, indent=2))
+    return meta
 
 
 def validate_compilation_bundle(meta: dict) -> str:
@@ -148,7 +228,7 @@ def load_au_seed_document(url: str, entry: dict, stores, generation: str,
     archived official document through the generic extractors, profile-driven.
     Returns unit count (0 = recorded skip; the reconciliation report keeps it visible)."""
     from packages.core.legal_controls import content_eligibility
-    from packages.extractors.pdf_align import align_to_pdf
+    from packages.extractors.pdf_align import align_and_bind_pdf_evidence
     from packages.ingest.seed_profiles import seed_fingerprint_config, seed_parse_profile
     from packages.extractors.pdf_act import parse_act_text
     from urllib.parse import urlparse
@@ -228,25 +308,22 @@ def load_au_seed_document(url: str, entry: dict, stores, generation: str,
         return 0
     # The parsed text IS the official PDF — verify and stamp exact alignment the
     # same way the EPUB oracle path does (AU evidence must be PDF-aligned).
-    align_to_pdf(units, [file])
+    align_and_bind_pdf_evidence(units, [file], [text_spans], [pages])
     for unit in units:
         unit.metadata["archived_copy"] = file
         unit.metadata["access_date"] = entry.get("access_date")
         unit.metadata["inventory_url"] = url
         unit.metadata["content_sha256"] = artifact.sha256
         unit.metadata["legal_status"] = status.status
-        unit.metadata["evidence_eligible"] = eligible
+        unit.metadata["evidence_eligible"] = (
+            eligible and unit.metadata.get("pdf_alignment") == "exact"
+        )
         unit.metadata["source_type"] = profile["source_type"]
         unit.metadata["processing_fingerprint"] = fingerprint
         unit.metadata["build_generation"] = generation
         unit.metadata["status_evidence"] = status.model_dump(mode="json")
         unit.source_artifact_id = artifact.id
         unit.raw_context = unit.raw_context or unit.text
-        import re as _re4
-        pm = _re4.search(r"page\s+(\d+)", unit.location_reference, _re4.I)
-        page_no = int(pm.group(1)) if pm else None
-        unit.linked_span_ids = ([s.id for s in text_spans if s.page_number == page_no]
-                                if page_no else [])
     for st in stores:
         if hasattr(st, "upsert_source_artifact"):
             st.upsert_source_artifact(artifact)
@@ -258,6 +335,17 @@ def load_au_seed_document(url: str, entry: dict, stores, generation: str,
         else:
             for unit in units:
                 st.upsert_rule_unit(unit)
+        mark_complete = getattr(st, "mark_artifact_build_complete", None)
+        if mark_complete:
+            # A parser may emit repeated structural units for one citation. The
+            # graph is keyed by RuleUnit.id, so the completion receipt must record
+            # the number of uniquely persisted nodes rather than the raw parser
+            # list length. Otherwise a safe resume can never restamp the artifact
+            # and needlessly repeats extraction/alignment for large Acts.
+            mark_complete(
+                "Australia", fingerprint, generation,
+                len({unit.id for unit in units}),
+            )
     print(f"  {act_name[:52]:52s} [{profile['source_type']:>7s}] -> {len(units):5d} units")
     return len(units)
 
@@ -365,7 +453,7 @@ def main() -> int:
                 print(f"  {(meta['name'] or act_name)[:52]:52s} -> unchanged, "
                       f"{restamped} units restamped")
                 continue
-            artifacts, evidence_by_index = [], {}
+            artifacts, evidence_by_index, extracted_by_index = [], {}, {}
             for pdf_index, (vol, pdf_path) in enumerate(meta["pdfs"], start=1):
                 suffix = f"/{vol}" if vol else ""
                 exact_pdf_url = (f"https://www.legislation.gov.au/{tid}/{meta['compilation_date']}/"
@@ -383,6 +471,7 @@ def main() -> int:
                 page_artifacts, text_spans = materialize_page_evidence(native_pages, pdf_artifact.id)
                 artifacts.append(pdf_artifact)
                 evidence_by_index[pdf_index] = (page_artifacts, text_spans)
+                extracted_by_index[pdf_index] = native_pages
             structure_artifact = None
             if meta.get("epub"):
                 exact_epub_url = (f"https://www.legislation.gov.au/{tid}/{meta['compilation_date']}/"
@@ -401,24 +490,31 @@ def main() -> int:
                 if meta.get("epub"):
                     # P3.5 R3/R4-lite: XHTML structure oracle + authorised-PDF alignment
                     from packages.extractors.epub_act import parse_epub_act
-                    from packages.extractors.pdf_align import align_to_pdf
+                    from packages.extractors.pdf_align import align_and_bind_pdf_evidence
 
                     units = parse_epub_act(Path(meta["epub"]).read_bytes(), "Australia",
                                            meta["name"] or act_name, meta["register_id"],
                                            meta["source_url"])
-                    aligned, n_units = align_to_pdf(units, [p for _, p in meta["pdfs"]])
+                    aligned, n_units = align_and_bind_pdf_evidence(
+                        units,
+                        [p for _, p in meta["pdfs"]],
+                        [evidence_by_index[i][1] for i in sorted(evidence_by_index)],
+                        [extracted_by_index[i] for i in sorted(extracted_by_index)],
+                    )
                     print(f"    xhtml oracle: {n_units} units, {aligned} PDF-aligned")
                 if not units:  # fallback: regex parse of the authorised PDF
-                    from packages.extractors.pdf_align import align_to_pdf as _align
+                    from packages.extractors.pdf_align import align_and_bind_pdf_evidence as _align
 
-                    for vol, pdf in meta["pdfs"]:
+                    for pdf_index, (vol, pdf) in enumerate(meta["pdfs"], start=1):
                         vol_units = extract_act_pdf(pdf, economy="Australia",
                                                     act_name=meta["name"] or act_name,
                                                     act_ref=f"{meta['register_id']}v{vol}" if vol else meta["register_id"],
                                                     source_url=meta["source_url"])
                         # text originates from this authorised PDF — verify + stamp
                         # exact alignment so the AU aligned-evidence gate applies uniformly
-                        _align(vol_units, [pdf])
+                        span_group = evidence_by_index[pdf_index][1]
+                        native_page_group = extracted_by_index[pdf_index]
+                        _align(vol_units, [pdf], [span_group], [native_page_group])
                         if vol:
                             for u in vol_units:
                                 u.location_reference = f"vol {vol}, {u.location_reference}"
@@ -443,7 +539,9 @@ def main() -> int:
                 unit.metadata["content_sha256"] = artifact.sha256
                 unit.metadata["access_date"] = artifact.accessed_at.date().isoformat()
                 unit.metadata["legal_status"] = status.status
-                unit.metadata["evidence_eligible"] = True
+                unit.metadata["evidence_eligible"] = (
+                    unit.metadata.get("pdf_alignment") == "exact"
+                )
                 unit.metadata["source_type"] = "act"
                 unit.metadata["processing_fingerprint"] = vol_fps.get(artifact.sha256) \
                     or _pfp(artifact.sha256, "act")
@@ -472,16 +570,25 @@ def main() -> int:
                 else:
                     for unit in units:
                         st.upsert_rule_unit(unit)
+                mark_complete = getattr(st, "mark_artifact_build_complete", None)
+                if mark_complete:
+                    for fingerprint in vol_fps.values():
+                        count = len({
+                            unit.id for unit in units
+                            if unit.metadata.get("processing_fingerprint") == fingerprint
+                        })
+                        mark_complete("Australia", fingerprint, generation, count)
             acts += 1
             total += len(units)
             print(f"  {(meta['name'] or act_name)[:52]:52s} comp#{meta['compilation_no']:>4s} -> {len(units):5d} units")
 
-    if build_complete:
-        for st in stores:
-            if hasattr(st, "prune_economy_generation"):
-                st.prune_economy_generation("Australia", generation)
-    else:
-        print("AU prune skipped: at least one eligible source failed; prior generation retained")
+    # A failed current acquisition remains an explicit coverage failure; it must
+    # not preserve stale evidence from a prior generation in the active corpus.
+    for st in stores:
+        if hasattr(st, "prune_economy_generation"):
+            st.prune_economy_generation("Australia", generation)
+    if not build_complete:
+        print("AU rebuild incomplete: unresolved acquisitions recorded; stale generation pruned")
 
     hits = stores[0].search_provisions("interference with the privacy of an individual",
                                        economy="Australia", limit=3)

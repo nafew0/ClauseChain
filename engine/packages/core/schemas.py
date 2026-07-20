@@ -92,6 +92,8 @@ class CitationProof(BaseModel):
     bboxes: list[tuple[float, float, float, float]]
     exact_snippet: str
     normalized_snippet: str
+    source_start_char: int | None = Field(default=None, ge=0)
+    source_end_char: int | None = Field(default=None, ge=0)
     alignment_status: Literal["exact", "anchor", "unaligned", "ambiguous"]
     alignment_score: float = Field(ge=0.0, le=1.0)
     gate_results: list[JsonDict] = Field(default_factory=list)

@@ -2,9 +2,12 @@
 from __future__ import annotations
 
 from packages.core.schemas import ExtractedPage
-from packages.extractors.pdf_act import TREATY_SECTION_PATTERNS, parse_act_text
+from packages.extractors.pdf_act import (TREATY_SECTION_PATTERNS,
+                                         _repair_ocr_section_labels,
+                                         parse_act_text)
 from packages.ingest.known_index import extract_refs
 from packages.verifier.gates import extend_to_clause_boundary
+from packages.providers.ocr_provider import _tesseract_lines
 
 
 def test_snippet_extends_to_operative_object_phrase():
@@ -18,7 +21,7 @@ def test_snippet_extends_to_operative_object_phrase():
            "search warrant, search or cause a search to be made")
     extended = extend_to_clause_boundary(cut, source)
     assert "for a document or other thing" in extended
-    assert extended.endswith(";") or extended.endswith("located;")
+    assert extended.endswith("such search must be recorded.")
     # already-complete snippets are untouched
     done = "The record must be retained for 3 years."
     assert extend_to_clause_boundary(done, done + " (2) More text.") == done
@@ -29,6 +32,23 @@ def test_malay_citation_forms_extract():
     assert "s. 12A(1)" in refs
     assert "Art. 5" in refs
     assert "reg. 4" in refs
+
+
+def test_tesseract_preserves_layout_lines_for_section_parser():
+    data = {
+        "text": ["Search", "by", "police", "116.", "(1)", "Whenever"],
+        "block_num": [1, 1, 1, 2, 2, 2],
+        "par_num": [1, 1, 1, 1, 1, 1],
+        "line_num": [1, 1, 1, 1, 1, 2],
+    }
+    assert _tesseract_lines(data) == "Search by police\n116. (1)\nWhenever"
+
+
+def test_ocr_section_suffix_repair_uses_neighbour_sequence():
+    lines = [(1, "116a. First"), (2, "116s. Middle"), (3, "116c. Third")]
+    assert [line for _, line in _repair_ocr_section_labels(lines)] == [
+        "116A. First", "116B. Middle", "116C. Third"
+    ]
 
 
 def test_treaty_article_grammar_parses():
@@ -46,6 +66,30 @@ def test_treaty_article_grammar_parses():
                            citation_template="Art. {label}")
     cites = {u.article_section for u in units}
     assert "Art. 14.11" in cites and "Art. 14.12" in cites
+
+
+def test_treaty_grammar_accepts_bare_heading_and_rejects_wrapped_cross_reference():
+    page = ExtractedPage(
+        document_id="t", page_number=1, source_url="https://x", location_reference="page 1",
+        text=("Article 12.3: Scope\nThe Chapter applies to electronic commerce.\n"
+              "Article 12.14 (Location of Computing Facilities) and Article 12.15\n"
+              "shall not apply to government information.\n"
+              "Article 12.14: Location of Computing Facilities\n"
+              "A Party shall not require local computing facilities.\n"
+              "Article 12A.1: Annex application\n"
+              "This Annex applies to the listed procedures.\n"
+              "ARTICLE 13\nExpress Shipments\n"
+              "Each Party shall maintain expedited procedures."),
+    )
+    units = parse_act_text(
+        [page], "Singapore", "Digital agreement", "DA", "https://x",
+        extra_section_patterns=TREATY_SECTION_PATTERNS,
+        citation_template="Art. {label}",
+    )
+    citations = [unit.article_section for unit in units]
+    assert citations == ["Art. 12.3", "Art. 12.14", "Art. 12A.1", "Art. 13"]
+    article = next(unit for unit in units if unit.article_section == "Art. 12.14")
+    assert article.text.startswith("Article 12.14: Location")
 
 
 def test_screen_cap_default_raised():
@@ -67,3 +111,17 @@ def test_zone3_gold_tripwire():
     assert gold.get("P7-I1") == 0.0  # AU has the Privacy Act — master agrees
     det, _ = deterministic_score("P7-I1", [])  # thin evidence -> det claims 1
     assert abs(det - gold["P7-I1"]) > 0.01  # divergence detected -> would flag
+
+
+def test_zone3_binding_agreement_inverse_polarity():
+    from scripts.zone3_score import deterministic_score
+
+    treaty = {
+        "Article / Section": "Art. 14.11",
+        "Coverage": "Horizontal",
+        "Law Name": "Binding digital trade agreement",
+    }
+    assert deterministic_score("P6-I5", [treaty]) == (
+        0.0, "binding cross-border data-transfer agreement evidenced")
+    assert deterministic_score("P6-I5", []) == (
+        1.0, "no qualifying binding data-transfer agreement found")

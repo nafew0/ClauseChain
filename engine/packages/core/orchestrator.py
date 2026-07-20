@@ -9,6 +9,7 @@ citing the governing law (never blank — 15-Jun rule).
 from __future__ import annotations
 
 import time
+import unicodedata
 from pathlib import Path
 
 import yaml
@@ -20,6 +21,73 @@ from packages.core.schemas import (CitationProof, GateResult, MappedFinding, Run
 ECONOMY_NAMES = {"SG": "Singapore", "MY": "Malaysia", "AU": "Australia"}
 CODE_BY_NAME = {name.upper(): code for code, name in ECONOMY_NAMES.items()}
 ENGINE_ROOT = Path(__file__).resolve().parents[2]
+
+
+def _participating_proof_spans(snippet: str, evidence: list[dict]) -> tuple[list[str], list[list[float]]]:
+    """Return the minimal contiguous stored-span window containing ``snippet``.
+
+    Normalization is used only to locate the window.  CitationProof still stores
+    and exports the canonical source characters, never reconstructed span text.
+    """
+    if not snippet or not evidence:
+        return [], []
+    translations = {"‑": "-", "–": "-", "—": "-", "−": "-",
+                    "‘": "'", "’": "'", "“": '"', "”": '"'}
+    chars: list[str] = []
+    span_map: list[int] = []
+    previous_space = True
+    for span_index, span in enumerate(evidence):
+        if chars and not previous_space:
+            chars.append(" "); span_map.append(span_index); previous_space = True
+        for original in str(span.get("text") or ""):
+            for char in unicodedata.normalize("NFKC", original):
+                char = translations.get(char, char)
+                if char.isspace():
+                    if previous_space:
+                        continue
+                    chars.append(" "); span_map.append(span_index); previous_space = True
+                else:
+                    chars.append(char.casefold()); span_map.append(span_index); previous_space = False
+    def _drop_punctuation_spaces(values: list[str], owners: list[int] | None = None):
+        kept: list[str] = []
+        kept_owners: list[int] = []
+        for index, char in enumerate(values):
+            if char == " ":
+                previous = values[index - 1] if index else ""
+                following = values[index + 1] if index + 1 < len(values) else ""
+                if following in ",.;:!?)]}" or previous in "([{":
+                    continue
+            kept.append(char)
+            if owners is not None:
+                kept_owners.append(owners[index])
+        while kept and kept[0] == " ":
+            kept.pop(0)
+            if owners is not None:
+                kept_owners.pop(0)
+        while kept and kept[-1] == " ":
+            kept.pop()
+            if owners is not None:
+                kept_owners.pop()
+        return kept, kept_owners
+
+    chars, span_map = _drop_punctuation_spaces(chars, span_map)
+    haystack = "".join(chars)
+    target_chars = list(" ".join(
+        "".join(translations.get(char, char)
+                for char in unicodedata.normalize("NFKC", snippet).casefold()).split()
+    ))
+    target_chars, _ = _drop_punctuation_spaces(target_chars)
+    target = "".join(target_chars)
+    if not target:
+        return [], []
+    position = haystack.find(target)
+    if position < 0:
+        return [], []
+    first = span_map[position]
+    last = span_map[position + len(target) - 1]
+    participating = evidence[first:last + 1]
+    return ([str(span["id"]) for span in participating],
+            [list(span["bbox"]) for span in participating])
 
 def _pack_corpus_acts(pack: dict) -> list[tuple[str, str | None]]:
     acts = [(a["ref"], a.get("number")) for a in pack.get("corpus_acts", [])]
@@ -232,7 +300,8 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
     from packages.core.corpus_fingerprint import corpus_fingerprint
     from packages.graph.store import get_graph_store
     from packages.providers.model_router import resolve_embedding, resolve_llm
-    from packages.rdtii.mapper import SCREEN_CAP_PER_INDICATOR, map_candidates, screen_candidates
+    from packages.rdtii.mapper import (SCREEN_CAP_PER_INDICATOR, MapDecision,
+                                       map_candidates, screen_candidates)
     from packages.retrieval.hybrid import EmbeddingCache, retrieve_for_indicator
     from packages.verifier.gates import run_gates
 
@@ -249,12 +318,27 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
     store = get_graph_store()
     corpus = _ensure_corpus(store, pack, economy)
 
+    known_reconcile_only = _os.getenv("CLAUSECHAIN_KNOWN_RECONCILE_ONLY") == "1"
     llm_bulk = resolve_llm(provider_profile, tier="bulk")
     llm_high = resolve_llm(provider_profile, tier="high_reasoning")
     llm_escalation = resolve_llm(provider_profile, tier="legal_escalation")
     embedder = resolve_embedding(provider_profile)
     cache = EmbeddingCache(embedder, f"data/cache/embeddings_{code.lower()}.json")
+    # Query packs are deterministic and small. Embed all cues for this pillar in
+    # one provider call, then reuse the persistent cache inside each indicator.
+    # This removes dozens of sequential network round trips from a fresh sweep.
+    from packages.retrieval.hybrid import build_query_pack
+    if not known_reconcile_only:
+        cache.ensure_queries([
+            query
+            for indicator_id, cfg in rubric.get("indicators", {}).items()
+            if cfg.get("regulatory") is not False
+            for query in build_query_pack(indicator_id, cfg)
+        ])
     known = KnownIndex()
+    from packages.ingest.expected_anchors import load_expected_anchors
+
+    expected_anchor_ledger = load_expected_anchors()
     model_version = (f"{getattr(llm_high.primary, 'model', 'llm')}"
                      f"/escalate:{getattr(llm_escalation.primary, 'model', 'llm')}"
                      f"+{getattr(embedder, 'model', 'emb')}")
@@ -270,8 +354,9 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
         if cfg.get("regulatory") is False:
             continue  # 6.5: non-regulatory — engine does not extract
         retrieval_caps: list[dict] = []
-        candidates = retrieve_for_indicator(store, cache, corpus, indicator_id, cfg, economy,
-                                            caps_out=retrieval_caps)
+        candidates = ([] if known_reconcile_only else
+                      retrieve_for_indicator(store, cache, corpus, indicator_id, cfg, economy,
+                                             caps_out=retrieval_caps))
         for cap in retrieval_caps:
             warnings.append(f"{indicator_id}: retrieval union capped at {cap['limit']} of "
                             f"{cap['input_count']} candidates (cap logged, not silent)")
@@ -293,7 +378,12 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                       if str(r.get("pillar")) == str(pillar)
                       and r.get("indicator_code") == indicator_id]
         gold_anchor_ids: set[str] = set()
+        research_anchor_ids: set[str] = set()
         anchor_matches: dict[str, set[str]] = {}
+        research_matches: dict[str, set[str]] = {}
+        research_rows = [row for row in expected_anchor_ledger
+                         if row.get("economy") == economy
+                         and row.get("indicator_id") == indicator_id]
         from packages.ingest.known_index import expected_anchors
         for krow in known_rows:
             for anchor in expected_anchors(krow):
@@ -325,6 +415,35 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                         candidates.append(_Cand(m["provision_id"], m["text"], m["props"],
                                                 matched_queries=["known-injection"]))
                         have_ids.add(m["provision_id"])
+        # Verified research expectations use the same generic law+hierarchy
+        # resolver and bypass retrieval screening, but remain NEW unless the
+        # ESCAP master independently records them.
+        for expected in research_rows:
+            expected_base = _sb(expected.get("citation", ""))
+            matches = [c for c in corpus
+                       if _lm(expected.get("instrument", ""),
+                              c["props"].get("law_name", ""))
+                       and _section_matches(
+                           expected_base,
+                           _sb(c["props"].get("article_section", "")),
+                       )]
+            anchor_id = expected["anchor_id"]
+            research_matches[anchor_id] = {m["provision_id"] for m in matches}
+            if not matches:
+                warnings.append(
+                    f"EXPECTED ANCHOR HOLE {indicator_id}: "
+                    f"{expected.get('instrument', '')[:45]} {expected.get('citation', '')} "
+                    "not in corpus"
+                )
+            for match in matches:
+                research_anchor_ids.add(match["provision_id"])
+                if match["provision_id"] not in have_ids:
+                    from packages.retrieval.hybrid import Candidate as _Cand
+                    candidates.append(_Cand(
+                        match["provision_id"], match["text"], match["props"],
+                        matched_queries=["expected-anchor-injection"],
+                    ))
+                    have_ids.add(match["provision_id"])
         # L2 (P3.5): measurable retrieval stats — how many master-known anchors
         # retrieval found on its own vs. how many only the injection saved.
         organic_anchor_count = sum(bool(ids & organic_ids) for ids in anchor_matches.values())
@@ -351,45 +470,96 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
         # Bypass screening only for anchors recorded under THIS indicator.
         # Using every section known anywhere in the master dataset caused a broad
         # parent ref to bypass hundreds of unrelated descendants under every indicator.
-        anchors, rest = _partition_current_anchors(candidates, gold_anchor_ids)
-        survivors = anchors + screen_candidates(llm_bulk, indicator_id, cfg, rest)
+        protected_anchor_ids = gold_anchor_ids | research_anchor_ids
+        anchors, rest = _partition_current_anchors(candidates, protected_anchor_ids)
+        survivors = (anchors if known_reconcile_only else
+                     anchors + screen_candidates(llm_bulk, indicator_id, cfg, rest))
         survivor_ids = {c.provision_id for c in survivors}
         indicator_stats["screen_survival_recall"] = (
             sum(bool(ids & survivor_ids) for ids in anchor_matches.values()) / len(anchor_matches)
             if anchor_matches else None)
         stats["screened_in"] += len(survivors)
-        stats["known_anchors"] = stats.get("known_anchors", 0) + len(anchors)
+        stats["known_anchors"] = stats.get("known_anchors", 0) + sum(
+            c.provision_id in gold_anchor_ids for c in anchors
+        )
+        stats["research_expected_anchors"] = (
+            stats.get("research_expected_anchors", 0) + len(research_rows)
+        )
 
         indicator_rows = 0
         mapped_anchor_ids: set[str] = set()
         passed_anchor_ids: set[str] = set()
-        mapping_decisions = map_candidates(
-            llm_high, indicator_id, cfg, survivors, gold_anchor_ids,
-            llm_escalation=llm_escalation,
-        )
+        mapped_research_ids: set[str] = set()
+        passed_research_ids: set[str] = set()
+        if known_reconcile_only:
+            mapping_decisions = [MapDecision(
+                applies=True,
+                verbatim_snippet=candidate.text,
+                rationale=("ESCAP master-known anchor deterministically reconciled from "
+                           "the current canonical corpus; pending named legal review."),
+                confidence=0.5,
+                coverage="Horizontal",
+            ) for candidate in survivors]
+            for decision in mapping_decisions:
+                decision._model_route = "deterministic-known"
+        else:
+            mapping_decisions = map_candidates(
+                llm_high, indicator_id, cfg, survivors, gold_anchor_ids,
+                llm_escalation=llm_escalation,
+                expected_anchor_ids=research_anchor_ids,
+            )
         for candidate, decision in zip(survivors, mapping_decisions, strict=True):
             if decision._model_route == "mini-escalation":
                 stats["mini_escalations"] += 1
                 for reason in decision._escalation_reasons:
                     stats["escalation_reasons"][reason] = (
                         stats["escalation_reasons"].get(reason, 0) + 1)
-            else:
+            elif decision._model_route == "nano":
                 stats["nano_mappings"] += 1
+            # Master-known anchors are a recall baseline, not NEW model
+            # discoveries. A stochastic mapper abstention must not silently erase
+            # a corpus-resolved, proof-backed baseline row. Retain it as a pending
+            # KNOWN review subject and let the deterministic gates (plus named
+            # reviewer/adjudication) decide whether it survives. This is not an
+            # approval and cannot enter submission replay without review.
+            if (not decision.applies
+                    and candidate.provision_id in gold_anchor_ids):
+                decision.applies = True
+                decision.verbatim_snippet = candidate.text
+                decision.rationale = (
+                    "ESCAP master-known anchor retained after mapper abstention; "
+                    "pending named legal review and deterministic legal-fit gates."
+                )
+                decision.confidence = min(decision.confidence or 0.5, 0.5)
+                stats["known_mapper_abstention_recoveries"] = (
+                    stats.get("known_mapper_abstention_recoveries", 0) + 1
+                )
+                warnings.append(
+                    f"KNOWN mapper abstention retained for gated review: "
+                    f"{indicator_id} {candidate.props.get('article_section', '')}"
+                )
             if not decision.applies:
                 continue
             if candidate.provision_id in gold_anchor_ids:
                 mapped_anchor_ids.add(candidate.provision_id)
+            if candidate.provision_id in research_anchor_ids:
+                mapped_research_ids.add(candidate.provision_id)
             props = candidate.props
-            # The exported snippet is constructed FIRST (source-exact slice ->
-            # clause-boundary extension -> boundary-aware cap); every gate below
-            # verifies that exact final text. No mutation happens after gating.
-            from packages.verifier.gates import finalize_snippet
+            # RuleUnit.text may be a shortened retrieval view.  The legal proof
+            # contract is the canonical structural context, including immediate
+            # child list items and exceptions.
+            source_context = props.get("raw_context") or candidate.text
+            from packages.verifier.gates import finalize_snippet_result
 
-            decision.verbatim_snippet = finalize_snippet(
-                decision.verbatim_snippet, candidate.text)
+            finalized = finalize_snippet_result(
+                decision.verbatim_snippet,
+                source_context,
+                semantic_blocks=(props.get("metadata") or {}).get("semantic_blocks"),
+            )
+            decision.verbatim_snippet = finalized.text
             gate_results, ok = run_gates(
                 snippet=decision.verbatim_snippet,
-                source_text=candidate.text,
+                source_text=source_context,
                 source_url=props.get("source_url", ""),
                 whitelist_domains=whitelist,
                 current_as_at=props.get("current_as_at")
@@ -398,10 +568,11 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
             )
             from packages.verifier.gates import (citation_tier, g2_location, g5_whole_rule,
                                                  g6_meaning_support, g7_indicator_fit,
-                                                 g8_counter_and_dangling, g9_span_length)
+                                                 g8_counter_and_dangling,
+                                                 g9_structural_closure)
 
             fit = g7_indicator_fit(indicator_id, decision.verbatim_snippet,
-                                   candidate.text, props.get("law_name", ""))
+                                   source_context, props.get("law_name", ""))
             from packages.discovery.diff import section_base as _sb2
 
             same_act_sections = set()
@@ -413,11 +584,11 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
             gate_results.extend([
                 fit,
                 g2_location(props.get("article_section", ""), props.get("location_reference", "")),
-                g5_whole_rule(indicator_id, decision.verbatim_snippet, candidate.text),
-                g6_meaning_support(decision.rationale, decision.verbatim_snippet, candidate.text),
-                g8_counter_and_dangling(decision.verbatim_snippet, candidate.text,
+                g5_whole_rule(indicator_id, decision.verbatim_snippet, source_context),
+                g6_meaning_support(decision.rationale, decision.verbatim_snippet, source_context),
+                g8_counter_and_dangling(decision.verbatim_snippet, source_context,
                                         props.get("law_name", ""), same_act_sections),
-                g9_span_length(decision.verbatim_snippet),
+                g9_structural_closure(finalized),
             ])
             ok = ok and all(g.status != "FAIL" for g in gate_results)
             for g in gate_results:
@@ -430,10 +601,17 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                     f"({[g.gate_id for g in gate_results if g.status == 'FAIL']})"
                 )
                 continue
-            if economy == "Australia" and props.get("pdf_alignment") != "exact":
+            # Page-backed sources require exact PDF alignment. Anchor-backed
+            # sources (for example Singapore's archived HTML) deliberately have
+            # no page number and follow the anchor proof route instead.
+            loc = props.get("location_reference", "")
+            import re as _re3
+            page_match = _re3.search(r"page\s+(\d+)", loc, _re3.I)
+            if page_match and props.get("pdf_alignment") != "exact":
                 stats["gate_rejected"] += 1
                 warnings.append(
-                    f"REJECTED unaligned AU evidence: {indicator_id} {props.get('article_section')}"
+                    f"REJECTED unaligned PDF evidence: {indicator_id} "
+                    f"{props.get('article_section')}"
                 )
                 continue
             if props.get("ocr_citation_disagreement"):
@@ -446,15 +624,32 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                                  props.get("article_section", ""))
             status = props.get("legal_status") or "unknown"
             status_fact = props.get("status_evidence") or {}
-            loc = props.get("location_reference", "")
-            import re as _re3
-            page_match = _re3.search(r"page\s+(\d+)", loc, _re3.I)
             source_hash = props.get("content_sha256") or ""
             proof = None
             if source_hash and props.get("source_artifact_id"):
-                span_ids = props.get("linked_span_ids") or []
-                span_boxes = (props.get("metadata", {}).get("pdf_span_boxes", []) or
-                              props.get("metadata", {}).get("citation_span_boxes", []))
+                metadata = props.get("metadata", {})
+                linked_ids = props.get("linked_span_ids") or []
+                load_spans = getattr(store, "get_text_spans", None)
+                stored_spans = load_spans(linked_ids) if load_spans else []
+                span_evidence = [
+                    {"id": span.id, "page": span.page_number, "text": span.text,
+                     "bbox": list(span.bbox), "reading_order": span.reading_order}
+                    for span in stored_spans
+                ]
+                span_ids, span_boxes = _participating_proof_spans(
+                    decision.verbatim_snippet,
+                    span_evidence or metadata.get("aligned_span_evidence") or [],
+                )
+                if not span_ids and not page_match:
+                    span_ids = props.get("linked_span_ids") or []
+                    span_boxes = metadata.get("citation_span_boxes", [])
+                if page_match and props.get("pdf_alignment") == "exact" and not span_ids:
+                    stats["gate_rejected"] += 1
+                    warnings.append(
+                        f"REJECTED proof-span unresolved: {indicator_id} "
+                        f"{props.get('article_section')}"
+                    )
+                    continue
                 page_exact = bool(page_match and span_ids and span_boxes)
                 alignment_exact = props.get("pdf_alignment") == "exact" or page_exact
                 proof = CitationProof(
@@ -466,6 +661,8 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                     bboxes=span_boxes,
                     exact_snippet=decision.verbatim_snippet,
                     normalized_snippet=" ".join(decision.verbatim_snippet.split()).lower(),
+                    source_start_char=finalized.source_start,
+                    source_end_char=finalized.source_end,
                     alignment_status=("exact" if alignment_exact else
                                       "anchor" if loc.startswith("#") else "unaligned"),
                     alignment_score=float(props.get("alignment_score") or
@@ -504,11 +701,13 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                     verifier_risks=[g.reason for g in gate_results if g.status == "WARN"],
                     source_artifact_id=props.get("source_artifact_id"),
                     citation_proof=proof,
-                    raw_context=props.get("raw_context") or candidate.text,
+                    raw_context=source_context,
                 )
             )
             if candidate.provision_id in gold_anchor_ids:
                 passed_anchor_ids.add(candidate.provision_id)
+            if candidate.provision_id in research_anchor_ids:
+                passed_research_ids.add(candidate.provision_id)
             indicator_rows += 1
             stats["mapped"] += 1
 
@@ -518,6 +717,26 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
         indicator_stats["gate_survival_recall"] = (
             sum(bool(ids & passed_anchor_ids) for ids in anchor_matches.values()) / len(anchor_matches)
             if anchor_matches else None)
+        indicator_stats["expected_anchor_trace"] = []
+        for expected in research_rows:
+            matched_ids = research_matches.get(expected["anchor_id"], set())
+            if not matched_ids:
+                outcome = "ACQUISITION_OR_STRUCTURE_MISS"
+            elif not (matched_ids & survivor_ids):
+                outcome = "SCREEN_MISS"
+            elif not (matched_ids & mapped_research_ids):
+                outcome = "MAPPING_MISS"
+            elif not (matched_ids & passed_research_ids):
+                outcome = "GATE_MISS"
+            else:
+                outcome = "PASS"
+            indicator_stats["expected_anchor_trace"].append({
+                "anchor_id": expected["anchor_id"],
+                "instrument": expected["instrument"],
+                "citation": expected["citation"],
+                "matched_provision_ids": sorted(matched_ids),
+                "outcome": outcome,
+            })
         stats["by_indicator"][indicator_id] = indicator_stats
 
         if indicator_rows == 0 and not any(f.indicator_id == indicator_id for f in findings):
@@ -584,9 +803,11 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
             "corpus_fingerprint": corpus_fingerprint(corpus),
             "known_index_sha256": __import__("hashlib").sha256(
                 Path("data/known_index.json").read_bytes()).hexdigest(),
+            "expected_anchor_ledger_sha256": __import__("hashlib").sha256(
+                Path("configs/expected_anchors.json").read_bytes()).hexdigest(),
             "pipeline_stats": stats,
             "elapsed_seconds": round(time.time() - started, 1),
-            "live_llm_calls": True,
+            "live_llm_calls": not known_reconcile_only,
             "graph_backend": type(store).__name__,
             "cost_report": cost_entry,
         },

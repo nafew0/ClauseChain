@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from datetime import datetime, timezone
 
 import fitz
@@ -9,10 +10,13 @@ from packages.core.citations import citation_path
 from packages.core.evidence import SourceValidationError, source_artifact_from_file, verify_artifact
 from packages.core.finalization import FinalizationError, validate_final_finding
 from packages.core.legal_controls import content_eligibility, evidence_eligibility, resolve_status
-from packages.core.schemas import (CitationProof, MappedFinding, ReviewDecision, RuleUnit,
-                                   SearchCoverageManifest, StatusEvidence)
+from packages.core.schemas import (CitationProof, ExtractedPage, MappedFinding, ReviewDecision,
+                                   RuleUnit, SearchCoverageManifest, StatusEvidence)
 from packages.extractors.pdf import extract_pdf, materialize_page_evidence
-from packages.extractors.pdf_align import align_to_pdf
+from packages.extractors.pdf_align import align_to_extracted_pages, align_to_pdf
+from packages.extractors.pdf_align import _norm as alignment_norm
+from packages.core.orchestrator import _participating_proof_spans
+from packages.retrieval.hybrid import EmbeddingCache
 from packages.graph.sqlite_graph import SqliteGraphStore
 
 
@@ -61,6 +65,53 @@ def test_lossless_graph_roundtrip_and_page_spans(tmp_path):
     assert store._connect().execute("select count(*) from text_spans").fetchone()[0] > 0
 
 
+def test_unaligned_pdf_units_are_quarantined_from_retrieval(tmp_path):
+    store = SqliteGraphStore(tmp_path / "g.db")
+    unit = RuleUnit(
+        id="my:x:s1", document_id="my:x", economy="Malaysia", law_name="X Act",
+        article_section="s. 1", text="The controller must retain every audit record.",
+        raw_context="The controller must retain every audit record.",
+        source_url="https://official.example/x.pdf", location_reference="page 1",
+        metadata={"evidence_eligible": True, "legal_status": "in_force",
+                  "pdf_alignment": "unaligned-review"},
+    )
+    store.upsert_rule_unit(unit)
+    assert store.quarantine_unaligned_provisions("Malaysia") == 1
+    props = json.loads(store._connect().execute(
+        "SELECT props FROM nodes WHERE id='provision:my:x:s1'"
+    ).fetchone()[0])
+    assert props["evidence_eligible"] is False
+    assert store.search_provisions("retain audit record", "Malaysia", 10) == []
+
+
+def test_sqlite_bulk_rule_unit_writer_preserves_full_contract(tmp_path):
+    store = SqliteGraphStore(tmp_path / "g.db")
+    units = [RuleUnit(
+        id=f"au:x:s{number}", document_id="au:x", economy="Australia",
+        law_name="X Act", article_section=f"s. {number}",
+        text=f"The controller must retain record {number}.",
+        raw_context=f"The controller must retain record {number}.",
+        source_url="https://official.example/x.pdf", location_reference=f"page {number}",
+        linked_span_ids=[f"span-{number}"],
+        metadata={"evidence_eligible": True, "legal_status": "in_force",
+                  "pdf_alignment": "exact", "alignment_score": 1.0,
+                  "processing_fingerprint": "fp", "build_generation": "g"},
+    ) for number in range(1, 4)]
+    assert store.upsert_rule_units(units, batch_size=2) == 3
+    assert store._connect().execute(
+        "SELECT count(*) FROM nodes WHERE label='Provision'"
+    ).fetchone()[0] == 3
+    assert store._connect().execute(
+        "SELECT count(*) FROM edges WHERE rel='HAS_PROVISION'"
+    ).fetchone()[0] == 3
+    assert len(store.search_provisions("retain record", "Australia", 10)) == 3
+    store.mark_artifact_build_complete("Australia", "fp", "g", 3)
+    assert store.restamp_artifact_generation("Australia", "fp", "g2") == 3
+    store._connect().execute("DELETE FROM nodes WHERE id='provision:au:x:s3'")
+    store._connect().commit()
+    assert store.restamp_artifact_generation("Australia", "fp", "g3") == 0
+
+
 def test_sqlite_stores_full_finding_and_immutable_review(tmp_path):
     store = SqliteGraphStore(tmp_path / "g.db")
     finding = MappedFinding(Economy="Singapore", **{"Law Name":"X Act","Indicator ID":"P7-I1",
@@ -89,6 +140,59 @@ def test_au_alignment_replaces_xhtml_text_with_exact_pdf_characters(tmp_path):
     assert unit.text in fitz.open(pdf)[0].get_text() and unit.metadata["pdf_alignment"] == "exact"
 
 
+def test_pdf_alignment_falls_back_to_full_page_for_non_register_layout(tmp_path):
+    pdf = tmp_path / "treaty.pdf"
+    exact = "Each Party shall allow the cross-border transfer of information by electronic means."
+    doc = fitz.open(); page = doc.new_page()
+    page.insert_text((72, 300), "Treaty chapter heading")
+    page.insert_text((72, 700), exact)
+    doc.save(pdf); doc.close()
+    unit = RuleUnit(id="u", document_id="d", economy="Singapore",
+                    law_name="Digital agreement", article_section="Art. 4.3",
+                    text=exact, raw_context=exact,
+                    source_url="https://official.example/treaty",
+                    location_reference="unaligned")
+    assert align_to_pdf([unit], [str(pdf)]) == (1, 1)
+    assert unit.metadata["alignment_text_layer"] == "full"
+
+
+def test_scanned_alignment_uses_canonical_ocr_page_context():
+    context = (
+        "34. Search order\n(1) A police officer may require production where:\n"
+        "(a) the record relates to an offence; and\n"
+        "(b) the record is necessary for the investigation."
+    )
+    page = ExtractedPage(
+        document_id="scan.pdf", page_number=7, text=context,
+        source_url="file://scan.pdf", location_reference="page 7",
+        metadata={"extraction": "ocr", "route": "SCANNED"},
+    )
+    unit = RuleUnit(
+        id="u", document_id="d", economy="Malaysia", law_name="Example Act",
+        article_section="s. 34(1)", text=context[context.index("(1)"):],
+        raw_context=context, source_url="https://official.example/scan.pdf",
+        location_reference="page 7",
+    )
+    assert align_to_extracted_pages([unit], [[page]]) == (1, 1)
+    assert unit.raw_context == context
+    assert unit.text.startswith("(1) A police officer")
+    assert unit.metadata["alignment_context"] == "canonical-context"
+
+
+def test_proof_span_selection_is_minimal_and_contiguous():
+    evidence = [
+        {"id": "header", "text": "Example Act", "bbox": [0, 0, 1, 1]},
+        {"id": "a", "text": "The controller must retain", "bbox": [0, 1, 1, 2]},
+        {"id": "b", "text": "the complete audit record.", "bbox": [0, 2, 1, 3]},
+        {"id": "footer", "text": "7", "bbox": [0, 3, 1, 4]},
+    ]
+    ids, boxes = _participating_proof_spans(
+        "The controller must retain the complete audit record.", evidence
+    )
+    assert ids == ["a", "b"]
+    assert boxes == [[0, 1, 1, 2], [0, 2, 1, 3]]
+
+
 def test_citation_hierarchy_and_ineligible_sources():
     assert citation_path("Sch 1, cl. 474.17A(1)(c)(iii)") == [
         "Schedule 1", "clause 474.17A", "item (1)", "item (c)", "item (iii)"]
@@ -104,7 +208,7 @@ def test_citation_hierarchy_and_ineligible_sources():
 
 
 def test_finalization_requires_proof_status_hash_and_named_approval(tmp_path):
-    pdf = tmp_path / "x.pdf"; snippet = "Exact PDF source characters"; _pdf(pdf, snippet)
+    pdf = tmp_path / "x.pdf"; snippet = "Exact PDF source characters."; _pdf(pdf, snippet)
     artifact = source_artifact_from_file(pdf, original_url="https://official.example/x",
         source_type="act", status_evidence=_status(), official_domains={"official.example"},
         expected_mime="application/pdf")
@@ -113,14 +217,17 @@ def test_finalization_requires_proof_status_hash_and_named_approval(tmp_path):
         status_checked=True)
     proof = CitationProof(source_artifact_id=artifact.id, source_sha256=artifact.sha256,
         page_number=1, article_path=["section 1"], span_ids=["s1"], bboxes=[(1, 1, 2, 2)],
-        exact_snippet=snippet, normalized_snippet=snippet.lower(), alignment_status="exact",
-        alignment_score=1, gate_results=[{"gate_id": "G1", "status": "PASS"}])
+        exact_snippet=snippet, normalized_snippet=snippet.lower(),
+        source_start_char=0, source_end_char=len(snippet), alignment_status="exact",
+        alignment_score=1, gate_results=[{"gate_id": "G1", "status": "PASS"},
+            {"gate_id": "G9", "status": "PASS",
+             "metadata": {"closure_code": "PASS_CLOSED"}}])
     finding = MappedFinding(Economy="Australia", **{"Law Name": "X Act", "Indicator ID": "P7-I1",
         "Article / Section": "s. 1", "Discovery Tag": "KNOWN", "Location Reference": "page 1",
         "Verbatim Snippet": snippet, "Mapping Rationale": "Maps exactly", "Source URL": artifact.retrieved_url,
         "Confidence": .9, "Status": "in_force"}, source_artifact_id=artifact.id,
         status_evidence_record=_status(), citation_proof=proof, review=review,
-        reviewer_decision="approved")
+        reviewer_decision="approved", raw_context=snippet)
     validate_final_finding(finding, {artifact.id: artifact})
     finding.review = None; finding.reviewer_decision = "pending"
     with pytest.raises(FinalizationError, match="human approval"):
@@ -133,7 +240,7 @@ def test_finalization_requires_proof_status_hash_and_named_approval(tmp_path):
     (lambda f: setattr(f, "source_artifact_id", None), "missing SourceArtifact"),
 ])
 def test_end_to_end_final_gate_blocks_unsafe_rows(tmp_path, mutation, message):
-    pdf = tmp_path / "x.pdf"; snippet = "Exact source text"; _pdf(pdf, snippet)
+    pdf = tmp_path / "x.pdf"; snippet = "Exact source text."; _pdf(pdf, snippet)
     artifact = source_artifact_from_file(pdf, original_url="https://official.example/x",
         source_type="act", status_evidence=_status(), official_domains={"official.example"},
         expected_mime="application/pdf")
@@ -142,14 +249,16 @@ def test_end_to_end_final_gate_blocks_unsafe_rows(tmp_path, mutation, message):
         status_checked=True)
     proof = CitationProof(source_artifact_id=artifact.id, source_sha256=artifact.sha256,
         page_number=1, article_path=["section 1"], span_ids=["s1"], bboxes=[(1,1,2,2)],
-        exact_snippet=snippet, normalized_snippet=snippet.lower(), alignment_status="exact",
-        alignment_score=1, gate_results=[])
+        exact_snippet=snippet, normalized_snippet=snippet.lower(),
+        source_start_char=0, source_end_char=len(snippet), alignment_status="exact",
+        alignment_score=1, gate_results=[{"gate_id": "G9", "status": "PASS",
+            "metadata": {"closure_code": "PASS_CLOSED"}}])
     finding = MappedFinding(Economy="Australia", **{"Law Name":"X Act","Indicator ID":"P7-I1",
         "Article / Section":"s. 1","Discovery Tag":"KNOWN","Location Reference":"page 1",
         "Verbatim Snippet":snippet,"Mapping Rationale":"exact","Source URL":artifact.retrieved_url,
         "Confidence":.9,"Status":"in_force"}, source_artifact_id=artifact.id,
         status_evidence_record=_status(), citation_proof=proof, review=review,
-        reviewer_decision="approved")
+        reviewer_decision="approved", raw_context=snippet)
     mutation(finding)
     with pytest.raises(FinalizationError, match=message):
         validate_final_finding(finding, {artifact.id: artifact})
@@ -282,3 +391,32 @@ def test_screen_bypass_is_limited_to_current_indicator_anchor_ids():
     anchors, rest = _partition_current_anchors(candidates, {"current"})
     assert [item.provision_id for item in anchors] == ["current"]
     assert [item.provision_id for item in rest] == ["known-under-other-indicator"]
+
+def test_query_embeddings_are_batched_and_persisted(tmp_path):
+    class Embedder:
+        def __init__(self):
+            self.calls = []
+
+        def embed(self, texts):
+            self.calls.append(list(texts))
+            return [[float(index), 1.0] for index, _ in enumerate(texts)]
+
+    path = tmp_path / "embeddings.json"
+    embedder = Embedder()
+    cache = EmbeddingCache(embedder, path)
+    cache.ensure_queries(["one", "two", "one"])
+
+    assert embedder.calls == [["one", "two"]]
+    assert cache.embed_query("one") == [0.0, 1.0]
+    assert len(embedder.calls) == 1
+
+    reloaded_embedder = Embedder()
+    reloaded = EmbeddingCache(reloaded_embedder, path)
+    assert reloaded.embed_query("two") == [1.0, 1.0]
+    assert reloaded_embedder.calls == []
+
+
+def test_alignment_normalises_unicode_dash_families_and_spacing():
+    assert alignment_norm("criminal law ‐ enforcement") == alignment_norm(
+        "criminal law-enforcement"
+    )

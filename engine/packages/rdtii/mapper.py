@@ -70,14 +70,23 @@ def _snippet_locatable(snippet: str, source: str) -> bool:
     return norm(snippet) in norm(source)
 
 
+def _candidate_context(candidate) -> str:
+    """Canonical provision context, including child items and exceptions."""
+    return candidate.props.get("raw_context") or candidate.text
+
+
 def escalation_reasons(decision: MapDecision, indicator_id: str, candidate,
-                       gold_anchor: bool = False) -> list[str]:
+                       gold_anchor: bool = False,
+                       expected_anchor: bool = False) -> list[str]:
     """Deterministic mini boundary: only material ambiguity or malformed evidence."""
     reasons: list[str] = []
-    text = candidate.text.casefold()
+    context = _candidate_context(candidate)
+    text = context.casefold()
     if gold_anchor and not decision.applies:
         reasons.append("known-anchor-rejected")
-    if decision.applies and not _snippet_locatable(decision.verbatim_snippet, candidate.text):
+    elif expected_anchor and not decision.applies:
+        reasons.append("expected-anchor-rejected")
+    if decision.applies and not _snippet_locatable(decision.verbatim_snippet, context):
         reasons.append("snippet-not-source-locatable")
     if decision.applies and decision.confidence < 0.72:
         reasons.append("low-confidence-positive")
@@ -110,6 +119,27 @@ def _indicator_brief(indicator_id: str, cfg: dict) -> str:
             "or the controlling framework provision). ESCAP records the framework's existence "
             "as the evidence row; the SCORE (not your mapping) captures absence. Do NOT reject "
             "a provision merely because it proves the framework EXISTS."
+        )
+    if indicator_id in {"7.3", "P7-I3"}:
+        parts.append(
+            "EVIDENCE RECORDING RULE: applies=true for an operative mandatory "
+            "records/data-retention duty even when this provision does not state a "
+            "numeric minimum period. State clearly when the duration is unspecified; "
+            "the INDICATOR SCORE, not mapping eligibility, distinguishes an explicit "
+            "minimum (score 1) from an unspecified period (score 0). A maximum-retention "
+            "or deletion/minimisation ceiling remains excluded."
+        )
+    if indicator_id in {"7.5", "P7-I5"}:
+        parts.append(
+            "EVIDENCE RECORDING RULE: applies=true for an operative provision that "
+            "authorises or materially governs government access to data, whether the "
+            "power is warrantless OR requires a warrant/court order. Identify the "
+            "judicial safeguard in the rationale. A document called a 'warrant' is "
+            "judicially gated only when an independent court, judge or magistrate issues "
+            "or authorises it; an executive/agency officer issuing a warrant under their "
+            "own hand is not independent judicial authorization. The INDICATOR SCORE "
+            "separately treats access without independent judicial authorization as 1 "
+            "and exclusively court-gated access as support for 0."
         )
     if cfg.get("legal_test"):
         parts.append(str(cfg["legal_test"]).strip())
@@ -153,8 +183,10 @@ Return one decision per candidate, using each candidate's index number."""
 
 
 def _mapping_prompt(indicator_id: str, cfg: dict, candidate,
-                    gold_anchor: bool = False) -> str:
+                    gold_anchor: bool = False,
+                    expected_anchor: bool = False) -> str:
     props = candidate.props
+    canonical_context = _candidate_context(candidate)
     return f"""You are a legal analyst applying the ESCAP RDTII 2.1 methodology.
 
 {_indicator_brief(indicator_id, cfg)}
@@ -162,20 +194,22 @@ def _mapping_prompt(indicator_id: str, cfg: dict, candidate,
 {GOLDEN_RULES}
 
 {"GOLD ANCHOR: ESCAP's master dataset records THIS provision under THIS indicator (KNOWN baseline). Reproducing it proves recall — unless the text PLAINLY contradicts the legal test, set applies=true and extract the operative quote." if gold_anchor else ""}
+{"VERIFIED RESEARCH EXPECTATION: an official-source research report expects this provision to be assessed under this indicator. Do not assume it qualifies; make the legal-test decision explicitly and preserve a diagnostic reason if it does not." if expected_anchor and not gold_anchor else ""}
 
 PROVISION UNDER ANALYSIS
 Law: {props.get('law_name', '')}
 Citation: {props.get('article_section', '')} — heading: {props.get('heading', '')} ({props.get('part', '')})
 Text (verbatim from the official source):
-\"\"\"{candidate.text[:6000]}\"\"\"
+\"\"\"{canonical_context[:12000]}\"\"\"
 
 TASK
 1. Extract the predicate: WHO is regulated, WHAT modality (must/may/should, negated?),
    WHAT action, under WHAT conditions, with WHAT exceptions.
 2. Decide: does this provision satisfy indicator {indicator_id}'s legal test? (applies)
 3. If applies: pick verbatim_snippet = an EXACT contiguous quote from the text above
-   (<= 300 characters, copied character-for-character — it will be MECHANICALLY verified
-   against the source; any edit fails the row). Choose the operative words.
+   (copied character-for-character — it will be MECHANICALLY verified against the source;
+   any edit fails the row). Include the operative actor, modality, action and object. The
+   engine will extend a list introduction through its child items and closing full stop.
 4. rationale (<= 300 chars): "This [section] [prohibits/requires/permits/establishes] [what].
    Maps to {indicator_id} because [one sentence of legal logic]." Name the legal FUNCTION.
 5. coverage: "Horizontal" ONLY if it applies to ALL sectors; otherwise "Sectoral" + sector.
@@ -184,12 +218,15 @@ TASK
 
 
 def map_candidate(llm_primary, indicator_id: str, cfg: dict, candidate,
-                  gold_anchor: bool = False, llm_escalation=None) -> MapDecision:
+                  gold_anchor: bool = False, llm_escalation=None,
+                  expected_anchor: bool = False) -> MapDecision:
     """Nano-first mapping; mini is restricted to deterministic escalation cases."""
-    prompt = _mapping_prompt(indicator_id, cfg, candidate, gold_anchor)
+    prompt = _mapping_prompt(indicator_id, cfg, candidate, gold_anchor, expected_anchor)
     decision = _complete(llm_primary, prompt, MapDecision,
                          f"clausechain:map:v3:{indicator_id}")
-    reasons = escalation_reasons(decision, indicator_id, candidate, gold_anchor)
+    reasons = escalation_reasons(
+        decision, indicator_id, candidate, gold_anchor, expected_anchor
+    )
     decision._model_route = "nano"
     decision._escalation_reasons = reasons
     if reasons and llm_escalation is not None:
@@ -208,12 +245,17 @@ Independently correct the decision. Do not defer to the provisional answer."""
 
 
 def map_candidates(llm_primary, indicator_id: str, cfg: dict, candidates: list,
-                   gold_anchor_ids: set[str], llm_escalation=None) -> list[MapDecision]:
+                   gold_anchor_ids: set[str], llm_escalation=None,
+                   expected_anchor_ids: set[str] | None = None) -> list[MapDecision]:
     """Map an indicator pool together so final sweeps can use the 50%-off Batch API."""
     if not candidates:
         return []
-    prompts = [_mapping_prompt(indicator_id, cfg, candidate,
-                               candidate.provision_id in gold_anchor_ids)
+    expected_anchor_ids = expected_anchor_ids or set()
+    prompts = [_mapping_prompt(
+                   indicator_id, cfg, candidate,
+                   candidate.provision_id in gold_anchor_ids,
+                   candidate.provision_id in expected_anchor_ids,
+               )
                for candidate in candidates]
     keys = [f"clausechain:map:v3:{indicator_id}"] * len(prompts)
     if hasattr(llm_primary, "complete_many"):
@@ -228,7 +270,10 @@ def map_candidates(llm_primary, indicator_id: str, cfg: dict, candidates: list,
     for index, (candidate, decision, prompt) in enumerate(
             zip(candidates, decisions, prompts, strict=True)):
         reasons = escalation_reasons(
-            decision, indicator_id, candidate, candidate.provision_id in gold_anchor_ids)
+            decision, indicator_id, candidate,
+            candidate.provision_id in gold_anchor_ids,
+            candidate.provision_id in expected_anchor_ids,
+        )
         decision._model_route = "nano"
         decision._escalation_reasons = reasons
         if reasons and llm_escalation is not None:

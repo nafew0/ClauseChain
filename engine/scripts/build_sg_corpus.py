@@ -215,24 +215,27 @@ def load_seed_documents(stores, generation: str, loaded_refs: set[str]) -> int:
         if missing:
             print(f"  FAILED EXPECTED_EVIDENCE {act_name[:45]}: missing {missing}")
             continue
+        from packages.extractors.pdf_align import align_and_bind_pdf_evidence
+
+        aligned, unit_count = align_and_bind_pdf_evidence(
+            units, [file], [text_spans], [pages]
+        )
+        if aligned != unit_count:
+            print(f"  ALIGNMENT REVIEW {act_name[:45]}: {aligned}/{unit_count} exact")
         for unit in units:
             unit.metadata["archived_copy"] = file
             unit.metadata["access_date"] = entry.get("access_date")
             unit.metadata["content_sha256"] = artifact.sha256
             unit.metadata["legal_status"] = status.status
-            unit.metadata["evidence_eligible"] = eligible
+            unit.metadata["evidence_eligible"] = (
+                eligible and unit.metadata.get("pdf_alignment") == "exact"
+            )
             unit.metadata["source_type"] = profile["source_type"]
             unit.metadata["processing_fingerprint"] = fingerprint
             unit.metadata["build_generation"] = generation
             unit.metadata["status_evidence"] = status.model_dump(mode="json")
             unit.source_artifact_id = artifact.id
             unit.raw_context = unit.raw_context or unit.text
-            import re as _re
-
-            pm = _re.search(r"page\s+(\d+)", unit.location_reference, _re.I)
-            page_no = int(pm.group(1)) if pm else None
-            unit.linked_span_ids = ([s.id for s in text_spans if s.page_number == page_no]
-                                    if page_no else [])
         for st in stores:
             if hasattr(st, "upsert_source_artifact"):
                 st.upsert_source_artifact(artifact)
@@ -244,6 +247,9 @@ def load_seed_documents(stores, generation: str, loaded_refs: set[str]) -> int:
             else:
                 for unit in units:
                     st.upsert_rule_unit(unit)
+            mark_complete = getattr(st, "mark_artifact_build_complete", None)
+            if mark_complete:
+                mark_complete("Singapore", fingerprint, generation, len(units))
         total += len(units)
         print(f"  {act_name[:52]:52s} [{profile['source_type']:>7s}] -> {len(units):5d} units")
     return total
