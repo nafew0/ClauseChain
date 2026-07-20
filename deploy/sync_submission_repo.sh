@@ -33,6 +33,7 @@ rsync -a --delete \
   "$SRC/frontend/" "$DST/frontend/"
 cp "$SRC/README_SUBMISSION.md" "$DST/README.md"
 cp "$SRC/ClauseChain_Pitch_Deck.pptx" "$DST/"
+cp "$SRC/README_WEB.md" "$DST/" 2>/dev/null || true
 
 # Sanitary scan: server IPs, private keys, real-looking API keys, .env files.
 HITS=$(grep -rlE "103\.157\.13[0-9]|BEGIN (RSA|OPENSSH) PRIVATE|sk-[A-Za-z0-9]{30,}|clausechain_deploy" \
