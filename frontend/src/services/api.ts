@@ -53,12 +53,14 @@ export function clearAccessToken() {
   inMemoryAccessToken = ''
 }
 
-export async function refreshAccessToken() {
+export async function refreshAccessToken(signal?: AbortSignal) {
   const response = await axios.post(
     `${API_URL}/auth/token/refresh/`,
     {},
     {
       withCredentials: true,
+      timeout: 8_000,
+      signal,
       headers: {
         'Content-Type': 'application/json',
       },

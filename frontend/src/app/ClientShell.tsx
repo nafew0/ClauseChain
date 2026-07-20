@@ -21,6 +21,8 @@ const NO_NAVBAR_PATHS = [
   '/match',
   '/raw-data',
   '/knowledge-graph',
+  '/profile',
+  '/admin',
 ]
 
 export default function ClientShell({ children }: { children: React.ReactNode }) {

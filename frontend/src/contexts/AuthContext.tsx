@@ -1,5 +1,7 @@
 'use client'
 import { createContext, useState, useEffect, useContext, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
+import { useQueryClient } from '@tanstack/react-query'
 import api, {
   clearAccessToken,
   refreshAccessToken,
@@ -22,8 +24,10 @@ export interface User {
   last_name: string
   full_name?: string
   avatar?: string
+  bio?: string
   organization?: string
   designation?: string
+  phone?: string
   is_superuser?: boolean
   email_verified?: boolean
   is_active?: boolean
@@ -49,6 +53,7 @@ interface AuthContextValue {
   loading: boolean
   error: string | null
   isAuthenticated: boolean
+  signingOut: boolean
   login: (username: string, password: string) => Promise<AuthResult>
   register: (userData: Record<string, unknown>) => Promise<RegisterResult>
   resendVerificationEmail: (identifier: string) => Promise<{ success: boolean; message?: string; error?: string }>
@@ -69,8 +74,11 @@ export const useAuth = (): AuthContextValue => {
 }
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const router = useRouter()
+  const queryClient = useQueryClient()
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+  const [signingOut, setSigningOut] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const clearAuthState = useCallback(() => {
@@ -81,9 +89,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(null)
   }, [])
 
-  const completeCookieLogin = useCallback(async (): Promise<AuthResult> => {
+  const completeCookieLogin = useCallback(async (signal?: AbortSignal): Promise<AuthResult> => {
     try {
-      const accessToken = await refreshAccessToken()
+      const accessToken = await refreshAccessToken(signal)
       if (!accessToken) {
         clearAuthState()
         return { success: false, error: 'Login session is unavailable.' }
@@ -91,6 +99,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const response = await api.get('/auth/user/')
       resetAdminGateCache()
       setUser(response.data)
+      sessionStorage.removeItem('clausechain_explicit_logout')
       return { success: true, user: response.data }
     } catch {
       clearAuthState()
@@ -99,14 +108,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, [clearAuthState])
 
   useEffect(() => {
+    const controller = new AbortController()
+    const timeout = window.setTimeout(() => controller.abort(), 8_000)
     const initializeAuth = async () => {
       localStorage.removeItem('accessToken')
       localStorage.removeItem('refreshToken')
-      await completeCookieLogin()
-      setLoading(false)
+      if (sessionStorage.getItem('clausechain_explicit_logout') === '1') {
+        clearAuthState()
+        setLoading(false)
+        return
+      }
+      try {
+        await completeCookieLogin(controller.signal)
+      } finally {
+        window.clearTimeout(timeout)
+        setLoading(false)
+      }
     }
     initializeAuth()
-  }, [completeCookieLogin])
+    return () => {
+      window.clearTimeout(timeout)
+      controller.abort()
+    }
+  }, [clearAuthState, completeCookieLogin])
 
   const extractErrorMessage = (err: unknown, fallbackMessage: string): string => {
     const e = err as { response?: { data?: unknown } }
@@ -135,6 +159,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const response = await api.post('/auth/login/', { username, password })
       const { user: userData, access_token: accessToken } = response.data
       setAccessToken(accessToken)
+      sessionStorage.removeItem('clausechain_explicit_logout')
       resetAdminGateCache()
       setUser(userData)
       return { success: true, user: userData }
@@ -158,6 +183,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       } = response.data
 
       if (accessToken) {
+        sessionStorage.removeItem('clausechain_explicit_logout')
         setAccessToken(accessToken)
         resetAdminGateCache()
         setUser(registeredUser)
@@ -195,12 +221,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   const logout = async () => {
+    if (signingOut) return
+    setSigningOut(true)
+    sessionStorage.setItem('clausechain_explicit_logout', '1')
+    clearAuthState()
+    queryClient.clear()
+    let confirmed = true
     try {
-      await api.post('/auth/logout/', {})
+      await api.post('/auth/logout/', {}, { skipAuthRefresh: true, preserveAuthError: true, timeout: 8_000 })
     } catch (err) {
+      confirmed = false
       console.error('Logout error:', err)
     } finally {
-      clearAuthState()
+      router.replace(confirmed ? '/login?signed_out=1' : '/login?signed_out=1&logout_unconfirmed=1')
+      router.refresh()
+      setSigningOut(false)
     }
   }
 
@@ -243,6 +278,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     refreshUser,
     completeCookieLogin,
     isAuthenticated: !!user,
+    signingOut,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

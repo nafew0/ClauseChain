@@ -6,7 +6,7 @@ import { SnapshotBanner } from '@/components/workspace/SnapshotBanner'
 export default function ReviewPage() {
   return (
     <ProtectedRoute>
-      <WorkspaceShell breadcrumbs={[{ label: 'Review & approve' }]}>
+      <WorkspaceShell breadcrumbs={[{ label: 'Review & approve' }]} contentMode="contained">
         <SnapshotBanner />
         <Suspense fallback={<div className="review-canvas-loading" aria-label="Loading review workspace" />}>
           <ReviewWorkbench />
