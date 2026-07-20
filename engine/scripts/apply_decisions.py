@@ -114,7 +114,14 @@ def apply(root: Path, domain: str, decisions: list[dict],
             if expected_sha and path.is_file() and _sha(path.read_bytes()) != expected_sha:
                 return {"ok": False, "conflict": True, "sha256": _sha(path.read_bytes())}
             _validate_findings(decisions, {t["finding_key"] for t in template})
-            by_key = {d["finding_key"]: d for d in current}
+            # Template-refresh migration: seed from the CURRENT template (new keys
+            # start as pending template rows), overlay any existing decisions whose
+            # keys survive, then apply this batch. Rows for keys no longer in the
+            # template drop out of the live file — their receipts are preserved in
+            # the exported bundles (append-only history).
+            by_key = {t["finding_key"]: t for t in template}
+            by_key.update({d["finding_key"]: d for d in current
+                           if d.get("finding_key") in by_key})
             for item in decisions:  # latest-wins supersession (append-only history lives in the DB)
                 by_key[item["finding_key"]] = {"finding_key": item["finding_key"],
                                                "review": item["review"]}
