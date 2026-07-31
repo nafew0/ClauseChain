@@ -18,7 +18,13 @@ from packages.core.citations import citation_path
 from packages.core.schemas import (CitationProof, GateResult, MappedFinding, RunEnvelope,
                                    SearchCoverageManifest)
 
-ECONOMY_NAMES = {"SG": "Singapore", "MY": "Malaysia", "AU": "Australia"}
+ECONOMY_NAMES = {
+    # Round 1
+    "SG": "Singapore", "MY": "Malaysia", "AU": "Australia",
+    # Round 2 (finals) — packs shipped so far; remaining economies added as their
+    # jurisdiction YAML + corpus land (CN/RU/LA/MN/TL pending).
+    "TH": "Thailand", "IN": "India", "ID": "Indonesia",
+}
 CODE_BY_NAME = {name.upper(): code for code, name in ECONOMY_NAMES.items()}
 ENGINE_ROOT = Path(__file__).resolve().parents[2]
 
@@ -310,7 +316,12 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
     code = CODE_BY_NAME.get(raw, raw)
     economy = ECONOMY_NAMES.get(code, country.strip())
     if code not in ECONOMY_NAMES:
-        raise ValueError(f"Unknown Round-1 economy: {country!r} (SG/MY/AU)")
+        supported = ", ".join(f"{c} ({n})" for c, n in ECONOMY_NAMES.items())
+        raise ValueError(
+            f"Unknown economy: {country!r}. Supported: {supported}. "
+            "Remaining Round-2 economies (CN/RU/LA/MN/TL) ship as configuration packs — "
+            "add configs/jurisdictions/<code>.yaml + seeds, no code change required."
+        )
 
     pack = _load_yaml(f"configs/jurisdictions/{code.lower()}.yaml")
     rubric = _load_yaml(f"configs/rdtii/pillar_{pillar}.yaml")

@@ -1,0 +1,1083 @@
+{
+ "source": "ESCAP Round-2 gold References (P6/P7 rows) + deep-research 31-Jul-2026 verified instruments",
+ "economies": {
+  "Thailand": [
+   {
+    "act": "Credit Information Business Operation Act B.E.2545 (พระราชบัญญัติการประกอบธุรกิจข้อมูลเครดิต พ.ศ. 2545); Bank of Thailand Notification Regarding Services related to Debit Cards Issued and Used Domesti",
+    "url": "https://www.bot.or.th/content/dam/bot/documents/th/laws-and-rules/laws-and-regulations/legal-department/7-ncb-act/7-1-ncb-act/7.1.2-Law_TH_CreditBureau%20Updated-2559.pdf",
+    "coverage": "Credit information, Information of debit card transaction",
+    "policy": null,
+    "indicator_code": "P6-I1",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Personal Data Protection Act B.E.2562 (พระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562)",
+    "url": "http://www.ratchakitcha.soc.go.th/DATA/PDF/2562/A/069/T_0052.PDF",
+    "coverage": "Horizontal",
+    "policy": null,
+    "indicator_code": "P6-I2",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Notification of the Personal Data Protection Committee on Criteria for the Protection of Personal Data Sent or Transferred to a Foreign Country pursuant to Section 28 of the Personal Data Protection A",
+    "url": "https://www.pdpc.or.th/2500/",
+    "coverage": "Horizontal",
+    "policy": null,
+    "indicator_code": "P6-I4",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Notification of the Personal Data Protection Committee on Criteria for the Protection of Personal Data Sent or Transferred to a Foreign Country pursuant to Section 29 of the Personal Data Protection A",
+    "url": "https://www.pdpc.or.th/2507/",
+    "coverage": "Horizontal",
+    "policy": null,
+    "indicator_code": "P6-I4",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "National Health Act B.E.2550 (พระราชบัญญัติสุขภาพแห่งชาติ พ.ศ.2550); Regulation of the Ministry of Public Health regarding the Protection and Management of Personal Health Information B.E.2561 (ระเบีย",
+    "url": "https://infocenter.nationalhealth.or.th/knowledge-base/พระราชบัญญัติสุขภาพแห่/",
+    "coverage": "Personal health information/ Personal Health Record (PHR)",
+    "policy": null,
+    "indicator_code": "P7-I1",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Telecommunications Business Act B.E.2544 (พระราชบัญญัติ การประกอบกิจการโทรคมนาคม พ.ศ. 2544); Notification of the National Telecommunications Commission regarding Telecommunications Service Users' Righ",
+    "url": "https://www.mdes.go.th/content/download-detail/2473",
+    "coverage": "Personal information in telecommunications sector",
+    "policy": null,
+    "indicator_code": "P7-I1",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Organization to Assign Frequency Waves and to Regulate the Radio Broadcasting, Radio Television and Telecommunications Services Act B.E.2553 (พระราชบัญญัติองค์กรจัดสรรคลื่นความถี่และกำกับการประกอบกิจก",
+    "url": "https://searchlaw.ocs.go.th/council-of-state/#/public/doc/NUo1d0JLRHhydnFEbGNnRVhBMHkrZz09",
+    "coverage": "Personal information in telecommunications sector",
+    "policy": null,
+    "indicator_code": "P7-I1",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Cyber Security Maintenance Act B.E.2562 (พระราชบัญญัติ การรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ.2562)",
+    "url": "https://www.ncsa.or.th/กฏหมาย-ข้อบังคับ-และประก.html",
+    "coverage": "Horizontal",
+    "policy": null,
+    "indicator_code": "P7-I2",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Computer-Related Crime Act B.E.2550 (พระราชบัญญัติ ว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์ พ.ศ.2550)",
+    "url": "https://www.mdes.go.th/law/detail/3516-พระราชบัญญัติว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์-พ-ศ--๒๕๕๐",
+    "coverage": "Horizontal",
+    "policy": null,
+    "indicator_code": "P7-I2",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Notification of the National Cybersecurity Committee Regarding Standards and Guidelines for Promoting the Development of Cybersecurity Service Systems B.E. 2566 (ประกาศคณะกรรมการการรักษาความมั่นคงปลอด",
+    "url": "https://drive.ncsa.or.th/s/ySHdf5rHLJH5BjJ",
+    "coverage": "Horizontal",
+    "policy": null,
+    "indicator_code": "P7-I2",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Notification of the National Cyber Security Committee Regarding tandards for Defining the Security Category for Data or Information Systems B.E.2566 (ประกาศคณะกรรมการการรักษาความมั่นคงปลอดภัยไซเบอร์แห",
+    "url": "https://drive.ncsa.or.th/s/SqiggiSrFcyHE2e",
+    "coverage": "Horizontal",
+    "policy": null,
+    "indicator_code": "P7-I2",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Notification of the National Cyber Security Committee Regarding Characteristics, Duties, and Responsibilities of the Computer Emergency Response Team for Organizations of Critical Information Infrastr",
+    "url": "https://drive.ncsa.or.th/s/Y4JJQL3Kofg5Mg7",
+    "coverage": "Critical Information Infrastructure",
+    "policy": null,
+    "indicator_code": "P7-I2",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Notification of the National Cyber Security Committee Regarding Establishment, Duties, and Powers of the Thailand Computer Emergency Response Team (ThaiCERT) B.E.2564 (ประกาศคณะกรรมการการรักษาความมั่น",
+    "url": "https://drive.ncsa.or.th/s/DXs7pjtjFS5R2Zc",
+    "coverage": "Horizontal",
+    "policy": null,
+    "indicator_code": "P7-I2",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Notification of the National Cyber Security Committee Regarding Characteristics and Measures for Prevention, Response, Assessment, Eradication, and Containment of Cyber Incidents at Each Level B.E. 25",
+    "url": "https://drive.ncsa.or.th/s/YyyzPzcR2DbgxTw",
+    "coverage": "Horizontal",
+    "policy": null,
+    "indicator_code": "P7-I2",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Notification of the National Telecommunications Commission regarding Telecommunications Service Users' Rights Concerning Personal Information Rights to Privacy and Freedom of Communication B.E.2566 (ป",
+    "url": "https://dl.parliament.go.th/backoffice/viewer2300/web/previewer.php",
+    "coverage": "Personal information in telecommunications sector",
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Notification of the Ministry of Information and Communications Technology Regarding Computer Traffic Data Retention Criterias of Service Providers B.E.2564",
+    "url": "https://www.mdes.go.th/law/detail/4727-ประกาศกระทรวงดิจิทัลเพื่อเศรษฐกิจและสังคม-เรื่อง-หลักเกณฑ์การเก็บรักษาข้อมูลจราจรทางคอมพิวเตอร์ของผู้ให้บริการ-พ-ศ--๒๕๖๔",
+    "coverage": "Service providers",
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "National Intelligence Act B.E.2562 (พระราชบัญญัติข่าวกรองแห่งชาติ พ.ศ.2562)",
+    "url": "https://www.ratchakitcha.soc.go.th/DATA/PDF/2562/A/050/T_0022.PDF",
+    "coverage": "Horizontal",
+    "policy": null,
+    "indicator_code": "P7-I5",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Personal Data Protection Act B.E. 2562 (2019)",
+    "url": "https://ratchakitcha.soc.go.th/DATA/PDF/2562/A/069/T_0052.PDF",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I1",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "PDPC Notification on Security Measures of Controllers B.E. 2565",
+    "url": "https://ratchakitcha.soc.go.th/DATA/PDF/2565/E/140/T_0028.PDF",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I1",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "PDPC Notification on Personal Data Breach Notification B.E. 2565",
+    "url": "https://www.ratchakitcha.soc.go.th/DATA/PDF/2565/E/292/T_0007.PDF",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I1",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "PDPC Notification on Processor Records of Processing B.E. 2565",
+    "url": "https://www.ratchakitcha.soc.go.th/DATA/PDF/2565/E/140/T_0026.PDF",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I1",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "MDES Notification on Computer Traffic Data Retention B.E. 2564",
+    "url": "http://www.ratchakitcha.soc.go.th/DATA/PDF/2564/E/188/T_0009.PDF",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "Anti-Money Laundering Act B.E. 2542",
+    "url": "https://ratchakitcha.soc.go.th/DATA/PDF/2542/A/029/45.PDF",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "Accounting Act B.E. 2543",
+    "url": "https://ratchakitcha.soc.go.th/DATA/PDF/2543/A/041/1.PDF",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "Labour Protection Act B.E. 2541",
+    "url": "https://www.ratchakitcha.soc.go.th/DATA/PDF/2541/A/008/1.PDF",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "PDPC DPO Notification B.E. 2566",
+    "url": "https://ratchakitcha.soc.go.th/documents/140D226S0000000001200.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I4",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "PDPC State-Agency DPO Notification B.E. 2566",
+    "url": "https://ratchakitcha.soc.go.th/documents/140D174S0000000006400.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I4",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "PDPC State-Agency DPO Notification No. 2 B.E. 2568",
+    "url": "https://ratchakitcha.soc.go.th/documents/88831.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I4",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "Special Case Investigation Act B.E. 2547",
+    "url": "https://ratchakitcha.soc.go.th/DATA/PDF/2547/A/008/1.PDF",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I5",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "Criminal Procedure Code (consolidated)",
+    "url": "https://ratchakitcha.soc.go.th/documents/1100264.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I5",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "Computer Crime Act B.E. 2550 as amended B.E. 2560 (ETDA consolidated)",
+    "url": "https://www.etda.or.th/getattachment/9d647b89-540f-421f-b031-d18e7c4f16c1/Computer-Crimes-Act-BE-2550-and-BE-2560.aspx",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I5",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "PDPC BCR Certification Regulation B.E. 2568",
+    "url": "https://ratchakitcha.soc.go.th/documents/103274.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I4",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "OIC Notification: Customer Personal Data Guidelines (non-life)",
+    "url": "https://ratchakitcha.soc.go.th/documents/140D098S0000000001600.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I4",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "BOT Notification FPG 8/2557 Outsourcing",
+    "url": "https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2558/EngPDF/25580002.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I4",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "Non-Life Insurance Act B.E. 2535",
+    "url": "https://oiceservice.oic.or.th/document/Law/file/00516/00516_aef1f2fa4a7ea760a8d84a23b325cff0.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I2",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "RCEP Chapter 12 (official text)",
+    "url": "https://www.mfat.govt.nz/assets/Trade-agreements/RCEP/RECP-Agreement-112020/Chapter-12.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I5",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "AANZFTA Second Protocol Chapter 10 (E-Commerce)",
+    "url": "https://www.dfat.gov.au/trade/agreements/in-force/aanzfta/official-documents/agreement-establishing-asean-australia-new-zealand-free-trade-area-aanzfta/chapter-10-electronic-commerce",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I5",
+    "cluster": "deep-research 31-Jul-2026"
+   }
+  ],
+  "India": [
+   {
+    "act": "Government of India, Ministry of Science and Technology, National Data Sharing and Accessibility Policy 2012",
+    "url": "https://dst.gov.in/national-data-sharing-and-accessibility-policy-0",
+    "coverage": "Data generated using public funds",
+    "policy": null,
+    "indicator_code": "P6-I1",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Digital Personal Data Protection Act No. 22 2023",
+    "url": "https://www.meity.gov.in/writereaddata/files/Digital%20Personal%20Data%20Protection%20Act%202023.pdf",
+    "coverage": "Horizontal",
+    "policy": null,
+    "indicator_code": "P6-I1",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Government of India, Ministry of Electronics and Information Technology (MeitY), Guidelines for Government Departments On Contractual Terms Related to Cloud Services 2015",
+    "url": "http://meity.gov.in/writereaddata/files/Guidelines-Contractual_Terms.pdf",
+    "coverage": "Cloud computing",
+    "policy": null,
+    "indicator_code": "P6-I1",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Reserve Bank of India Directive 2018",
+    "url": "https://www.rbi.org.in/Scripts/NotificationUser.aspx?Id=11244&Mode=0",
+    "coverage": "Payment data",
+    "policy": null,
+    "indicator_code": "P6-I2",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Government of India Ministry of Electronics and Information Technology (MeitY) Indian Computer Emergency Response Team (CERT-In) No. 20(3)/2022-CERT-In Directions under sub-section (6) of section 70B ",
+    "url": "https://www.pfrda.org.in/writereaddata/links/cert%201-2%20pages8112e879-dd34-4486-ace1-df7af3f458dc.pdf",
+    "coverage": "Horizontal",
+    "policy": null,
+    "indicator_code": "P6-I2",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Insurance Regulatory and Development Authority of India (Maintenance of Insurance Records) Regulations, 2015; Insurance Regulatory and Development Authority of India (Outsourcing of Activities by Indi",
+    "url": "https://irdai.gov.in/document-detail?documentId=604674",
+    "coverage": "Insurance Services",
+    "policy": null,
+    "indicator_code": "P6-I2",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Companies Act No.18 2013",
+    "url": "https://www.mca.gov.in/Ministry/pdf/CompaniesAct2013.pdf",
+    "coverage": "Horizontal",
+    "policy": null,
+    "indicator_code": "P6-I2",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Insurance Regulatory and Department Authority of India (Maintenance of Insurance Records) Regulations, 2015",
+    "url": "https://irdai.gov.in/document-detail?documentId=604674",
+    "coverage": "Insurance Services",
+    "policy": null,
+    "indicator_code": "P6-I2",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Ministry of Electronics and Information Technology Cyber Security Direction 2022",
+    "url": "https://www.pfrda.org.in/writereaddata/links/cert%201-2%20pages8112e879-dd34-4486-ace1-df7af3f458dc.pdf",
+    "coverage": "Cyber Security",
+    "policy": null,
+    "indicator_code": "P6-I2",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules 2011; Clarification on Information Technology (Reasonable security practices and ",
+    "url": "http://www.wipo.int/wipolex/en/text.jsp?file_id=338328",
+    "coverage": "Horizontal",
+    "policy": null,
+    "indicator_code": "P6-I4",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Master Direction on Information Technology Governance, Risk, Controls and Assurance Practices 2023",
+    "url": "https://www.rbi.org.in/scripts/BS_ViewMasDirections.aspx?id=12562",
+    "coverage": "Banking sector",
+    "policy": null,
+    "indicator_code": "P7-I1",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Government of India, Ministry of Communication and Information Technology, National Cyber Security Policy 2013",
+    "url": "https://www.meity.gov.in/sites/upload_files/dit/files/National%20Cyber%20Security%20Policy%20%281%29.pdf",
+    "coverage": "Cyber security",
+    "policy": null,
+    "indicator_code": "P7-I2",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Information Technology Act No.21 2000",
+    "url": "https://www.meity.gov.in/writereaddata/files/itbill2000.pdf",
+    "coverage": "Horizontal",
+    "policy": null,
+    "indicator_code": "P7-I2",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Comprehensive Cyber Security Framework for Primary (Urban) Cooperative Banks (UCBs) – A Graded Approach 2019",
+    "url": "https://www.rbi.org.in/scripts/NotificationUser.aspx?Mode=0&Id=11772",
+    "coverage": "Primary (Urban) Cooperative Banks (UCBs)",
+    "policy": null,
+    "indicator_code": "P7-I2",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Government of India, Ministry of Communications and IT, License Agreement for Provision of Internet Services 2013; Government of India, Ministry of Communications and IT, License Agreement for Provisi",
+    "url": "https://dot.gov.in/sites/default/files/Amendment%20in%20Internet%20Service%20Provider%20.pdf?download=1",
+    "coverage": "Internet Service Providers",
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Prevention of Money-laundering (Maintenance of Records of the Nature and Value of Transactions, the Procedure and Manner of Maintaining and Time for Furnishing Information and Verification and Mainten",
+    "url": "https://upload.indiacode.nic.in/showfile?actid=AC_CEN_2_2_00035_200315_1517807326550&type=rule&filename=The%20Prevention%20of%20Money-laundering%20(Maintenance%20of%20Records",
+    "coverage": "Banking companies and financial institutions",
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Securities and Exchange Board of India (Listing Obligations and Disclosure Requirements) Regulations 2015",
+    "url": "https://www.sebi.gov.in/legal/regulations/sep-2023/securities-and-exchange-board-of-india-listing-obligations-and-disclosure-requirements-regulations-2015-last-amended-on-september-20-2023-_77239.html",
+    "coverage": "Listed (Public) Companies",
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Reserve Bank of India Master Direction on Issuance and Operation of Prepaid Payment Instruments (PPI)",
+    "url": "https://www.rbi.org.in/Scripts/BS_ViewMasDirections.aspx?id=11142",
+    "coverage": "Prepaid Payment Instruments",
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Reserve Bank of India (Know Your Customer (KYC)) Directions 2016",
+    "url": "https://www.rbi.org.in/CommonPerson/english/scripts/notification.aspx?id=2607",
+    "coverage": "All entities regulated by Reserve Bank of India",
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Information Technology (Intermediary Guidelines and Digital Media Ethics Code) Rules 2021",
+    "url": "https://www.meity.gov.in/writereaddata/files/Information%20Technology%20%28Intermediary%20Guidelines%20and%20Digital%20Media%20Ethics%20Code%29%20Rules%2C%202021%20%28updated%2006.04.2023%29-.pdf",
+    "coverage": "Internet Intermediaries",
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Notification 20-271/2010 AS-I (Vol.-III) Amendment in Unified License (UL) Agreement for Change in Time Period of Storage of Call Detail Record (CDR)/ Exchange Detail Record (EDR)/ IP Detail Record (I",
+    "url": "https://dot.gov.in/sites/default/files/21122021%20UL%20CDR%20two%20years.pdf",
+    "coverage": "Call Detail Record (CDR)/ Exchange Detail Record (EDR)/ IP Detail Record (IPDR)",
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Information Technology (Guidelines for Cyber Café) Rules 2011",
+    "url": "https://www.meity.gov.in/sites/upload_files/dit/files/RNUS_CyberLaw_15411.pdf",
+    "coverage": "Cyber Cafes",
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "International Financial Services Centres Authority (Market Infrastructure Institutions) Regulations 2021; Securities Contracts (Regulation) Rules, 1957",
+    "url": "https://ifsca.gov.in/Legal/Index?MId=MMc3uVo6gKc=",
+    "coverage": "Stock exchange",
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "International Financial Services Centres Authority (Capital Market Intermediaries) Regulations 2021",
+    "url": "https://ifsca.gov.in/Document/Legal/ifsca-capital-market-intermediaries-regulations-2021-as-amended-up-to-july-3-202320072023040848.pdf",
+    "coverage": "Banking companies and financial institutions",
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "International Financial Services Centres Authority (Fund Management) Regulations 2022",
+    "url": "https://ifsca.gov.in/Document/Legal/ifsca-fund-management-regulations-2022-as-amended-upto-april-11-202324042023105305.pdf",
+    "coverage": "Banking companies and financial institutions",
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "International Financial Services Centres Authority (Maintenance of Insurance Records and Submission of Requisite Information for Investigation and Inspection) Regulations 2022",
+    "url": "https://ifsca.gov.in/Legal/Index?MId=gPMqPzkjcD4=",
+    "coverage": "Banking companies and financial institutions",
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "International Financial Services Centres Authority (Anti Money Laundering, Counter Terrorist-Financing and Know Your Customer) Guidelines 2022",
+    "url": "https://ifsca.gov.in/Viewer?Path=Document%2FLegal%2Fifsca-aml-cft-kyc-guidelines-202229052023021818.pdf&Title=IFSCA%20%28Anti%20Money%20Laundering%2C%20Counter%20Terrorist-Financing%20and%20Know%20Your%20Customer%29%20Guidelines%2C%202022&Date=01%2F11%2F2022",
+    "coverage": "Banking companies and financial institutions",
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "International Financial Services Centres Authority Banking Handbook on Conduct of Business Directions 2023",
+    "url": "https://ifsca.gov.in/Document/Legal/the-ifsca-banking-handbook-conduct-of-business-directions13082021060337.pdf",
+    "coverage": "Banking companies and financial institutions",
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Companies Act No.18 2013",
+    "url": "http://www.mca.gov.in/Ministry/pdf/General_Circular_25_2014.pdf",
+    "coverage": "Banking companies and financial institutions",
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Government of India, Ministry of Corporate Affairs, Companies (Management and Administration) Rules 2014",
+    "url": "https://thc.nic.in/Central%20Governmental%20Rules/Companies%20(Management%20and%20Administration",
+    "coverage": "Banking companies and financial institutions",
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Government of India, Ministry of Communications and IT, License Agreement for Provision of Internet Services; Government of India, Ministry of Communications and IT, License Agreement for Provision of",
+    "url": "http://cis-india.org/internet-governance/blog/data-retention-in-india#fn8",
+    "coverage": "Internet Service Providers",
+    "policy": null,
+    "indicator_code": "P7-I5",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Information Technology Act No.21 2000",
+    "url": "https://eprocure.gov.in/cppp/rulesandprocs/kbadqkdlcswfjdelrquehwuxcfmijmuixngudufgbuubgubfugbububjxcgfvsbdihbgfGhdfgFHytyhRtMTk4NzY=",
+    "coverage": "Horizontal",
+    "policy": null,
+    "indicator_code": "P7-I5",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Information Technology (Procedure and Safeguards for Interception, Monitoring and Decryption of Information) Rules 2009",
+    "url": "https://www.meity.gov.in/writereaddata/files/Information%20Technology%20%28Procedure%20and%20Safeguards%20for%20Interception%2C%20Monitoring%20and%20Decryption%20of%20Information%29%20Rules%2C%202009.pdf",
+    "coverage": "Intermediaries",
+    "policy": null,
+    "indicator_code": "P7-I5",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "The Telecommunications Act No. 44 2023",
+    "url": "https://dot.gov.in/sites/default/files/Telecommunications%20Act%202023_1.pdf?download=1",
+    "coverage": "Telecommunication Sector",
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Digital Personal Data Protection Act 2023",
+    "url": "https://www.indiacode.nic.in/handle/123456789/22037",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I1",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "DPDP Rules 2025 (G.S.R. 846(E))",
+    "url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I1",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "DPDP Commencement Order (G.S.R. 843(E))",
+    "url": "https://www.meity.gov.in/static/uploads/2025/11/c56ceae6c383460ca69577428d36828b.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I1",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "CERT-In Directions 28 Apr 2022",
+    "url": "https://www.cert-in.org.in/PDF/CERT-In_Directions_70B_28.04.2022.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "Prevention of Money-laundering Act 2002",
+    "url": "https://www.indiacode.nic.in/handle/123456789/2036",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "Bharatiya Nagarik Suraksha Sanhita 2023",
+    "url": "https://www.indiacode.nic.in/handle/123456789/21920?locale=en",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I5",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "Aadhaar Act 2016",
+    "url": "https://www.indiacode.nic.in/handle/123456789/21583",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I5",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "Telecom (Authorisation for Telecommunication Network) Rules 2026 G.S.R. 644(E)",
+    "url": "https://www.dot.gov.in/static/uploads/2026/07/c396e4c7175a1895d74c836343e03e96.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I1",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "Telecom (Principal Telecommunication Services) Rules 2026",
+    "url": "https://eservices.dot.gov.in/sites/default/files/circular-notifications/principal-telecom-services-rule-2026.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I1",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "Telecom (Miscellaneous Telecommunication Services) Rules 2026",
+    "url": "https://eservices.dot.gov.in/sites/default/files/circular-notifications/misc-telecom-services-rules-2026.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I1",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "DST Geospatial Guidelines 2021",
+    "url": "https://dst.gov.in/sites/default/files/Final%20Approved%20Guidelines%20on%20Geospatial%20Data.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I1",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "RBI Payment Data Storage FAQs 2019",
+    "url": "https://www.rbi.org.in/commonman/english/scripts/FAQs.aspx?Id=2995",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I2",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "RBI Digital Lending Directions 2025",
+    "url": "https://www.rbi.org.in/scripts/NotificationUser.aspx?Id=12848&Mode=0",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I2",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "RBI Payment Aggregators Directions 2025",
+    "url": "https://www.rbi.org.in/Scripts/BS_ViewMasDirections.aspx?id=12896",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I2",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "RBI IT Outsourcing Directions 2023",
+    "url": "https://www.rbi.org.in/scripts/BS_ViewMasDirections.aspx?id=12486",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I2",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "NBFC Outsourcing Directions 2017",
+    "url": "https://www.rbi.org.in/commonman/english/scripts/Notification.aspx?Id=2646",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I2",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "Companies (Accounts) Rules 2014 (as amended 2022)",
+    "url": "https://thc.nic.in/Central%20Governmental%20Rules/Companies%20(Accounts)%20Rules,%202014..pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I2",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "SEBI CSCRF 2024",
+    "url": "https://www.sebi.gov.in/sebi_data/attachdocs/aug-2024/1724326790365.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I2",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "SEBI Cloud Framework 2023",
+    "url": "https://www.sebi.gov.in/sebi_data/attachdocs/mar-2023/1678112480131.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I3",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "Public Records Act 1993",
+    "url": "https://www.indiacode.nic.in/bitstream/123456789/1921/1/a1993___69.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I1",
+    "cluster": "deep-research 31-Jul-2026"
+   }
+  ],
+  "Indonesia": [
+   {
+    "act": "Regulation of Financial Services Authority No.11/POJK.03/2022 on the Implementation of Information Technology by Commercial Banks 2022 ; Bank Indonesia Regulation No. 22/23/PBI/2020 on Payment Systems",
+    "url": "https://peraturan.bpk.go.id/Details/227376/peraturan-ojk-no-11pojk032022-tahun-2022",
+    "coverage": "Financial sector",
+    "policy": null,
+    "indicator_code": "P6-I1",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Regulation of the Government of the Republic of Indonesia No.71 on the Provision of Electronic System and Transaction 2019",
+    "url": "https://peraturan.bpk.go.id/Details/122030/pp-no-71-tahun-2019",
+    "coverage": "Electronic systems operators for public scope, Electronic systems operators for private scope",
+    "policy": null,
+    "indicator_code": "P6-I1",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Law No.27 on Personal Data Protection 2022",
+    "url": "https://peraturan.bpk.go.id/Details/229798/uu-no-27-tahun-2022",
+    "coverage": "Horizontal",
+    "policy": null,
+    "indicator_code": "P6-I1",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Regulation of the Government of the Republic of Indonesia No.46 on Health Information System 2014; Regulation of the Minister of Health of the Republic of Indonesia No.18 on the Implementation of One ",
+    "url": "http://jdih.kkp.go.id/peraturan/pp-46-2014.pdf",
+    "coverage": "Health Sector",
+    "policy": null,
+    "indicator_code": "P6-I2",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Regulation of Financial Service Authority Regulation No. 11/POJK.03/2022 on Implementation of Information Technology by Commercial Banks 2022 ; Regulation of Financial Services Authority No.4/POJK.05/",
+    "url": "https://ojk.go.id/id/regulasi/Documents/Pages/Penyelenggaraan-Teknologi-Informasi-Oleh-Bank-Umum/POJK%2011%20-%2003%20-%202022.pdf",
+    "coverage": "Financial sector",
+    "policy": null,
+    "indicator_code": "P6-I3",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Regulation of the Minister of Communication and Informatics of the Republic of Indonesia No.20 on Protection of Personal Data in Electronic Systems 2016",
+    "url": "http://makna.co/wp-content/uploads/2018/01/MOCI-Regulation-No-20-of-2016-Makna-Eng.pdf",
+    "coverage": "Horizontal",
+    "policy": null,
+    "indicator_code": "P6-I4",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Regulation of the Government of the Republic of Indonesia No.71 on the Provision of Electronic System and Transaction 2019",
+    "url": "https://peraturan.bpk.go.id/Home/Details/122030/pp-no-71-tahun-2019",
+    "coverage": "Electronic systems and transactions",
+    "policy": null,
+    "indicator_code": "P6-I4",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Law No.27 on Personal Data Protection 2022",
+    "url": "https://peraturan.bpk.go.id/Home/Details/229798/uu-no-27-tahun-2022",
+    "coverage": "Horizontal",
+    "policy": null,
+    "indicator_code": "P6-I4",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Regulation of the Government of the Republic of Indonesia No.80 on Trading Through the Electronic System (E-commerce Law) 2019",
+    "url": "https://perpajakan.ddtc.co.id/peraturan-pajak/read/peraturan-pemerintah-80-tahun-2019",
+    "coverage": "E-commerce",
+    "policy": null,
+    "indicator_code": "P6-I4",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Financial Service Authority Circular Letter POJK 6/POJK.07/2022 concerning Consumer and Community Protection in the Financial Services Sector",
+    "url": "https://www.ojk.go.id/id/regulasi/Documents/Pages/POJK-44-Tahun-2024-Rahasia-Bank-/POJK%2044%20Tahun%202024%20Rahasia%20Bank.pdf",
+    "coverage": "Financial sector",
+    "policy": null,
+    "indicator_code": "P6-I4",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Bank Indonesia Regulation No. 22/23/PBI/2020 on Payment Systems 2020 ; Regulation of Financial Services Authority No.11/POJK.03/2022 on the Implementation of Information Technology by Commercial Banks",
+    "url": "https://peraturan.bpk.go.id/Details/219277/peraturan-bi-no-2223pbi2020",
+    "coverage": "Financial sector",
+    "policy": null,
+    "indicator_code": "P6-I4",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Regulation of the Government of the Republic of Indonesia No. 17 on the Governance of Electronic System Operations for Child Protection 2025",
+    "url": "https://jdih.komdigi.go.id/produk_hukum/view/id/965/t/peraturan%2Bpemerintah%2Bnomor%2B17%2Btahun%2B2025",
+    "coverage": "Horizontal",
+    "policy": null,
+    "indicator_code": "P7-I1",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Law No.11 on Information and Electronic Transactions 2008 ; Law No.19 on Amendments to Law Number 11 of 2008 on Electronic Information and Transactions 2016 ; Law No.1 on the Second Amendment to Law N",
+    "url": "https://peraturan.bpk.go.id/Details/37589/uu-no-11-tahun-2008",
+    "coverage": "Electronic Transactions",
+    "policy": null,
+    "indicator_code": "P7-I2",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Regulation of the Government of the Republic of Indonesia No.80 on Trading Through the Electronic System (E-commerce Law) 2019",
+    "url": "https://peraturan.bpk.go.id/Details/126143/pp-no-80-tahun-2019",
+    "coverage": "E-commerce",
+    "policy": null,
+    "indicator_code": "P7-I2",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Presidential Regulation No.53 on the National Cyber and Encryption Agency 2021",
+    "url": "https://peraturan.bpk.go.id/Details/165493/perpres-no-28-tahun-2021?utm_source=chatgpt.com",
+    "coverage": "Horizontal",
+    "policy": null,
+    "indicator_code": "P7-I2",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Regulation of Financial Services Authority No.27 on the Implementation of Financial Sector Technology Innovation, Digital Financial Assets, and Crypto Assets 2024",
+    "url": "https://iru.ojk.go.id/iru/policy/detailpolicy/13208/ojk-issues-regulation-concerning-the-implementation-of-digital-financial-asset-trading-including-cryptocurrency?utm_source=chatgpt.com",
+    "coverage": "Digital Financial Asset",
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Law No. 8 on Company Documents 1997 ; Law No. 7 on Banking 1992",
+    "url": "https://peraturan.bpk.go.id/Details/45929",
+    "coverage": "Horizontal",
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "Law No.17 on State Intelligence 2011 ; Regulation of the Minister of Communication and Informatics of the Republic of Indonesia No.20 on Protection of Personal Data in Electronic Systems 2016",
+    "url": "https://peraturan.bpk.go.id/Details/39236",
+    "coverage": "Horizontal",
+    "policy": null,
+    "indicator_code": "P7-I5",
+    "cluster": "R2 gold KNOWN baseline"
+   },
+   {
+    "act": "UU 27/2022 Personal Data Protection",
+    "url": "https://jdih.komdigi.go.id/produk_hukum/view/id/832/t/undangundang%2Bnomor%2B27%2Btahun%2B2022",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I1",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "Perpres 47/2023 National Cybersecurity Strategy",
+    "url": "https://peraturan.bpk.go.id/Details/255542/perpres-no-47-tahun-2023",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I2",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "BSSN Regulation 1/2024 Cyber Incident Management",
+    "url": "https://peraturan.bpk.go.id/Details/291240/peraturan-bssn-no-1-tahun-2024",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I2",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "BSSN Regulation 2/2024 Cyber Crisis Management",
+    "url": "https://peraturan.bpk.go.id/Details/291245/peraturan-bssn-no-2-tahun-2024",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I2",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "BSSN Regulation 5/2024 National Cybersecurity Action Plan",
+    "url": "https://peraturan.bpk.go.id/Details/309728/peraturan-bssn-no-5-tahun-2024",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I2",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "UU 8/2010 Anti-Money Laundering",
+    "url": "https://peraturan.bpk.go.id/Details/38547/uu-no-8-tahun-2010",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "UU 6/1983 KUP (as amended)",
+    "url": "https://peraturan.bpk.go.id/Details/77227/uu-no-6-tahun-1983",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "Permenkes 24/2022 Medical Records",
+    "url": "https://peraturan.bpk.go.id/Details/245544/permenkes-no-24-tahun-2022",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "Permenkominfo 5/2020 Private-Scope ESOs (as amended)",
+    "url": "https://jdih.komdigi.go.id/produk_hukum/view/id/759/t/peraturan%2Bmenteri%2Bkomunikasi%2Bdan%2Binformatika%2Bnomor%2B5%2Btahun%2B2020",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I5",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "UU 17/2011 State Intelligence",
+    "url": "https://jdih.komdigi.go.id/produk_hukum/view/id/123/t/undangundang%2Bnomor%2B17%2Btahun%2B%2B2011%2Btanggal%2B7%2Bnovember%2B2011",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I5",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "UU 20/2025 KUHAP (new Criminal Procedure Code)",
+    "url": "https://peraturan.bpk.go.id/Details/337302/uu-no-20-tahun-2025",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I5",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "KUP Law full text (Kemenkeu JDIH)",
+    "url": "https://jdih.kemenkeu.go.id/dok/uu-28-tahun-2007",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I2",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "POJK 3/2024 ITSK",
+    "url": "https://ojk.go.id/id/regulasi/Pages/POJK-3-2024-Penyelenggaraan-Inovasi-Teknologi-Sektor-Keuangan.aspx",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I3",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "POJK 4/POJK.05/2021 NBFI IT Risk",
+    "url": "https://ojk.go.id/id/regulasi/Pages/Penerapan-Manajemen-Risiko-dalam-Penggunaan-Teknologi-Informasi-oleh-Lembaga-Jasa-Keuangan-Nonbank.aspx",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I3",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "POJK 69/POJK.05/2016 Insurance Business",
+    "url": "https://ojk.go.id/id/regulasi/Documents/Pages/POJK-tentang--Penyelenggaraan-Usaha-Perusahaan-Asuransi,-Asuransi-Syariah,-Reasuransi,-dan-Reasuransi-Syariah/pojk%2069-2016.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I3",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "POJK 38/POJK.05/2020 (inserts Pasal 49A)",
+    "url": "https://www.ojk.go.id/id/regulasi/Documents/Pages/Perubahan-Atas-Peraturan-Otoritas-Jasa-Keuangan-Nomor-69-tentang-Penyelenggaraan-Usaha-Perusahaan-Asuransi/pojk%2038-2020.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I4",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "POJK 75/POJK.03/2016 Rural Bank IT",
+    "url": "https://www.ojk.go.id/id/regulasi/Documents/Pages/POJK-tentang-Standar-Penyelenggaraan-Teknologi-Informasi-bagi-Bank-Perkreditan-Rakyat-dan-Bank-Pembiayaan-Rakyat-Syariah/pojk%2075-2016.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I3",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "PBI 23/6/PBI/2021 Payment Service Providers",
+    "url": "https://www.bi.go.id/id/publikasi/peraturan/Documents/PBI_230621.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I3",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "PBI 23/7/PBI/2021 Payment System Infrastructure",
+    "url": "https://www.bi.go.id/id/publikasi/peraturan/Documents/PBI_230721.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I3",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "POJK 22/2023 Consumer Protection",
+    "url": "https://ojk.go.id/id/regulasi/Pages/Pelindungan-Konsumen-dan-Masyarakat-di-Sektor-Jasa-Keuangan.aspx",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I4",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "POJK 11/POJK.03/2022 Commercial Bank IT",
+    "url": "https://ojk.go.id/id/regulasi/Pages/Penyelenggaraan-Teknologi-Informasi-Oleh-Bank-Umum.aspx",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I4",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "Permen ESDM 7/2019 Oil and Gas Data",
+    "url": "https://jdih.esdm.go.id/dokumen/download?id=Permen+ESDM+Nomor+7+Tahun+2019.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I4",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "IA-CEPA Chapter 13 (E-Commerce)",
+    "url": "https://www.dfat.gov.au/sites/default/files/iacepa-chapter-13-electronic-commerce.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I5",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "RCEP Chapter 12 (official text)",
+    "url": "https://www.mfat.govt.nz/assets/Trade-agreements/RCEP/RECP-Agreement-112020/Chapter-12.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I5",
+    "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "UU 4/2021 ASEAN E-Commerce ratification",
+    "url": "https://jdih.kemendag.go.id/peraturan/undang-undang-nomor-4-tahun-2021-tentang-pengesahan-asean-agreement-on-electronic-commerce-persetujuan-asean-tentang-perdagangan-melalui-sistem-elektronik",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I5",
+    "cluster": "deep-research 31-Jul-2026"
+   }
+  ]
+ }
+}
