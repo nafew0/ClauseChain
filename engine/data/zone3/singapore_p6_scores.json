@@ -1,27 +1,30 @@
 {
  "economy": "Singapore",
  "pillar": 6,
- "run": "run-sg-p6-1784114671",
+ "run": "run-sg-p6-1784544950",
  "krippendorff_alpha": 1.0,
  "indicators": {
   "P6-I1": {
    "deterministic": 0.0,
    "deterministic_reason": "no qualifying measure found (absence row) -> 0",
+   "master_gold": 0.0,
+   "gold_divergence": false,
+   "gold_divergence_note": null,
    "judges": [
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "No evidence was found that the Personal Data Protection Act 2012 imposes any ban or local processing requirement on personal data or applies such requirements h"
+     "reason": "No evidence was found that the Personal Data Protection Act 2012 imposes any ban or local processing requirements on personal data or applies such requirements "
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "No evidence was found (pending review) of any ban and local processing requirements covering personal data or applying horizontally, so transfers appear free of"
+     "reason": "No gate-verified evidence was found that the economy imposes any ban and local processing requirements on personal data or applies such requirements horizontall"
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "No evidence was found that the economy imposes any ban or local processing requirement on personal data or applies such requirements horizontally (or on non-per"
+     "reason": "No evidence was found that the economy has any ban or local processing requirement covering personal data or applying horizontally (or any equivalent requiremen"
     }
    ],
    "band": [
@@ -35,6 +38,9 @@
   "P6-I2": {
    "deterministic": 0.0,
    "deterministic_reason": "no qualifying measure found (absence row) -> 0",
+   "master_gold": 0.5,
+   "gold_divergence": true,
+   "gold_divergence_note": "det 0.0 vs master gold 0.5 \u2014 human adjudication required; check evidence currentness vs master baseline before approving",
    "judges": [
     {
      "persona": "strict",
@@ -49,7 +55,7 @@
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "No gate-verified evidence was found showing any local storage requirement for personal data or any horizontal/non-personal specific storage rule."
+     "reason": "No gate-verified evidence was found of any local storage requirement for personal data or any horizontal/non-personal specific storage rule, so the indicator sh"
     }
    ],
    "band": [
@@ -57,12 +63,15 @@
     0.0
    ],
    "spread": 0.0,
-   "flag_for_review": false,
+   "flag_for_review": true,
    "reviewer_decision": "pending"
   },
   "P6-I3": {
    "deterministic": 0.0,
    "deterministic_reason": "none found",
+   "master_gold": 0.0,
+   "gold_divergence": false,
+   "gold_divergence_note": null,
    "judges": [
     {
      "persona": "strict",
@@ -77,7 +86,7 @@
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "No verified evidence was found that any service is conditioned on local data-centre/server infrastructure or that transfers require such infrastructure, so the "
+     "reason": "No verified evidence was found that any service is conditioned on local data-centre/server infrastructure or that data transfer is conditioned on such infrastru"
     }
    ],
    "band": [
@@ -89,23 +98,57 @@
    "reviewer_decision": "pending"
   },
   "P6-I4": {
+   "deterministic": 1.0,
+   "deterministic_reason": "covers personal data / horizontal -> 1",
+   "master_gold": 1.0,
+   "gold_divergence": false,
+   "gold_divergence_note": null,
+   "judges": [
+    {
+     "persona": "strict",
+     "score": 1.0,
+     "reason": "The cited provisions impose conditions on transfers of personal data outside Singapore and are explicitly described as horizontal (e.g., PDPA 2012 s. 26(1), s. "
+    },
+    {
+     "persona": "ESCAP",
+     "score": 1.0,
+     "reason": "The Personal Data Protection Act 2012 s.26 and the Personal Data Protection Regulations 2021 s.12 impose horizontal conditions on transferring personal data out"
+    },
+    {
+     "persona": "skeptical",
+     "score": 1.0,
+     "reason": "The evidence shows horizontal, personal-data transfer restrictions and conditions under Singapore\u2019s PDPA (s.26(1),(2),(4)) plus corresponding cross-border safeg"
+    }
+   ],
+   "band": [
+    1.0,
+    1.0
+   ],
+   "spread": 0.0,
+   "flag_for_review": false,
+   "reviewer_decision": "pending"
+  },
+  "P6-I5": {
    "deterministic": 0.0,
-   "deterministic_reason": "no qualifying measure found (absence row) -> 0",
+   "deterministic_reason": "binding cross-border data-transfer agreement evidenced",
+   "master_gold": null,
+   "gold_divergence": false,
+   "gold_divergence_note": null,
    "judges": [
     {
      "persona": "strict",
      "score": 0.0,
-     "reason": "No quoted evidence shows any conditional flow regimes on transfers under the Personal Data Protection Act 2012, and the provided row indicates no evidence found"
+     "reason": "The cited agreements (Digital Economy Partnership Agreement Art. 4.3 and Singapore-Australia Digital Economy Agreement Art. 23) both contain binding commitments"
     },
     {
      "persona": "ESCAP",
      "score": 0.0,
-     "reason": "No evidence was found of any conditional flow regime governing transfers (including for personal data) in the provided material."
+     "reason": "The economy has binding commitments allowing cross-border electronic transfer of information (including personal information) under the Digital Economy Partners"
     },
     {
      "persona": "skeptical",
      "score": 0.0,
-     "reason": "No gate-verified evidence was found that any conditional flow regime applies to transfers (personal or non-personal), so the indicator should be scored as havin"
+     "reason": "The cited Digital Economy Partnership Agreement and Singapore\u2013Australia Digital Economy Agreement both contain binding provisions requiring/allowing cross-borde"
     }
    ],
    "band": [

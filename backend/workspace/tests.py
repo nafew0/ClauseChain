@@ -89,6 +89,8 @@ def minimal_artifacts():
             "proof_asset": None,
         },
     ]
+    for index, item in enumerate(key_rows, start=4):
+        item["review_subject_hash"] = str(index) * 64
     consolidated = [
         {
             "Economy": item["economy"],
@@ -297,6 +299,24 @@ class WorkspaceApiTests(TestCase):
         self.assertEqual(len(submission.data["template_columns"]), 13)
         self.assertIn("verification", submission.data["results"][0])
         self.assertFalse(submission.data["final_artifacts"]["available"])
+
+    def test_summary_uses_canonical_reviewer_capabilities(self):
+        self.authenticate(self.citation)
+        self.assertEqual(
+            self.client.get("/api/workspace/summary/").data["reviewer_roles"],
+            ["citation_reviewer"],
+        )
+
+        superuser = User.objects.create_superuser(
+            username="root-reviewer",
+            email="root-reviewer@example.com",
+            password="SafePass123!",
+        )
+        self.authenticate(superuser)
+        self.assertEqual(
+            self.client.get("/api/workspace/summary/").data["reviewer_roles"],
+            ["admin"],
+        )
 
     def test_d6r_read_apis_are_real_read_only_and_path_safe(self):
         self.authenticate(self.citation)
@@ -729,6 +749,7 @@ class WorkspaceApiTests(TestCase):
         evidence.save(update_fields=["row_json"])
         FindingDecision.objects.create(
             finding_key="2" * 64,
+            review_subject_hash=evidence.review_subject_hash,
             queue="known",
             review_stage="citation",
             decision="approved",

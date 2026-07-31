@@ -1,1 +1,58 @@
-[]
+[
+ {
+  "indicator": "P6-I4",
+  "law": "PDP Data Protection Impact Assessment Guideline 2026",
+  "article": "s. 13",
+  "verdict": "SPLIT-REVIEW",
+  "rubric_version": "full-indicator-v2",
+  "panel_type": "three-lens-single-configured-model",
+  "refuter_votes": [
+   {
+    "persona": "opposing_counsel",
+    "refuted": true,
+    "failure_mode": "snippet does not actually support the rationale",
+    "reason": "The snippet is a questionnaire prompt asking what legal basis applies under s.129(3) for transfers outside Malaysia, but it does not itself state the conditional transfer rule (e.g., “transfer prohibited unless …”). Without the operative “shall not/may … provided that” transfer prohibition/permission language, the mapping to a conditional flow regime (P6-I4) is not directly evidenced by the quoted text."
+   },
+   {
+    "persona": "methodology_reviewer",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "Rubric P6-I4 scores conditions on cross-border transfer. The snippet expressly concerns transferring personal data to a place outside Malaysia and lists legal bases/conditions under s.129(3) (adequate protection, consent, contract necessity, legal proceedings, vital interests). This satisfies P6-I4 scoring '1' (conditions cover personal data and are transfer-specific). No rubric exclusion applies (it is data-transfer, not business/asset transfer; not domestic-only disclosure)."
+   },
+   {
+    "persona": "strict_textualist",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "Exact quoted text establishes only that, if planned processing involves transferring personal data outside Malaysia, the user must identify the applicable legal basis under s.129, with checkboxes including “recipient country ensures an adequate level of protection,” “consent of the data subject,” and other s.129(3) bases. It does not itself show the full operative prohibition/permission wording, but it does establish the existence of conditional legal bases governing cross-border transfer, which"
+   }
+  ]
+ },
+ {
+  "indicator": "P6-I5",
+  "law": "CPTPP Chapter 14 (Malaysia MITI text)",
+  "article": "Art. 14.11",
+  "verdict": "RECOMMEND-KEEP",
+  "rubric_version": "full-indicator-v2",
+  "panel_type": "three-lens-single-configured-model",
+  "refuter_votes": [
+   {
+    "persona": "opposing_counsel",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "Art. 14.11 expressly states a binding obligation to allow cross-border transfer of information by electronic means (including personal information) for covered persons’ business, which directly matches the rubric’s P6-I5 binding cross-border data-transfer commitment requirement."
+   },
+   {
+    "persona": "methodology_reviewer",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "Rubric P6-I5 hunts for a binding cross-border data-transfer commitment; the snippet contains positive cues (“shall allow the cross-border transfer of information by electronic means, including personal information… for the conduct of the business of a covered person”). Under the rubric’s scoring, this supports a 0 (at least one binding agreement). Sectoral coverage is not a defect because the rubric does not exclude sectoral evidence."
+   },
+   {
+    "persona": "strict_textualist",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "The exact quoted text establishes a “shall allow” obligation (binding) to permit cross-border electronic transfer of information, including personal information, for covered persons’ business. The surrounding paragraphs confirm the obligation and only allow inconsistent measures for legitimate public policy objectives, which does not negate the existence of the binding commitment for the covered activity."
+   }
+  ]
+ }
+]

@@ -16,9 +16,10 @@ PUSH="${2:-}"
 
 [ -d "$DST/.git" ] || { echo "submission repo not found at $DST"; exit 1; }
 
-rsync -a --delete \
+rsync -a --delete --delete-excluded \
   --exclude='.git' --exclude='.venv' --exclude='venv' --exclude='__pycache__' \
   --exclude='.pytest_cache' --exclude='data/raw' --exclude='data/cache' \
+  --exclude='outputs' \
   --exclude='data/tmp' --exclude='*.db' --exclude='*.db-wal' --exclude='*.db-shm' \
   --exclude='.env' --exclude='DECISIONS.md' \
   --exclude='docs/Pillar-6-deep-research-report*' \

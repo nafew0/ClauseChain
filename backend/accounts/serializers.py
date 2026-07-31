@@ -97,12 +97,13 @@ class UserSerializer(serializers.ModelSerializer):
             "organization",
             "designation",
             "phone",
+            "is_superuser",
             "email_verified",
             "current_plan",
             "created_at",
             "updated_at",
         ]
-        read_only_fields = ["id", "created_at", "updated_at"]
+        read_only_fields = ["id", "is_superuser", "created_at", "updated_at"]
 
     def get_current_plan(self, obj):
         plan = LicenseService.get_user_plan(obj)

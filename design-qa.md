@@ -94,3 +94,38 @@ final result: passed
 - Authenticated captures for Dashboard, pipeline screens, Ledger, Raw Data, Knowledge Graph, config tabs and mobile remain pending. The in-app browser security policy blocked the temporary QA login; no sample data or fabricated capture was substituted. The temporary non-superuser QA account was deleted immediately afterward.
 
 final result: implementation and automated gates passed; authenticated visual captures pending; Neo4j parity failed truthfully
+
+---
+
+# D6.1 Review, Auth, Navigation & Public Experience — QA
+
+## Implemented surfaces
+
+- Review now runs in the contained workspace-shell mode. The outer page cannot scroll; the queue list, evidence canvas and reference drawer each own their vertical overflow.
+- Review authority is resolved once on the backend. A Django superuser receives the `admin` capability even without a matching group; group-based reviewers retain their explicit stage capabilities.
+- Logout clears client auth, admin-gate and query state before the server receipt, always expires the refresh cookie, and returns to the signed-out login route even when server confirmation fails.
+- Workspace and command-palette navigation share one route definition. Redirect-only Mapping Run and Export Output entries are absent; user-facing pricing, theme, settings and payment entries are absent.
+- Profile is a protected workspace screen for reviewer identity, contact information, biography, immutable role display and account security. It makes no subscription or payment request.
+- Homepage, Login and Registration share the ClauseChain + ESCAP public header and an evidence-assurance visual system. Public copy contains no invented metrics, fake CER figures or simulated activity.
+
+## Captures
+
+- Homepage desktop: `design-qa-evidence/d61-home-desktop.png`.
+- Login desktop shell: `design-qa-evidence/d61-login-desktop.png`.
+- Registration desktop shell: `design-qa-evidence/d61-register-desktop.png`.
+- The first homepage pass exposed an opacity-based progressive-enhancement defect: essential content could remain hidden when Motion did not hydrate. Essential content now remains visible without animation; motion only changes position/scale.
+
+## Automated verification
+
+- Django `accounts` + `workspace`: 76 tests passed against PostgreSQL, including superuser capability, group capability, two-person separation and idempotent logout coverage.
+- Schema check: no model changes detected.
+- TypeScript: `npx tsc --noEmit` passed.
+- ESLint: passed.
+- Production fixture guard and `next build`: passed; all 35 routes compiled.
+- `git diff --check`: passed before the final QA note.
+
+## Browser limitation
+
+- The in-app browser rendered current server markup but did not hydrate client components during this QA run. Consequently it could not be used honestly for authenticated Review interaction, logout/Back, mobile-menu interaction or the post-bootstrap form state. No fake login or fabricated capture was substituted. Those behaviors are covered by backend contracts, static containment rules and production compilation; a final interactive pass should be made in the user's normal authenticated Chrome session.
+
+final result: implementation and automated gates passed; public desktop rendering passed; authenticated interactive browser pass pending in Chrome

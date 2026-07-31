@@ -1,1 +1,114 @@
-[]
+[
+ {
+  "indicator": "P6-I4",
+  "law": "Personal Data Protection Regulations 2021",
+  "article": "s. 12(1)",
+  "verdict": "SPLIT-REVIEW",
+  "rubric_version": "full-indicator-v2",
+  "panel_type": "three-lens-single-configured-model",
+  "refuter_votes": [
+   {
+    "persona": "opposing_counsel",
+    "refuted": true,
+    "failure_mode": "provision evidences a different indicator than claimed",
+    "reason": "s.12(1) is a deemed-binding mechanism for a cross-border recipient only when a specified certification is held; it does not state a transfer permission/allowance conditional on meeting safeguards (e.g., “may transfer … provided that” / “shall not transfer … unless”). Under P6-I4, the indicator is about conditional flow regimes for transfer; this text is conditional on certification for deemed obligations, not an explicit conditional transfer permission path."
+   },
+   {
+    "persona": "methodology_reviewer",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "Rubric P6-I4 asks whether transfer is permitted IF conditions are met (consent/adequacy/contractual safeguards/approval). The snippet concerns a recipient outside Singapore and imposes legally enforceable obligations comparable to the Act if the recipient holds specified certification—i.e., a conditional regime tied to cross-border personal data. Scoring: conditions cover personal data and are cross-border; thus score 1. Hunt_in is empty, and no pillar-scope exclusion applies."
+   },
+   {
+    "persona": "strict_textualist",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "Exact text establishes: (i) recipient is outside Singapore; (ii) recipient is “taken to be bound” by legally enforceable obligations to provide comparable protection; (iii) this deemed binding applies “if” the recipient holds specified certification. It does not expressly say “transfer is permitted,” but it does condition the cross-border recipient’s obligations on certification, which is consistent with the claimed conditional safeguards rationale for P6-I4."
+   }
+  ]
+ },
+ {
+  "indicator": "P6-I4",
+  "law": "Personal Data Protection Regulations 2021",
+  "article": "s. 10(4)",
+  "verdict": "RECOMMEND-KEEP",
+  "rubric_version": "full-indicator-v2",
+  "panel_type": "three-lens-single-configured-model",
+  "refuter_votes": [
+   {
+    "persona": "opposing_counsel",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "s. 10(4) expressly conditions cross-border transfer of an individual’s personal data to a recipient outside Singapore on specified triggers (e.g., individual consent, deemed consent, necessity for use/disclosure with purpose-limitation steps, data in transit, or public availability). This is a conditional transfer regime, not a ban or an unrelated asset/business transfer rule."
+   },
+   {
+    "persona": "methodology_reviewer",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "Rubric P6-I4 asks whether transfer is permitted only if conditions are met (consent/adequacy/safeguards/approval). The snippet contains multiple transfer-permitting conditions for overseas recipients (consent/deemed consent; necessity plus reasonable steps to prevent other-purpose use/disclosure; data in transit; publicly available). This satisfies scoring '1' (conditions cover personal data and apply to cross-border transfers). No rubric exclusion is triggered (it is data transfer across border"
+   },
+   {
+    "persona": "strict_textualist",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "The quoted text states that a transferring organisation is 'taken to have satisfied the requirements' for transferring personal data outside Singapore if one of the listed conditions applies. It does not say transfers are prohibited outright; rather, it establishes conditional compliance pathways for cross-border personal data transfers. The context in (1) and (2) frames the requirement to ascertain/ensure comparable protection and then provides the conditions under which the requirements are tr"
+   }
+  ]
+ },
+ {
+  "indicator": "P6-I5",
+  "law": "Digital Economy Partnership Agreement",
+  "article": "Art. 4.3",
+  "verdict": "SPLIT-REVIEW",
+  "rubric_version": "full-indicator-v2",
+  "panel_type": "three-lens-single-configured-model",
+  "refuter_votes": [
+   {
+    "persona": "opposing_counsel",
+    "refuted": true,
+    "failure_mode": "provision evidences a different indicator than claimed",
+    "reason": "Art. 4.3 is a binding commitment to allow cross-border transfer of information by electronic means, but the claimed mapping is to “Not in agreement with binding commitments on data transfer” (P6-I5) which is scored as absence of binding cross-border data-transfer commitments. The mapping rationale treats the presence of a binding commitment as satisfying an indicator framed as “not in agreement,” creating a direction/polarity mismatch for the rubric’s scoring intent."
+   },
+   {
+    "persona": "methodology_reviewer",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "Rubric P6-I5 hunts for binding cross-border data-transfer commitments (positive cues include “shall allow the cross-border transfer of information by electronic means”). The snippet contains exactly that binding language (“Each Party shall allow the cross-border transfer…”), so it is valid evidence for the indicator row. Sectoral scope (“covered person”) is not a defect because the rubric does not exclude sectoral evidence. No rubric hunt_in/scoring rule is violated; scoring polarity is handled "
+   },
+   {
+    "persona": "strict_textualist",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "The exact quoted text establishes a binding obligation: “Each Party shall allow the cross-border transfer of information by electronic means, including personal information,” limited to transfers “when this activity is for the conduct of the business of a covered person.” It also sits within Article 4.3 titled “Cross-Border Transfer of Information by Electronic Means,” and the surrounding paragraphs confirm the commitment and its limits (public policy objective, non-disguised restriction). This "
+   }
+  ]
+ },
+ {
+  "indicator": "P6-I5",
+  "law": "Singapore-Australia Digital Economy Agreement",
+  "article": "Art. 23",
+  "verdict": "SPLIT-REVIEW",
+  "rubric_version": "full-indicator-v2",
+  "panel_type": "three-lens-single-configured-model",
+  "refuter_votes": [
+   {
+    "persona": "opposing_counsel",
+    "refuted": true,
+    "failure_mode": "lost exception",
+    "reason": "Art. 23(3) expressly allows measures inconsistent with the no-prohibition/no-restriction rule to achieve legitimate public policy objectives, subject to conditions (not arbitrary/unjustifiable discrimination; not restricting transfers more than required). If the rubric’s P6-I5 is treated as requiring an unconditional binding commitment, this conditional carve-out could make the mapping wrong for the claimed “binding cross-border data-transfer commitment” characterization."
+   },
+   {
+    "persona": "methodology_reviewer",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "Rubric P6-I5 hunt_in is empty and positive cues match the quoted text (“Neither Party shall prohibit or restrict the cross-border transfer of information by electronic means…”). The provision is binding and cross-border, and the mapping records the presence of a binding commitment (scoring 0 at scoring time), which is consistent with the rubric’s instruction that the 6.5 score is applied at scoring time, not by the mapping decision. Sectoral coverage is not a defect because the rubric does not e"
+   },
+   {
+    "persona": "strict_textualist",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "The exact quoted text establishes a binding obligation: neither Party shall prohibit or restrict cross-border transfer of information by electronic means (including personal information) when for the conduct of business of a covered person. That is a cross-border data-transfer commitment of the type described in the rubric’s legal_test, and the surrounding context confirms it is an Article-level rule (with a conditional exception in paragraph 3) rather than merely a non-binding policy statement."
+   }
+  ]
+ }
+]

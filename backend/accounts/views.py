@@ -536,8 +536,10 @@ class VerifiedTokenRefreshView(TokenRefreshView):
 @permission_classes([AllowAny])
 def logout_view(request):
     """
-    User logout endpoint.
-    Blacklists the refresh token.
+    Idempotent logout endpoint.
+
+    The cookie is always expired, including when the refresh token is missing,
+    invalid, expired, or already blacklisted.
     """
     refresh_token = (
         (request.data.get("refresh_token") or "").strip()
@@ -548,6 +550,8 @@ def logout_view(request):
         try:
             token = RefreshToken(refresh_token)
             token.blacklist()
+        except TokenError:
+            logger.info("Logout received an invalid, expired, or already cleared refresh token.")
         except Exception:
             logger.warning("Refresh token blacklist failed during logout.", exc_info=True)
 

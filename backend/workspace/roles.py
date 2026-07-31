@@ -7,14 +7,32 @@ ROLE_GROUPS = {
     "admin": "admin",
 }
 
+REVIEWER_GROUPS = (
+    "citation_reviewer",
+    "mapping_reviewer",
+    "status_reviewer",
+    "admin",
+)
+
+
+def reviewer_roles(user):
+    """Return the canonical review capabilities exposed to the client."""
+    if not user or not user.is_authenticated:
+        return []
+    if user.is_superuser:
+        return ["admin"]
+    groups = set(
+        user.groups.filter(name__in=REVIEWER_GROUPS).values_list("name", flat=True)
+    )
+    if "admin" in groups:
+        return ["admin"]
+    return [group for group in REVIEWER_GROUPS if group in groups]
+
 
 def has_review_role(user, role):
-    if not user or not user.is_authenticated:
-        return False
-    if user.is_superuser:
-        return True
     group = ROLE_GROUPS.get(role, role)
-    return user.groups.filter(name__in=(group, "admin")).exists()
+    capabilities = reviewer_roles(user)
+    return "admin" in capabilities or group in capabilities
 
 
 def reviewer_identity(user):

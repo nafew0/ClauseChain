@@ -209,7 +209,21 @@ class RegistrationAndLoginContractTests(AccountsBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("access_token", response.data)
         self.assertIn("user", response.data)
+        self.assertFalse(response.data["user"]["is_superuser"])
         self.assertIn(get_refresh_cookie_name(), response.cookies)
+
+    def test_logout_is_idempotent_and_always_expires_refresh_cookie(self):
+        cookie_name = get_refresh_cookie_name()
+        self.client.cookies[cookie_name] = "not-a-valid-refresh-token"
+
+        first = self.client.post("/api/auth/logout/", {}, format="json")
+        second = self.client.post("/api/auth/logout/", {}, format="json")
+
+        self.assertEqual(first.status_code, status.HTTP_200_OK)
+        self.assertEqual(second.status_code, status.HTTP_200_OK)
+        self.assertEqual(first.cookies[cookie_name].value, "")
+        self.assertEqual(first.cookies[cookie_name]["max-age"], 0)
+        self.assertEqual(second.cookies[cookie_name].value, "")
 
 
 @override_settings(
