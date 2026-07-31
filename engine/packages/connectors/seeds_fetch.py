@@ -26,7 +26,9 @@ _HEADERS = {
     "Accept-Language": "en-US,en;q=0.9",
 }
 POLITE_DELAY_S = 3.0
-ECON_CC = {"Singapore": "sg", "Malaysia": "my", "Australia": "au"}
+ECON_CC = {"Singapore": "sg", "Malaysia": "my", "Australia": "au",
+           # Round 2 — seeds live in data/seeds_r2.json (pass seeds_path)
+           "Thailand": "th", "India": "in", "Indonesia": "id"}
 
 
 def _suffix(url: str, content_type: str) -> str:
@@ -123,6 +125,21 @@ def fetch_seeds(economy: str, only_pillars: tuple[str, ...] | None = None,
             except httpx.HTTPError as error:
                 entry.update(error=str(error)[:200])
             if not (status_code == 200 and len(content) > 500):
+                # Same-origin Referer retry: several gazette hosts (verified:
+                # ratchakitcha.soc.go.th 403 -> 200, 31 Jul) gate direct deep links
+                # but serve the same bytes when the request looks site-internal.
+                from urllib.parse import urlsplit
+                parts = urlsplit(url)
+                try:
+                    response = client.get(url, headers={
+                        "Referer": f"{parts.scheme}://{parts.netloc}/",
+                        "Accept-Language": "th-TH,th;q=0.9,id;q=0.9,hi;q=0.9,en;q=0.8"})
+                    status_code, content = response.status_code, response.content
+                    content_type = response.headers.get("content-type", "")
+                    final_url, via = str(response.url), "httpx+referer"
+                except httpx.HTTPError:
+                    pass
+            if not (status_code == 200 and len(content) > 500):
                 browser = _browser_fetch(url)
                 if browser is not None:
                     status_code, content = browser
@@ -156,8 +173,11 @@ if __name__ == "__main__":
     parser.add_argument("--economy", default="Malaysia")
     parser.add_argument("--all-pillars", action="store_true",
                         help="fetch every row (default: P6/P7 only)")
+    parser.add_argument("--seeds", default="data/seeds.json",
+                        help="seeds file (Round-2 economies: data/seeds_r2.json)")
     args = parser.parse_args()
-    result = fetch_seeds(args.economy, None if args.all_pillars else ("P6", "P7"))
+    result = fetch_seeds(args.economy, None if args.all_pillars else ("P6", "P7"),
+                         seeds_path=args.seeds)
     ok = sum(1 for e in result.values() if e.get("status") == "ok")
     dead = sum(1 for e in result.values() if e.get("status") == "dead")
     print(f"{args.economy}: {ok} archived, {dead} DEAD links (audit leads) "
