@@ -30,7 +30,7 @@ official_sources:
 portal_search:
   engine: peraturan.bpk.go.id search + jdih.komdigi.go.id + regulator sites above
   method: keyword_fulltext
-  notes: "BPK indexes UU/PP/Perpres/Permen but NOT POJK/PBI — OJK and BI instruments must be fetched from ojk.go.id / bi.go.id directly. Several JDIH download endpoints intermittently 403; retry with browser headers."
+  notes: "BPK DOES index POJK too (verified 1 Aug: POJK 8/2023, 75/2016, 6/2022, 27/2024 all on peraturan.bpk.go.id Details pages with /Download PDFs) — use BPK when ojk.go.id geo-blocks. PBI still needs bi.go.id. Several JDIH download endpoints intermittently 403; retry with browser headers."
 
 citation_patterns:
   section: ["Article {n}", "Art. {n}", "Pasal {n}"]

@@ -1,0 +1,44 @@
+                UN Global Hackathon on Using AI for Digital Trade Regulatory Analysis
+                        Live Pitch Session: Rules for Shortlisted Teams
+                                3 August 2026, online, 15 minutes per team
+What to prepare in advance
+1. Decide how you want to present the highlights of your engine to impress the judges within 8 minutes.
+2.   Keep your engine logged in and ready throughout your session. Judges may ask to see a specific part
+     of your tool running during the interview. No extra time is built in for you to reconnect or get it
+     ready.
+3.   Have ready before joining: your prototype environment logged in and ready to launch; the pitch deck,
+     demonstration video, GitHub repository you submitted on 20 July, and your submitted output file
+     (CSV/JSON) in case it is needed under paragraph 9.
+4.   Join the meeting at least 20 minutes before your scheduled slot. You will be placed in a waiting
+     room; please remain there until the organizing team moves your team to the Judges Room. A team
+     that is not present when called will be moved to the end of the room's schedule; a team that does not
+     appear at all cannot be scored on the live pitching component (50 per cent of the final score).
+Your session
+5. The Live Pitch is a closed session, conducted in English. Only one team is present in each Judges
+   Room at a time; no audience or observers are permitted. All team members may join. All team
+   members must keep their cameras on throughout.
+6.   On entering the Judges Room, begin your presentation immediately.
+7.   Presentation (8 minutes): present highlights of your engine. You may choose what would be the best
+     showcase of your engine within the allocated time. A warning is given at the 7-minute mark. At 8
+     minutes, the moderator will mute all team members to signal the transition to the Q&A.
+8.   Q&A (7 minutes, judge-led): Judges will question you and may ask you to run the prototype live on a
+     specific case. A warning is given at the 6-minute mark. You will be removed from the meeting at 7
+     min, or earlier if the judges have no further questions.
+If something goes wrong
+9. Run fails during the presentation: There will be no time for you to rerun. Be prepared to explain what
+     went wrong.
+10. Screen sharing fails, or no live output is produced: post your live output file (CSV/JSON) in the
+    meeting chat. The Q&A proceeds as normal.
+11. Disconnection: a stable internet connection is your responsibility. If you cannot rejoin promptly, the
+    next team will be called in. Your team will be present at the end of the room's schedule with the time
+    remaining from your slot. For a team member disconnection, if a team member disconnects when he
+    or she is answering a question, the other members shall continue to answer. The clock runs as normal
+    and no spare.
+12. The schedule is fixed: no session is extended, repeated, or rescheduled. Errors in your own engine are
+    part of the assessment. Only a failure of the meeting platform itself is treated as an organizer-side
+    issue; notify the moderator immediately.
+Results
+13. Your final result combines the assessment of your 20 July submission (50 per cent) and the live pitch
+    on 3 August (50 per cent). Results will be announced on 5 August 2026. Please do not contact judges
+    or secretariat before the results are announced.
+

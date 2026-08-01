@@ -299,6 +299,22 @@
     "indicator_code": "P6-I5",
     "cluster": "deep-research 31-Jul-2026",
     "source_type": "treaty"
+   },
+   {
+    "act": "BOT Notification: Debit Card Services (domestic issuance/use)",
+    "url": "https://www.bot.or.th/content/dam/bot/documents/th/laws-and-rules/laws-and-regulations/notification/2559/n-2559-06-debitcard.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I1",
+    "cluster": "gold-gap round-2"
+   },
+   {
+    "act": "CIC Notification: data processing duration",
+    "url": "https://www.bot.or.th/content/dam/bot/documents/th/laws-and-rules/laws-and-regulations/notification/cic-retention.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "gold-gap round-2"
    }
   ],
   "India": [
@@ -765,6 +781,22 @@
     "policy": null,
     "indicator_code": "P6-I1",
     "cluster": "egazette-direct"
+   },
+   {
+    "act": "PFRDA CERT-In advisory pages",
+    "url": "https://www.pfrda.org.in/writereaddata/links/cert%201-2%20pages8112e879-dd34-4486-ace1-df7af3f4a4a1.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I2",
+    "cluster": "gold-gap round-2"
+   },
+   {
+    "act": "DoT ISP License Agreement (data retention clauses)",
+    "url": "https://dot.gov.in/sites/default/files/Amendment%20in%20Internet%20Service%20Provider%20license.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "gold-gap round-2"
    }
   ],
   "Indonesia": [
@@ -1114,6 +1146,38 @@
     "indicator_code": "P6-I5",
     "cluster": "deep-research 31-Jul-2026",
     "source_type": "treaty"
+   },
+   {
+    "act": "Permenkominfo 10/2021 (amends Permenkominfo 5/2020)",
+    "url": "https://jdih.komdigi.go.id/produk_hukum/view/id/779/t/peraturan+menteri+komunikasi+dan+informatika+nomor+10+tahun+2021",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I4",
+    "cluster": "gold-gap round-2"
+   },
+   {
+    "act": "PP 40/2019 (Adminduk implementing regulation)",
+    "url": "https://peraturan.bpk.go.id/Details/108801/pp-no-40-tahun-2019",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I1",
+    "cluster": "gold-gap round-2"
+   },
+   {
+    "act": "UU 10/1998 Banking (amends UU 7/1992)",
+    "url": "https://peraturan.bpk.go.id/Details/45486/uu-no-10-tahun-1998",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "gold-gap round-2"
+   },
+   {
+    "act": "POJK 8/2023 AML-CFT implementation",
+    "url": "https://ojk.go.id/id/regulasi/Pages/POJK-8-2023.aspx",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P7-I3",
+    "cluster": "gold-gap round-2"
    }
   ]
  }
