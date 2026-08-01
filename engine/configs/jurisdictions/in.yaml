@@ -9,7 +9,7 @@ section_grammars: [english, hindi]   # "Section {n}" / "Rule {n}" / "धार�
 whitelist_source: data/official_domains.json
 official_sources:
   - { name: India Code, domain: indiacode.nic.in, source_type: official_statute_database, authority_rank: 100 }
-  - { name: eGazette, domain: egazette.gov.in, source_type: official_gazette, authority_rank: 100 }   # CAVEAT: TLS/robots blocked research pass — fetch via departmental mirrors
+  - { name: eGazette, domain: egazette.gov.in, source_type: official_gazette, authority_rank: 100 }   # search UI bot-blocked, but /WriteReadData/<year>/<id>.pdf serves directly (verified 1 Aug); mine ids via gazettetracker.com
   - { name: eGazette (alt), domain: egazette.nic.in, source_type: official_gazette, authority_rank: 100 }
   - { name: MeitY, domain: meity.gov.in, source_type: ministry, authority_rank: 90 }   # ESCAP's most-cited IN domain (31 refs); hosts DPDP Act/Rules/commencement PDFs
   - { name: RBI, domain: rbi.org.in, source_type: sectoral_regulator, authority_rank: 60 }
@@ -47,11 +47,22 @@ notes:
   - "P6-I5: India has NO binding data-transfer agreement (UAE CEPA = endeavour + DS carve-out; UK CETA = forward-review only; TEPA/ECTA = no digital chapter; not in RCEP/CPTPP/DEPA/JSI/108). Score-1 supportable."
 open_verification:   # deep-research §5/§7 ranked items — UNVERIFIED, do not cite as fact
   - "Income-tax Rules 2026 r.46(8) daily-backup-in-India claim — CONTRADICTORY secondary sources; most consequential open item"
-  - "Principal Telecom Services Rules 2026: sub-rule number (30(3)(b)?), G.S.R. number, cloud/satellite carve-out — PDF truncates mid-rule 26"
-  - "Whether an offshore route exists elsewhere in Network Rules 2026 (provisos at rr.29(2), 31(10) unread)"
-  - "Captive Telecom Services Rules 2026 — PDF 403s; likely parallel clause unverified"
   - "IRDAI 2025 Regulations reg.9(iii) + repeal of 2015 Regs — official text unreadable (robots); rests on exposure draft + secondary"
   - "Unified Licence cl. 39.20/39.23 remote-access clauses — never verified; UL being displaced by 2023-Act regime anyway"
+# RESOLVED 1 Aug (full official eGazette texts acquired via egazette.gov.in/WriteReadData —
+# the file server is open even where the search portal is bot-blocked; gazette IDs mined
+# via gazettetracker.com):
+#   - Principal Rules 2026 = G.S.R. 513(E), Gazette CG-DL-E-24062026-273774, 133pp:
+#     localisation clause CONFIRMED at r.30(3)(b) [OFFICIAL-EN in gazette English section];
+#     the cloud-hosted/satellite carve-out in r.30(3)(a) touches SYSTEM location only —
+#     the data-export prohibition in (b) applies to all authorised entities.
+#   - Misc Rules 2026 = G.S.R. 512(E), CG-DL-E-23062026-273770, 73pp: r.24(2)(b) negation
+#     intact in official English ("no copies ... shall be routed, shared or made available
+#     outside India") — the reported drafting defect was a Devanagari-extraction artifact.
+#   - Captive Rules 2026 = CG-DL-E-23062026-273771, 52pp: parallel clause at r.24(4).
+#   - Migration Rules 2026 = CG-DL-E-23062026-273763, 8pp: archived.
+#   - All four gazettes carry an OFFICIAL ENGLISH section — the Devanagari-only concern
+#     applies to the dot.gov.in Network-Rules upload, not to the eGazette copies.
 known_index: data/known_index_round2.json
 seeds: data/seeds_r2.json
 rdtii_bindings: { pillars: [6, 7] }
@@ -118,8 +129,18 @@ status_assertions:
     effective_date: "2026-07-22"
   "Telecommunications (Principal Telecommunication Services) Rules 2026":
     status: in_force
-    fact_url: "https://eservices.dot.gov.in/act-and-rules"
-    fact_text: "Official DoT index confirms notification 23 June 2026, in force on publication. Full text partially unreadable — pinpoints open."
+    fact_url: "https://egazette.gov.in/WriteReadData/2026/273774.pdf"
+    fact_text: "Official Gazette G.S.R. 513(E), CG-DL-E-24062026-273774, in force on publication; full 133-page bilingual text archived. Localisation at r.30(3)(b)."
+    effective_date: "2026-06-23"
+  "Telecommunications (Miscellaneous Telecommunication Services) Rules 2026":
+    status: in_force
+    fact_url: "https://egazette.gov.in/WriteReadData/2026/273770.pdf"
+    fact_text: "Official Gazette G.S.R. 512(E), CG-DL-E-23062026-273770; localisation at r.24(2)(b), official English text."
+    effective_date: "2026-06-23"
+  "Telecommunications (Captive Telecommunication Services) Rules 2026":
+    status: in_force
+    fact_url: "https://egazette.gov.in/WriteReadData/2026/273771.pdf"
+    fact_text: "Official Gazette CG-DL-E-23062026-273771; parallel localisation clause at r.24(4)."
     effective_date: "2026-06-23"
   "Telecommunications (Telecom Cyber Security) Rules 2024":
     status: in_force

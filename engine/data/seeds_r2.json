@@ -731,6 +731,38 @@
     "policy": null,
     "indicator_code": "P6-I1",
     "cluster": "deep-research 31-Jul-2026"
+   },
+   {
+    "act": "Telecommunications (Authorisation for Provision of Principal Telecommunication Services) Rules 2026 (G.S.R. 513(E), official Gazette CG-DL-E-24062026-273774)",
+    "url": "https://egazette.gov.in/WriteReadData/2026/273774.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I1",
+    "cluster": "egazette-direct"
+   },
+   {
+    "act": "Telecommunications (Authorisation for Provision of Miscellaneous Telecommunication Services) Rules 2026 (G.S.R. 512(E), official Gazette CG-DL-E-23062026-273770)",
+    "url": "https://egazette.gov.in/WriteReadData/2026/273770.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I1",
+    "cluster": "egazette-direct"
+   },
+   {
+    "act": "Telecommunications (Authorisation for Captive Telecommunication Services) Rules 2026 (official Gazette CG-DL-E-23062026-273771)",
+    "url": "https://egazette.gov.in/WriteReadData/2026/273771.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I1",
+    "cluster": "egazette-direct"
+   },
+   {
+    "act": "Telecommunications (Terms and Conditions for Migration) Rules 2026 (official Gazette CG-DL-E-23062026-273763)",
+    "url": "https://egazette.gov.in/WriteReadData/2026/273763.pdf",
+    "coverage": null,
+    "policy": null,
+    "indicator_code": "P6-I1",
+    "cluster": "egazette-direct"
    }
   ],
   "Indonesia": [
