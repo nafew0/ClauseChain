@@ -1349,16 +1349,11 @@ Thailand,Personal Data Protection Act B.E. 2562 (2019),,,P6-I1,n/a,KNOWN,n/a,NO_
 India,Information Technology Act 2000 (Act 21 of 2000),,,P6-I1,n/a,KNOWN,n/a,NO_EVIDENCE_FOUND_PENDING_REVIEW,"No qualifying provision found for P6-I1 after a full-corpus sweep. The configured governing law is cited as the reference basis (score-0 pattern, A3).",https://www.indiacode.nic.in/handle/123456789/1999,0.6,Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required before this becomes a score-0 final row (P3.5 A3).,Horizontal,,in_force
 Indonesia,Law No. 27 of 2022 on Personal Data Protection,,,P6-I1,n/a,KNOWN,n/a,NO_EVIDENCE_FOUND_PENDING_REVIEW,"No qualifying provision found for P6-I1 after a full-corpus sweep. The configured governing law is cited as the reference basis (score-0 pattern, A3).",https://jdih.komdigi.go.id/produk_hukum/view/id/832/t/undangundang%2Bnomor%2B27%2Btahun%2B2022,0.6,Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required before this becomes a score-0 final row (P3.5 A3).,Horizontal,,in_force
 Thailand,Personal Data Protection Act B.E. 2562 (2019),,,P6-I2,n/a,KNOWN,n/a,NO_EVIDENCE_FOUND_PENDING_REVIEW,"No qualifying provision found for P6-I2 after a full-corpus sweep. The configured governing law is cited as the reference basis (score-0 pattern, A3).",https://ratchakitcha.soc.go.th/DATA/PDF/2562/A/069/T_0052.PDF,0.6,Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required before this becomes a score-0 final row (P3.5 A3).,Horizontal,,in_force
-India,Companies (Accounts) Rules 2014 (as amended 2022),,,P6-I2,s. 3(1),NEW,page 1,"(5) There shall be a proper system for storage, retrieval, display or printout of the electronic records as the Audit 
-Committee, if any, or the Board may deem appropriate and such records shall not be disposed of or rendered unusable, 
-unless permitted by law: 
-Provided that the back-up  of the books of account  and other books and papers of the company maintained in electronic 
-mode, including at a place outside India, if any, shall be kept in servers physically located in India on a periodic basis.","This section requires a company's electronic-book backups to be kept on servers physically located in India periodically. Maps to P6-I2 because it mandates a domestic copy, a local-storage requirement, without prohibiting transfer.","https://thc.nic.in/Central%20Governmental%20Rules/Companies%20(Accounts)%20Rules,%202014..pdf",0.99,Discovery: instrument not in the master dataset for India. Modality: shall; exceptions: none,Sectoral (Companies and corporate accounting),,in_force
 India,Companies (Accounts) Rules 2014 (as amended 2022),,,P6-I2,s. 3(5),NEW,page 1,"(5) There shall be a proper system for storage, retrieval, display or printout of the electronic records as the Audit 
 Committee, if any, or the Board may deem appropriate and such records shall not be disposed of or rendered unusable, 
 unless permitted by law: 
 Provided that the back-up  of the books of account  and other books and papers of the company maintained in electronic 
-mode, including at a place outside India, if any, shall be kept in servers physically located in India on a periodic basis.","This section requires companies to keep backups of electronically maintained books on servers physically located in India periodically. Maps to P6-I2 because it imposes a domestic-copy local-storage requirement, not a transfer ban.","https://thc.nic.in/Central%20Governmental%20Rules/Companies%20(Accounts)%20Rules,%202014..pdf",0.98,"Discovery: instrument not in the master dataset for India. Modality: shall; exceptions: if any, meaning where such a backup exists",Sectoral (Companies and corporate accounting records),,in_force
+mode, including at a place outside India, if any, shall be kept in servers physically located in India on a periodic basis.","This section requires companies’ electronic accounting-record backups to be kept on servers physically located in India periodically. Maps to P6-I2 because it requires a domestic copy, a local-storage rule rather than an operational server precondition.","https://thc.nic.in/Central%20Governmental%20Rules/Companies%20(Accounts)%20Rules,%202014..pdf",0.99,Discovery: instrument not in the master dataset for India. Modality: shall; exceptions: The phrase “if any” limits the obligation to backups that exist,Sectoral (Companies and corporate accounting records),,in_force
 India,Companies (Management and Administration) Rules 2014,,,P6-I2,s. 7(8),NEW,page 6,"(8) 
 The company shall— 
      
@@ -1367,7 +1362,7 @@ any foreign register within fifteen days after the entry is made;
 and 
       
 (b)   keep at such office a duplicate register of every foreign register 
-duly entered up from time to time.",This rule requires companies keeping foreign registers to send copies to and keep duplicate registers at their Indian registered office. Maps to P6-I2 because it establishes a domestic-copy local-storage requirement.,"https://thc.nic.in/Central%20Governmental%20Rules/Companies%20(Management%20and%20Administration)%20Rules,2014.pdf",0.98,Discovery: instrument is known but s. 7 is not among its recorded provisions (['92']). Modality: shall; exceptions: none,Sectoral (Companies and corporate securities),,in_force
+duly entered up from time to time.",This rule requires companies keeping foreign registers to send copies of every entry to the registered office in India and keep duplicate registers there. Maps to P6-I2 because it establishes a domestic-copy local-storage requirement for foreign-register data.,"https://thc.nic.in/Central%20Governmental%20Rules/Companies%20(Management%20and%20Administration)%20Rules,2014.pdf",0.99,Discovery: instrument is known but s. 7 is not among its recorded provisions (['92']). Modality: shall; exceptions: none,Sectoral (Companies),,in_force
 Indonesia,Law No. 27 of 2022 on Personal Data Protection,,,P6-I2,n/a,KNOWN,n/a,NO_EVIDENCE_FOUND_PENDING_REVIEW,"No qualifying provision found for P6-I2 after a full-corpus sweep. The configured governing law is cited as the reference basis (score-0 pattern, A3).",https://jdih.komdigi.go.id/produk_hukum/view/id/832/t/undangundang%2Bnomor%2B27%2Btahun%2B2022,0.6,Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required before this becomes a score-0 final row (P3.5 A3).,Horizontal,,in_force
 Thailand,Personal Data Protection Act B.E. 2562 (2019),,,P6-I3,n/a,KNOWN,n/a,NO_EVIDENCE_FOUND_PENDING_REVIEW,"No qualifying provision found for P6-I3 after a full-corpus sweep. The configured governing law is cited as the reference basis (score-0 pattern, A3).",https://ratchakitcha.soc.go.th/DATA/PDF/2562/A/069/T_0052.PDF,0.6,Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required before this becomes a score-0 final row (P3.5 A3).,Horizontal,,in_force
 India,Information Technology Act 2000 (Act 21 of 2000),,,P6-I3,n/a,KNOWN,n/a,NO_EVIDENCE_FOUND_PENDING_REVIEW,"No qualifying provision found for P6-I3 after a full-corpus sweep. The configured governing law is cited as the reference basis (score-0 pattern, A3).",https://www.indiacode.nic.in/handle/123456789/1999,0.6,Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required before this becomes a score-0 final row (P3.5 A3).,Horizontal,,in_force
@@ -1385,7 +1380,12 @@ has authority under the law;
 (4) where the written consent of such data subject has been obtained for the
 disclosure for such specific occasion;
 public.","This section establishes criminal confidentiality for Personal Data disclosures, with an exception for disclosure to a foreign government agency having legal authority. Maps to P6-I4 because it creates a conditional cross-border personal-data disclosure path.",https://www.pdpc.or.th/wp-content/uploads/Thailand Personal-Data-Protection-Act-2019.pdf,0.88,"Discovery: instrument is known but s. 80 is not among its recorded provisions (['10', '16', '19', '28', '4.6', '41', '42']). Modality: Prohibited and punishable unless a listed exception applies; exceptions: Performance of duty; Benefit of an investigation or trial in court; Disclosure to a domestic or foreign government agency having legal authority; Written consent of the data subject for the specific occasion; Disclosure relating to a legal lawsuit openly disclosed to the public",Horizontal,,in_force
-India,Information Technology Act 2000 (Act 21 of 2000),,,P6-I4,n/a,KNOWN,n/a,NO_EVIDENCE_FOUND_PENDING_REVIEW,"No qualifying provision found for P6-I4 after a full-corpus sweep. The configured governing law is cited as the reference basis (score-0 pattern, A3).",https://www.indiacode.nic.in/handle/123456789/1999,0.6,Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required before this becomes a score-0 final row (P3.5 A3).,Horizontal,,in_force
+India,Digital Personal Data Protection Act No. 22 2023,,,P6-I4,s. 16(1),KNOWN,page 11,"(1) The Central Government may, by notification, restrict the transfer of personal
+data by a Data Fiduciary for processing to such country or territory outside India as may be
+so notified.","This section permits the Central Government to restrict Data Fiduciaries’ transfers of personal data to notified foreign destinations. Maps to P6-I4 because it establishes a destination-notification conditional cross-border flow regime, not an unconditional ban.",https://www.meity.gov.in/writereaddata/files/Digital%20Personal%20Data%20Protection%20Act%202023.pdf,0.88,"Discovery: master dataset already records s. 16 of this law. Modality: may; exceptions: Any Indian law providing a higher degree of protection for, or restriction on, transfers of personal data remains applicable.; Section 16 does not apply to the processing circumstances listed in section 17(1).; The Act, including section 16, does not apply to the State and research-related processing circumstances listed in section 17(2).",Horizontal,,in_force
+India,Digital Personal Data Protection Act 2023,,,P6-I4,s. 16(1),KNOWN,page 14,"Processing of personal data outside India.—(1) The Central Government may, by 
+notification, restrict the transfer of personal data by a Data Fiduciary for processing to such country or 
+territory outside India as may be so notified.","This section establishes a notification-based restriction on transfers of personal data to notified foreign destinations. Maps to P6-I4 because it creates a destination-notification conditional cross-border data-flow regime, not a universal transfer ban.",https://www.indiacode.nic.in/handle/123456789/22037,0.9,"Discovery: master dataset already records s. 16 of this law. Modality: may, by notification; exceptions: Other Indian laws that provide a higher degree of protection for, or restriction on, transfers of personal data remain applicable.; Section 16 does not apply to processing covered by the exemptions in section 17(1), including specified legal, judicial, regulatory, law-enforcement, foreign-contract, corporate-restructuring, and loan-default purposes.",Horizontal,,in_force
 Indonesia,Law No. 27 of 2022 on Personal Data Protection,,,P6-I4,n/a,KNOWN,n/a,NO_EVIDENCE_FOUND_PENDING_REVIEW,"No qualifying provision found for P6-I4 after a full-corpus sweep. The configured governing law is cited as the reference basis (score-0 pattern, A3).",https://jdih.komdigi.go.id/produk_hukum/view/id/832/t/undangundang%2Bnomor%2B27%2Btahun%2B2022,0.6,Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required before this becomes a score-0 final row (P3.5 A3).,Horizontal,,in_force
 Thailand,AANZFTA Second Protocol Chapter 10 (E-Commerce),,,P6-I5,s. 17,NEW,page 15,"No Party shall require a covered person to use or locate
 computing facilities in that Party's territory as a condition for
@@ -1904,25 +1904,174 @@ request to do so, or when the data subject withdraws consent, except where the r
 such Personal Data is for the purpose of freedom of expression, the purpose under section 24
 (1) or (4) or section 26 (5) (a) or (b), the purpose of the establishment, compliance or exercise of
 legal claims, or defense of legal claims, or the purpose of compliance with the law.",This section requires data controllers to establish an erasure or destruction examination system subject to stated conditions and exceptions. Maps to P7-I1 because it is a core obligation in a horizontal personal-data-protection framework.,https://www.pdpc.or.th/wp-content/uploads/Thailand Personal-Data-Protection-Act-2019.pdf,0.99,"Discovery: instrument is known but s. 37 is not among its recorded provisions (['10', '16', '19', '28', '4.6', '41', '42']). Modality: shall; exceptions: retention for the purpose of freedom of expression; retention for the purpose under section 24 (1) or (4); retention for the purpose under section 26 (5) (a) or (b); retention for establishing, complying with, exercising, or defending legal claims; retention for the purpose of compliance with the law",Horizontal,,in_force
-India,Aadhaar Act 2016,,,P7-I1,s. 32(3),NEW,page 16,"(3) The Authority shall not, either by itself or through any entity under its control, collect, keep or 
-maintain any information about the purpose of authentication.","This section prohibits the Authority from collecting, keeping or maintaining information about authentication purpose. Maps to P7-I1 because it is a sectoral personal-data limitation evidencing no comprehensive horizontal framework.",https://www.indiacode.nic.in/handle/123456789/21583,0.99,Discovery: instrument is known but s. 32 is not among its recorded provisions (none recorded). Modality: shall not; exceptions: none,Sectoral (Aadhaar and identity authentication),,in_force
-India,Information Technology (Guidelines for Cyber Café) Rules 2011,,,P7-I1,s. 9(3),NEW,page 5,"(3) While collecting information directly from the person concerned, the body 
-corporate or any person on its behalf shall take such steps as are, in the 
-circumstances, reasonable to ensure that the person concerned is having the 
-knowledge of ― 
-(a) the fact that the information is being collected;  
-(b) the purpose for which the information is being collected;  
-(c) the intended recipients of the information; and 
-(d) the name and address of ― 
- (i)  the agency that is collecting the information; and 
- (ii) the agency that will retain the information.","This section requires cyber-café operators to provide collection, purpose, recipient, and agency information. Maps to P7-I1 because it evidences a sectoral data-protection transparency obligation, a core legal function of a framework.",https://www.meity.gov.in/sites/upload_files/dit/files/RNUS_CyberLaw_15411.pdf,0.99,Discovery: instrument is known but s. 9 is not among its recorded provisions (['3']). Modality: Shall; exceptions: none,Sectoral (Cyber cafés),,in_force
-India,Information Technology Act No.21 2000,,,P7-I1,s. 72,NEW,page 22,"Save as otherwise provided in this Act or any other law for the time being in force, any person 
-who, in pursuance of any of the powers conferred under this Act, rules or regulations made thereunder, 
-has secured access to any electronic record, book, register, correspondence, information, document or 
-other material without the consent of the person concerned discloses such electronic record, book. 
-register, correspondence, information, document or other material to any other person shall be 
-punished with imprisonment for a term which may extend to two years, or with fine which may extend 
-to one lakh rupees, or with both.","This section prohibits a person with statutory access from disclosing electronic records without consent, subject to legal exceptions. Maps to P7-I1 because its confidentiality/privacy obligation evidences a limited sectoral framework; comprehensiveness is assessed in scoring.",https://www.meity.gov.in/writereaddata/files/itbill2000.pdf,0.98,"Discovery: instrument is known but s. 72 is not among its recorded provisions (['1', '10', '14', '15', '16', '27', '4.1.2', '65', '69', '69A', '69B', '79', '84A']). Modality: Prohibited and punishable; exceptions: Unless otherwise provided in the Act or any other law for the time being in force",Sectoral (Information technology and electronic records),,in_force
+India,Digital Personal Data Protection Act 2023,,,P7-I1,s. 4(1),KNOWN,page 7,"Grounds for processing personal data.—(1) A person may process the personal data of a Data 
+Principal only in accordance with the provisions of this Act and for a lawful purpose,— 
+(a) for which the Data Principal has given her consent; or 
+(b) for certain legitimate uses.",This section 4(1) establishes that a person may process personal data only under the Act for a lawful purpose. Maps to P7-I1 because it is the controlling horizontal personal-data-protection framework provision.,https://www.indiacode.nic.in/handle/123456789/22037,0.99,"Discovery: master dataset already records s. 4 of this law. Modality: may, only subject to conditions; exceptions: certain legitimate uses",Horizontal,,in_force
+India,Digital Personal Data Protection Act No. 22 2023,,,P7-I1,s. 4(1),KNOWN,page 4,"(1) A person may process the personal data of a Data Principal only in accordance
+with the provisions of this Act and for a lawful purpose,—
+(a) for which the Data Principal has given her consent; or
+(b) for certain legitimate uses.",This section permits a person to process a Data Principal’s personal data subject to statutory conditions. Maps to P7-I1 because it establishes the Act’s horizontal core processing framework.,https://www.meity.gov.in/writereaddata/files/Digital%20Personal%20Data%20Protection%20Act%202023.pdf,0.99,Discovery: master dataset already records s. 4 of this law. Modality: may; exceptions: none,Horizontal,,in_force
+India,Digital Personal Data Protection Act No. 22 2023,,,P7-I1,s. 4(2),KNOWN,page 4,"(1) A person may process the personal data of a Data Principal only in accordance
+with the provisions of this Act and for a lawful purpose,—
+(a) for which the Data Principal has given her consent; or
+(b) for certain legitimate uses.","This section permits a person to process personal data only for a lawful purpose, with consent or certain legitimate uses. Maps to P7-I1 because it establishes the Act’s horizontal core processing framework.",https://www.meity.gov.in/writereaddata/files/Digital%20Personal%20Data%20Protection%20Act%202023.pdf,0.99,"Discovery: master dataset already records s. 4 of this law. Modality: may, only in accordance with the Act and for a lawful purpose; exceptions: none",Horizontal,,in_force
+India,Digital Personal Data Protection Act 2023,,,P7-I1,s. 4(2),KNOWN,page 7,"Grounds for processing personal data.—(1) A person may process the personal data of a Data 
+Principal only in accordance with the provisions of this Act and for a lawful purpose,— 
+(a) for which the Data Principal has given her consent; or 
+(b) for certain legitimate uses.",This section permits a person to process personal data only under the Act and for a lawful purpose. Maps to P7-I1 because it is a horizontal core processing rule establishing the data-protection framework.,https://www.indiacode.nic.in/handle/123456789/22037,0.99,"Discovery: master dataset already records s. 4 of this law. Modality: may, subject to mandatory conditions; exceptions: lawful purpose means any purpose not expressly forbidden by law",Horizontal,,in_force
+India,Digital Personal Data Protection Act 2023,,,P7-I1,s. 4,KNOWN,page 7,"Grounds for processing personal data.—(1) A person may process the personal data of a Data 
+Principal only in accordance with the provisions of this Act and for a lawful purpose,— 
+(a) for which the Data Principal has given her consent; or 
+(b) for certain legitimate uses.",This section permits persons to process personal data only under the Act for a lawful purpose. Maps to P7-I1 because it establishes the horizontal framework's core processing obligation.,https://www.indiacode.nic.in/handle/123456789/22037,0.99,Discovery: master dataset already records s. 4 of this law. Modality: may; exceptions: A lawful purpose is any purpose not expressly forbidden by law,Horizontal,,in_force
+India,Digital Personal Data Protection Act No. 22 2023,,,P7-I1,s. 4(3),KNOWN,page 4,"(1) A person may process the personal data of a Data Principal only in accordance
+with the provisions of this Act and for a lawful purpose,—
+(a) for which the Data Principal has given her consent; or
+(b) for certain legitimate uses.",This section establishes lawful processing of personal data by persons subject to the Act. Maps to P7-I1 because its core processing obligation evidences a comprehensive horizontal data-protection framework.,https://www.meity.gov.in/writereaddata/files/Digital%20Personal%20Data%20Protection%20Act%202023.pdf,0.99,Discovery: master dataset already records s. 4 of this law. Modality: may; exceptions: none,Horizontal,,in_force
+India,Digital Personal Data Protection Act 2023,,,P7-I1,s. 4(3),KNOWN,page 7,"Grounds for processing personal data.—(1) A person may process the personal data of a Data 
+Principal only in accordance with the provisions of this Act and for a lawful purpose,— 
+(a) for which the Data Principal has given her consent; or 
+(b) for certain legitimate uses.",This section permits processing of personal data subject to consent or legitimate uses. Maps to P7-I1 because it establishes the Act’s horizontal personal-data-processing framework.,https://www.indiacode.nic.in/handle/123456789/22037,0.99,Discovery: master dataset already records s. 4 of this law. Modality: may; exceptions: none,Horizontal,,in_force
+India,Digital Personal Data Protection Act 2023,,,P7-I1,s. 10(2),KNOWN,page 12,"(2) The Significant Data Fiduciary shall—  
+(a) appoint a Data Protection Officer who shall— 
+ (i) represent the Significant Data Fiduciary under the provisions of this Act; 
+ (ii) be based in India;  
+(iii) be an individual responsible to the Board of Directors or similar governing body of the 
+Significant Data Fiduciary; and  
+(iv) be the point of contact for the grievance redressal mechanism under the provisions of this 
+Act;  
+(b) appoint an independent data auditor to carry out data audit, who shall evaluate the compliance 
+of the Significant Data Fiduciary in accordance with the provisions of this Act; and  
+(c) undertake the following other measures, namely:—  
+(i) periodic Data Protection Impact Assessment, which shall be a process comprising a 
+description of the rights of Data Principals and the purpose of processing of their personal data, 
+assessment and management of the risk to the rights of the Data Principals, and such other matters 
+regarding such process as may be prescribed; 
+ (ii) periodic audit; and 
+ (iii) such other measures, consistent with the provisions of this Act, as may be prescribed.",This section requires Significant Data Fiduciaries to appoint a Data Protection Officer. Maps to P7-I1 because it evidences a horizontal statutory personal-data-protection accountability framework.,https://www.indiacode.nic.in/handle/123456789/22037,0.93,Discovery: master dataset already records s. 10 of this law. Modality: shall; exceptions: none,Horizontal,,in_force
+India,Digital Personal Data Protection Act 2023,,,P7-I1,s. 12(1),KNOWN,page 13,"Right to correction and erasure of personal data.—(1) A Data Principal shall have the right 
+to correction, completion, updating and erasure of her personal data for the processing of which she has 
+previously given consent, including consent as referred to in clause (a) of section 7, in accordance with 
+any requirement or procedure under any law for the time being in force.","This section 12 establishes rights to correction, completion, updating and erasure. Maps to P7-I1 because it is a core obligation evidencing a horizontal personal-data-protection framework.",https://www.indiacode.nic.in/handle/123456789/22037,0.99,Discovery: master dataset already records s. 12 of this law. Modality: shall have the right; exceptions: Erasure is not required where retention is necessary for the specified purpose or to comply with any law in force.,Horizontal,,in_force
+India,Digital Personal Data Protection Act No. 22 2023,,,P7-I1,s. 10(2),KNOWN,page 8,"(2) The Significant Data Fiduciary shall—
+(a) appoint a Data Protection Officer who shall—
+(i) represent the Significant Data Fiduciary under the provisions of this
+Act;
+(ii) be based in India;
+(iii) be an individual responsible to the Board of Directors or similar
+governing body of the Significant Data Fiduciary; and
+(iv) be the point of contact for the grievance redressal mechanism under
+the provisions of this Act;
+(b) appoint an independent data auditor to carry out data audit, who shall
+evaluate the compliance of the Significant Data Fiduciary in accordance with the
+provisions of this Act; and
+(c) undertake the following other measures, namely:—
+(i) periodic Data Protection Impact Assessment, which shall be a process
+comprising a description of the rights of Data Principals and the purpose of
+processing of their personal data, assessment and management of the risk to
+the rights of the Data Principals, and such other matters regarding such process
+as may be prescribed;
+(ii) periodic audit; and
+(iii) such other measures, consistent with the provisions of this Act, as
+may be prescribed.",This section requires Significant Data Fiduciaries to appoint officers and auditors and undertake assessments and audits. Maps to P7-I1 because it evidences the Act’s horizontal data-protection framework and core obligations.,https://www.meity.gov.in/writereaddata/files/Digital%20Personal%20Data%20Protection%20Act%202023.pdf,0.99,Discovery: master dataset already records s. 10 of this law. Modality: shall; exceptions: none,Horizontal,,in_force
+India,Digital Personal Data Protection Act 2023,,,P7-I1,s. 12,KNOWN,page 13,"(3) A Data Principal shall make a request in such manner as may be prescribed to the Data Fiduciary 
+for erasure of her personal data, and upon receipt of such a request, the Data Fiduciary shall erase her 
+personal data unless retention of the same is necessary for the specified purpose or for compliance with 
+any law for the time being in force.",This section establishes correction and erasure rights and related fiduciary duties. Maps to P7-I1 because it evidences the Act’s horizontal personal-data-protection framework and its core individual-rights function.,https://www.indiacode.nic.in/handle/123456789/22037,0.99,Discovery: master dataset already records s. 12 of this law. Modality: shall; exceptions: Retention is necessary for the specified purpose; Retention is necessary for compliance with any law for the time being in force,Horizontal,,in_force
+India,Digital Personal Data Protection Act No. 22 2023,,,P7-I1,s. 12(1),KNOWN,page 10,"(1) A Data Principal shall have the right to correction, completion, updating and
+erasure of her personal data for the processing of which she has previously given consent,
+including consent as referred to in clause (a) of section 7, in accordance with any requirement
+or procedure under any law for the time being in force.
+(2) A Data Fiduciary shall, upon receiving a request for correction, completion or
+updating from a Data Principal,—
+(a) correct the inaccurate or misleading personal data;
+(b) complete the incomplete personal data; and
+(c) update the personal data.
+(3) A Data Principal shall make a request in such manner as may be prescribed to the
+Data Fiduciary for erasure of her personal data, and upon receipt of such a request, the Data
+Fiduciary shall erase her personal data unless retention of the same is necessary for the
+specified purpose or for compliance with any law for the time being in force.","This section 12 establishes data-subject rights and fiduciary duties for correction, completion, updating and erasure. Maps to P7-I1 because it evidences the horizontal personal-data-protection framework's core obligations.",https://www.meity.gov.in/writereaddata/files/Digital%20Personal%20Data%20Protection%20Act%202023.pdf,0.99,Discovery: master dataset already records s. 12 of this law. Modality: shall have the right to; shall; exceptions: Erasure is not required where retention is necessary for the specified purpose or compliance with any law in force.,Horizontal,,in_force
+India,Digital Personal Data Protection Act No. 22 2023,,,P7-I1,s. 16(5),KNOWN,page 11,"(1) The Central Government may, by notification, restrict the transfer of personal
+data by a Data Fiduciary for processing to such country or territory outside India as may be
+so notified.",This section permits the Central Government to restrict transfers of personal data. Maps to P7-I1 because it is a controlling provision of a horizontal personal-data-protection framework.,https://www.meity.gov.in/writereaddata/files/Digital%20Personal%20Data%20Protection%20Act%202023.pdf,0.98,Discovery: master dataset already records s. 16 of this law. Modality: may; exceptions: Laws providing a higher degree of protection for or restriction on transfer outside India remain applicable.,Horizontal,,in_force
+India,Digital Personal Data Protection Act 2023,,,P7-I1,s. 16(5),KNOWN,page 14,"(5) The Central Government may, before expiry of five years from the date of commencement of 
+this Act, by notification, declare that any provision of this Act shall not apply to such Data Fiduciary or 
+classes of Data Fiduciaries for such period as may be specified in the notification.",This section permits the Central Government to exempt specified Data Fiduciaries or classes from provisions of the Act for a period. Maps to P7-I1 because this scope/exemption clause evidences the controlling horizontal data-protection framework.,https://www.indiacode.nic.in/handle/123456789/22037,0.97,Discovery: master dataset already records s. 16 of this law. Modality: may; exceptions: none,Horizontal,,in_force
+India,Digital Personal Data Protection Act 2023,,,P7-I1,s. 12(3),KNOWN,page 13,"(3) A Data Principal shall make a request in such manner as may be prescribed to the Data Fiduciary 
+for erasure of her personal data, and upon receipt of such a request, the Data Fiduciary shall erase her 
+personal data unless retention of the same is necessary for the specified purpose or for compliance with 
+any law for the time being in force.","This section 12(3) requires a Data Fiduciary to erase personal data upon request, subject to lawful retention exceptions. Maps to P7-I1 because it is a core horizontal data-protection obligation establishing the framework.",https://www.indiacode.nic.in/handle/123456789/22037,0.99,Discovery: master dataset already records s. 12 of this law. Modality: shall; exceptions: Retention is necessary for the specified purpose.; Retention is necessary for compliance with any law for the time being in force.,Horizontal,,in_force
+India,Digital Personal Data Protection Act No. 22 2023,,,P7-I1,s. 12(3),KNOWN,page 10,"(3) A Data Principal shall make a request in such manner as may be prescribed to the
+Data Fiduciary for erasure of her personal data, and upon receipt of such a request, the Data
+Fiduciary shall erase her personal data unless retention of the same is necessary for the
+specified purpose or for compliance with any law for the time being in force.","This section 12(3) requires a Data Fiduciary to erase personal data upon request, subject to retention exceptions. Maps to P7-I1 because it evidences the horizontal personal-data-protection framework's data-subject rights and fiduciary duties.",https://www.meity.gov.in/writereaddata/files/Digital%20Personal%20Data%20Protection%20Act%202023.pdf,0.99,Discovery: master dataset already records s. 12 of this law. Modality: shall; exceptions: Unless retention is necessary for the specified purpose or compliance with any law in force,Horizontal,,in_force
+India,Digital Personal Data Protection Act 2023,,,P7-I1,s. 16(2),KNOWN,page 14,"(2) Nothing contained in this section shall restrict the applicability of any law for the time being in 
+force in India that provides for a higher degree of protection for or restriction on transfer of personal 
+data by a Data Fiduciary outside India in relation to any personal data or Data Fiduciary or class thereof.",This section 16(2) establishes preservation of higher-protection transfer laws. Maps to P7-I1 because it is a controlling provision within the horizontal personal-data-protection framework.,https://www.indiacode.nic.in/handle/123456789/22037,0.96,Discovery: master dataset already records s. 16 of this law. Modality: shall not; exceptions: none,Horizontal,,in_force
+India,Digital Personal Data Protection Act No. 22 2023,,,P7-I1,s. 16(2),KNOWN,page 11,"(2) Nothing contained in this section shall restrict the applicability of any law for the
+time being in force in India that provides for a higher degree of protection for or restriction
+on transfer of personal data by a Data Fiduciary outside India in relation to any personal
+data or Data Fiduciary or class thereof.",This section establishes a saving rule preserving higher-protection or transfer-restriction laws. Maps to P7-I1 because its saving-clause function evidences the horizontal personal-data-protection framework.,https://www.meity.gov.in/writereaddata/files/Digital%20Personal%20Data%20Protection%20Act%202023.pdf,0.97,Discovery: master dataset already records s. 16 of this law. Modality: shall not; exceptions: none,Horizontal,,in_force
+India,Digital Personal Data Protection Act No. 22 2023,,,P7-I1,s. 10(1),KNOWN,page 8,"(1) The Central Government may notify any Data Fiduciary or class of Data
+Fiduciaries as Significant Data Fiduciary, on the basis of an assessment of such relevant
+factors as it may determine, including—
+Processing of
+personal data
+of children.",This section 10 permits the Central Government to designate Significant Data Fiduciaries. Maps to P7-I1 because it is a controlling provision in the Act’s horizontal personal-data-protection framework.,https://www.meity.gov.in/writereaddata/files/Digital%20Personal%20Data%20Protection%20Act%202023.pdf,0.98,Discovery: master dataset already records s. 10 of this law. Modality: may; exceptions: none,Horizontal,,in_force
+India,Digital Personal Data Protection Act 2023,,,P7-I1,s. 10(1),KNOWN,page 12,"(2) The Significant Data Fiduciary shall—  
+(a) appoint a Data Protection Officer who shall— 
+ (i) represent the Significant Data Fiduciary under the provisions of this Act; 
+ (ii) be based in India;  
+(iii) be an individual responsible to the Board of Directors or similar governing body of the 
+Significant Data Fiduciary; and  
+(iv) be the point of contact for the grievance redressal mechanism under the provisions of this 
+Act;  
+(b) appoint an independent data auditor to carry out data audit, who shall evaluate the compliance 
+of the Significant Data Fiduciary in accordance with the provisions of this Act; and  
+(c) undertake the following other measures, namely:—  
+(i) periodic Data Protection Impact Assessment, which shall be a process comprising a 
+description of the rights of Data Principals and the purpose of processing of their personal data, 
+assessment and management of the risk to the rights of the Data Principals, and such other matters 
+regarding such process as may be prescribed; 
+ (ii) periodic audit; and 
+ (iii) such other measures, consistent with the provisions of this Act, as may be prescribed.",This section 10(2) requires Significant Data Fiduciaries to appoint a Data Protection Officer. Maps to P7-I1 because it evidences the Act’s horizontal personal-data-protection framework and core compliance obligations.,https://www.indiacode.nic.in/handle/123456789/22037,0.98,Discovery: master dataset already records s. 10 of this law. Modality: shall; exceptions: none,Horizontal,,in_force
+India,Digital Personal Data Protection Act 2023,,,P7-I1,s. 16(1),KNOWN,page 14,"Processing of personal data outside India.—(1) The Central Government may, by 
+notification, restrict the transfer of personal data by a Data Fiduciary for processing to such country or 
+territory outside India as may be so notified.",This section permits the Central Government to restrict transfers of personal data outside India by notification. Maps to P7-I1 because it evidences the horizontal personal-data-protection framework's cross-border processing function.,https://www.indiacode.nic.in/handle/123456789/22037,0.98,Discovery: master dataset already records s. 16 of this law. Modality: May; exceptions: Existing Indian law providing a higher degree of protection or restricting transfer continues to apply; Section 16 does not apply to the processing covered by the exemptions in section 17,Horizontal,,in_force
+India,Digital Personal Data Protection Act No. 22 2023,,,P7-I1,s. 12(2),KNOWN,page 10,"(2) A Data Fiduciary shall, upon receiving a request for correction, completion or
+updating from a Data Principal,—
+(a) correct the inaccurate or misleading personal data;
+(b) complete the incomplete personal data; and
+(c) update the personal data.","This section 12(2) requires Data Fidiciaries to correct, complete or update personal data upon request. Maps to P7-I1 because it establishes a horizontal personal-data-protection framework through core data-subject rights and duties.",https://www.meity.gov.in/writereaddata/files/Digital%20Personal%20Data%20Protection%20Act%202023.pdf,0.99,Discovery: master dataset already records s. 12 of this law. Modality: shall; exceptions: Erasure is not required where retention is necessary for the specified purpose or compliance with any law in force.,Horizontal,,in_force
+India,Digital Personal Data Protection Act 2023,,,P7-I1,s. 12(2),KNOWN,page 13,"(2) A Data Fiduciary shall, upon receiving a request for correction, completion or updating from a 
+Data Principal,—  
+(a) correct the inaccurate or misleading personal data;  
+(b) complete the incomplete personal data; and  
+(c) update the personal data.","This section requires Data Fiduciaries to correct, complete and update personal data on request. Maps to P7-I1 because it evidences a core data-subject-rights function within a horizontal personal-data-protection framework.",https://www.indiacode.nic.in/handle/123456789/22037,0.99,Discovery: master dataset already records s. 12 of this law. Modality: shall; exceptions: none,Horizontal,,in_force
+India,Digital Personal Data Protection Act 2023,,,P7-I1,s. 16(3),KNOWN,page 14,"Processing of personal data outside India.—(1) The Central Government may, by 
+notification, restrict the transfer of personal data by a Data Fiduciary for processing to such country or 
+territory outside India as may be so notified.",This section permits the Central Government to restrict cross-border processing transfers by Data Fiduciaries. Maps to P7-I1 because it evidences the Act’s horizontal personal-data-protection framework; scoring addresses whether that framework is comprehensive.,https://www.indiacode.nic.in/handle/123456789/22037,0.88,Discovery: master dataset already records s. 16 of this law. Modality: may; exceptions: A law in force in India providing a higher degree of protection or greater restriction on transfer continues to apply.; Section 16 does not apply in the circumstances specified in section 17.,Horizontal,,in_force
+India,Aadhaar Act 2016,,,P7-I1,s. 28(5),NEW,page 15,"(5) Notwithstanding anything contained in any other law for the time being in force, and save as 
+otherwise provided in this Act, the Authority or any of its officers or other employees or any agency that 
+maintains the Central Identities Data Repository shall not, whether during his service or thereafter, reveal 
+any information stored in the Central Identities Data Repository or authentication record to anyone: 
+Provided that an Aadhaar number holder may request the Authority to provide access to his identity 
+information excluding his core biometric information in such manner as may be specified by regulations.","This section prohibits specified Aadhaar custodians from revealing identity and authentication information, subject to statutory access exceptions. Maps to P7-I1 because it evidences a sectoral confidentiality and data-protection function, not a comprehensive horizontal framework.",https://www.indiacode.nic.in/handle/123456789/21583,0.99,"Discovery: instrument is known but s. 28 is not among its recorded provisions (none recorded). Modality: shall not; exceptions: as otherwise provided in the Act; an Aadhaar number holder may request access to identity information excluding core biometric information, as specified by regulations",Sectoral (Aadhaar identity and authentication information),,in_force
+India,Digital Personal Data Protection Act 2023,,,P7-I1,s. 8(7),NEW,page 10,"(7) A Data Fiduciary shall, unless retention is necessary for compliance with any law for the time 
+being in force,—  
+(a) erase personal data, upon the Data Principal withdrawing her consent or as soon as it is 
+reasonable to assume that the specified purpose is no longer being served, whichever is earlier; and  
+(b) cause its Data Processor to erase any personal data that was made available by the Data 
+Fiduciary for processing to such Data Processor.",This section requires Data Fiduciaries to erase personal data subject to a lawful-retention exception. Maps to P7-I1 because its general personal-data obligations establish the horizontal data-protection framework.,https://www.indiacode.nic.in/handle/123456789/22037,0.99,"Discovery: instrument is known but s. 8 is not among its recorded provisions (['10', '12', '16', '17', '4']). Modality: shall; exceptions: Retention is necessary for compliance with any law for the time being in force",Horizontal,,in_force
+India,Digital Personal Data Protection Act No. 22 2023,,,P7-I1,s. 6(6),NEW,page 5,"(6) If a Data Principal withdraws her consent to the processing of personal data under
+sub-section (5), the Data Fiduciary shall, within a reasonable time, cease and cause its Data
+Processors to cease processing the personal data of such Data Principal unless such
+processing without her consent is required or authorised under the provisions of this Act
+or the rules made thereunder or any other law for the time being in force in India.","This section 6(6) requires Data Fiduciaries to cease processing after consent withdrawal, subject to lawful exceptions. Maps to P7-I1 because it establishes a core obligation in a horizontal personal-data-protection framework.",https://www.meity.gov.in/writereaddata/files/Digital%20Personal%20Data%20Protection%20Act%202023.pdf,0.99,"Discovery: instrument is known but s. 6 is not among its recorded provisions (['10', '12', '16', '17', '4']). Modality: shall; exceptions: Processing without consent is required or authorised under the Act, rules made thereunder, or any other law in force in India",Horizontal,,in_force
+India,Information Technology (Guidelines for Cyber Café) Rules 2011,,,P7-I1,s. 9(7),NEW,page 5,"(7) Body corporate or any person on its behalf shall, prior to the collection of 
+information including sensitive personal data or information, provide an option to the 
+provider of the information to not to provide the data or information sought to be 
+collected.","This section 9(7) requires a cyber-café body corporate to offer consent refusal before collecting personal data. Maps to P7-I1 because it evidences a sectoral data-protection consent framework, not a horizontal one.",https://www.meity.gov.in/sites/upload_files/dit/files/RNUS_CyberLaw_15411.pdf,0.99,Discovery: instrument is known but s. 9 is not among its recorded provisions (['3']). Modality: shall; exceptions: The body corporate may decline to provide goods or services if the provider does not provide or later withdraws consent; Withdrawal of consent must be sent in writing to the body corporate,Sectoral (Cyber cafés),,in_force
 Indonesia,Law No.27 on Personal Data Protection 2022,,,P7-I1,Art. 35,KNOWN,page 32,"Dalam menjalankan tugas ini, PPDP bertugas untuk memastikan 
 bahwa 
 dalam 
@@ -3534,50 +3683,42 @@ knowingly causes another to conceal, destroy or alter any computer source code u
 computer, computer programme, computer system or computer network, when the 
 computer source code is required to be kept or maintained by law for the time being in 
 force, shall be punishable with imprisonment up to three years, or with fine which may 
-extend up to two lakh rupees, or with both.",This section prohibits tampering with legally required computer source code. Maps to P7-I2 because its cybercrime and source-code protection function evidences the cybersecurity framework.,https://www.meity.gov.in/writereaddata/files/itbill2000.pdf,0.98,Discovery: master dataset already records s. 65 of this law. Modality: shall be punishable; exceptions: none,Horizontal,,in_force
+extend up to two lakh rupees, or with both.",This section prohibits tampering with computer source code. Maps to P7-I2 because its horizontal cybercrime and source-code integrity function evidences the cybersecurity legal framework.,https://www.meity.gov.in/writereaddata/files/itbill2000.pdf,0.99,Discovery: master dataset already records s. 65 of this law. Modality: Shall be punishable; exceptions: none,Horizontal,,in_force
 India,"Government of India, Ministry of Communication and Information Technology, National Cyber Security Policy 2013",,,P7-I2,s. 6,NEW,page 2,"There are various ongoing activities and programs of the Government to address the cyber
 security challenges which have significantly contributed to the creation of a platform that is now
 capable of supporting and sustaining the efforts in securing the cyber space. Due to the dynamic
 nature of cyberspace, there is now a need for these actions to be unified under a National Cyber
 Security Policy, with an integrated vision and a set of sustained & coordinated strategies for
-implementation.","This section establishes a National Cyber Security Policy as an integrated, coordinated cybersecurity framework. Maps to P7-I2 because it evidences a dedicated horizontal cybersecurity framework's purpose and scope.",https://www.meity.gov.in/sites/upload_files/dit/files/National%20Cyber%20Security%20Policy%20%281%29.pdf,0.98,"Discovery: instrument is known but s. 6 is not among its recorded provisions (['2.5', '3', '4.1.2', '84A']). Modality: need; exceptions: none",Horizontal,,in_force
-India,"Government of India, Ministry of Communication and Information Technology, National Cyber Security Policy 2013",,,P7-I2,s. 5,NEW,page 2,"Rapid identification, information exchange, investigation and coordinated response and
-remediation can mitigate the damage caused by malicious cyberspace activity.",This section establishes a national cybersecurity incident-response and remediation framework. Maps to P7-I2 because it evidences a dedicated horizontal cybersecurity framework addressing coordinated response to cyber incidents.,https://www.meity.gov.in/sites/upload_files/dit/files/National%20Cyber%20Security%20Policy%20%281%29.pdf,0.98,"Discovery: instrument is known but s. 5 is not among its recorded provisions (['2.5', '3', '4.1.2', '84A']). Modality: can; exceptions: none",Horizontal,,in_force
-India,International Financial Services Centres Authority (Fund Management) Regulations 2022,,,P7-I2,s. 121(3),NEW,page 51,(3) A registered FME shall conduct an annual review of its business continuity plan.,"This section requires registered FMEs to conduct an annual review of business continuity plans. Maps to P7-I2 because it evidences a sectoral cyber-resilience framework, not a horizontal cybersecurity law.",https://ifsca.gov.in/Document/Legal/ifsca-fund-management-regulations-2022-as-amended-upto-april-11-202324042023105305.pdf,0.88,Discovery: instrument is known but s. 121 is not among its recorded provisions (['119']). Modality: shall; exceptions: none,Sectoral (Fund management / financial services),,in_force
-India,SEBI CSCRF 2024,,,P7-I2,s. 8,NEW,page 5,"The framework provides a structured 
-methodology to implement various 
-solutions for cybersecurity and cyber 
-resiliency.",This section establishes a structured methodology for cybersecurity and cyber resiliency. Maps to P7-I2 because it evidences a sectoral cybersecurity framework performing the framework-establishing legal function.,https://www.sebi.gov.in/sebi_data/attachdocs/aug-2024/1724326790365.pdf,0.99,Discovery: instrument not in the master dataset for India. Modality: provides; exceptions: none,Sectoral (securities market),,in_force
-India,SEBI CSCRF 2024,,,P7-I2,s. 3,NEW,page 2,"The CSCRF 
-aims 
-to 
-provide 
-standards 
-and 
-guidelines for strengthening cyber 
-resilience 
-and 
-maintaining 
-robust 
-cybersecurity of SEBI REs.","This section establishes a cybersecurity and cyber-resilience framework for SEBI-regulated entities. Maps to P7-I2 because it is a dedicated sectoral cybersecurity framework, not horizontal.",https://www.sebi.gov.in/sebi_data/attachdocs/aug-2024/1724326790365.pdf,0.99,Discovery: instrument not in the master dataset for India. Modality: aims to; exceptions: none,Sectoral (Indian securities market),,in_force
-India,SEBI Cloud Framework 2023,,,P7-I2,s. 3,NEW,page 2,"Objective: The major purpose of this 
-framework is to highlight the key 
-risks, 
-and 
-mandatory 
-control 
-measures which REs need to put in 
-place 
-before 
-adopting 
-cloud 
-computing.","This section establishes mandatory cloud-security control measures for specified SEBI-regulated entities. Maps to P7-I2 because its legal function evidences a dedicated sectoral, not horizontal, cybersecurity framework.",https://www.sebi.gov.in/sebi_data/attachdocs/mar-2023/1678112480131.pdf,0.98,Discovery: instrument not in the master dataset for India. Modality: need to; exceptions: none,Sectoral (Securities and financial-market entities regulated by SEBI),,in_force
-India,SEBI Cloud Framework 2023,,,P7-I2,s. 7,NEW,page 8,"11 
- 
-The cloud framework provides mandatory requirements to be fulfilled by the RE for 
-adopting cloud computing to augment the business prospects through scalability, 
-reduced operational cost, digital transformation and reduced IT infrastructure 
-complexity.","This Annexure-1 establishes mandatory cloud-security requirements for SEBI-regulated entities. Maps to P7-I2 because its legal function is a dedicated but sectoral cybersecurity framework, not a horizontal framework.",https://www.sebi.gov.in/sebi_data/attachdocs/mar-2023/1678112480131.pdf,0.99,Discovery: instrument not in the master dataset for India. Modality: Mandatory; exceptions: The RE may choose any deployment model based on its business needs and technology risk assessment.,Sectoral (securities),,in_force
+implementation.",This section establishes a unified National Cyber Security Policy. Maps to P7-I2 because it evidences a dedicated horizontal cybersecurity framework through an integrated vision and coordinated implementation strategies.,https://www.meity.gov.in/sites/upload_files/dit/files/National%20Cyber%20Security%20Policy%20%281%29.pdf,0.98,"Discovery: instrument is known but s. 6 is not among its recorded provisions (['2.5', '3', '4.1.2', '84A']). Modality: need; exceptions: none",Horizontal,,in_force
+India,"Government of India, Ministry of Communication and Information Technology, National Cyber Security Policy 2013",,,P7-I2,s. 5,NEW,page 2,"The protection of information infrastructure and preservation
+of the confidentiality, integrity and availability of information in cyberspace is the essence of a secure
+cyber space.",This section 5 establishes the purpose of protecting information infrastructure and securing cyberspace. Maps to P7-I2 because it is a purpose clause evidencing a dedicated horizontal cybersecurity framework.,https://www.meity.gov.in/sites/upload_files/dit/files/National%20Cyber%20Security%20Policy%20%281%29.pdf,0.97,"Discovery: instrument is known but s. 5 is not among its recorded provisions (['2.5', '3', '4.1.2', '84A']). Modality: is; exceptions: none",Horizontal,,in_force
+India,Information Technology Act No.21 2000,,,P7-I2,s. 70(1),NEW,page 22,"(1) The appropriate Government may, by notification in the Official Gazette, declare that any 
+computer, computer system or computer network to be a protected system.","This section permits the appropriate Government to designate computer systems and networks as protected systems. Maps to P7-I2 because it evidences a horizontal, non-dedicated cybersecurity framework for protected-system designation.",https://www.meity.gov.in/writereaddata/files/itbill2000.pdf,0.95,"Discovery: instrument is known but s. 70 is not among its recorded provisions (['1', '10', '14', '15', '16', '27', '4.1.2', '65', '69', '69A', '69B', '79', '84A']). Modality: may; exceptions: none",Horizontal,,in_force
+India,International Financial Services Centres Authority (Fund Management) Regulations 2022,,,P7-I2,s. 121(3),NEW,page 51,"(1) A registered FME shall maintain a business continuity plan identifying procedures relating to an 
+emergency or significant business disruption.","This section 121(3) requires registered FMEs to maintain a business continuity plan. Maps to P7-I2 because its legal function evidences a sectoral cyber-resilience framework, not a horizontal cybersecurity law.",https://ifsca.gov.in/Document/Legal/ifsca-fund-management-regulations-2022-as-amended-upto-april-11-202324042023105305.pdf,0.94,Discovery: instrument is known but s. 121 is not among its recorded provisions (['119']). Modality: shall; exceptions: none,Sectoral (fund management),,in_force
+India,SEBI CSCRF 2024,,,P7-I2,s. 3,NEW,page 2,"This 
+framework shall supersede existing 
+SEBI 
+cybersecurity 
+circulars/ 
+guidelines/ advisories/ letters (list of 
+such superseded circulars/ guidelines/ 
+advisories/ letters are given as part of 
+the framework attached as Annexure-
+1).",This section establishes the CSCRF for SEBI-regulated entities and supersedes prior SEBI cyber instruments. Maps to P7-I2 because it is a dedicated sectoral cybersecurity framework for the securities market.,https://www.sebi.gov.in/sebi_data/attachdocs/aug-2024/1724326790365.pdf,0.99,Discovery: instrument not in the master dataset for India. Modality: shall; exceptions: none,Sectoral (securities market),,in_force
+India,SEBI CSCRF 2024,,,P7-I2,s. 20,NEW,page 10,"The detailed framework is enclosed at 
+Annexure-1 of this circular.",This section establishes the detailed cybersecurity framework by incorporation. Maps to P7-I2 because it evidences a sectoral cybersecurity framework (legal function: framework establishment).,https://www.sebi.gov.in/sebi_data/attachdocs/aug-2024/1724326790365.pdf,0.99,Discovery: instrument not in the master dataset for India. Modality: declarative (present passive); exceptions: none,Sectoral (securities market),,in_force
+India,SEBI Cloud Framework 2023,,,P7-I2,s. 4,NEW,page 3,"The REs shall submit a roadmap 
+(including details of major activities, 
+timelines, etc.) for the implementation of 
+the framework.",This section establishes binding cloud-security implementation and reporting duties. Maps to P7-I2 because it evidences a dedicated but sectoral cybersecurity framework performing a compliance and oversight function.,https://www.sebi.gov.in/sebi_data/attachdocs/mar-2023/1678112480131.pdf,0.98,Discovery: instrument not in the master dataset for India. Modality: shall; exceptions: Reporting is made through the existing systems-audit/cybersecurity-audit reporting mechanism.,Sectoral (Securities and capital markets),,in_force
+India,SEBI Cloud Framework 2023,,,P7-I2,s. 3,NEW,page 2,"ननक्षेिािार (डडिॉजज़टरी) 
+of the above, this cloud framework 
+has been drafted to provide baseline 
+standards of security and for the 
+legal and regulatory compliances by 
+the RE.",This section establishes baseline security standards and legal/regulatory compliance requirements for listed SEBI-regulated entities using cloud computing. Maps to P7-I2 because it evidences a dedicated but sectoral cybersecurity framework.,https://www.sebi.gov.in/sebi_data/attachdocs/mar-2023/1678112480131.pdf,0.98,Discovery: instrument not in the master dataset for India. Modality: shall be applicable; exceptions: none,Sectoral (SEBI-regulated securities and capital-market entities),,in_force
 Indonesia,Regulation of Financial Services Authority No.11/POJK.03/2022 on the Implementation of Information Technology by Commercial Banks 2022 ; Bank Indonesia Regulation No. 22/23/PBI/2020 on Payment Systems,,,P7-I2,Art. 21(2),KNOWN,page 14,"(1) 
 Bank wajib menjaga ketahanan siber.",This section requires banks to maintain cyber resilience. Maps to P7-I2 because it establishes a dedicated sectoral cybersecurity framework.,https://peraturan.bpk.go.id/Details/227376/peraturan-ojk-no-11pojk032022-tahun-2022,0.99,Discovery: master dataset already records s. 21 of this law. Modality: wajib (must); exceptions: none,Sectoral (Commercial banking),,in_force
 Indonesia,BSSN Regulation 1/2024 Cyber Incident Management,,,P7-I2,Art. 21(3),NEW,page 12,"(3) 
@@ -3742,7 +3883,7 @@ Thailand,Personal Data Protection Act B.E. 2562 official EN translation,,,P7-I3,
 (a) or (b) or (3), the Data Controller shall record such rejection of objection request together with
 reasons in the record as prescribed in section 39.","This section requires a Data Controller to record an objection rejection and reasons, with no retention period specified. Maps to P7-I3 because it is a mandatory records-retention duty.",https://www.pdpc.or.th/wp-content/uploads/Thailand Personal-Data-Protection-Act-2019.pdf,0.96,"Discovery: instrument is known but s. 32 is not among its recorded provisions (['10', '16', '19', '28', '4.6', '41', '42']). Modality: shall; exceptions: none",Horizontal,,in_force
 India,International Financial Services Centres Authority (Fund Management) Regulations 2022,,,P7-I3,s. 119(4),KNOWN,page 50,"(4) The records under sub-regulation (3) shall be preserved in the retrievable form for a period of five years 
-after the winding up of the scheme.",This section requires preservation of scheme records for five years after winding up. Maps to P7-I3 because it establishes an explicit minimum data-retention period.,https://ifsca.gov.in/Document/Legal/ifsca-fund-management-regulations-2022-as-amended-upto-april-11-202324042023105305.pdf,0.99,Discovery: master dataset already records s. 119 of this law. Modality: shall; exceptions: none,Sectoral (Fund management and financial services),,in_force
+after the winding up of the scheme.",This section requires FMEs to preserve scheme records for five years after winding up. Maps to P7-I3 because it establishes a mandatory records-retention duty with an explicit minimum period.,https://ifsca.gov.in/Document/Legal/ifsca-fund-management-regulations-2022-as-amended-upto-april-11-202324042023105305.pdf,0.99,Discovery: master dataset already records s. 119 of this law. Modality: shall; exceptions: none,Sectoral (Fund management),,in_force
 India,International Financial Services Centres Authority (Fund Management) Regulations 2022,,,P7-I3,s. 119(2),KNOWN,page 50,"(2) Every FME shall maintain and preserve at least the following books of accounts, records and 
 documents, in electronic retrieval form for a minimum of ten years, namely: (a) 
 a copy of the balance 
@@ -3773,7 +3914,17 @@ investment strategies;
 (d) 
 particulars of investors and their contribution; 
 (e) 
-rationale for investments made.","This section requires FMEs to maintain and preserve specified books, records and documents for at least ten years. Maps to P7-I3 because it establishes an explicit minimum data-retention period.",https://ifsca.gov.in/Document/Legal/ifsca-fund-management-regulations-2022-as-amended-upto-april-11-202324042023105305.pdf,0.99,Discovery: master dataset already records s. 119 of this law. Modality: shall; exceptions: none,Sectoral (Fund management),,in_force
+rationale for investments made.","This section 119(2) requires FMEs to maintain and preserve specified books, records and documents for at least ten years. Maps to P7-I3 because it establishes a mandatory data-retention duty with an explicit minimum period.",https://ifsca.gov.in/Document/Legal/ifsca-fund-management-regulations-2022-as-amended-upto-april-11-202324042023105305.pdf,0.99,Discovery: master dataset already records s. 119 of this law. Modality: shall; exceptions: none,Sectoral (fund management),,in_force
+India,Information Technology (Guidelines for Cyber Café) Rules 2011,,,P7-I3,s. 3(6),KNOWN,page 2,"(6) The appropriate Government may authorise service providers or their 
+authorised agents to collect, retain and appropriate such service charges as 
+may be specified by the appropriate Government for the purpose of 
+providing such services from the person availing such services: 
+ 
+Provided that the apportioned service charges shall be clearly indicated 
+on the receipt to be given to the person availing the services.",ESCAP master-known anchor retained after mapper abstention; pending named legal review and deterministic legal-fit gates.,https://www.meity.gov.in/sites/upload_files/dit/files/RNUS_CyberLaw_15411.pdf,0.5,Discovery: master dataset already records s. 3 of this law. Modality: May authorise; exceptions: none,Sectoral (Electronic service delivery),,in_force
+India,Information Technology (Guidelines for Cyber Café) Rules 2011,,,P7-I3,s. 3(3),KNOWN,page 2,"(3) The appropriate Government may determine the manner of encrypting 
+sensitive electronic records requiring confidentiality, while they  are 
+electronically signed.",ESCAP master-known anchor retained after mapper abstention; pending named legal review and deterministic legal-fit gates.,https://www.meity.gov.in/sites/upload_files/dit/files/RNUS_CyberLaw_15411.pdf,0.5,Discovery: master dataset already records s. 3 of this law. Modality: may; exceptions: none,Sectoral (Electronic service delivery),,in_force
 India,International Financial Services Centres Authority (Capital Market Intermediaries) Regulations 2021,,,P7-I3,s. 14(1),KNOWN,page 11,"(1) Every capital market intermediary shall maintain and preserve the following books of accounts, records and 
 documents, in electronic retrieval form for a minimum of ten years, namely: - 
 (a) a copy of the balance sheet at the end of each accounting period; 
@@ -3799,17 +3950,7 @@ of accounts, records and documents, in electronic retrieval form for a minimum o
 forms of the clients; 
 (f) relevant records and documents relating to its activities in capital markets; and  
 (g) such other books of accounts, record and documents as may be specified by the Authority from time to 
-time.","This section 14(1) requires capital market intermediaries to maintain and preserve specified books, records and documents for at least ten years. Maps to P7-I3 because this is an explicit minimum data-retention requirement.",https://ifsca.gov.in/Document/Legal/ifsca-capital-market-intermediaries-regulations-2021-as-amended-up-to-july-3-202320072023040848.pdf,0.99,Discovery: master dataset already records s. 14 of this law. Modality: shall; exceptions: none,Sectoral (Capital market intermediaries),,in_force
-India,Information Technology (Guidelines for Cyber Café) Rules 2011,,,P7-I3,s. 3(3),KNOWN,page 2,"(3) The appropriate Government may determine the manner of encrypting 
-sensitive electronic records requiring confidentiality, while they  are 
-electronically signed.",ESCAP master-known anchor retained after mapper abstention; pending named legal review and deterministic legal-fit gates.,https://www.meity.gov.in/sites/upload_files/dit/files/RNUS_CyberLaw_15411.pdf,0.5,Discovery: master dataset already records s. 3 of this law. Modality: May; exceptions: none,Sectoral (Electronic service delivery),,in_force
-India,Information Technology (Guidelines for Cyber Café) Rules 2011,,,P7-I3,s. 3(6),KNOWN,page 2,"(6) The appropriate Government may authorise service providers or their 
-authorised agents to collect, retain and appropriate such service charges as 
-may be specified by the appropriate Government for the purpose of 
-providing such services from the person availing such services: 
- 
-Provided that the apportioned service charges shall be clearly indicated 
-on the receipt to be given to the person availing the services.",ESCAP master-known anchor retained after mapper abstention; pending named legal review and deterministic legal-fit gates.,https://www.meity.gov.in/sites/upload_files/dit/files/RNUS_CyberLaw_15411.pdf,0.5,Discovery: master dataset already records s. 3 of this law. Modality: May authorise; exceptions: The apportioned service charges must be clearly indicated on the receipt given to the person availing the services.,Sectoral (Electronic service delivery),,in_force
+time.","This section 14(1) requires capital market intermediaries to maintain and preserve specified books, records and documents. Maps to P7-I3 because it establishes an explicit ten-year data-retention requirement.",https://ifsca.gov.in/Document/Legal/ifsca-capital-market-intermediaries-regulations-2021-as-amended-up-to-july-3-202320072023040848.pdf,1.0,Discovery: master dataset already records s. 14 of this law. Modality: shall; exceptions: none,Sectoral (Capital market intermediaries),,in_force
 India,International Financial Services Centres Authority (Capital Market Intermediaries) Regulations 2021,,,P7-I3,s. 14(2),KNOWN,page 11,"12 
  
 (2) In relation to a capital market intermediary not being a body corporate, it shall maintain the following books 
@@ -3822,7 +3963,7 @@ of accounts, records and documents, in electronic retrieval form for a minimum o
 forms of the clients; 
 (f) relevant records and documents relating to its activities in capital markets; and  
 (g) such other books of accounts, record and documents as may be specified by the Authority from time to 
-time.","This section requires non-corporate capital market intermediaries to maintain specified books, records and documents for at least ten years. Maps to P7-I3 because it establishes an explicit minimum retention requirement.",https://ifsca.gov.in/Document/Legal/ifsca-capital-market-intermediaries-regulations-2021-as-amended-up-to-july-3-202320072023040848.pdf,0.99,Discovery: master dataset already records s. 14 of this law. Modality: Must; exceptions: none,Sectoral (Capital market intermediaries),,in_force
+time.",This section requires non-corporate capital market intermediaries to maintain specified records electronically for at least ten years. Maps to P7-I3 because it establishes a mandatory records-retention duty with an explicit minimum period.,https://ifsca.gov.in/Document/Legal/ifsca-capital-market-intermediaries-regulations-2021-as-amended-up-to-july-3-202320072023040848.pdf,0.99,Discovery: master dataset already records s. 14 of this law. Modality: shall; exceptions: none,Sectoral (Capital market intermediaries),,in_force
 India,International Financial Services Centres Authority (Fund Management) Regulations 2022,,,P7-I3,s. 119(1),KNOWN,page 50,"(2) Every FME shall maintain and preserve at least the following books of accounts, records and 
 documents, in electronic retrieval form for a minimum of ten years, namely: (a) 
 a copy of the balance 
@@ -3853,7 +3994,7 @@ investment strategies;
 (d) 
 particulars of investors and their contribution; 
 (e) 
-rationale for investments made.","This section requires FMEs to maintain and preserve specified books, records and documents for at least ten years. Maps to P7-I3 because it establishes an explicit minimum data-retention period.",https://ifsca.gov.in/Document/Legal/ifsca-fund-management-regulations-2022-as-amended-upto-april-11-202324042023105305.pdf,0.99,Discovery: master dataset already records s. 119 of this law. Modality: shall; exceptions: none,Sectoral (Fund management),,in_force
+rationale for investments made.","This section requires FMEs to maintain and preserve specified books, records and documents for at least ten years. Maps to P7-I3 because it imposes a mandatory minimum data-retention period.",https://ifsca.gov.in/Document/Legal/ifsca-fund-management-regulations-2022-as-amended-upto-april-11-202324042023105305.pdf,0.99,Discovery: master dataset already records s. 119 of this law. Modality: shall; exceptions: none,Sectoral (Fund management and financial services),,in_force
 India,International Financial Services Centres Authority (Fund Management) Regulations 2022,,,P7-I3,s. 119(3),KNOWN,page 50,"(2) Every FME shall maintain and preserve at least the following books of accounts, records and 
 documents, in electronic retrieval form for a minimum of ten years, namely: (a) 
 a copy of the balance 
@@ -3884,39 +4025,42 @@ investment strategies;
 (d) 
 particulars of investors and their contribution; 
 (e) 
-rationale for investments made.","This section requires FMEs to maintain and preserve specified books, records and documents for a minimum of ten years. Maps to P7-I3 because it establishes a mandatory records-retention duty with an explicit minimum period.",https://ifsca.gov.in/Document/Legal/ifsca-fund-management-regulations-2022-as-amended-upto-april-11-202324042023105305.pdf,0.99,Discovery: master dataset already records s. 119 of this law. Modality: shall; exceptions: none,Sectoral (fund management),,in_force
+rationale for investments made.","This section requires FMEs to maintain and preserve specified books, records and documents for at least ten years. Maps to P7-I3 because it establishes a minimum data-retention requirement.",https://ifsca.gov.in/Document/Legal/ifsca-fund-management-regulations-2022-as-amended-upto-april-11-202324042023105305.pdf,0.99,Discovery: master dataset already records s. 119 of this law. Modality: shall; exceptions: none,Sectoral (Fund management),,in_force
 India,Information Technology (Guidelines for Cyber Café) Rules 2011,,,P7-I3,s. 3,KNOWN,page 2,"(6) The appropriate Government may authorise service providers or their 
 authorised agents to collect, retain and appropriate such service charges as 
 may be specified by the appropriate Government for the purpose of 
 providing such services from the person availing such services: 
  
 Provided that the apportioned service charges shall be clearly indicated 
-on the receipt to be given to the person availing the services.","This section permits authorised service providers and agents to retain service charges. Maps to P7-I3 because it establishes a retention function, although no minimum retention duration is specified.",https://www.meity.gov.in/sites/upload_files/dit/files/RNUS_CyberLaw_15411.pdf,0.97,Discovery: master dataset already records s. 3 of this law. Modality: may authorise; exceptions: none,Sectoral (Electronic service delivery and cyber cafés),,in_force
-India,Information Technology (Guidelines for Cyber Café) Rules 2011,,,P7-I3,s. 3(1),KNOWN,page 2,"System of Electronic Service Delivery.- 
-(1) The appropriate Government may on its own or through an agency 
-authorised by it, deliver public services through electronically enabled 
-kiosks or any other electronic service delivery mechanism.",ESCAP master-known anchor retained after mapper abstention; pending named legal review and deterministic legal-fit gates.,https://www.meity.gov.in/sites/upload_files/dit/files/RNUS_CyberLaw_15411.pdf,0.5,Discovery: master dataset already records s. 3 of this law. Modality: may authorise; exceptions: none,Sectoral (Electronic service delivery),,in_force
+on the receipt to be given to the person availing the services.","This section permits authorised service providers and agents to retain specified service charges. Maps to P7-I3 because it establishes a retention function, but no minimum retention duration is specified.",https://www.meity.gov.in/sites/upload_files/dit/files/RNUS_CyberLaw_15411.pdf,0.7,Discovery: master dataset already records s. 3 of this law. Modality: may authorise; exceptions: none,Sectoral (Electronic service delivery),,in_force
+India,Information Technology (Guidelines for Cyber Café) Rules 2011,,,P7-I3,s. 3(1),KNOWN,page 2,"(6) The appropriate Government may authorise service providers or their 
+authorised agents to collect, retain and appropriate such service charges as 
+may be specified by the appropriate Government for the purpose of 
+providing such services from the person availing such services: 
+ 
+Provided that the apportioned service charges shall be clearly indicated 
+on the receipt to be given to the person availing the services.","This section permits authorised service providers or agents to retain service charges. Maps to P7-I3 because it establishes a retention-related legal function, but specifies no minimum retention period.",https://www.meity.gov.in/sites/upload_files/dit/files/RNUS_CyberLaw_15411.pdf,0.86,Discovery: master dataset already records s. 3 of this law. Modality: may authorise; exceptions: none,Sectoral (Electronic service delivery),,in_force
 India,Information Technology (Guidelines for Cyber Café) Rules 2011,,,P7-I3,s. 3(2),KNOWN,page 2,"(6) The appropriate Government may authorise service providers or their 
 authorised agents to collect, retain and appropriate such service charges as 
 may be specified by the appropriate Government for the purpose of 
 providing such services from the person availing such services: 
  
 Provided that the apportioned service charges shall be clearly indicated 
-on the receipt to be given to the person availing the services.","This section permits authorised service providers and agents to retain specified service charges. Maps to P7-I3 because it establishes a retention function, but specifies no minimum retention duration.",https://www.meity.gov.in/sites/upload_files/dit/files/RNUS_CyberLaw_15411.pdf,0.76,Discovery: master dataset already records s. 3 of this law. Modality: may authorise; exceptions: none,Sectoral (electronic public-service delivery),,in_force
+on the receipt to be given to the person availing the services.","This section permits authorised service providers and agents to retain specified service charges. Maps to P7-I3 because it establishes retention, but no minimum retention duration is specified.",https://www.meity.gov.in/sites/upload_files/dit/files/RNUS_CyberLaw_15411.pdf,0.76,Discovery: master dataset already records s. 3 of this law. Modality: May authorise; exceptions: none,Sectoral (Electronic service delivery),,in_force
 India,Information Technology (Guidelines for Cyber Café) Rules 2011,,,P7-I3,s. 3(4),KNOWN,page 2,"(6) The appropriate Government may authorise service providers or their 
 authorised agents to collect, retain and appropriate such service charges as 
 may be specified by the appropriate Government for the purpose of 
 providing such services from the person availing such services: 
  
 Provided that the apportioned service charges shall be clearly indicated 
-on the receipt to be given to the person availing the services.","This section permits authorised agents to retain service charges. Maps to P7-I3 because it establishes a retention function, although no minimum retention duration is specified.",https://www.meity.gov.in/sites/upload_files/dit/files/RNUS_CyberLaw_15411.pdf,0.87,Discovery: master dataset already records s. 3 of this law. Modality: may authorise; exceptions: The apportioned service charges must be clearly indicated on the receipt given to the person availing the services.,Sectoral (Electronic service delivery providers and authorised agents),,in_force
+on the receipt to be given to the person availing the services.","This section permits authorised providers to collect, retain and appropriate service charges. Maps to P7-I3 because it establishes a retention function, although it specifies no minimum retention duration.",https://www.meity.gov.in/sites/upload_files/dit/files/RNUS_CyberLaw_15411.pdf,0.88,Discovery: master dataset already records s. 3 of this law. Modality: may authorise; exceptions: none,Sectoral (Electronic service delivery),,in_force
 India,Information Technology (Guidelines for Cyber Café) Rules 2011,,,P7-I3,s. 3(5),KNOWN,page 2,"(6) The appropriate Government may authorise service providers or their 
 authorised agents to collect, retain and appropriate such service charges as 
 may be specified by the appropriate Government for the purpose of 
 providing such services from the person availing such services: 
  
 Provided that the apportioned service charges shall be clearly indicated 
-on the receipt to be given to the person availing the services.","This section permits service providers and authorised agents to retain specified service charges. Maps to P7-I3 because it establishes a retention function, but no minimum retention duration is specified.",https://www.meity.gov.in/sites/upload_files/dit/files/RNUS_CyberLaw_15411.pdf,0.86,Discovery: master dataset already records s. 3 of this law. Modality: may authorise; exceptions: none,Sectoral (Electronic service delivery),,in_force
+on the receipt to be given to the person availing the services.","This section permits service providers and authorised agents to retain specified service charges. Maps to P7-I3 because it establishes a retention function, but no minimum duration is specified.",https://www.meity.gov.in/sites/upload_files/dit/files/RNUS_CyberLaw_15411.pdf,0.88,Discovery: master dataset already records s. 3 of this law. Modality: may authorise; exceptions: none,Sectoral (Electronic public service delivery),,in_force
 India,Information Technology (Guidelines for Cyber Café) Rules 2011,,,P7-I3,s. 3(7),KNOWN,page 2,"(7) The appropriate Government shall by notification specify the scale of 
 service charges which may be charged and collected by the service 
 providers and their authorised agents for various kinds of services.",ESCAP master-known anchor retained after mapper abstention; pending named legal review and deterministic legal-fit gates.,https://www.meity.gov.in/sites/upload_files/dit/files/RNUS_CyberLaw_15411.pdf,0.5,Discovery: master dataset already records s. 3 of this law. Modality: shall; exceptions: none,Sectoral (electronic service delivery),,in_force
@@ -3926,45 +4070,38 @@ may be specified by the appropriate Government for the purpose of
 providing such services from the person availing such services: 
  
 Provided that the apportioned service charges shall be clearly indicated 
-on the receipt to be given to the person availing the services.","This section permits authorised service providers and agents to retain specified service charges. Maps to P7-I3 because it establishes a retention function, but specifies no minimum retention duration.",https://www.meity.gov.in/sites/upload_files/dit/files/RNUS_CyberLaw_15411.pdf,0.78,Discovery: master dataset already records s. 3 of this law. Modality: may authorise; exceptions: none,Sectoral (Electronic service delivery),,in_force
+on the receipt to be given to the person availing the services.","This section permits the Government to authorize service providers to collect, retain and appropriate specified service charges. Maps to P7-I3 because it establishes a retention function, but states no minimum retention duration.",https://www.meity.gov.in/sites/upload_files/dit/files/RNUS_CyberLaw_15411.pdf,0.72,Discovery: master dataset already records s. 3 of this law. Modality: may authorise; exceptions: none,Sectoral (Electronic service delivery),,in_force
+India,Aadhaar Act 2016,,,P7-I3,s. 23(2),NEW,page 12,"(e) performing authentication of Aadhaar numbers; 
+(f) maintaining and updating the information of individuals in the Central Identities Data 
+Repository in such manner as may be specified by regulations; 
+(g) omitting and deactivating of an Aadhaar number and information relating thereto in such 
+manner as may be specified by regulations; 
+(h) specifying the manner of use of Aadhaar numbers for the purposes of providing or availing of 
+various subsidies, benefits, services and other purposes for which Aadhaar numbers may be used; 
+                                                          
+1.","This section establishes the Authority's function of maintaining and updating individuals' information. Maps to P7-I3 because it creates a data-retention/maintenance duty, but specifies no minimum retention period.",https://www.indiacode.nic.in/handle/123456789/21583,0.86,Discovery: instrument is known but s. 23 is not among its recorded provisions (none recorded). Modality: Function includes; exceptions: none,Sectoral (Digital identity management),,in_force
 India,Companies (Accounts) Rules 2014 (as amended 2022),,,P7-I3,s. 3(5),NEW,page 1,"(5) There shall be a proper system for storage, retrieval, display or printout of the electronic records as the Audit 
 Committee, if any, or the Board may deem appropriate and such records shall not be disposed of or rendered unusable, 
 unless permitted by law: 
 Provided that the back-up  of the books of account  and other books and papers of the company maintained in electronic 
-mode, including at a place outside India, if any, shall be kept in servers physically located in India on a periodic basis.","This s. 3(5) requires companies to retain electronic records and not dispose of or render them unusable. Maps to P7-I3 because it establishes a mandatory retention duty, although no minimum duration is specified.","https://thc.nic.in/Central%20Governmental%20Rules/Companies%20(Accounts)%20Rules,%202014..pdf",0.99,Discovery: instrument not in the master dataset for India. Modality: Shall not (mandatory); exceptions: Unless permitted by law,Sectoral (Companies and accounting),,in_force
+mode, including at a place outside India, if any, shall be kept in servers physically located in India on a periodic basis.","This section requires companies to preserve electronic records by prohibiting disposal or unusability unless permitted by law. Maps to P7-I3 because it is an operative retention duty, though no minimum period is specified (score 0).","https://thc.nic.in/Central%20Governmental%20Rules/Companies%20(Accounts)%20Rules,%202014..pdf",0.98,Discovery: instrument not in the master dataset for India. Modality: Mandatory; shall not; exceptions: Disposal or rendering unusable is permitted by law,Sectoral (Companies),,in_force
 India,Companies (Accounts) Rules 2014 (as amended 2022),,,P7-I3,s. 3(2),NEW,page 1,"(2) The books of account and other relevant books and papers referred to in sub-rule (1) shall be retained completely in 
 the format in which they were originally generated, sent or received, or in a format which  shall  present accurately the 
 information generated, sent or received and the information contained in the electronic records shall remain complete 
-and unaltered.","This section 3(2) requires companies to retain electronic books and papers completely and accurately in their original or accurate format. Maps to P7-I3 because it establishes a mandatory retention duty, although no minimum period is specified.","https://thc.nic.in/Central%20Governmental%20Rules/Companies%20(Accounts)%20Rules,%202014..pdf",0.99,Discovery: instrument not in the master dataset for India. Modality: shall; exceptions: none,Sectoral (Companies and corporate accounting),,in_force
-India,Companies (Management and Administration) Rules 2014,,,P7-I3,s. 15(2),NEW,page 12,"(1) 
-The register of members along with the index shall be preserved 
-permanently and shall be kept in the custody of the company 
-secretary of the company or any other person authorized by the 
-Board for such purpose;  and 
- 
- 
- 
- 
-(2) 
-The register of debenture holders or any other security holders 
-along with the index shall be preserved for a period of eight 
-years from the date of redemption of debentures or securities, as 
-the case may be, and shall be kept in the custody of the 
-company secretary of the company or any other person 
-authorized by the Board for such purpose.",This section requires companies to preserve specified security-holder registers for eight years. Maps to P7-I3 because it establishes a mandatory records-retention function with an explicit minimum period.,"https://thc.nic.in/Central%20Governmental%20Rules/Companies%20(Management%20and%20Administration)%20Rules,2014.pdf",0.99,Discovery: instrument is known but s. 15 is not among its recorded provisions (['92']). Modality: shall; exceptions: none,Sectoral (Companies),,in_force
+and unaltered.","This section 3(2) requires companies to retain electronic books and papers. Maps to P7-I3 because it establishes a mandatory retention duty, although no minimum duration is specified.","https://thc.nic.in/Central%20Governmental%20Rules/Companies%20(Accounts)%20Rules,%202014..pdf",0.99,Discovery: instrument not in the master dataset for India. Modality: Mandatory (shall); exceptions: none,Sectoral (Companies and corporate accounting),,in_force
 India,Companies (Management and Administration) Rules 2014,,,P7-I3,s. 27(2),NEW,page 32,"(1) Every listed company or a company having not less than one thousand 
 shareholders, debenture holders and other security holders, shall maintain 
 its  records, as required to be maintained under the Act or rules made there 
-under, in electronic form.","This section requires designated companies to maintain records in electronic form. Maps to P7-I3 because it creates an operative records-maintenance duty, but specifies no minimum retention period.","https://thc.nic.in/Central%20Governmental%20Rules/Companies%20(Management%20and%20Administration)%20Rules,2014.pdf",0.98,Discovery: instrument is known but s. 27 is not among its recorded provisions (['92']). Modality: shall; exceptions: none,Sectoral (Companies),,in_force
+under, in electronic form.","This section requires listed companies and companies with at least 1,000 security holders to maintain required records electronically. Maps to P7-I3 because it establishes a mandatory records-maintenance duty, but no minimum retention period is specified (score 0).","https://thc.nic.in/Central%20Governmental%20Rules/Companies%20(Management%20and%20Administration)%20Rules,2014.pdf",0.98,Discovery: instrument is known but s. 27 is not among its recorded provisions (['92']). Modality: shall; exceptions: none,Sectoral (Companies),,in_force
 India,Companies (Management and Administration) Rules 2014,,,P7-I3,s. 27(1),NEW,page 32,"(1) Every listed company or a company having not less than one thousand 
 shareholders, debenture holders and other security holders, shall maintain 
 its  records, as required to be maintained under the Act or rules made there 
-under, in electronic form.","This s. 27(1) requires listed companies and companies with at least 1,000 security holders to maintain records electronically. Maps to P7-I3 because it establishes a mandatory records-retention duty, but specifies no minimum period.","https://thc.nic.in/Central%20Governmental%20Rules/Companies%20(Management%20and%20Administration)%20Rules,2014.pdf",0.98,Discovery: instrument is known but s. 27 is not among its recorded provisions (['92']). Modality: shall; exceptions: none,Sectoral (Companies and corporate sector),,in_force
+under, in electronic form.","This s. 27(1) requires designated companies to maintain specified records in electronic form. Maps to P7-I3 because it establishes a mandatory records-retention duty, but specifies no minimum period.","https://thc.nic.in/Central%20Governmental%20Rules/Companies%20(Management%20and%20Administration)%20Rules,2014.pdf",0.97,Discovery: instrument is known but s. 27 is not among its recorded provisions (['92']). Modality: shall; exceptions: none,Sectoral (Companies),,in_force
 India,Companies Act No.18 2013,,,P7-I3,s. 125(8),NEW,page 77,"(8) The authority shall administer the Fund and maintain separate accounts and other relevant records 
 in relation to the Fund in such form as may be prescribed after consultation with the Comptroller and 
-Auditor-General of India.","This section requires the authority to maintain relevant Fund records. Maps to P7-I3 because it establishes a mandatory records-retention duty, although no minimum duration is specified (score 0).",https://www.mca.gov.in/Ministry/pdf/CompaniesAct2013.pdf,0.99,"Discovery: instrument is known but s. 125 is not among its recorded provisions (['128', '149', '2']). Modality: shall; exceptions: none",Sectoral (Companies),,in_force
+Auditor-General of India.","This section requires the authority to maintain separate accounts and relevant Fund records. Maps to P7-I3 because it imposes a mandatory records-retention duty, although no minimum retention duration is specified (score 0).",https://www.mca.gov.in/Ministry/pdf/CompaniesAct2013.pdf,0.99,"Discovery: instrument is known but s. 125 is not among its recorded provisions (['128', '149', '2']). Modality: shall; exceptions: none",Sectoral (Companies),,in_force
 India,Prevention of Money-laundering Act 2002,,,P7-I3,s. 11(5),NEW,page 13,"(3) The records referred to in clause (a) of sub-section (1) shall be maintained for a period of five 
-years from the date of transaction between a client and the reporting entity.",This section requires reporting entities to maintain transaction records for five years. Maps to P7-I3 because it establishes an explicit minimum data-retention period as a records-retention duty.,https://www.indiacode.nic.in/handle/123456789/2036,0.99,Discovery: instrument is known but s. 11 is not among its recorded provisions (['10']). Modality: shall; exceptions: The Central Government may exempt any reporting entity or class of reporting entities from obligations under the Chapter,"Sectoral (Banking companies, financial institutions and intermediaries)",,in_force
+years from the date of transaction between a client and the reporting entity.",This section 12 requires reporting entities to maintain transaction records for five years. Maps to P7-I3 because it establishes a mandatory minimum data-retention period.,https://www.indiacode.nic.in/handle/123456789/2036,0.98,"Discovery: instrument is known but s. 11 is not among its recorded provisions (['10']). Modality: must; exceptions: The Central Government may, by notification, exempt any reporting entity or class of reporting entities from obligations under the Chapter.","Sectoral (banking companies, financial institutions and intermediaries)",,in_force
 Indonesia,Law No. 27 of 2022 on Personal Data Protection,,,P7-I3,n/a,KNOWN,n/a,NO_EVIDENCE_FOUND_PENDING_REVIEW,"No qualifying provision found for P7-I3 after a full-corpus sweep. The configured governing law is cited as the reference basis (score-0 pattern, A3).",https://jdih.komdigi.go.id/produk_hukum/view/id/832/t/undangundang%2Bnomor%2B27%2Btahun%2B2022,0.6,Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required before this becomes a score-0 final row (P3.5 A3).,Horizontal,,in_force
 Thailand,Personal Data Protection Act B.E. 2562 official EN translation,,,P7-I4,s. 41,KNOWN,page 18,"Section 41 The Data Controller and the Data Processor shall designate a
 data protection officer in the following circumstances:
@@ -4023,7 +4160,99 @@ announced by the Committee;
 (2) the Data Controller which engages in the profession or business of
 collecting, using, or disclosing Personal Data, that does not have the nature pursuant to section
 26, and does not have a large amount of Personal Data as prescribed by the Committee in section 41 (2).","This section 38(1) establishes a conditional DPO exemption. Maps to P7-I4 because the carve-outs define a sector-specific DPO designation requirement, a DPO accountability function.",https://www.pdpc.or.th/wp-content/uploads/Thailand Personal-Data-Protection-Act-2019.pdf,0.93,"Discovery: instrument is known but s. 38 is not among its recorded provisions (['10', '16', '19', '28', '4.6', '41', '42']). Modality: shall not; exceptions: If a section 5 paragraph two Data Controller has a Data Processor, section 37(5) and the exemption apply to that Data Processor mutatis mutandis.",Sectoral (Data controllers outside specified public authorities and businesses lacking section 26 data processing and large-scale personal data),,in_force
-India,Information Technology Act 2000 (Act 21 of 2000),,,P7-I4,n/a,KNOWN,n/a,NO_EVIDENCE_FOUND_PENDING_REVIEW,"No qualifying provision found for P7-I4 after a full-corpus sweep. The configured governing law is cited as the reference basis (score-0 pattern, A3).",https://www.indiacode.nic.in/handle/123456789/1999,0.6,Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required before this becomes a score-0 final row (P3.5 A3).,Horizontal,,in_force
+India,Digital Personal Data Protection Act 2023,,,P7-I4,s. 10(2),KNOWN,page 12,"(2) The Significant Data Fiduciary shall—  
+(a) appoint a Data Protection Officer who shall— 
+ (i) represent the Significant Data Fiduciary under the provisions of this Act; 
+ (ii) be based in India;  
+(iii) be an individual responsible to the Board of Directors or similar governing body of the 
+Significant Data Fiduciary; and  
+(iv) be the point of contact for the grievance redressal mechanism under the provisions of this 
+Act;  
+(b) appoint an independent data auditor to carry out data audit, who shall evaluate the compliance 
+of the Significant Data Fiduciary in accordance with the provisions of this Act; and  
+(c) undertake the following other measures, namely:—  
+(i) periodic Data Protection Impact Assessment, which shall be a process comprising a 
+description of the rights of Data Principals and the purpose of processing of their personal data, 
+assessment and management of the risk to the rights of the Data Principals, and such other matters 
+regarding such process as may be prescribed; 
+ (ii) periodic audit; and 
+ (iii) such other measures, consistent with the provisions of this Act, as may be prescribed.",This section requires Significant Data Fiduciaries to appoint a DPO and undertake periodic DPIAs. Maps to P7-I4 because it establishes sector-specific accountability mechanisms.,https://www.indiacode.nic.in/handle/123456789/22037,0.99,Discovery: master dataset already records s. 10 of this law. Modality: shall (mandatory); exceptions: none,Sectoral (Significant Data Fiduciaries),,in_force
+India,Digital Personal Data Protection Act No. 22 2023,,,P7-I4,s. 10(2),KNOWN,page 8,"(2) The Significant Data Fiduciary shall—
+(a) appoint a Data Protection Officer who shall—
+(i) represent the Significant Data Fiduciary under the provisions of this
+Act;
+(ii) be based in India;
+(iii) be an individual responsible to the Board of Directors or similar
+governing body of the Significant Data Fiduciary; and
+(iv) be the point of contact for the grievance redressal mechanism under
+the provisions of this Act;
+(b) appoint an independent data auditor to carry out data audit, who shall
+evaluate the compliance of the Significant Data Fiduciary in accordance with the
+provisions of this Act; and
+(c) undertake the following other measures, namely:—
+(i) periodic Data Protection Impact Assessment, which shall be a process
+comprising a description of the rights of Data Principals and the purpose of
+processing of their personal data, assessment and management of the risk to
+the rights of the Data Principals, and such other matters regarding such process
+as may be prescribed;
+(ii) periodic audit; and
+(iii) such other measures, consistent with the provisions of this Act, as
+may be prescribed.",This section requires Significant Data Fiduciaries to appoint a DPO and undertake periodic DPIAs. Maps to P7-I4 because these are sector-specific accountability mechanisms.,https://www.meity.gov.in/writereaddata/files/Digital%20Personal%20Data%20Protection%20Act%202023.pdf,0.99,Discovery: master dataset already records s. 10 of this law. Modality: shall; exceptions: none,Sectoral (Significant Data Fiduciaries),,in_force
+India,Digital Personal Data Protection Act 2023,,,P7-I4,s. 10(1),KNOWN,page 12,"(2) The Significant Data Fiduciary shall—  
+(a) appoint a Data Protection Officer who shall— 
+ (i) represent the Significant Data Fiduciary under the provisions of this Act; 
+ (ii) be based in India;  
+(iii) be an individual responsible to the Board of Directors or similar governing body of the 
+Significant Data Fiduciary; and  
+(iv) be the point of contact for the grievance redressal mechanism under the provisions of this 
+Act;  
+(b) appoint an independent data auditor to carry out data audit, who shall evaluate the compliance 
+of the Significant Data Fiduciary in accordance with the provisions of this Act; and  
+(c) undertake the following other measures, namely:—  
+(i) periodic Data Protection Impact Assessment, which shall be a process comprising a 
+description of the rights of Data Principals and the purpose of processing of their personal data, 
+assessment and management of the risk to the rights of the Data Principals, and such other matters 
+regarding such process as may be prescribed; 
+ (ii) periodic audit; and 
+ (iii) such other measures, consistent with the provisions of this Act, as may be prescribed.","This section 10(2) requires Significant Data Fiduciaries to appoint a DPO and conduct periodic DPIAs. Maps to P7-I4 because it establishes accountability mechanisms for a designated class, not all sectors.",https://www.indiacode.nic.in/handle/123456789/22037,0.99,Discovery: master dataset already records s. 10 of this law. Modality: shall; exceptions: none,Sectoral (Significant Data Fiduciaries),,in_force
+India,Digital Personal Data Protection Act No. 22 2023,,,P7-I4,s. 10(1),KNOWN,page 8,"(2) The Significant Data Fiduciary shall—
+(a) appoint a Data Protection Officer who shall—
+(i) represent the Significant Data Fiduciary under the provisions of this
+Act;
+(ii) be based in India;
+(iii) be an individual responsible to the Board of Directors or similar
+governing body of the Significant Data Fiduciary; and
+(iv) be the point of contact for the grievance redressal mechanism under
+the provisions of this Act;
+(b) appoint an independent data auditor to carry out data audit, who shall
+evaluate the compliance of the Significant Data Fiduciary in accordance with the
+provisions of this Act; and
+(c) undertake the following other measures, namely:—
+(i) periodic Data Protection Impact Assessment, which shall be a process
+comprising a description of the rights of Data Principals and the purpose of
+processing of their personal data, assessment and management of the risk to
+the rights of the Data Principals, and such other matters regarding such process
+as may be prescribed;
+(ii) periodic audit; and
+(iii) such other measures, consistent with the provisions of this Act, as
+may be prescribed.",This section requires Significant Data Fiduciaries to appoint a Data Protection Officer. Maps to P7-I4 because it establishes a sector-specific accountability mechanism.,https://www.meity.gov.in/writereaddata/files/Digital%20Personal%20Data%20Protection%20Act%202023.pdf,0.99,Discovery: master dataset already records s. 10 of this law. Modality: shall; exceptions: none,Sectoral (Significant Data Fiduciaries),,in_force
+India,Digital Personal Data Protection Act 2023,,,P7-I4,s. 10,KNOWN,page 12,"(2) The Significant Data Fiduciary shall—  
+(a) appoint a Data Protection Officer who shall— 
+ (i) represent the Significant Data Fiduciary under the provisions of this Act; 
+ (ii) be based in India;  
+(iii) be an individual responsible to the Board of Directors or similar governing body of the 
+Significant Data Fiduciary; and  
+(iv) be the point of contact for the grievance redressal mechanism under the provisions of this 
+Act;  
+(b) appoint an independent data auditor to carry out data audit, who shall evaluate the compliance 
+of the Significant Data Fiduciary in accordance with the provisions of this Act; and  
+(c) undertake the following other measures, namely:—  
+(i) periodic Data Protection Impact Assessment, which shall be a process comprising a 
+description of the rights of Data Principals and the purpose of processing of their personal data, 
+assessment and management of the risk to the rights of the Data Principals, and such other matters 
+regarding such process as may be prescribed; 
+ (ii) periodic audit; and 
+ (iii) such other measures, consistent with the provisions of this Act, as may be prescribed.",This section requires Significant Data Fiduciaries to appoint a DPO and undertake periodic DPIAs. Maps to P7-I4 because it establishes sector-specific accountability mechanisms.,https://www.indiacode.nic.in/handle/123456789/22037,0.99,Discovery: master dataset already records s. 10 of this law. Modality: shall; exceptions: none,Sectoral (Significant Data Fiduciaries),,in_force
 Indonesia,Law No. 27 of 2022 on Personal Data Protection (official BPK full PDF),,,P7-I4,Art. 34(2),KNOWN,page 15,"Pasal 34
 (1) Pengendali Data Pribadi wajib melakukan penilaian
 dampak Pelindungan Data Pribadi dalam hal
@@ -4129,10 +4358,7 @@ premises of the Data Controller, or any person involved in the offense under thi
 the interval between sunrise and sunset or during the business hours of such premises, to
 investigate and collect facts, seize, or attach documents, evidence, or any other items related to the
 offense, or which has a cause to believe that they are used to commit such offense.","This section 76(2) establishes court-gated entry, investigation, collection, and seizure of documents or evidence. Maps to P7-I5 because it governs government access through an independent competent-court order.",https://www.pdpc.or.th/wp-content/uploads/Thailand Personal-Data-Protection-Act-2019.pdf,0.99,"Discovery: instrument is known but s. 76 is not among its recorded provisions (['10', '16', '19', '28', '4.6', '41', '42']). Modality: shall; exceptions: none",Horizontal,,in_force
-India,Bharatiya Nagarik Suraksha Sanhita 2023,,,P7-I5,s. 174(3),NEW,page 68,"(3) Any police officer receiving such order may exercise the same powers in respect of the investigation 
-(except the power to arrest without warrant) as an officer in charge of a police station may exercise in a 
-cognizable case.","This section establishes judicially gated criminal-investigation authority for police. Maps to P7-I5 because investigative powers may be exercised only after an order of a Magistrate, an independent judicial safeguard, rather than through warrantless access.",https://www.indiacode.nic.in/handle/123456789/21920?locale=en,0.93,Discovery: instrument not in the master dataset for India. Modality: May; exceptions: The power to arrest without warrant is excluded.,Sectoral (Police and criminal investigations),,in_force
-India,Bharatiya Nagarik Suraksha Sanhita 2023,,,P7-I5,s. 96(2),NEW,page 42,"When search-warrant may be issued.—(1) Where— 
+India,Bharatiya Nagarik Suraksha Sanhita 2023,,,P7-I5,s. 96(3),NEW,page 42,"When search-warrant may be issued.—(1) Where— 
 (a) any Court has reason to believe that a person to whom a summons order under section 94 or a 
 requisition under sub-section (1) of section 95 has been, or might be, addressed, will not or would not 
 produce the document or thing as required by such summons or requisition; or 
@@ -4140,16 +4366,13 @@ produce the document or thing as required by such summons or requisition; or
 (c) the Court considers that the purposes of any inquiry, trial or other proceeding under this Sanhita will 
 be served by a general search or inspection,  
 it may issue a search-warrant; and the person to whom such warrant is directed, may search or inspect in 
-accordance therewith and the provisions hereinafter contained.","This section permits a Court to issue a search warrant and permits its directed execution to search or inspect. Maps to P7-I5 because it establishes government access only through a Court-issued warrant, providing an independent judicial safeguard.",https://www.indiacode.nic.in/handle/123456789/21920?locale=en,0.99,"Discovery: instrument not in the master dataset for India. Modality: May; exceptions: If the warrant specifies a particular place or part, execution may extend only to that specified place or part.; Only a District Magistrate or Chief Judicial Magistrate may grant a warrant to search for a document, parcel, or other thing in postal-authority custody.",Sectoral (Criminal justice and law enforcement),,in_force
-India,Companies Act No.18 2013,,,P7-I5,s. 206(5),NEW,page 128,"(5) Without prejudice to the foregoing provisions of this section, the Central Government may, if it is 
-satisfied that the circumstances so warrant, direct inspection of books and papers of a company by an 
-inspector appointed by it for the purpose.",This section permits the Central Government to direct inspection of a company's books and papers by an appointed inspector. Maps to P7-I5 because it establishes executive government access to company-held data without independent judicial authorization.,https://www.mca.gov.in/Ministry/pdf/CompaniesAct2013.pdf,0.96,"Discovery: instrument is known but s. 206 is not among its recorded provisions (['128', '149', '2']). Modality: may; exceptions: none",Sectoral (Companies),,in_force
-India,Information Technology (Guidelines for Cyber Café) Rules 2011,,,P7-I5,s. 6(4),NEW,page 4,"(4) The appropriate Government may also determine the manner of 
-provisioning secure access to the repository of digitally signed electronic 
-records.",This section permits the appropriate Government to determine how secure access is provided to a repository. Maps to P7-I5 because it establishes a warrantless government access-governance power without independent judicial authorization.,https://www.meity.gov.in/sites/upload_files/dit/files/RNUS_CyberLaw_15411.pdf,0.78,Discovery: instrument is known but s. 6 is not among its recorded provisions (['3']). Modality: may; exceptions: none,Sectoral (Cyber cafés),,in_force
-India,Information Technology Act No.21 2000,,,P7-I5,s. 70(2),NEW,page 22,"(2) The appropriate Government may, by order in writing, authorise the persons who are 
-authorised to access protected systems notified under sub-section (1).",This section 70(2) permits the appropriate Government to authorise access to protected systems. Maps to P7-I5 because it establishes executive access without independent judicial authorization.,https://www.meity.gov.in/writereaddata/files/itbill2000.pdf,0.98,"Discovery: instrument is known but s. 70 is not among its recorded provisions (['1', '10', '14', '15', '16', '27', '4.1.2', '65', '69', '69A', '69B', '79', '84A']). Modality: may; exceptions: none",Sectoral (Information technology),,in_force
-India,Prevention of Money-laundering Act 2002,,,P7-I5,s. 18(6),NEW,page 18,"(6) Before making the search under sub-section (1) or sub-section (5), the authority shall call upon 
-two or more persons to attend and witness the search, and the search shall be made in the presence of such 
-persons.","This section requires witnessed searches under the Act. Maps to P7-I5 because it materially governs government access through a warrantless search; witnesses are not independent judicial authorization, although s.18(5) permits a Magistrate-directed search.",https://www.indiacode.nic.in/handle/123456789/2036,0.98,Discovery: instrument is known but s. 18 is not among its recorded provisions (['10']). Modality: shall; exceptions: Sub-section (5) applies where a person requests production before a Gazetted Officer or Magistrate and the officer or Magistrate directs that the search be made.,Sectoral (Anti-money-laundering enforcement),,in_force
+accordance therewith and the provisions hereinafter contained.","This section permits a Court to issue a search-warrant for documents or things. Maps to P7-I5 because it establishes a government-access power subject to independent judicial authorization; it supports score 0, not warrantless-access score 1.",https://www.indiacode.nic.in/handle/123456789/21920?locale=en,0.99,"Discovery: instrument not in the master dataset for India. Modality: may; exceptions: Only a District Magistrate or Chief Judicial Magistrate may grant a warrant to search for a document, parcel, or other thing in postal-authority custody.",Sectoral (Criminal justice and law enforcement),,in_force
+India,Bharatiya Nagarik Suraksha Sanhita 2023,,,P7-I5,s. 186(2),NEW,page 73,"(1) might result in evidence of the 
+commission of an offence being concealed or destroyed, it shall be lawful for an officer in charge of a police 
+station or a police officer making any investigation under this Chapter to search, or cause to be searched, 
+any place in the limits of another police station in accordance with the provisions of section 185, as if such 
+place were within the limits of his own police station.","This section permits police cross-jurisdiction searches where delay risks concealment or destruction of evidence, subject to section 185. Maps to P7-I5 because it establishes warrantless law-enforcement access that can obtain personal data; Magistrate notice is post-search, not prior authorization.",https://www.indiacode.nic.in/handle/123456789/21920?locale=en,0.96,Discovery: instrument not in the master dataset for India. Modality: shall be lawful; exceptions: none,Sectoral (Law enforcement),,in_force
+India,Prevention of Money-laundering Act 2002,,,P7-I5,s. 18(5),NEW,page 18,"(5) The Gazetted Officer or the Magistrate before whom any such person is brought shall, if he sees 
+no reasonable ground for search, forthwith discharge such person but otherwise shall direct that search be 
+made.","This s. 18(5) permits a search to be directed by a Gazetted Officer or Magistrate. Maps to P7-I5 because the Gazetted Officer route is non-judicial authorization, although the Magistrate route is a judicial safeguard.",https://www.indiacode.nic.in/handle/123456789/2036,0.98,"Discovery: instrument is known but s. 18 is not among its recorded provisions (['10']). Modality: shall; exceptions: If there is no reasonable ground for search, the person must be forthwith discharged",Sectoral (Anti-money-laundering and financial crime),,in_force
 Indonesia,Law No. 27 of 2022 on Personal Data Protection,,,P7-I5,n/a,KNOWN,n/a,NO_EVIDENCE_FOUND_PENDING_REVIEW,"No qualifying provision found for P7-I5 after a full-corpus sweep. The configured governing law is cited as the reference basis (score-0 pattern, A3).",https://jdih.komdigi.go.id/produk_hukum/view/id/832/t/undangundang%2Bnomor%2B27%2Btahun%2B2022,0.6,Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required before this becomes a score-0 final row (P3.5 A3).,Horizontal,,in_force
