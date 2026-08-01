@@ -2388,5 +2388,32 @@
   "economy": "Thailand",
   "pillar": 7,
   "elapsed_seconds": 621.8
+ },
+ {
+  "run_id": "run-th-p6-1785593492",
+  "at": "2026-08-01T14:15:10.005767+00:00",
+  "models": {
+   "openai/gpt-5.6-luna": {
+    "input_tokens": 113559,
+    "cached_input_tokens": 0,
+    "output_tokens": 37909,
+    "calls": 55,
+    "usd": 0.0341,
+    "priced": true
+   },
+   "openai/gpt-5.6-terra": {
+    "input_tokens": 30987,
+    "cached_input_tokens": 0,
+    "output_tokens": 7991,
+    "calls": 15,
+    "usd": 0.0789,
+    "priced": true
+   }
+  },
+  "total_usd": 0.113,
+  "note": "measured from real API usage objects; prices per 1M tokens (PRICES)",
+  "economy": "Thailand",
+  "pillar": 6,
+  "elapsed_seconds": 217.6
  }
 ]

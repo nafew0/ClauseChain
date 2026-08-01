@@ -365,7 +365,8 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
             if cfg.get("regulatory") is not False
             for query in build_query_pack(indicator_id, cfg)
         ])
-    known = KnownIndex()
+    known_index_path = pack.get("known_index") or "data/known_index.json"
+    known = KnownIndex(known_index_path)
     from packages.ingest.expected_anchors import load_expected_anchors
 
     expected_anchor_ledger = load_expected_anchors()
@@ -832,7 +833,7 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
             "corpus_provisions": len(corpus),
             "corpus_fingerprint": corpus_fingerprint(corpus),
             "known_index_sha256": __import__("hashlib").sha256(
-                Path("data/known_index.json").read_bytes()).hexdigest(),
+                Path(known_index_path).read_bytes()).hexdigest(),
             "expected_anchor_ledger_sha256": __import__("hashlib").sha256(
                 Path("configs/expected_anchors.json").read_bytes()).hexdigest(),
             "pipeline_stats": stats,
