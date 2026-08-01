@@ -99,6 +99,15 @@ governing_instruments:
   P7-I2:   { law: "Presidential Regulation No. 47 of 2023 on National Cybersecurity Strategy", url: "https://peraturan.bpk.go.id/Details/255542/perpres-no-47-tahun-2023" }
 
 status_assertions:
+  "POJK 8/2023 AML-CFT-CPF Program Implementation":
+    status: in_force
+    fact_url: "https://peraturan.bpk.go.id/Details/272022/peraturan-ojk-no-8-tahun-2023"
+    fact_text: "BPK official record LN.2023/117; replaces POJK 12/POJK.01/2017 AML regime; in force 2023."
+  "UU 4/2021 ASEAN E-Commerce ratification":
+    status: in_force
+    fact_url: "https://jdih.kemendag.go.id/peraturan/undang-undang-nomor-4-tahun-2021-tentang-pengesahan-asean-agreement-on-electronic-commerce-persetujuan-asean-tentang-perdagangan-melalui-sistem-elektronik"
+    fact_text: "Ratification law promulgated 6 Oct 2021 (MoT JDIH official record)."
+
   "Regulation of the Minister of Communication and Informatics of the Republic of Indonesia No.20 on Protection of Personal Data 2016":
     status: in_force
     fact_url: "https://jdih.komdigi.go.id"

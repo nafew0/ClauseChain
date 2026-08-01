@@ -96,6 +96,15 @@ governing_instruments:
   P7-I2:   { law: "Cyber Security Maintenance Act B.E. 2562 (2019)", url: "https://www.ncsa.or.th" }
 
 status_assertions:
+  "Notification of the National Cyber Security Committee":
+    status: in_force
+    fact_url: "https://www.ncsa.or.th"
+    fact_text: "NCSA publishes the NCSC standards notifications (issued under the Cybersecurity Act B.E. 2562) as the operative subordinate framework; ESCAP Round-2 government-verified gold cites them as current 7.2 evidence."
+  "NCSC Notification: CII organisations duties":
+    status: in_force
+    fact_url: "https://www.ncsa.or.th"
+    fact_text: "NCSC subordinate notification under the Cybersecurity Act B.E. 2562; distributed via NCSA official drive."
+
   "Criminal Procedure Code (consolidated)":
     status: in_force
     fact_url: "https://ratchakitcha.soc.go.th/documents/1100264.pdf"

@@ -21,13 +21,20 @@ def _schema_instruction(schema: type[BaseModel]) -> str:
     )
 
 
+OPENAI_BASE_URL = "https://api.openai.com/v1"
+
+
 class OpenAIChatProvider:
-    def __init__(self, model: str, api_key_env: str = "OPENAI_API_KEY", timeout: float = 90.0) -> None:
+    def __init__(self, model: str, api_key_env: str = "OPENAI_API_KEY", timeout: float = 90.0,
+                 base_url: str = OPENAI_BASE_URL) -> None:
         self.model = model
         self.api_key_env = api_key_env
         self.timeout = timeout
+        self.base_url = base_url.rstrip("/")
         self.last_usage: dict | None = None
-        self._batch_available: bool | None = None
+        # The Files/Batches endpoints are OpenAI-proper only; any compatible
+        # gateway (OpenRouter etc.) goes through the live chat path.
+        self._batch_available: bool | None = None if self.base_url == OPENAI_BASE_URL else False
 
     RETRY_BACKOFFS_S = (5.0, 20.0)   # transient 429/5xx/network retries before giving up
 
@@ -46,10 +53,10 @@ class OpenAIChatProvider:
                     "response_format": {"type": "json_object"},
                     "temperature": 0,
                 }
-                if prompt_cache_key:
+                if prompt_cache_key and self.base_url == OPENAI_BASE_URL:
                     body["prompt_cache_key"] = prompt_cache_key
                 response = httpx.post(
-                    "https://api.openai.com/v1/chat/completions",
+                    f"{self.base_url}/chat/completions",
                     headers={"Authorization": f"Bearer {api_key}"},
                     json=body,
                     timeout=self.timeout,
@@ -329,6 +336,9 @@ def build_llm(spec: str):
         raise ValueError(f"Model spec {spec!r} must look like 'provider:model'")
     if provider == "openai":
         return OpenAIChatProvider(model)
+    if provider == "openrouter":
+        return OpenAIChatProvider(model, api_key_env="OPENROUTER_API_KEY",
+                                  base_url="https://openrouter.ai/api/v1")
     if provider in {"google", "gemini"}:
         return GeminiChatProvider(model)
     if provider == "ollama":

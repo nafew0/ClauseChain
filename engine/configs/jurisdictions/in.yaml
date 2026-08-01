@@ -111,6 +111,111 @@ governing_instruments:
   P7-I1:   { law: "Digital Personal Data Protection Act 2023 (Act 22 of 2023) — phased commencement", url: "https://www.indiacode.nic.in/handle/123456789/22037" }
 
 status_assertions:
+  "Information Technology Act 2000":
+    status: in_force
+    fact_url: "https://www.indiacode.nic.in/handle/123456789/1999"
+    fact_text: "India Code lists the IT Act 2000 (Act 21 of 2000) as in force, as amended."
+  "Companies Act 2013":
+    status: in_force
+    fact_url: "https://www.indiacode.nic.in/handle/123456789/2114"
+    fact_text: "India Code lists the Companies Act 2013 (Act 18 of 2013) as in force."
+  "National Data Sharing and Accessibility Policy 2012":
+    status: in_force
+    fact_url: "https://dst.gov.in"
+    fact_text: "Operative policy instrument; ESCAP Round-2 government-verified gold cites it (6.1 row)."
+  "National Cyber Security Policy 2013":
+    status: in_force
+    fact_url: "https://www.meity.gov.in"
+    fact_text: "Operative policy instrument; gold 7.2 row."
+  "Insurance Regulatory and Development Authority of India (Maintenance of Insurance Records) Regulations 2015":
+    status: in_force
+    fact_url: "https://irdai.gov.in/consolidated-gazette-notified-regulations"
+    fact_text: "IRDAI consolidated register. CAVEAT: reported repealed by the 2025 Regulations reg.18(i)(c) — verify before final citation; treated as operative for corpus text."
+  "Reserve Bank of India (Know Your Customer (KYC)) Directions 2016":
+    status: in_force
+    fact_url: "https://www.rbi.org.in/Scripts/BS_ViewMasDirections.aspx?id=10292"
+    fact_text: "RBI Master Direction, updated from time to time."
+  "Reserve Bank of India Master Direction on Issuance and Operation of Prepaid Payment Instruments":
+    status: in_force
+    fact_url: "https://www.rbi.org.in/Scripts/BS_ViewMasDirections.aspx"
+    fact_text: "RBI Master Direction register."
+  "Master Direction on Information Technology Governance, Risk, Controls and Assurance Practices 2023":
+    status: in_force
+    fact_url: "https://www.rbi.org.in/Scripts/BS_ViewMasDirections.aspx?id=12562"
+    fact_text: "RBI/2023-24; effective 1 Apr 2024."
+  "Reserve Bank of India Directive 2018":
+    status: in_force
+    fact_url: "https://www.rbi.org.in/Scripts/NotificationUser.aspx?Id=11244"
+    fact_text: "DPSS.CO.OD No.2785/06.08.005/2017-18 (6 Apr 2018) payment-data storage; cross-referred as live by the 2025 PA Directions."
+  "Information Technology (Intermediary Guidelines and Digital Media Ethics Code) Rules 2021":
+    status: in_force
+    fact_url: "https://www.meity.gov.in/content/information-technology-intermediary-guidelines-and-digital-media-ethics-code-rules-2021"
+    fact_text: "MeitY register; as amended 2022/2023."
+  "Information Technology (Guidelines for Cyber Café) Rules 2011":
+    status: in_force
+    fact_url: "https://www.meity.gov.in"
+    fact_text: "Made under IT Act s.87; not repealed as of cutoff."
+  "Securities and Exchange Board of India (Listing Obligations and Disclosure Requirements) Regulations 2015":
+    status: in_force
+    fact_url: "https://www.sebi.gov.in/legal/regulations"
+    fact_text: "SEBI regulations register, as amended."
+  "Prevention of Money-laundering (Maintenance of Records of the Nature and Value of Transactions, the Procedure and Manner) Rules":
+    status: in_force
+    fact_url: "https://fiuindia.gov.in"
+    fact_text: "PML Rules 2005 under PMLA; operative AML record-keeping regime."
+  "International Financial Services Centres Authority (Market Infrastructure Institutions) Regulations 2021":
+    status: in_force
+    fact_url: "https://ifsca.gov.in/Legal"
+    fact_text: "IFSCA legal register."
+  "International Financial Services Centres Authority (Capital Market Intermediaries) Regulations 2021":
+    status: in_force
+    fact_url: "https://ifsca.gov.in/Legal"
+    fact_text: "IFSCA legal register."
+  "International Financial Services Centres Authority (Fund Management) Regulations 2022":
+    status: in_force
+    fact_url: "https://ifsca.gov.in/Legal"
+    fact_text: "IFSCA legal register."
+  "International Financial Services Centres Authority Banking Handbook Conduct of Business Directions 2023":
+    status: in_force
+    fact_url: "https://ifsca.gov.in/Legal"
+    fact_text: "IFSCA banking handbook directions."
+  "International Financial Services Centres Authority (Maintenance of Insurance Records and Submission of Requisite Information) Regulations":
+    status: in_force
+    fact_url: "https://ifsca.gov.in/Legal"
+    fact_text: "IFSCA insurance records regulations."
+  "International Financial Services Centres Authority (Anti Money Laundering, Counter Terrorist-Financing and Know Your Customer) Guidelines 2022":
+    status: in_force
+    fact_url: "https://ifsca.gov.in/Legal"
+    fact_text: "IFSCA AML/CFT/KYC guidelines 2022."
+  "License Agreement for Provision of Internet Services 2013":
+    status: in_force
+    fact_url: "https://dot.gov.in/licensing"
+    fact_text: "DoT ISP license agreement regime; legacy licenses run until expiry/migration under the 2026 Migration Rules."
+  "License Agreement for Provision of Unified License":
+    status: in_force
+    fact_url: "https://dot.gov.in/unified-license"
+    fact_text: "DoT UL agreement; legacy population persists during 2026 authorisation migration."
+  "Telecommunications (Terms and Conditions for Migration) Rules 2026":
+    status: in_force
+    fact_url: "https://egazette.gov.in/WriteReadData/2026/273763.pdf"
+    fact_text: "Official Gazette CG-DL-E-23062026-273763; in force on publication."
+  "Comprehensive Cyber Security Framework for Primary (Urban) Cooperative Banks (UCBs) 2019":
+    status: in_force
+    fact_url: "https://www.rbi.org.in"
+    fact_text: "RBI graded-approach framework for UCBs."
+  "Insurance Regulatory and Development Authority of India (Outsourcing of Activities by Indian Insurers) Regulations":
+    status: in_force
+    fact_url: "https://irdai.gov.in/consolidated-gazette-notified-regulations"
+    fact_text: "IRDAI register."
+  "Ministry of Electronics and Information Technology Cyber Security Direction 2022":
+    status: in_force
+    fact_url: "https://www.cert-in.org.in/PDF/CERT-In_Directions_70B_28.04.2022.pdf"
+    fact_text: "CERT-In Directions No. 20(3)/2022 under IT Act s.70B(6); effective 27 Jun 2022."
+  "Guidelines for Government Departments MeitY":
+    status: in_force
+    fact_url: "https://www.meity.gov.in"
+    fact_text: "MeitY guidelines [GOV-ONLY] — recorded, scope-excluded at scoring."
+
   "Digital Personal Data Protection Act 2023":
     status: not_yet_effective  # substantive duties 13 May 2027; Board machinery live — kept out of current-law evidence
     fact_url: "https://www.meity.gov.in/documents/act-and-policies/digital-personal-data-protection-rules-2025-gDOxUjMtQWa"
