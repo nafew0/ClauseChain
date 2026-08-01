@@ -63,6 +63,9 @@ open_verification:   # deep-research §5/§7 ranked items — UNVERIFIED, do not
 #   - Migration Rules 2026 = CG-DL-E-23062026-273763, 8pp: archived.
 #   - All four gazettes carry an OFFICIAL ENGLISH section — the Devanagari-only concern
 #     applies to the dot.gov.in Network-Rules upload, not to the eGazette copies.
+# OCR routing (hybrid decision, 1 Aug): gazette pages are Hindi+English bilingual —
+# vision-first for scanned docs; most English sources are native-text (no OCR at all).
+ocr: { provider: hybrid_script, route: vision-first, language_hints: [hi, en], expect_script: devanagari }
 known_index: data/known_index_round2.json
 seeds: data/seeds_r2.json
 rdtii_bindings: { pillars: [6, 7] }

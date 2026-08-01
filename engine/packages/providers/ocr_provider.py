@@ -453,12 +453,75 @@ class GoogleVisionOCR:
                 for page_no, image in _rasterize(file_path)]
 
 
+def _script_chars(text: str, script: str) -> int:
+    ranges = {"thai": ("฀", "๿"), "devanagari": ("ऀ", "ॿ")}
+    lo, hi = ranges.get(script, ("", ""))
+    return sum(1 for ch in text if lo <= ch <= hi) if lo else 0
+
+
+class HybridScriptOCR:
+    """Cost-first routing: free self-hosted Paddle for Latin-script pages,
+    Google Vision only where Paddle cannot read (non-Latin scripts) or where
+    its output fails the confidence/script sanity checks.
+
+    route="vision-first": pages go straight to Vision (no double spend — used
+    for Thai/Devanagari documents where Paddle is known-blind).
+    route="paddle-first": Paddle runs first; a page escalates to Vision when
+    confidence < conf_floor, the text is empty, or an expected script is
+    absent. Every escalation is recorded in page metadata — never silent.
+    """
+
+    def __init__(self, paddle, vision, route: str = "paddle-first",
+                 expect_script: str | None = None, conf_floor: float = 0.85):
+        self._paddle, self._vision = paddle, vision
+        self._route = route
+        self._expect = expect_script
+        self._floor = conf_floor
+
+    def ocr_image(self, image_bytes: bytes, page_number: int = 1,
+                  document_id: str = "image") -> ExtractedPage:
+        if self._route == "vision-first":
+            page = self._vision.ocr_image(image_bytes, page_number, document_id)
+            page.metadata["ocr_route"] = "vision-first"
+            return page
+        try:
+            page = self._paddle.ocr_image(image_bytes, page_number, document_id)
+            reason = None
+            if not page.text.strip():
+                reason = "empty paddle output"
+            elif page.confidence is not None and page.confidence < self._floor:
+                reason = f"paddle confidence {page.confidence:.2f} < {self._floor}"
+            elif self._expect and _script_chars(page.text, self._expect) == 0:
+                reason = f"expected {self._expect} script absent from paddle output"
+        except (httpx.HTTPError, OSError) as error:
+            page, reason = None, f"paddle unavailable: {type(error).__name__}"
+        if reason is None:
+            page.metadata["ocr_route"] = "paddle-first"
+            return page
+        escalated = self._vision.ocr_image(image_bytes, page_number, document_id)
+        escalated.metadata.update(ocr_route="paddle-first",
+                                  ocr_escalated_from="remote_paddle",
+                                  ocr_escalation_reason=reason)
+        return escalated
+
+    def extract(self, file_path: str) -> list[ExtractedPage]:
+        return [self.ocr_image(image, page_no, file_path)
+                for page_no, image in _rasterize(file_path)]
+
+
 def build_ocr(config: dict | None):
     """Factory keyed on the profile's ocr.provider (models.yaml) — the config-only swap."""
     config = config or {}
     provider = str(config.get("provider", "local")).strip().lower()
     if provider in {"tesseract", "local_tesseract"}:
         return TesseractOCR()
+    if provider in {"hybrid_script", "hybrid"}:
+        paddle = build_ocr({**config, "provider": "remote_paddle"})
+        vision = build_ocr({**config, "provider": "google_vision"})
+        return HybridScriptOCR(paddle, vision,
+                               route=str(config.get("route", "paddle-first")),
+                               expect_script=config.get("expect_script"),
+                               conf_floor=float(config.get("conf_floor", 0.85)))
     if provider in {"google_vision", "gvision"}:
         hints = config.get("language_hints") or os.getenv("GOOGLE_VISION_LANG_HINTS", "")
         if isinstance(hints, str):

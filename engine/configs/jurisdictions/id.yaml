@@ -52,6 +52,9 @@ open_verification:   # deep-research §5 — UNVERIFIED items
   - "BSSN Regs 1/2024 + 2/2024 article pinpoints (BPK metadata verified; PDFs unextractable)"
   - "Indonesia-Korea CEPA / Indonesia-Japan EPA / Indonesia-UAE CEPA digital chapters — NOT INSPECTED (potential extra 6.5 evidence)"
   - "US-Indonesia Agreement on Reciprocal Trade: signed Feb 2026, entry into force NOT verified (Art. 7.5 notification exchange unevidenced)"
+# OCR routing (hybrid decision, 1 Aug): Bahasa is Latin script — free self-hosted
+# Paddle first, Vision only on low-confidence/empty escalation (recorded in metadata).
+ocr: { provider: hybrid_script, route: paddle-first, language_hints: [id], conf_floor: 0.85 }
 known_index: data/known_index_round2.json
 seeds: data/seeds_r2.json
 rdtii_bindings: { pillars: [6, 7] }

@@ -53,6 +53,9 @@ open_verification:   # from deep-research §5 — treat these as UNVERIFIED unti
   - "BOT FPG 8/2557 in-force status (FIPCS status filter is a JS postback form)"
   - "MDES traffic-retention notification B.E. 2564 text (all fetch routes failed; 90-day floor rests on gazette cite)"
   - "SEC (ก.ล.ต.) rules + Cloud-First/GDCC policy — NOT RESEARCHED, not a negative"
+# OCR routing (hybrid decision, 1 Aug): Paddle is blind to Thai — pages go straight
+# to Vision (no double spend). Language hints from this pack.
+ocr: { provider: hybrid_script, route: vision-first, language_hints: [th], expect_script: thai }
 known_index: data/known_index_round2.json
 seeds: data/seeds_r2.json
 rdtii_bindings: { pillars: [6, 7] }
