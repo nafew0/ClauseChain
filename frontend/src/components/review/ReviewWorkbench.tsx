@@ -130,20 +130,26 @@ function selectedValues(value: string | null) {
   return value?.split(',').map((item) => item.trim()).filter(Boolean) ?? []
 }
 
-function StageStrip({ item }: { item: ReviewItem }) {
+function StageStrip({ item, selected, available, onSelect }: {
+  item: ReviewItem
+  selected: ReviewStage
+  available: ReviewStage[]
+  onSelect: (stage: ReviewStage) => void
+}) {
   const stages = item.review_state?.stages ?? {}
   return (
-    <div className="review-stage-strip" aria-label="Review stages">
+    <div className="review-stage-strip" aria-label="Select review stage" role="tablist">
       {(['citation', 'mapping', 'status'] as ReviewStage[]).map((stage) => {
         const current = stages[stage]
+        const enabled = available.includes(stage)
         return (
-          <div className={cn('review-stage', current && 'is-complete')} key={stage}>
+          <button type="button" role="tab" aria-selected={selected === stage} disabled={!enabled} onClick={() => onSelect(stage)} className={cn('review-stage', current && 'is-complete', selected === stage && 'is-selected')} key={stage}>
             {current ? <CheckCircle2 size={15} /> : <CircleDashed size={15} />}
             <span>
               <strong>{stage}</strong>
               <small>{current ? `${current.reviewer_name} · ${new Date(current.reviewed_at).toLocaleDateString()}${current.carried_forward ? ' · retained from unchanged evidence' : ''}` : 'Awaiting reviewer'}</small>
             </span>
-          </div>
+          </button>
         )
       })}
     </div>
@@ -446,10 +452,15 @@ export function DecisionPanel({ queue, item, record, context, approvalEligibilit
 
   return (
     <div className="review-decision-panel">
-      <div className="review-decision-heading"><div><span className="review-eyebrow">Your authority</span><h3>Record review stage</h3></div><span>{user?.full_name ?? user?.email ?? 'Authenticated reviewer'}</span></div>
-      <StageStrip item={item} />
-      {availableStages.length ? <div className="review-stage-tabs" role="tablist">{availableStages.map((value) => <button role="tab" aria-selected={effectiveStage === value} className={cn(effectiveStage === value && 'selected')} onClick={() => setStage(value)} key={value}>{value}</button>)}</div> : <div className="review-warning"><ShieldAlert size={17} />You do not have a review role for this evidence.</div>}
-      {!technicallyEligible ? <div className="review-block"><ShieldAlert size={17} /><span>{eligibility?.reason ?? 'Technical evidence is incomplete.'}</span></div> : null}
+      <div className="review-decision-heading">
+        <div><span className="review-eyebrow">Your authority</span><h3>Record review stage</h3></div>
+        <div className="review-decision-heading-meta">
+          <span>{user?.full_name ?? user?.email ?? 'Authenticated reviewer'}</span>
+          {!technicallyEligible ? <details className="review-gate-alert"><summary aria-label="Show evidence gate alert" title="Evidence gate alert"><ShieldAlert size={17} /></summary><div role="status"><strong>Approval blocked</strong><span>{eligibility?.reason ?? 'Technical evidence is incomplete.'}</span></div></details> : null}
+        </div>
+      </div>
+      <StageStrip item={item} selected={effectiveStage} available={availableStages} onSelect={setStage} />
+      {!availableStages.length ? <div className="review-warning"><ShieldAlert size={17} />You do not have a review role for this evidence.</div> : null}
       <textarea id="review-note" value={note} onChange={(event) => setNote(event.target.value)} placeholder="Required for rejection or correction; optional for approval…" />
       <div className="review-decision-actions">
         <button className="review-primary" disabled={disabled || !technicallyEligible || !availableStages.includes(effectiveStage)} onClick={() => void submitFinding('approved')}><Check size={17} /> Approve {effectiveStage}</button>
