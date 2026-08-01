@@ -43,6 +43,57 @@ export interface WorkspaceSummary {
   progress: Record<WorkspaceQueue, ReviewProgress>
   reviewer_roles: string[]
   runs?: RunRecord[]
+  registry: {
+    total: number
+    current: number
+    not_reproduced: number
+    retired: number
+    approved: number
+    rejected: number
+    decision_unrecorded: number
+    blocked: number
+    change_set: null | {
+      id: string
+      state: 'draft' | 'published'
+      scope: { economy: string; indicator_id: string }[]
+      counts: Record<'unchanged' | 'revised' | 'new' | 'not_reproduced', number>
+      attention: ReviewProgress
+      created_at: string
+      published_at: string | null
+    }
+  }
+}
+
+export interface EvidenceRegistryChange {
+  id: string
+  kind: 'unchanged' | 'revised' | 'new' | 'not_reproduced'
+  invalidated_stages: ReviewStage[]
+  identity: {
+    id: string
+    identity_hash: string
+    economy: string
+    indicator_id: string
+    law_name: string
+    citation: string
+    finding_type: string
+  }
+  previous_finding_key: string | null
+  current_finding_key: string | null
+  review_queue: FindingQueue | null
+  review_state: FindingReviewState | null
+  latest_decision: null | {
+    id: string
+    verdict: 'retain' | 'retire' | 'investigate'
+    comment: string
+    reviewer_name: string
+    created_at: string
+  }
+}
+
+export interface EvidenceChangeSetResponse {
+  snapshot: SnapshotIdentity
+  change_set: NonNullable<WorkspaceSummary['registry']['change_set']>
+  results: EvidenceRegistryChange[]
 }
 
 export interface SnapshotArtifactMeta {
@@ -145,6 +196,9 @@ export interface FindingStageState {
   reviewer_name: string
   reviewer_user_id: string
   reviewed_at: string
+  carried_forward?: boolean
+  carried_from_finding_key?: string
+  carried_from_revision_id?: string
 }
 
 export interface FindingReviewState {
@@ -192,6 +246,11 @@ export interface ReviewItem {
   latest_correction?: LatestCorrection | null
   latest_decision?: DomainDecision | null
   approval_eligibility?: { eligible: boolean; reason: string }
+  registry_change?: {
+    kind: 'unchanged' | 'revised' | 'new' | 'not_reproduced'
+    invalidated_stages: ReviewStage[]
+    identity_hash: string
+  } | null
 }
 
 export interface PaginatedResponse<T> {
@@ -300,6 +359,10 @@ export interface SourceMatchDetail {
     source_artifact_id: string | null
   }
   review_state: FindingReviewState
+  review_queue: FindingQueue
+  stable_key: string
+  approval_eligibility: { eligible: boolean; reason: string }
+  latest_correction: LatestCorrection | null
   navigation: {
     position: number
     total: number

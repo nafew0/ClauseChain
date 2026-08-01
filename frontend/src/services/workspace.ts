@@ -19,6 +19,7 @@ import type {
   DecisionHistory,
   DecisionWriteResponse,
   EvidenceDetail,
+  EvidenceChangeSetResponse,
   EvidenceParams,
   EvidenceRow,
   EngineAction,
@@ -68,6 +69,25 @@ export async function getReviewContext(
 export async function getSummary(): Promise<WorkspaceSummary> {
   if (WORKSPACE_FIXTURE_MODE) return (await loadWorkspaceFixture()).summary
   const { data } = await api.get<WorkspaceSummary>('/workspace/summary/')
+  return data
+}
+
+export async function getEvidenceChanges(params: { kind?: string; economy?: string } = {}): Promise<EvidenceChangeSetResponse> {
+  const { data } = await api.get<EvidenceChangeSetResponse>('/workspace/registry/changes/', { params: queryParams(params) })
+  return data
+}
+
+export async function decideEvidenceChange(changeId: string, payload: {
+  verdict: 'retain' | 'retire' | 'investigate'
+  comment: string
+  expected_latest_decision_id: string | null
+}) {
+  const { data } = await api.post(`/workspace/registry/changes/${changeId}/decision/`, payload)
+  return data
+}
+
+export async function publishEvidenceChanges() {
+  const { data } = await api.post('/workspace/registry/publish/', {})
   return data
 }
 

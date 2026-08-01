@@ -6,11 +6,13 @@ import axios from 'axios'
 import { useToast } from '@/hooks/useToast'
 import {
   decideFinding,
+  decideEvidenceChange,
   decideFindingsBulk,
   decideRecall,
   decideZone3,
   getDecisionHistory,
   getEvidence,
+  getEvidenceChanges,
   getEvidenceRow,
   getProofAsset,
   getReviewQueue,
@@ -21,6 +23,7 @@ import {
   launchEngineAction,
   getSourceMatch,
   getSummary,
+  publishEvidenceChanges,
   getOpsStats,
   getWorkspaceConfig,
   getLedger,
@@ -43,6 +46,7 @@ import type {
 export const workspaceKeys = {
   all: ['workspace'] as const,
   summary: () => [...workspaceKeys.all, 'summary'] as const,
+  changes: (params: { kind?: string; economy?: string }) => [...workspaceKeys.all, 'changes', params] as const,
   ops: () => [...workspaceKeys.all, 'ops'] as const,
   config: () => [...workspaceKeys.all, 'config'] as const,
   ledger: (page: number) => [...workspaceKeys.all, 'ledger', page] as const,
@@ -82,6 +86,35 @@ export function useReviewContext(
 
 export function useSummary() {
   return useQuery({ queryKey: workspaceKeys.summary(), queryFn: getSummary })
+}
+
+export function useEvidenceChanges(params: { kind?: string; economy?: string } = {}) {
+  return useQuery({ queryKey: workspaceKeys.changes(params), queryFn: () => getEvidenceChanges(params) })
+}
+
+export function useEvidenceChangeDecision() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ changeId, verdict, comment, expectedLatestDecisionId }: {
+      changeId: string
+      verdict: 'retain' | 'retire' | 'investigate'
+      comment: string
+      expectedLatestDecisionId: string | null
+    }) => decideEvidenceChange(changeId, {
+      verdict,
+      comment,
+      expected_latest_decision_id: expectedLatestDecisionId,
+    }),
+    onSuccess: async () => queryClient.invalidateQueries({ queryKey: workspaceKeys.all }),
+  })
+}
+
+export function usePublishEvidenceChanges() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: publishEvidenceChanges,
+    onSuccess: async () => queryClient.invalidateQueries({ queryKey: workspaceKeys.all }),
+  })
 }
 
 export function useOpsStats() { return useQuery({ queryKey: workspaceKeys.ops(), queryFn: getOpsStats }) }
@@ -265,14 +298,14 @@ export function useDecide() {
 
       if (isFindingResponse(response) && response.outcome === 'stage_recorded') {
         title = 'Review stage recorded'
-        description = 'Awaiting the required second reviewer; no final decision was exported to the engine.'
+        description = 'Remaining required stages are pending; no final decision was exported to the engine.'
       } else if (
         request.domain === 'findings-bulk' &&
         'outcome' in response &&
         response.outcome === 'stage_recorded'
       ) {
         title = 'Review stages recorded'
-        description = 'Awaiting the required second reviewer; no final decisions were exported to the engine.'
+        description = 'Remaining required stages are pending; no final decisions were exported to the engine.'
       } else if (request.domain === 'correction') {
         title = 'Correction requested'
         description = 'The prior finding approval is blocked until corrected evidence is reviewed again.'

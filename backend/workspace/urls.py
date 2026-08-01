@@ -3,6 +3,9 @@ from django.urls import path
 from .views import (
     CorrectionRequestView,
     EvidenceDetailView,
+    EvidenceChangeDecisionView,
+    EvidenceChangeSetPublishView,
+    EvidenceChangeSetView,
     EvidenceListView,
     EngineActionsView,
     EngineRefreshView,
@@ -35,6 +38,17 @@ app_name = "workspace"
 
 urlpatterns = [
     path("summary/", SummaryView.as_view(), name="summary"),
+    path("registry/changes/", EvidenceChangeSetView.as_view(), name="evidence_changes"),
+    path(
+        "registry/changes/<uuid:change_id>/decision/",
+        EvidenceChangeDecisionView.as_view(),
+        name="evidence_change_decision",
+    ),
+    path(
+        "registry/publish/",
+        EvidenceChangeSetPublishView.as_view(),
+        name="evidence_registry_publish",
+    ),
     path("ops-stats/", OpsStatsView.as_view(), name="ops_stats"),
     path("config/", WorkspaceConfigView.as_view(), name="config"),
     path("ledger/", LedgerView.as_view(), name="ledger"),

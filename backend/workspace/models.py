@@ -149,6 +149,199 @@ class EvidenceRow(models.Model):
         indexes = [models.Index(fields=["snapshot", "finding_key"])]
 
 
+class EvidenceIdentity(models.Model):
+    """Stable legal identity shared by every immutable extraction revision."""
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    identity_hash = models.CharField(max_length=64, unique=True)
+    economy = models.CharField(max_length=120)
+    indicator_id = models.CharField(max_length=64)
+    instrument_key = models.CharField(max_length=500)
+    law_name = models.CharField(max_length=500)
+    citation_key = models.CharField(max_length=300)
+    finding_type = models.CharField(max_length=32, default="provision")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["economy", "indicator_id", "law_name", "citation_key"]
+        indexes = [
+            models.Index(fields=["economy", "indicator_id"]),
+            models.Index(fields=["instrument_key", "citation_key"]),
+        ]
+
+
+class EvidenceRevision(ImmutableAuditModel):
+    """Immutable application-owned interpretation of one engine evidence row."""
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    identity = models.ForeignKey(
+        EvidenceIdentity, on_delete=models.PROTECT, related_name="revisions"
+    )
+    snapshot = models.ForeignKey(
+        EngineSnapshot, on_delete=models.PROTECT, related_name="evidence_revisions"
+    )
+    finding_key = models.CharField(max_length=64)
+    review_subject_hash = models.CharField(max_length=64)
+    revision_hash = models.CharField(max_length=64)
+    citation_hash = models.CharField(max_length=64)
+    mapping_hash = models.CharField(max_length=64)
+    status_hash = models.CharField(max_length=64)
+    coverage_hash = models.CharField(max_length=64, blank=True, default="")
+    row_json = models.JSONField()
+    proof_asset = models.CharField(max_length=500, blank=True, default="")
+    blocked = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["created_at"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["identity", "snapshot"],
+                name="workspace_identity_snapshot_revision_uniq",
+            ),
+            models.UniqueConstraint(
+                fields=["snapshot", "finding_key"],
+                name="workspace_revision_snapshot_finding_uniq",
+            ),
+        ]
+        indexes = [
+            models.Index(fields=["identity", "-created_at"]),
+            models.Index(fields=["finding_key", "review_subject_hash"]),
+        ]
+
+
+class EvidenceRegistryEntry(models.Model):
+    """Mutable projection pointing at the latest revision; history stays immutable."""
+
+    class State(models.TextChoices):
+        CURRENT = "current", "Current"
+        NOT_REPRODUCED = "not_reproduced", "Not reproduced"
+        RETIRED = "retired", "Retired"
+
+    identity = models.OneToOneField(
+        EvidenceIdentity,
+        on_delete=models.PROTECT,
+        primary_key=True,
+        related_name="registry_entry",
+    )
+    active_revision = models.ForeignKey(
+        EvidenceRevision, on_delete=models.PROTECT, related_name="active_for"
+    )
+    state = models.CharField(max_length=24, choices=State.choices, default=State.CURRENT)
+    last_seen_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["identity__economy", "identity__indicator_id"]
+
+
+class EvidenceChangeSet(models.Model):
+    """The reconciliation result produced whenever engine artifacts are imported."""
+
+    class State(models.TextChoices):
+        DRAFT = "draft", "Draft"
+        PUBLISHED = "published", "Published"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    snapshot = models.OneToOneField(
+        EngineSnapshot, on_delete=models.PROTECT, related_name="evidence_change_set"
+    )
+    previous_snapshot = models.ForeignKey(
+        EngineSnapshot,
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="successor_change_sets",
+    )
+    scope_json = models.JSONField(default=list)
+    counts_json = models.JSONField(default=dict)
+    state = models.CharField(max_length=16, choices=State.choices, default=State.DRAFT)
+    published_at = models.DateTimeField(null=True, blank=True)
+    published_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="published_evidence_change_sets",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+
+class EvidenceChange(models.Model):
+    class Kind(models.TextChoices):
+        UNCHANGED = "unchanged", "Unchanged"
+        REVISED = "revised", "Revised"
+        NEW = "new", "New"
+        NOT_REPRODUCED = "not_reproduced", "Not reproduced"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    change_set = models.ForeignKey(
+        EvidenceChangeSet, on_delete=models.PROTECT, related_name="changes"
+    )
+    identity = models.ForeignKey(
+        EvidenceIdentity, on_delete=models.PROTECT, related_name="changes"
+    )
+    previous_revision = models.ForeignKey(
+        EvidenceRevision,
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="outgoing_changes",
+    )
+    current_revision = models.ForeignKey(
+        EvidenceRevision,
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="incoming_changes",
+    )
+    kind = models.CharField(max_length=24, choices=Kind.choices)
+    invalidated_stages_json = models.JSONField(default=list)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["identity__economy", "identity__indicator_id"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["change_set", "identity"],
+                name="workspace_change_set_identity_uniq",
+            )
+        ]
+
+
+class EvidenceChangeDecision(ImmutableAuditModel):
+    class Verdict(models.TextChoices):
+        ACCEPT = "accept", "Accept candidate revision"
+        RETAIN = "retain", "Retain current revision"
+        RETIRE = "retire", "Retire missing evidence"
+        INVESTIGATE = "investigate", "Needs investigation"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    change = models.ForeignKey(
+        EvidenceChange, on_delete=models.PROTECT, related_name="decisions"
+    )
+    verdict = models.CharField(max_length=24, choices=Verdict.choices)
+    comment = models.TextField()
+    reviewer_name = models.CharField(max_length=255)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="+"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    supersedes = models.ForeignKey(
+        "self",
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="superseded_by",
+    )
+
+    class Meta:
+        ordering = ["created_at"]
+        indexes = [models.Index(fields=["change", "-created_at"])]
+
+
 class RunRecord(models.Model):
     snapshot = models.ForeignKey(
         EngineSnapshot, on_delete=models.CASCADE, related_name="run_records"
@@ -273,6 +466,7 @@ class Zone3Decision(SupersedingDecision):
 class CorrectionRequest(ImmutableAuditModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     finding_key = models.CharField(max_length=64)
+    review_subject_hash = models.CharField(max_length=64, blank=True, default="")
     queue = models.CharField(max_length=16)
     explanation = models.TextField()
     requested_by = models.ForeignKey(
@@ -372,3 +566,6 @@ class EngineAction(models.Model):
     class Meta:
         ordering = ["-requested_at"]
         indexes = [models.Index(fields=["status", "requested_at"])]
+    class State(models.TextChoices):
+        DRAFT = "draft", "Draft"
+        PUBLISHED = "published", "Published"

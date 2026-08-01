@@ -96,6 +96,112 @@ governing_instruments:
   P7-I2:   { law: "Cyber Security Maintenance Act B.E. 2562 (2019)", url: "https://www.ncsa.or.th" }
 
 status_assertions:
+  "PDPC Notification: Selection of the Chairperson and Honorary Directors":
+    status: in_force
+    fact_url: "https://www.pdpc.or.th"
+    fact_text: "Official PDPC register PDF (user browser download; Cloudflare-gated to bots)."
+  "PDPC Notification: CRIT1":
+    status: in_force
+    fact_url: "https://www.pdpc.or.th"
+    fact_text: "Official PDPC register PDF (user browser download; Cloudflare-gated to bots)."
+  "PDPC Notification: Data Controllers and Data Processors with Capacities of Public Authorities":
+    status: in_force
+    fact_url: "https://www.pdpc.or.th"
+    fact_text: "Official PDPC register PDF (user browser download; Cloudflare-gated to bots)."
+  "PDPC Notification: Designation of the Data Protection Officer pursuant to Section 41 2":
+    status: in_force
+    fact_url: "https://www.pdpc.or.th"
+    fact_text: "Official PDPC register PDF (user browser download; Cloudflare-gated to bots)."
+  "PDPC Notification: Security Standards for Personal Data of the Data Controller who is Exempted":
+    status: in_force
+    fact_url: "https://www.pdpc.or.th"
+    fact_text: "Official PDPC register PDF (user browser download; Cloudflare-gated to bots)."
+  "PDPC Notification: Appropriate Measures to Safeguard the Rights and Freedoms of the Data Subjects":
+    status: in_force
+    fact_url: "https://www.pdpc.or.th"
+    fact_text: "Official PDPC register PDF (user browser download; Cloudflare-gated to bots)."
+  "PDPC Notification: Sent or Transferred to a Foreign Country Section 28":
+    status: in_force
+    fact_url: "https://www.pdpc.or.th"
+    fact_text: "Official PDPC register PDF (user browser download; Cloudflare-gated to bots)."
+  "PDPC Notification: Sent or Transferred to a Foreign Country Section 29":
+    status: in_force
+    fact_url: "https://www.pdpc.or.th"
+    fact_text: "Official PDPC register PDF (user browser download; Cloudflare-gated to bots)."
+  "PDPC Notification: Purposes Pertinent to Research or Statistics":
+    status: in_force
+    fact_url: "https://www.pdpc.or.th"
+    fact_text: "Official PDPC register PDF (user browser download; Cloudflare-gated to bots)."
+  "PDPC Notification: Collecting Personal Data Pertaining to Criminal Records":
+    status: in_force
+    fact_url: "https://www.pdpc.or.th"
+    fact_text: "Official PDPC register PDF (user browser download; Cloudflare-gated to bots)."
+  "PDPC Notification: Order Imposing an Administrative Fine No 2":
+    status: in_force
+    fact_url: "https://www.pdpc.or.th"
+    fact_text: "Official PDPC register PDF (user browser download; Cloudflare-gated to bots)."
+  "PDPC Notification: Criteria for Rendering an Order Imposing an Administrative Fine":
+    status: in_force
+    fact_url: "https://www.pdpc.or.th"
+    fact_text: "Official PDPC register PDF (user browser download; Cloudflare-gated to bots)."
+  "PDPC Notification: Rendering an Order Imposing an Administrative Fine compiled":
+    status: in_force
+    fact_url: "https://www.pdpc.or.th"
+    fact_text: "Official PDPC register PDF (user browser download; Cloudflare-gated to bots)."
+  "PDPC Notification: Criteria for the Erasure or Destruction or De identification of Personal Data":
+    status: in_force
+    fact_url: "https://www.pdpc.or.th"
+    fact_text: "Official PDPC register PDF (user browser download; Cloudflare-gated to bots)."
+  "PDPC Notification: Exemption of Record Keeping for Small Enterprise Data Controllers":
+    status: in_force
+    fact_url: "https://www.pdpc.or.th"
+    fact_text: "Official PDPC register PDF (user browser download; Cloudflare-gated to bots)."
+  "PDPC Notification: Security Measures of Data Controllers":
+    status: in_force
+    fact_url: "https://www.pdpc.or.th"
+    fact_text: "Official PDPC register PDF (user browser download; Cloudflare-gated to bots)."
+  "PDPC Notification: Criteria and Procedures for Formulating and Maintaining RoPA":
+    status: in_force
+    fact_url: "https://www.pdpc.or.th"
+    fact_text: "Official PDPC register PDF (user browser download; Cloudflare-gated to bots)."
+  "PDPC Notification: Qualifications and Disqualifications Expert Committee":
+    status: in_force
+    fact_url: "https://www.pdpc.or.th"
+    fact_text: "Official PDPC register PDF (user browser download; Cloudflare-gated to bots)."
+  "PDPC Notification: Qualifications of the Competent Official":
+    status: in_force
+    fact_url: "https://www.pdpc.or.th"
+    fact_text: "Official PDPC register PDF (user browser download; Cloudflare-gated to bots)."
+  "PDPC Notification: the Template of Identification Cards for Competent Officials":
+    status: in_force
+    fact_url: "https://www.pdpc.or.th"
+    fact_text: "Official PDPC register PDF (user browser download; Cloudflare-gated to bots)."
+  "PDPC Notification: Criteria and Procedures for Notifying Personal Data Breach":
+    status: in_force
+    fact_url: "https://www.pdpc.or.th"
+    fact_text: "Official PDPC register PDF (user browser download; Cloudflare-gated to bots)."
+  "PDPC Notification: DEC23_DoT1":
+    status: in_force
+    fact_url: "https://www.pdpc.or.th"
+    fact_text: "Official PDPC register PDF (user browser download; Cloudflare-gated to bots)."
+  "PDPC Notification: POJK 8 2023":
+    status: in_force
+    fact_url: "https://www.pdpc.or.th"
+    fact_text: "Official PDPC register PDF (user browser download; Cloudflare-gated to bots)."
+  "Personal Data Protection Act B.E. 2562 official EN translation":
+    status: in_force
+    fact_url: "https://www.pdpc.or.th"
+    fact_text: "Official PDPC register PDF (user browser download; Cloudflare-gated to bots)."
+
+  "BOT Notification SorNorChor 12/2561: Debit Card Services (EN)":
+    status: in_force
+    fact_url: "https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2561/EngPDF/25610094.pdf"
+    fact_text: "Official PDPC/BOT/Royal Gazette register PDF; PDPC subordinate notifications operationalise the PDPA B.E. 2562."
+  "PDPC s.28 Cross-Border Notification B.E. 2566 (Royal Gazette)":
+    status: in_force
+    fact_url: "https://ratchakitcha.soc.go.th/documents/17082307.pdf"
+    fact_text: "Official PDPC/BOT/Royal Gazette register PDF; PDPC subordinate notifications operationalise the PDPA B.E. 2562."
+
   "Notification of the National Cyber Security Committee":
     status: in_force
     fact_url: "https://www.ncsa.or.th"

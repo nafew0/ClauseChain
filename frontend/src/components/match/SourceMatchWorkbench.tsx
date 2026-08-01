@@ -24,8 +24,10 @@ import {
 import { LazyMotion, MotionConfig, domAnimation, m } from 'motion/react'
 
 import { useProofAsset, useSourceMatch } from '@/hooks/workspace'
+import { useReviewContext } from '@/hooks/workspace'
+import { DecisionPanel } from '@/components/review/ReviewWorkbench'
 import { cn } from '@/lib/utils'
-import type { EvidenceParams, JsonObject, WorkspaceQueue } from '@/types/workspace'
+import type { EvidenceParams, JsonObject, ReviewItem, WorkspaceQueue } from '@/types/workspace'
 
 const FILTER_KEYS = ['economy', 'indicator', 'pillar', 'tag', 'status'] as const
 const QUEUES = new Set<WorkspaceQueue>(['new', 'absence', 'recall', 'zone3', 'known'])
@@ -52,6 +54,8 @@ function retainedQuery(search: URLSearchParams) {
     const value = search.get(key)
     if (value) params.set(key, value)
   }
+  const textFilter = search.get('filter')
+  if (textFilter) params.set('filter', textFilter)
   const query = params.toString()
   return query ? `?${query}` : ''
 }
@@ -130,6 +134,7 @@ export default function SourceMatchWorkbench({ findingKey }: { findingKey: strin
   const search = useSearchParams()
   const filters = useMemo(() => filtersFrom(search), [search])
   const query = useSourceMatch(findingKey, filters)
+  const context = useReviewContext(query.data?.review_queue ?? 'new', query.data?.stable_key)
   const suffix = retainedQuery(search)
 
   if (query.isPending) return <div className="match-page-state"><LoaderCircle size={30} /><h1>Opening source proof…</h1></div>
@@ -148,8 +153,31 @@ export default function SourceMatchWorkbench({ findingKey }: { findingKey: strin
     !exactSnippet ||
     !rawContext.toLocaleLowerCase().includes(exactSnippet.toLocaleLowerCase())
   )
-  const backHref = filters.queue ? `/review?queue=${filters.queue}` : '/review'
+  const backParams = new URLSearchParams()
+  backParams.set('queue', data.review_queue)
+  backParams.set('item', data.stable_key)
+  for (const key of [...FILTER_KEYS, 'filter'] as const) {
+    const value = search.get(key)
+    if (value) backParams.set(key, value)
+  }
+  const backHref = `/review?${backParams.toString()}`
   const linkFor = (key: string | null) => key ? `/match/${key}${suffix}` : '#'
+  const sourceApprovalEligibility = proofMissing || anchorProofMissing
+    ? { eligible: false, reason: proofMissing ? 'The proof PNG is unavailable in this view. Do not approve until it is restored.' : 'The archived HTML anchor cannot be reconciled in this view. Do not approve until it is restored.' }
+    : data.approval_eligibility
+  const reviewItem: ReviewItem = {
+    id: 0,
+    position: data.navigation.position - 1,
+    row,
+    stable_key: data.stable_key,
+    finding_key: data.finding_key,
+    blocked: data.blocked,
+    block_reason: data.block_reason,
+    source_hash: data.source_hash,
+    review_state: data.review_state,
+    latest_correction: data.latest_correction,
+    approval_eligibility: sourceApprovalEligibility,
+  }
 
   return (
     <LazyMotion features={domAnimation}>
@@ -211,6 +239,9 @@ export default function SourceMatchWorkbench({ findingKey }: { findingKey: strin
               <footer><FileCheck2 size={15} /><span>Quote display is sourced from the immutable consolidated evidence row. The image is the engine-rendered C6 proof asset.</span></footer>
             </m.section>
           </main>
+          <section className="match-review-panel" aria-label="Review this verified source">
+            <DecisionPanel queue={data.review_queue} item={reviewItem} record={row} context={context.data} approvalEligibility={sourceApprovalEligibility} />
+          </section>
         </div>
       </MotionConfig>
     </LazyMotion>

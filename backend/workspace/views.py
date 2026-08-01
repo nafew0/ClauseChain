@@ -6,6 +6,7 @@ import re
 from urllib.parse import urlparse
 
 from django.conf import settings
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
 from django.http import FileResponse, Http404, HttpResponse
 from django.shortcuts import get_object_or_404
@@ -16,7 +17,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import BasePermission
 from rest_framework.views import APIView
 
-from .decision_state import effective_finding_review
+from .decision_state import bulk_effective_finding_decisions, effective_finding_review
 from .decision_writer import (
     DecisionWriterConflict,
     DecisionWriterError,
@@ -24,10 +25,16 @@ from .decision_writer import (
     current_authoritative_hash,
     decision_domain_lock,
 )
+from .engine_worker import EngineWorkerError, load_allowlist
 from .models import (
     CorrectionRequest,
     EngineSnapshot,
     EngineAction,
+    EvidenceChange,
+    EvidenceChangeDecision,
+    EvidenceChangeSet,
+    EvidenceRegistryEntry,
+    EvidenceRevision,
     EvidenceRow,
     FindingDecision,
     RecallDecision,
@@ -38,9 +45,16 @@ from .models import (
     Zone3Decision,
 )
 from .pagination import WorkspacePagination
-from .roles import has_review_role, reviewer_identity, reviewer_roles
+from .roles import (
+    decision_reviewer_role,
+    has_review_role,
+    reviewer_identity,
+    reviewer_roles,
+)
+from .registry import publish_change_set
 from .serializers import (
     CorrectionRequestWriteSerializer,
+    EvidenceChangeDecisionWriteSerializer,
     FindingBulkDecisionWriteSerializer,
     FindingDecisionWriteSerializer,
     RecallDecisionWriteSerializer,
@@ -133,13 +147,38 @@ def review_item_payload(item):
         result["review_state"] = effective_finding_review(
             item.finding_key, review_subject_hash=item.review_subject_hash
         )
+        revision = EvidenceRevision.objects.filter(
+            snapshot=item.snapshot,
+            finding_key=item.finding_key,
+            review_subject_hash=item.review_subject_hash,
+        ).first()
+        change = (
+            EvidenceChange.objects.filter(
+                change_set__snapshot=item.snapshot,
+                current_revision=revision,
+            ).first()
+            if revision
+            else None
+        )
+        result["registry_change"] = (
+            {
+                "kind": change.kind,
+                "invalidated_stages": change.invalidated_stages_json,
+                "identity_hash": change.identity.identity_hash,
+            }
+            if change
+            else None
+        )
         eligibility_reason = finding_ineligibility(item, item.snapshot)
         result["approval_eligibility"] = {
             "eligible": not bool(eligibility_reason),
             "reason": eligibility_reason,
         }
         correction = (
-            CorrectionRequest.objects.filter(finding_key=item.finding_key)
+            CorrectionRequest.objects.filter(
+                finding_key=item.finding_key,
+                review_subject_hash=item.review_subject_hash,
+            )
             .order_by("-requested_at")
             .first()
         )
@@ -183,14 +222,148 @@ def item_is_decided(item):
     return model.objects.filter(**{key_name: item.stable_key}).exists()
 
 
+def registry_summary(snapshot):
+    entries = list(
+        EvidenceRegistryEntry.objects.select_related("identity", "active_revision")
+    )
+    current_revisions = [
+        entry.active_revision
+        for entry in entries
+        if entry.state == EvidenceRegistryEntry.State.CURRENT
+    ]
+    verdicts = bulk_effective_finding_decisions(current_revisions)
+    states = {
+        "approved": 0,
+        "rejected": 0,
+        "decision_unrecorded": 0,
+        "blocked": 0,
+    }
+    for entry in entries:
+        if entry.state != EvidenceRegistryEntry.State.CURRENT:
+            continue
+        revision = entry.active_revision
+        if revision.blocked:
+            states["blocked"] += 1
+            continue
+        decision = verdicts.get((revision.finding_key, revision.review_subject_hash))
+        if decision == "approved":
+            states["approved"] += 1
+        elif decision == "rejected":
+            states["rejected"] += 1
+        else:
+            states["decision_unrecorded"] += 1
+    try:
+        change_set = snapshot.evidence_change_set
+    except EvidenceChangeSet.DoesNotExist:
+        change_set = None
+    change_payload = None
+    if change_set:
+        actionable = list(
+            change_set.changes.exclude(kind=EvidenceChange.Kind.UNCHANGED)
+            .select_related("current_revision")
+            .prefetch_related("decisions")
+        )
+        candidate_verdicts = bulk_effective_finding_decisions(
+            change.current_revision
+            for change in actionable
+            if change.current_revision is not None
+        )
+        resolved = 0
+        for change in actionable:
+            if change.kind == EvidenceChange.Kind.NOT_REPRODUCED:
+                decision_rows = list(change.decisions.all())
+                resolution = decision_rows[-1] if decision_rows else None
+                resolved += int(
+                    resolution is not None
+                    and resolution.verdict
+                    in {
+                        EvidenceChangeDecision.Verdict.RETAIN,
+                        EvidenceChangeDecision.Verdict.RETIRE,
+                    }
+                )
+            elif change.current_revision:
+                decision = candidate_verdicts.get(
+                    (
+                        change.current_revision.finding_key,
+                        change.current_revision.review_subject_hash,
+                    )
+                )
+                resolved += int(decision is not None)
+        change_payload = {
+            "id": str(change_set.pk),
+            "state": change_set.state,
+            "scope": change_set.scope_json,
+            "counts": change_set.counts_json,
+            "attention": {"resolved": resolved, "total": len(actionable)},
+            "created_at": change_set.created_at.isoformat(),
+            "published_at": (
+                change_set.published_at.isoformat() if change_set.published_at else None
+            ),
+        }
+    return {
+        "total": len(entries),
+        "current": sum(
+            entry.state == EvidenceRegistryEntry.State.CURRENT for entry in entries
+        ),
+        "not_reproduced": sum(
+            entry.state == EvidenceRegistryEntry.State.NOT_REPRODUCED
+            for entry in entries
+        ),
+        "retired": sum(
+            entry.state == EvidenceRegistryEntry.State.RETIRED for entry in entries
+        ),
+        **states,
+        "change_set": change_payload,
+    }
+
+
 class SummaryView(APIView):
     def get(self, request):
         snapshot = active_snapshot()
+        all_items = list(snapshot.review_items.all())
+        revisions = list(snapshot.evidence_revisions.all())
+        finding_verdicts = bulk_effective_finding_decisions(revisions)
+        revision_by_key = {revision.finding_key: revision for revision in revisions}
+        recall_decided = set(
+            RecallDecision.objects.filter(
+                recall_key__in=[
+                    item.stable_key
+                    for item in all_items
+                    if item.queue == ReviewItem.Queue.RECALL
+                ]
+            ).values_list("recall_key", flat=True)
+        )
+        zone_decided = set(
+            Zone3Decision.objects.filter(
+                score_key__in=[
+                    item.stable_key
+                    for item in all_items
+                    if item.queue == ReviewItem.Queue.ZONE3
+                ]
+            ).values_list("score_key", flat=True)
+        )
+
+        def decided(item):
+            if item.queue in (
+                ReviewItem.Queue.NEW,
+                ReviewItem.Queue.KNOWN,
+                ReviewItem.Queue.ABSENCE,
+            ):
+                revision = revision_by_key.get(item.finding_key)
+                if revision is None:
+                    return item_is_decided(item)
+                return finding_verdicts.get(
+                    (revision.finding_key, revision.review_subject_hash)
+                ) is not None
+            if item.queue == ReviewItem.Queue.RECALL:
+                return item.stable_key in recall_decided
+            return item.stable_key in zone_decided
+
         progress = {}
         for queue in ReviewItem.Queue.values:
-            items = list(snapshot.review_items.filter(queue=queue))
+            items = [item for item in all_items if item.queue == queue]
             progress[queue] = {
-                "decided": sum(item_is_decided(item) for item in items),
+                "decided": sum(decided(item) for item in items),
                 "total": len(items),
             }
         return Response(
@@ -201,9 +374,149 @@ class SummaryView(APIView):
                 "champion": snapshot.champion_json,
                 "progress": progress,
                 "runs": [serialize_run(record) for record in snapshot.run_records.all()],
+                "registry": registry_summary(snapshot),
                 "reviewer_roles": reviewer_roles(request.user),
             }
         )
+
+
+def evidence_change_payload(change):
+    latest = change.decisions.order_by("-created_at").first()
+    revision = change.current_revision
+    row = revision.row_json if revision else {}
+    queue = None
+    if revision:
+        if change.identity.finding_type == "absence":
+            queue = ReviewItem.Queue.ABSENCE
+        elif str(row.get("Discovery Tag") or "").upper() == "NEW":
+            queue = ReviewItem.Queue.NEW
+        else:
+            queue = ReviewItem.Queue.KNOWN
+    review = (
+        effective_finding_review(
+            revision.finding_key, review_subject_hash=revision.review_subject_hash
+        )
+        if revision
+        else None
+    )
+    return {
+        "id": str(change.pk),
+        "kind": change.kind,
+        "invalidated_stages": change.invalidated_stages_json,
+        "identity": {
+            "id": str(change.identity_id),
+            "identity_hash": change.identity.identity_hash,
+            "economy": change.identity.economy,
+            "indicator_id": change.identity.indicator_id,
+            "law_name": change.identity.law_name,
+            "citation": change.identity.citation_key,
+            "finding_type": change.identity.finding_type,
+        },
+        "previous_finding_key": (
+            change.previous_revision.finding_key if change.previous_revision else None
+        ),
+        "current_finding_key": revision.finding_key if revision else None,
+        "review_queue": queue,
+        "review_state": review,
+        "latest_decision": (
+            {
+                "id": str(latest.pk),
+                "verdict": latest.verdict,
+                "comment": latest.comment,
+                "reviewer_name": latest.reviewer_name,
+                "created_at": latest.created_at.isoformat(),
+            }
+            if latest
+            else None
+        ),
+    }
+
+
+class EvidenceChangeSetView(APIView):
+    def get(self, request):
+        snapshot = active_snapshot()
+        try:
+            change_set = snapshot.evidence_change_set
+        except EvidenceChangeSet.DoesNotExist:
+            raise APIException(
+                "The active engine snapshot has not been reconciled into the evidence registry."
+            )
+        changes = change_set.changes.select_related(
+            "identity", "previous_revision", "current_revision"
+        ).prefetch_related("decisions")
+        kind = str(request.query_params.get("kind") or "")
+        economy = str(request.query_params.get("economy") or "")
+        if kind:
+            if kind not in EvidenceChange.Kind.values:
+                raise ValidationError({"kind": "Unknown evidence-change kind."})
+            changes = changes.filter(kind=kind)
+        if economy:
+            changes = changes.filter(identity__economy=economy)
+        return Response(
+            {
+                "snapshot": snapshot_identity(snapshot),
+                "change_set": registry_summary(snapshot)["change_set"],
+                "results": [evidence_change_payload(change) for change in changes],
+            }
+        )
+
+
+class EvidenceChangeDecisionView(APIView):
+    def post(self, request, change_id):
+        if not any(
+            has_review_role(request.user, role)
+            for role in ("citation", "mapping", "status")
+        ):
+            raise PermissionDenied("A reviewer role is required.")
+        serializer = EvidenceChangeDecisionWriteSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        change = get_object_or_404(
+            EvidenceChange.objects.select_related("change_set"), pk=change_id
+        )
+        if change.change_set.snapshot_id != active_snapshot().pk:
+            raise ValidationError({"change": "This change is not in the active update."})
+        if change.change_set.state != EvidenceChangeSet.State.DRAFT:
+            raise ValidationError({"change": "This update has already been published."})
+        if change.kind != EvidenceChange.Kind.NOT_REPRODUCED:
+            raise ValidationError(
+                {"change": "New and revised evidence is decided in legal review."}
+            )
+        allowed = {
+            EvidenceChangeDecision.Verdict.RETAIN,
+            EvidenceChangeDecision.Verdict.RETIRE,
+            EvidenceChangeDecision.Verdict.INVESTIGATE,
+        }
+        if data["verdict"] not in allowed:
+            raise ValidationError({"verdict": "Choose retain, retire, or investigate."})
+        latest = change.decisions.order_by("-created_at").first()
+        concurrency_check(latest, data.pop("expected_latest_decision_id"))
+        reviewer_name, _ = reviewer_identity(request.user)
+        row = EvidenceChangeDecision.objects.create(
+            change=change,
+            reviewer_name=reviewer_name,
+            created_by=request.user,
+            supersedes=latest,
+            **data,
+        )
+        return Response(evidence_change_payload(change), status=status.HTTP_201_CREATED)
+
+
+class EvidenceChangeSetPublishView(APIView):
+    permission_classes = [IsSuperuserPermission]
+
+    def post(self, request):
+        snapshot = active_snapshot()
+        try:
+            change_set = snapshot.evidence_change_set
+        except EvidenceChangeSet.DoesNotExist:
+            raise ValidationError({"snapshot": "No reconciliation is available."})
+        try:
+            publish_change_set(change_set, request.user)
+        except DjangoValidationError as exc:
+            payload = exc.message_dict if hasattr(exc, "message_dict") else exc.messages
+            raise ValidationError(payload) from exc
+        return Response({"registry": registry_summary(snapshot)})
 
 
 def artifact_payload(artifact, *, include_content=False):
@@ -449,18 +762,28 @@ def filtered_evidence_rows(snapshot, params):
     for query_name, field_name in EVIDENCE_FILTERS.items():
         value = params.get(query_name)
         if value:
+            accepted = {
+                item.strip().casefold() for item in str(value).split(",") if item.strip()
+            }
             rows = [
                 row
                 for row in rows
-                if str(row.row_json.get(field_name) or "").casefold()
-                == value.casefold()
+                if str(row.row_json.get(field_name) or "").casefold() in accepted
             ]
     pillar = params.get("pillar")
     if pillar:
+        accepted_pillars = {
+            item.strip().casefold() for item in str(pillar).split(",") if item.strip()
+        }
         rows = [
             row
             for row in rows
-            if str(row.row_json.get("Indicator ID") or "").startswith(f"P{pillar}-")
+            if any(
+                str(row.row_json.get("Indicator ID") or "").casefold().startswith(
+                    f"p{value}-"
+                )
+                for value in accepted_pillars
+            )
         ]
     return rows
 
@@ -505,7 +828,7 @@ def source_match_block_reason(evidence):
     return "A complete citation proof is not available for this evidence row."
 
 
-def serialize_source_match(evidence, *, navigation):
+def serialize_source_match(evidence, *, navigation, review_item):
     row = evidence.row_json
     proof = row.get("citation_proof") or {}
     mode = source_match_mode(evidence)
@@ -551,6 +874,27 @@ def serialize_source_match(evidence, *, navigation):
         "review_state": effective_finding_review(
             evidence.finding_key, review_subject_hash=evidence.review_subject_hash
         ),
+        "review_queue": review_item.queue,
+        "stable_key": review_item.stable_key,
+        "approval_eligibility": {
+            "eligible": not bool(finding_ineligibility(review_item, evidence.snapshot)),
+            "reason": finding_ineligibility(review_item, evidence.snapshot),
+        },
+        "latest_correction": (
+            {
+                "id": str(correction.pk),
+                "explanation": correction.explanation,
+                "requested_by": correction.requested_by.full_name,
+                "requested_at": correction.requested_at.isoformat(),
+            }
+            if (
+                correction := CorrectionRequest.objects.filter(
+                    finding_key=evidence.finding_key,
+                    review_subject_hash=evidence.review_subject_hash,
+                ).order_by("-requested_at").first()
+            )
+            else None
+        ),
         "navigation": navigation,
     }
 
@@ -580,6 +924,19 @@ class SourceMatchView(APIView):
         evidence = get_object_or_404(
             EvidenceRow, snapshot=snapshot, finding_key=finding_key
         )
+        requested_queue = str(request.query_params.get("queue") or "")
+        review_items = ReviewItem.objects.filter(
+            snapshot=snapshot,
+            finding_key=finding_key,
+            queue__in=(ReviewItem.Queue.NEW, ReviewItem.Queue.KNOWN, ReviewItem.Queue.ABSENCE),
+        )
+        review_item = (
+            review_items.filter(queue=requested_queue).first()
+            if requested_queue in (ReviewItem.Queue.NEW, ReviewItem.Queue.KNOWN, ReviewItem.Queue.ABSENCE)
+            else review_items.first()
+        )
+        if review_item is None:
+            raise Http404
         rows = filtered_evidence_rows(snapshot, request.query_params)
         keys = [row.finding_key for row in rows]
         try:
@@ -593,7 +950,11 @@ class SourceMatchView(APIView):
             "previous_key": keys[index - 1] if index > 0 else None,
             "next_key": keys[index + 1] if index + 1 < len(keys) else None,
         }
-        return Response(serialize_source_match(evidence, navigation=navigation))
+        return Response(
+            serialize_source_match(
+                evidence, navigation=navigation, review_item=review_item
+            )
+        )
 
 
 class ProofAssetView(APIView):
@@ -866,16 +1227,25 @@ class EngineRunView(EngineActionCreateView):
     def action_arguments(self, request):
         economy = str(request.data.get("economy") or "")
         pillar = str(request.data.get("pillar") or "")
-        aliases = {"Singapore": "si", "Malaysia": "ma", "Australia": "au"}
-        if economy not in aliases:
-            raise ValidationError({"economy": "Choose Singapore, Malaysia, or Australia."})
+        try:
+            spec = load_allowlist().get("run_pipeline") or {}
+        except EngineWorkerError as exc:
+            raise APIException(str(exc), code="engine_allowlist_unavailable") from exc
+        params = spec.get("params") or {}
+        economies = {str(value) for value in (params.get("economy") or {}).get("enum", [])}
+        run_codes = {str(value) for value in (params.get("cc") or {}).get("enum", [])}
+        run_code = re.sub(r"[^a-z]", "", economy.casefold())[:2]
+        if economy not in economies or run_code not in run_codes:
+            raise ValidationError(
+                {"economy": "Choose an economy configured in the engine action allowlist."}
+            )
         if pillar not in {"6", "7"}:
             raise ValidationError({"pillar": "Choose pillar 6 or 7."})
         return {
             "action": "run_pipeline",
             "economy": economy,
             "pillar": pillar,
-            "cc": aliases[economy],
+            "cc": run_code,
         }
 
 
@@ -924,6 +1294,8 @@ class DecisionHistoryView(APIView):
                         str(row.supersedes_id) if row.supersedes_id else None
                     ),
                     "authoritative_file_hash": row.authoritative_file_hash,
+                    "review_subject_hash": row.review_subject_hash,
+                    "current_subject": row.review_subject_hash == current_subject,
                 }
                 for row in CorrectionRequest.objects.filter(finding_key=key).order_by(
                     "requested_at"
@@ -1225,12 +1597,14 @@ class FindingDecisionView(APIView):
             )
 
         reviewer_name, reviewer_id = reviewer_identity(request.user)
+        reviewer_role = decision_reviewer_role(request.user, stage)
         reviewed_at = timezone.now()
         prospective = {
             **data,
             "id": "prospective",
             "review_subject_hash": item.review_subject_hash,
             "reviewer_name": reviewer_name,
+            "reviewer_role": reviewer_role,
             "reviewed_at": reviewed_at,
             "created_by_id": request.user.pk,
         }
@@ -1258,7 +1632,7 @@ class FindingDecisionView(APIView):
                 item.review_subject_hash,
                 effective,
                 reviewer_name=reviewer_name,
-                reviewer_role=stage,
+                reviewer_role=reviewer_role,
                 reviewed_at=reviewed_at,
                 note=data["note"],
             )
@@ -1270,7 +1644,7 @@ class FindingDecisionView(APIView):
                 **data,
                 review_subject_hash=item.review_subject_hash,
                 reviewer_name=reviewer_name,
-                reviewer_role=stage,
+                reviewer_role=reviewer_role,
                 reviewed_at=reviewed_at,
                 created_by=request.user,
                 supersedes=latest_stage,
@@ -1295,6 +1669,8 @@ class FindingDecisionView(APIView):
 
 
 def validate_distinct_stage_reviewer(finding_key, stage, decision, user, effective):
+    if "admin" in reviewer_roles(user):
+        return
     if (
         effective["decision"] == "approved"
         and effective["citation_reviewer_name"].strip().casefold()
@@ -1368,6 +1744,7 @@ class FindingBulkDecisionView(APIView):
             raise ValidationError({"ineligible": failures})
 
         reviewer_name, reviewer_id = reviewer_identity(request.user)
+        reviewer_role = decision_reviewer_role(request.user, stage)
         reviewed_at = timezone.now()
         expected = data.pop("expected_latest_decision_ids")
         finding_keys = data.pop("finding_keys")
@@ -1395,6 +1772,7 @@ class FindingBulkDecisionView(APIView):
                     "queue": ReviewItem.Queue.KNOWN,
                     "decision": FindingDecision.Verdict.APPROVED,
                     "reviewer_name": reviewer_name,
+                    "reviewer_role": reviewer_role,
                     "reviewed_at": reviewed_at,
                     "created_by_id": request.user.pk,
                 }
@@ -1416,7 +1794,7 @@ class FindingBulkDecisionView(APIView):
                         items_by_key[key].review_subject_hash,
                         effective,
                         reviewer_name=reviewer_name,
-                        reviewer_role=stage,
+                        reviewer_role=reviewer_role,
                         reviewed_at=reviewed_at,
                         note=data["note"],
                     )
@@ -1437,7 +1815,7 @@ class FindingBulkDecisionView(APIView):
                     status_checked=data["status_checked"],
                     note=data["note"],
                     reviewer_name=reviewer_name,
-                    reviewer_role=stage,
+                    reviewer_role=reviewer_role,
                     reviewed_at=reviewed_at,
                     created_by=request.user,
                     supersedes=latest_by_key[key],
@@ -1600,7 +1978,7 @@ class CorrectionRequestView(APIView):
         snapshot = active_snapshot()
         if snapshot.stale:
             raise ValidationError({"snapshot": "The active snapshot is stale."})
-        get_object_or_404(
+        item = get_object_or_404(
             ReviewItem,
             snapshot=snapshot,
             queue=data["queue"],
@@ -1608,7 +1986,10 @@ class CorrectionRequestView(APIView):
         )
         with decision_domain_lock("findings"):
             latest = (
-                CorrectionRequest.objects.filter(finding_key=data["finding_key"])
+                CorrectionRequest.objects.filter(
+                    finding_key=data["finding_key"],
+                    review_subject_hash=item.review_subject_hash,
+                )
                 .order_by("-requested_at")
                 .first()
             )
@@ -1619,6 +2000,7 @@ class CorrectionRequestView(APIView):
                 [
                     {
                         "finding_key": data["finding_key"],
+                        "review_subject_hash": item.review_subject_hash,
                         "review": {
                             "decision": "rejected",
                             "reviewer_name": request.user.full_name,
@@ -1637,6 +2019,7 @@ class CorrectionRequestView(APIView):
             )
             row = CorrectionRequest.objects.create(
                 **data,
+                review_subject_hash=item.review_subject_hash,
                 requested_by=request.user,
                 supersedes=latest,
                 authoritative_file_hash=receipt["sha256"],

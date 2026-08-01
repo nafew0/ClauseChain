@@ -14,6 +14,7 @@ from rest_framework.test import APIClient
 from accounts.models import User
 
 from .importer import SnapshotImportError, import_snapshot
+from .decision_state import effective_finding_review
 from .decision_writer import (
     DecisionWriterConflict,
     apply_authoritative_decision,
@@ -24,6 +25,11 @@ from .models import (
     CorrectionRequest,
     EngineSnapshot,
     EngineAction,
+    EvidenceChange,
+    EvidenceChangeSet,
+    EvidenceIdentity,
+    EvidenceRegistryEntry,
+    EvidenceRevision,
     EvidenceRow,
     FindingDecision,
     RecallDecision,
@@ -227,6 +233,78 @@ class SnapshotImportTests(TestCase):
         with self.assertRaises(SnapshotImportError):
             import_snapshot(artifacts)
         self.assertEqual(EngineSnapshot.objects.count(), 0)
+
+    def test_rerun_creates_revision_and_retains_published_registry(self):
+        first, _ = import_snapshot(minimal_artifacts(), keep=1)
+        self.assertEqual(EvidenceIdentity.objects.count(), 3)
+        self.assertEqual(EvidenceRevision.objects.count(), 3)
+        self.assertEqual(EvidenceRegistryEntry.objects.count(), 3)
+        self.assertEqual(
+            first.evidence_change_set.state, EvidenceChangeSet.State.PUBLISHED
+        )
+
+        artifacts = minimal_artifacts()
+        artifacts["consolidated"]["rows"][0]["Verbatim Snippet"] = (
+            "A refreshed, source-exact statutory quotation."
+        )
+        artifacts["key_map"]["rows"][0]["finding_key"] = "9" * 64
+        artifacts["key_map"]["rows"][0]["review_subject_hash"] = "8" * 64
+        second, created = import_snapshot(artifacts, keep=1)
+
+        self.assertTrue(created)
+        self.assertEqual(EngineSnapshot.objects.count(), 2)
+        self.assertEqual(second.evidence_change_set.state, EvidenceChangeSet.State.DRAFT)
+        change = second.evidence_change_set.changes.get(
+            identity__indicator_id="P6-I4"
+        )
+        self.assertEqual(change.kind, EvidenceChange.Kind.REVISED)
+        self.assertEqual(change.invalidated_stages_json, ["citation"])
+        entry = EvidenceRegistryEntry.objects.get(identity=change.identity)
+        self.assertEqual(entry.active_revision.snapshot_id, first.pk)
+
+    def test_unchanged_review_components_carry_to_new_revision(self):
+        first, _ = import_snapshot(minimal_artifacts())
+        citation_user = User.objects.create_user(
+            username="carry-citation", email="carry-citation@example.com", password="pw"
+        )
+        mapping_user = User.objects.create_user(
+            username="carry-mapping", email="carry-mapping@example.com", password="pw"
+        )
+        revision = first.evidence_revisions.get(finding_key="1" * 64)
+        for stage, user, checks in (
+            (FindingDecision.Stage.CITATION, citation_user, (True, False, False)),
+            (FindingDecision.Stage.MAPPING, mapping_user, (False, True, False)),
+            (FindingDecision.Stage.STATUS, citation_user, (False, False, True)),
+        ):
+            FindingDecision.objects.create(
+                finding_key=revision.finding_key,
+                review_subject_hash=revision.review_subject_hash,
+                queue=ReviewItem.Queue.NEW,
+                review_stage=stage,
+                decision=FindingDecision.Verdict.APPROVED,
+                citation_checked=checks[0],
+                mapping_checked=checks[1],
+                status_checked=checks[2],
+                reviewer_name=user.full_name or user.username,
+                reviewer_role=stage,
+                reviewed_at=timezone.now(),
+                created_by=user,
+                authoritative_file_hash=HASH,
+                writer_receipt_json={},
+            )
+
+        artifacts = minimal_artifacts()
+        artifacts["consolidated"]["rows"][0]["Verbatim Snippet"] = "A better exact quote."
+        artifacts["key_map"]["rows"][0]["finding_key"] = "9" * 64
+        artifacts["key_map"]["rows"][0]["review_subject_hash"] = "8" * 64
+        second, _ = import_snapshot(artifacts)
+        current = second.evidence_revisions.get(finding_key="9" * 64)
+        state = effective_finding_review(
+            current.finding_key, review_subject_hash=current.review_subject_hash
+        )
+        self.assertNotIn(FindingDecision.Stage.CITATION, state["stages"])
+        self.assertTrue(state["stages"][FindingDecision.Stage.MAPPING]["carried_forward"])
+        self.assertTrue(state["stages"][FindingDecision.Stage.STATUS]["carried_forward"])
 
 
 class WorkspaceApiTests(TestCase):
@@ -440,6 +518,16 @@ class WorkspaceApiTests(TestCase):
         self.assertEqual(response.data["match"]["label"], "VERBATIM · exact")
         self.assertEqual(response.data["source_sha256"], "d" * 64)
         self.assertEqual(response.data["navigation"]["total"], 1)
+        self.assertEqual(response.data["review_queue"], "new")
+        self.assertEqual(response.data["stable_key"], exact_key)
+        self.assertTrue(response.data["approval_eligibility"]["eligible"])
+
+        response = self.client.get(
+            f"/api/workspace/source-match/{exact_key}/"
+            "?economy=Singapore,Malaysia&pillar=6,7&indicator=P6-I4,P7-I1"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["navigation"]["total"], 2)
 
         response = self.client.get(f"/api/workspace/source-match/{anchor_key}/")
         self.assertEqual(response.data["match"]["mode"], "anchor")
@@ -562,6 +650,47 @@ class WorkspaceApiTests(TestCase):
         )
         self.assertEqual(second.status_code, 400)
         self.assertEqual(FindingDecision.objects.count(), 1)
+
+    @patch("workspace.views.apply_authoritative_decision", return_value=RECEIPT)
+    def test_admin_can_complete_all_finding_stages_as_single_reviewer(self, writer):
+        admin = self.make_user("review-admin", "Review Admin", "admin")
+        admin.is_superuser = True
+        admin.is_staff = True
+        admin.save(update_fields=("is_superuser", "is_staff"))
+        self.authenticate(admin)
+        key = "1" * 64
+        stages = (
+            ("citation", {"citation_checked": True}),
+            ("status", {"status_checked": True}),
+            ("mapping", {"mapping_checked": True}),
+        )
+        responses = []
+        for stage, checks in stages:
+            responses.append(self.client.post(
+                "/api/workspace/decisions/findings/",
+                {
+                    "finding_key": key,
+                    "queue": "new",
+                    "review_stage": stage,
+                    "decision": "approved",
+                    "expected_latest_decision_id": None,
+                    **checks,
+                },
+                format="json",
+            ))
+        self.assertEqual([response.status_code for response in responses], [201, 201, 201])
+        self.assertFalse(responses[0].data["engine_exported"])
+        self.assertFalse(responses[1].data["engine_exported"])
+        self.assertTrue(responses[2].data["engine_exported"])
+        self.assertEqual(responses[2].data["review_state"]["decision"], "approved")
+        self.assertEqual(
+            set(FindingDecision.objects.values_list("reviewer_role", flat=True)),
+            {"admin"},
+        )
+        final_batch = writer.call_args_list[-1].args[1]
+        self.assertEqual(final_batch[0]["review"]["reviewer_role"], "admin")
+        self.assertEqual(final_batch[0]["review"]["citation_reviewer_name"], admin.full_name)
+        self.assertEqual(final_batch[0]["review"]["mapping_reviewer_name"], admin.full_name)
 
     @patch("workspace.views.apply_authoritative_decision", return_value=RECEIPT)
     def test_optimistic_concurrency_rejects_stale_write(self, writer):

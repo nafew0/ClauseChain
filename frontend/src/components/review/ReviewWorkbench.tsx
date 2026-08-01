@@ -126,6 +126,10 @@ function isTyping(target: EventTarget | null) {
   return Boolean(element?.closest('input, textarea, select, [contenteditable="true"]'))
 }
 
+function selectedValues(value: string | null) {
+  return value?.split(',').map((item) => item.trim()).filter(Boolean) ?? []
+}
+
 function StageStrip({ item }: { item: ReviewItem }) {
   const stages = item.review_state?.stages ?? {}
   return (
@@ -137,7 +141,7 @@ function StageStrip({ item }: { item: ReviewItem }) {
             {current ? <CheckCircle2 size={15} /> : <CircleDashed size={15} />}
             <span>
               <strong>{stage}</strong>
-              <small>{current ? `${current.reviewer_name} · ${new Date(current.reviewed_at).toLocaleDateString()}` : 'Awaiting reviewer'}</small>
+              <small>{current ? `${current.reviewer_name} · ${new Date(current.reviewed_at).toLocaleDateString()}${current.carried_forward ? ' · retained from unchanged evidence' : ''}` : 'Awaiting reviewer'}</small>
             </span>
           </div>
         )
@@ -333,11 +337,12 @@ function ReferenceDrawer({ open, onClose, record, context, loading }: {
   )
 }
 
-function DecisionPanel({ queue, item, record, context }: {
+export function DecisionPanel({ queue, item, record, context, approvalEligibility }: {
   queue: WorkspaceQueue
   item: ReviewItem
   record: JsonObject
   context: ReturnType<typeof useReviewContext>['data']
+  approvalEligibility?: { eligible: boolean; reason: string }
 }) {
   const { user } = useAuth()
   const summary = useSummary()
@@ -356,7 +361,8 @@ function DecisionPanel({ queue, item, record, context }: {
   const availableStages = (['citation', 'mapping', 'status'] as ReviewStage[]).filter((role) => roles.includes(`${role}_reviewer`) || roles.includes('admin'))
   const effectiveStage = availableStages.includes(stage) ? stage : availableStages[0] ?? stage
   const stale = summary.data?.snapshot.stale ?? true
-  const technicallyEligible = context?.approval_eligibility.eligible ?? item.approval_eligibility?.eligible ?? false
+  const eligibility = approvalEligibility ?? context?.approval_eligibility ?? item.approval_eligibility
+  const technicallyEligible = eligibility?.eligible ?? false
   const disabled = decide.isPending || stale || item.blocked
 
   const submitFinding = useCallback(async (decision: FindingVerdict) => {
@@ -443,7 +449,7 @@ function DecisionPanel({ queue, item, record, context }: {
       <div className="review-decision-heading"><div><span className="review-eyebrow">Your authority</span><h3>Record review stage</h3></div><span>{user?.full_name ?? user?.email ?? 'Authenticated reviewer'}</span></div>
       <StageStrip item={item} />
       {availableStages.length ? <div className="review-stage-tabs" role="tablist">{availableStages.map((value) => <button role="tab" aria-selected={effectiveStage === value} className={cn(effectiveStage === value && 'selected')} onClick={() => setStage(value)} key={value}>{value}</button>)}</div> : <div className="review-warning"><ShieldAlert size={17} />You do not have a review role for this evidence.</div>}
-      {!technicallyEligible ? <div className="review-block"><ShieldAlert size={17} /><span>{context?.approval_eligibility.reason ?? item.approval_eligibility?.reason ?? 'Technical evidence is incomplete.'}</span></div> : null}
+      {!technicallyEligible ? <div className="review-block"><ShieldAlert size={17} /><span>{eligibility?.reason ?? 'Technical evidence is incomplete.'}</span></div> : null}
       <textarea id="review-note" value={note} onChange={(event) => setNote(event.target.value)} placeholder="Required for rejection or correction; optional for approval…" />
       <div className="review-decision-actions">
         <button className="review-primary" disabled={disabled || !technicallyEligible || !availableStages.includes(effectiveStage)} onClick={() => void submitFinding('approved')}><Check size={17} /> Approve {effectiveStage}</button>
@@ -451,7 +457,7 @@ function DecisionPanel({ queue, item, record, context }: {
         <button className="review-secondary" disabled={disabled || note.trim().length < 3 || !availableStages.length} onClick={() => void requestCorrection()}><ShieldAlert size={17} /> Request correction</button>
       </div>
       <AnimatePresence mode="wait">
-        {decide.isPending ? <m.div className="review-saving" initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>Saving review—waiting for authoritative receipt.</m.div> : receipt ? <m.div className={cn('review-receipt', receipt.exported ? 'exported' : 'partial')} initial={{ opacity: 0, scale: .98 }} animate={{ opacity: 1, scale: 1 }}><CheckCircle2 size={17} /><span>{receipt.exported ? `Final approval exported to engine · ${receipt.hash.slice(0, 8)}` : 'Stage recorded, awaiting the required second reviewer; no final decision was exported to the engine.'}</span></m.div> : null}
+        {decide.isPending ? <m.div className="review-saving" initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>Saving review—waiting for authoritative receipt.</m.div> : receipt ? <m.div className={cn('review-receipt', receipt.exported ? 'exported' : 'partial')} initial={{ opacity: 0, scale: .98 }} animate={{ opacity: 1, scale: 1 }}><CheckCircle2 size={17} /><span>{receipt.exported ? `Final approval exported to engine · ${receipt.hash.slice(0, 8)}` : 'Stage recorded; remaining required stages are still pending. No final decision was exported to the engine.'}</span></m.div> : null}
       </AnimatePresence>
     </div>
   )
@@ -465,6 +471,11 @@ export default function ReviewWorkbench() {
   const queue = QUEUES.some((entry) => entry.key === requestedQueue) ? requestedQueue! : 'new'
   const requestedItem = searchParams.get('item')
   const [filter, setFilter] = useState(searchParams.get('filter') ?? '')
+  const [economies, setEconomies] = useState(() => selectedValues(searchParams.get('economy')))
+  const [pillars, setPillars] = useState(() => selectedValues(searchParams.get('pillar')))
+  const [indicators, setIndicators] = useState(() => selectedValues(searchParams.get('indicator')))
+  const [filtersOpen, setFiltersOpen] = useState(false)
+  const filterPopoverRef = useRef<HTMLDivElement>(null)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [mobileRailOpen, setMobileRailOpen] = useState(!requestedItem)
   const [selectedKnown, setSelectedKnown] = useState<Set<string>>(new Set())
@@ -482,11 +493,23 @@ export default function ReviewWorkbench() {
     }
     return left.item.position - right.item.position
   }), [queue, queueQuery.data])
+  const indicatorOf = useCallback((record: JsonObject) => text(record['Indicator'] ?? record['Indicator ID'], ''), [])
+  const filterOptions = useMemo(() => {
+    const economies = [...new Set(records.map(({ record }) => text(record['Economy'], '')).filter(Boolean))].sort()
+    const pillars = [...new Set(records.map(({ record }) => indicatorOf(record).match(/^P(\d+)-/i)?.[1] ?? '').filter(Boolean))].sort((a, b) => Number(a) - Number(b))
+    const indicators = [...new Set(records.map(({ record }) => indicatorOf(record)).filter(Boolean))].sort()
+    return { economies, pillars, indicators }
+  }, [indicatorOf, records])
   const filtered = useMemo(() => {
     const needle = filter.trim().toLocaleLowerCase()
-    if (!needle) return records
-    return records.filter(({ record }) => Object.values(record).some((value) => text(value, '').toLocaleLowerCase().includes(needle)))
-  }, [filter, records])
+    return records.filter(({ record }) => {
+      const rowIndicator = indicatorOf(record)
+      if (economies.length && !economies.includes(text(record['Economy'], ''))) return false
+      if (pillars.length && !pillars.some((value) => rowIndicator.toUpperCase().startsWith(`P${value}-`))) return false
+      if (indicators.length && !indicators.includes(rowIndicator)) return false
+      return !needle || Object.values(record).some((value) => text(value, '').toLocaleLowerCase().includes(needle))
+    })
+  }, [economies, filter, indicatorOf, indicators, pillars, records])
   const selectedIndex = Math.max(0, filtered.findIndex(({ item }) => item.stable_key === requestedItem))
   const selected = filtered[selectedIndex] ?? filtered[0] ?? null
   const context = useReviewContext(queue, selected?.item.stable_key)
@@ -494,17 +517,49 @@ export default function ReviewWorkbench() {
   const history = useDecisionHistory(historyDomain, selected?.item.stable_key)
   const decide = useDecide()
 
-  const setUrl = useCallback((nextQueue: WorkspaceQueue, stableKey?: string, nextFilter = '') => {
+  useEffect(() => {
+    const restoreFromHistory = () => {
+      const params = new URLSearchParams(window.location.search)
+      setFilter(params.get('filter') ?? '')
+      setEconomies(selectedValues(params.get('economy')))
+      setPillars(selectedValues(params.get('pillar')))
+      setIndicators(selectedValues(params.get('indicator')))
+    }
+    window.addEventListener('popstate', restoreFromHistory)
+    return () => window.removeEventListener('popstate', restoreFromHistory)
+  }, [])
+
+  useEffect(() => {
+    if (!filtersOpen) return
+    const close = (event: MouseEvent) => {
+      if (!filterPopoverRef.current?.contains(event.target as Node)) setFiltersOpen(false)
+    }
+    const escape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setFiltersOpen(false)
+    }
+    document.addEventListener('mousedown', close)
+    document.addEventListener('keydown', escape)
+    return () => {
+      document.removeEventListener('mousedown', close)
+      document.removeEventListener('keydown', escape)
+    }
+  }, [filtersOpen])
+
+  const activeFilters = useMemo(() => ({ filter, economies, pillars, indicators }), [economies, filter, indicators, pillars])
+  const setUrl = useCallback((nextQueue: WorkspaceQueue, stableKey?: string, nextFilters = activeFilters) => {
     const params = new URLSearchParams()
     params.set('queue', nextQueue)
     if (stableKey) params.set('item', stableKey)
-    if (nextFilter.trim()) params.set('filter', nextFilter.trim())
+    if (nextFilters.filter.trim()) params.set('filter', nextFilters.filter.trim())
+    if (nextFilters.economies.length) params.set('economy', nextFilters.economies.join(','))
+    if (nextFilters.pillars.length) params.set('pillar', nextFilters.pillars.join(','))
+    if (nextFilters.indicators.length) params.set('indicator', nextFilters.indicators.join(','))
     router.replace(`${pathname}?${params.toString()}`, { scroll: false })
-  }, [pathname, router])
+  }, [activeFilters, pathname, router])
 
   useEffect(() => {
-    if (!requestedItem && filtered[0]) setUrl(queue, filtered[0].item.stable_key, filter)
-  }, [filter, filtered, queue, requestedItem, setUrl])
+    if (!requestedItem && filtered[0]) setUrl(queue, filtered[0].item.stable_key)
+  }, [filtered, queue, requestedItem, setUrl])
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -544,6 +599,33 @@ export default function ReviewWorkbench() {
     setSelectedKnown(new Set())
   }
 
+  const clearFilters = () => {
+    const empty = { filter: '', economies: [] as string[], pillars: [] as string[], indicators: [] as string[] }
+    setFilter(''); setEconomies([]); setPillars([]); setIndicators([])
+    setUrl(queue, undefined, empty)
+  }
+
+  const toggleFilter = (group: 'economies' | 'pillars' | 'indicators', value: string) => {
+    const current = activeFilters[group]
+    const values = current.includes(value) ? current.filter((item) => item !== value) : [...current, value]
+    const next = { ...activeFilters, [group]: values }
+    if (group === 'economies') setEconomies(values)
+    if (group === 'pillars') setPillars(values)
+    if (group === 'indicators') setIndicators(values)
+    setUrl(queue, undefined, next)
+  }
+
+  const activeFilterCount = economies.length + pillars.length + indicators.length
+
+  const sourceMatchHref = (findingKey: string) => {
+    const params = new URLSearchParams({ queue })
+    if (economies.length) params.set('economy', economies.join(','))
+    if (pillars.length) params.set('pillar', pillars.join(','))
+    if (indicators.length) params.set('indicator', indicators.join(','))
+    if (filter.trim()) params.set('filter', filter.trim())
+    return `/match/${findingKey}?${params.toString()}`
+  }
+
   return (
     <LazyMotion features={domAnimation}>
       <MotionConfig reducedMotion="user">
@@ -560,7 +642,7 @@ export default function ReviewWorkbench() {
           <nav className="review-queue-tabs" aria-label="Review queues">
             {QUEUES.map((entry) => {
               const progress = summary.data?.progress[entry.key]
-              return <button key={entry.key} className={cn(queue === entry.key && 'active')} onClick={() => { setUrl(entry.key); setMobileRailOpen(true); setSelectedKnown(new Set()) }}>
+              return <button key={entry.key} className={cn(queue === entry.key && 'active')} onClick={() => { const empty = { filter: '', economies: [] as string[], pillars: [] as string[], indicators: [] as string[] }; setFilter(''); setEconomies([]); setPillars([]); setIndicators([]); setFiltersOpen(false); setUrl(entry.key, undefined, empty); setMobileRailOpen(true); setSelectedKnown(new Set()) }}>
                 {queue === entry.key ? <m.span layoutId="queue-indicator" className="review-tab-indicator" /> : null}
                 <span>{entry.label}</span><small suppressHydrationWarning>{progress?.decided ?? 0}/{progress?.total ?? 0}</small>
               </button>
@@ -574,8 +656,18 @@ export default function ReviewWorkbench() {
           </section> : <div className={cn('review-layout', mobileRailOpen && 'mobile-list-open')}>
             <aside className="review-rail" aria-label={`${queue} review queue`}>
               <div className="review-rail-tools">
-                <label><Search size={15} /><input value={filter} onChange={(event) => { const value = event.target.value; setFilter(value); setUrl(queue, selected?.item.stable_key, value) }} placeholder="Filter this queue…" /><Filter size={14} /></label>
-                <span>{filtered.length} rows</span>
+                <div className="review-filter-anchor" ref={filterPopoverRef}>
+                  <div className="review-search-control"><Search size={15} /><input value={filter} onChange={(event) => { const value = event.target.value; const next = { ...activeFilters, filter: value }; setFilter(value); setUrl(queue, undefined, next) }} placeholder="Search this queue…" /><button type="button" className={cn('review-filter-trigger', activeFilterCount > 0 && 'active')} aria-label="Filter queue" aria-expanded={filtersOpen} onClick={() => setFiltersOpen((value) => !value)}><Filter size={15} />{activeFilterCount ? <span>{activeFilterCount}</span> : null}</button></div>
+                  <AnimatePresence>{filtersOpen ? <m.div className="review-filter-popover" role="dialog" aria-label="Queue filters" initial={{ opacity: 0, y: -5, scale: .98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -4, scale: .98 }}>
+                    <header><div><strong>Filter queue</strong><span>Select one or more values</span></div>{activeFilterCount ? <button onClick={clearFilters}>Clear all</button> : null}</header>
+                    {([
+                      ['economies', 'Economy', filterOptions.economies, economies],
+                      ['pillars', 'Pillar', filterOptions.pillars, pillars],
+                      ['indicators', 'Indicator', filterOptions.indicators, indicators],
+                    ] as const).map(([group, label, options, selected]) => <fieldset key={group}><legend>{label}</legend><div>{options.map((value) => <label key={value}><input type="checkbox" checked={selected.includes(value)} onChange={() => toggleFilter(group, value)} /><span>{group === 'pillars' ? `Pillar ${value}` : value}</span></label>)}</div></fieldset>)}
+                  </m.div> : null}</AnimatePresence>
+                </div>
+                <div className="review-filter-summary"><span>{filtered.length} rows</span>{filter || activeFilterCount ? <button onClick={clearFilters}>Clear filters</button> : null}</div>
               </div>
               {queue === 'known' ? <div className="review-bulk-bar"><label><input type="checkbox" checked={bulkEligible.length > 0 && selectedKnown.size === bulkEligible.length} onChange={(event) => setSelectedKnown(event.target.checked ? new Set(bulkEligible.map(({ item }) => item.finding_key!)) : new Set())} /> Select eligible filtered rows</label><button disabled={!selectedKnown.size || decide.isPending} onClick={() => void submitBulk()}>Approve {selectedKnown.size || ''}</button></div> : null}
               <div className="review-rail-list">
@@ -599,10 +691,10 @@ export default function ReviewWorkbench() {
 
             <main className="review-canvas">
               {selected ? <m.div key={selected.item.stable_key} initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: .22 }}>
-                <div className="review-canvas-toolbar"><button className="review-mobile-back" onClick={() => setMobileRailOpen(true)}><ArrowLeft size={17} /> Queue</button><div className="review-toolbar-meta"><span>{reviewId(selected.record, selected.item)}</span><span>{selectedIndex + 1} of {filtered.length}</span></div><div className="review-toolbar-actions">{selected.item.finding_key ? <Link className="review-reference-button" href={`/match/${selected.item.finding_key}?queue=${queue}`}><FileCheck2 size={16} /> Source Match</Link> : null}<button className="review-reference-button" onClick={() => setDrawerOpen(true)}><BookOpenCheck size={16} /> Act reference <ChevronRight size={15} /></button></div></div>
+                <div className="review-canvas-toolbar"><button className="review-mobile-back" onClick={() => setMobileRailOpen(true)}><ArrowLeft size={17} /> Queue</button><div className="review-toolbar-meta"><span>{reviewId(selected.record, selected.item)}</span><span>{selectedIndex + 1} of {filtered.length}</span></div><div className="review-toolbar-actions">{selected.item.finding_key ? <Link className="review-reference-button" href={sourceMatchHref(selected.item.finding_key)}><FileCheck2 size={16} /> Source Match</Link> : null}<button className="review-reference-button" onClick={() => setDrawerOpen(true)}><BookOpenCheck size={16} /> Act reference <ChevronRight size={15} /></button></div></div>
                 <article className={cn('review-focus-card', selected.item.blocked && 'blocked')}>
                   <header>
-                    <div><span className="review-eyebrow">{text(selected.record['Economy'])} · {text(selected.record['Indicator'])}</span><h2>{itemTitle(selected.record)}</h2><p>{text(selected.record['Article/section'] ?? selected.record['Master citation'] ?? selected.record['Indicator question'])}</p></div>
+                    <div><span className="review-eyebrow">{text(selected.record['Economy'])} · {text(selected.record['Indicator'])}{selected.item.registry_change ? ` · ${selected.item.registry_change.kind.replace('_', ' ')}` : ''}</span><h2>{itemTitle(selected.record)}</h2><p>{text(selected.record['Article/section'] ?? selected.record['Master citation'] ?? selected.record['Indicator question'])}</p></div>
                     <div className={cn('review-status-mark', selected.item.review_state?.decision === 'approved' && 'approved', selected.item.blocked && 'blocked')}>{selected.item.blocked ? <ShieldAlert size={18} /> : selected.item.review_state?.decision === 'approved' ? <CheckCircle2 size={18} /> : <CircleDashed size={18} />}<span>{selected.item.blocked ? 'Blocked' : selected.item.review_state?.decision ?? 'Pending'}</span></div>
                   </header>
                   {selected.item.blocked ? <div className="review-block"><ShieldAlert size={18} /><span>{selected.item.block_reason}</span></div> : null}
@@ -611,7 +703,7 @@ export default function ReviewWorkbench() {
                 </article>
                 <DecisionPanel key={selected.item.stable_key} queue={queue} item={selected.item} record={selected.record} context={context.data} />
                 {history.data && history.data.results.length ? <section className="review-history"><h3><History size={16} /> Append-only history</h3>{history.data.results.slice().reverse().map((entry) => <article key={entry.id}><strong>{'stage' in entry ? entry.stage : entry.verdict}</strong><span>{entry.reviewer_name} · {new Date(entry.reviewed_at).toLocaleString()}</span></article>)}</section> : null}
-              </m.div> : queueQuery.isPending ? <div className="review-canvas-loading" /> : <div className="review-empty"><Menu size={24} /><h2>No rows match this filter</h2><button onClick={() => setFilter('')}>Clear filter</button></div>}
+              </m.div> : queueQuery.isPending ? <div className="review-canvas-loading" /> : <div className="review-empty"><Menu size={24} /><h2>No rows match these filters</h2><button onClick={clearFilters}>Clear filters</button></div>}
             </main>
           </div>}
           {selected ? <ReferenceDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} record={selected.record} context={context.data} loading={context.isPending} /> : null}

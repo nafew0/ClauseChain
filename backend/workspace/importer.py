@@ -13,6 +13,7 @@ import yaml
 
 from .keys import content_hash, recall_key, zone3_key
 from .models import EngineSnapshot, EvidenceRow, ReviewItem, RunRecord, SnapshotArtifact
+from .registry import reconcile_snapshot
 
 
 RUN_NAMES = (
@@ -439,7 +440,7 @@ def import_snapshot(artifacts=None, *, keep=5):
     fingerprint_artifacts["payload"] = fingerprint_payload
     # A contract salt prevents a pre-D3 snapshot (whose source artifacts are
     # identical but whose reference sheets were not stored) from being reused.
-    fingerprint_artifacts["workspace_contract"] = "d6r-artifact-graph-v1"
+    fingerprint_artifacts["workspace_contract"] = "escap-evidence-registry-v1"
     source_hash = content_hash(fingerprint_artifacts)
     existing = EngineSnapshot.objects.filter(source_hash=source_hash).first()
     if existing:
@@ -470,6 +471,7 @@ def import_snapshot(artifacts=None, *, keep=5):
         payload.get("generated_at") or payload.get("manifest", {}).get("generated_at")
     )
 
+    previous_snapshot = EngineSnapshot.objects.filter(active=True).first()
     with transaction.atomic():
         EngineSnapshot.objects.filter(active=True).update(active=False, stale=True)
         snapshot = EngineSnapshot.objects.create(
@@ -608,6 +610,13 @@ def import_snapshot(artifacts=None, *, keep=5):
             )
         EvidenceRow.objects.bulk_create(evidence_rows)
 
+        # Engine output is an immutable input.  The application reconciles it
+        # into durable identities/revisions so reruns cannot erase legal work.
+        try:
+            reconcile_snapshot(snapshot, previous_snapshot=previous_snapshot)
+        except ValueError as exc:
+            raise SnapshotImportError(str(exc)) from exc
+
         RunRecord.objects.bulk_create(
             [
                 RunRecord(
@@ -621,12 +630,7 @@ def import_snapshot(artifacts=None, *, keep=5):
             ]
         )
 
-        retained_ids = list(
-            EngineSnapshot.objects.order_by("-imported_at").values_list(
-                "pk", flat=True
-            )[:keep]
-        )
-        EngineSnapshot.objects.exclude(pk__in=retained_ids).filter(
-            releases__isnull=True
-        ).delete()
+        # Deliberately retain every snapshot.  Decisions outlive a run and must
+        # keep the exact evidence revision they attested to. ``keep`` remains a
+        # no-op for management-command compatibility.
     return snapshot, True

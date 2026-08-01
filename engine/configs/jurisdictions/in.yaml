@@ -111,6 +111,23 @@ governing_instruments:
   P7-I1:   { law: "Digital Personal Data Protection Act 2023 (Act 22 of 2023) — phased commencement", url: "https://www.indiacode.nic.in/handle/123456789/22037" }
 
 status_assertions:
+  "IRDAI (Outsourcing of Activities by Indian Insurers) Regulations 2017":
+    status: in_force
+    fact_url: "https://www.indiacode.nic.in/ViewFileUploaded?path=AC_CEN_2_33_00044_193804_1523351752525/regulationindividualfile/&file=irdai_(outsourcing_of_activities_by_indian_insurers)_regulations,_2017.pdf"
+    fact_text: "India Code official upload."
+  "IRDAI (Protection of Policyholders Interests, Operations and Allied Matters of Insurers) Regulations 2024":
+    status: in_force
+    fact_url: "https://financialservices.gov.in/sites/default/files/Act-Policies/2026-01/IRDAI--Protection-of--Policyholder-s-Interests--operations-and-allied-matters-of-insurers--Regulations--2024.pdf"
+    fact_text: "DFS official register PDF (2026-01 upload)."
+  "UAS License Agreement (Migration from CMTS)":
+    status: in_force
+    fact_url: "https://www.dot.gov.in/static/uploads/2026/05/4f2c1ad12524efb1134ba9f57e266184.pdf"
+    fact_text: "DoT official upload; legacy licenses operative pending 2026 authorisation migration."
+  "Companies (Management and Administration) Rules 2014":
+    status: in_force
+    fact_url: "https://thc.nic.in/Central%20Governmental%20Rules/Companies%20(Management%20and%20Administration)%20Rules,2014.pdf"
+    fact_text: "nic.in government mirror of the MCA rules, as amended."
+
   "Information Technology Act 2000":
     status: in_force
     fact_url: "https://www.indiacode.nic.in/handle/123456789/1999"
