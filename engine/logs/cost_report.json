@@ -2315,5 +2315,78 @@
   "economy": "Indonesia",
   "pillar": 7,
   "elapsed_seconds": 915.9
+ },
+ {
+  "run_id": "run-in-p7-1785576928",
+  "at": "2026-08-01T09:52:44.839826+00:00",
+  "models": {
+   "openai/gpt-5.6-luna": {
+    "input_tokens": 365582,
+    "cached_input_tokens": 0,
+    "output_tokens": 193357,
+    "calls": 217,
+    "usd": 0.1526,
+    "priced": true
+   },
+   "openai/gpt-5.6-terra": {
+    "input_tokens": 69236,
+    "cached_input_tokens": 0,
+    "output_tokens": 46986,
+    "calls": 39,
+    "usd": 0.3512,
+    "priced": true
+   }
+  },
+  "total_usd": 0.5037,
+  "note": "measured from real API usage objects; prices per 1M tokens (PRICES)",
+  "economy": "India",
+  "pillar": 7,
+  "elapsed_seconds": 1036.1
+ },
+ {
+  "run_id": "run-th-p6-1785577965",
+  "at": "2026-08-01T09:55:55.642804+00:00",
+  "models": {
+   "openai/gpt-5.6-luna": {
+    "input_tokens": 76244,
+    "cached_input_tokens": 0,
+    "output_tokens": 20994,
+    "calls": 35,
+    "usd": 0.0202,
+    "priced": true
+   }
+  },
+  "total_usd": 0.0202,
+  "note": "measured from real API usage objects; prices per 1M tokens (PRICES)",
+  "economy": "Thailand",
+  "pillar": 6,
+  "elapsed_seconds": 189.7
+ },
+ {
+  "run_id": "run-th-p7-1785578155",
+  "at": "2026-08-01T10:06:17.640098+00:00",
+  "models": {
+   "openai/gpt-5.6-luna": {
+    "input_tokens": 253547,
+    "cached_input_tokens": 0,
+    "output_tokens": 120994,
+    "calls": 117,
+    "usd": 0.098,
+    "priced": true
+   },
+   "openai/gpt-5.6-terra": {
+    "input_tokens": 38527,
+    "cached_input_tokens": 0,
+    "output_tokens": 17262,
+    "calls": 15,
+    "usd": 0.1421,
+    "priced": true
+   }
+  },
+  "total_usd": 0.2401,
+  "note": "measured from real API usage objects; prices per 1M tokens (PRICES)",
+  "economy": "Thailand",
+  "pillar": 7,
+  "elapsed_seconds": 621.8
  }
 ]

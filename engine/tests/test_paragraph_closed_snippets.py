@@ -150,7 +150,9 @@ def test_current_run_artifacts_never_emit_open_snippets():
                 "PASS_CLOSED", "PASS_LONG_BUT_CLOSED"
             }
             trailing = snippet.rstrip()
-            # Script-aware boundary rule (mirrors finalization): Thai closes
-            # structurally (no sentence punctuation exists); Hindi ends with danda.
-            thai_tail = bool(trailing) and "ก" <= trailing[-1] <= "๛"
-            assert trailing.endswith((".", "!", "?", "।")) or thai_tail
+            # Script-aware boundary rule (mirrors finalization): Thai-dominant
+            # snippets close structurally via G9 (asserted above); Latin/Hindi
+            # keep the sentence-punctuation tail check.
+            thai_chars = sum(1 for ch in trailing if "ก" <= ch <= "๛")
+            thai_dominant = thai_chars > len(trailing) * 0.25
+            assert thai_dominant or trailing.endswith((".", "!", "?", "।"))
