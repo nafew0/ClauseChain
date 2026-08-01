@@ -96,7 +96,10 @@
           "enum": [
             "Singapore",
             "Malaysia",
-            "Australia"
+            "Australia",
+            "Thailand",
+            "India",
+            "Indonesia"
           ]
         },
         "pillar": {
@@ -109,7 +112,10 @@
           "enum": [
             "si",
             "ma",
-            "au"
+            "au",
+            "th",
+            "in",
+            "id"
           ]
         }
       },
@@ -141,6 +147,26 @@
       ],
       "params": {},
       "timeout_s": 3600,
+      "exclusive": true
+    },
+    "build_r2_corpus": {
+      "_doc": "Round-2 generic corpus build (pack-driven; script lands with the R2 build step)",
+      "argv": [
+        ".venv/bin/python",
+        "scripts/build_seeds_corpus.py",
+        "--economy",
+        "{economy}"
+      ],
+      "params": {
+        "economy": {
+          "enum": [
+            "Thailand",
+            "India",
+            "Indonesia"
+          ]
+        }
+      },
+      "timeout_s": 7200,
       "exclusive": true
     }
   }
