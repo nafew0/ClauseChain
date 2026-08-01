@@ -75,9 +75,15 @@ def main() -> int:
                 entry = manifest[url]
                 content, via, wb_url = None, None, None
                 proxied = server_proxy_fetch(url)
-                if proxied and proxied[:200].lstrip()[:5] != b"<!DOC" or (
-                        proxied and len(proxied) > 5000):
-                    content, via = proxied, "server-proxy"
+                # Strict acceptance: a .pdf URL must return PDF bytes; an HTML
+                # response for a PDF link is a block/error page, not a recovery
+                # (the bug that briefly archived ratchakitcha 403 pages as "ok").
+                if proxied is not None:
+                    looks_pdf = proxied[:5] == b"%PDF-"
+                    wants_pdf = ".pdf" in url.lower()
+                    if looks_pdf or (not wants_pdf and len(proxied) > 5000
+                                     and b"<html" in proxied[:400].lower()):
+                        content, via = proxied, "server-proxy"
                 if content is None:
                     wb = wayback_fetch(client, url)
                     if wb:
