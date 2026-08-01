@@ -53,8 +53,18 @@ _INCOMPLETE_REFERENCE = re.compile(
 )
 
 
+_THAI_CHARS = re.compile(r"[ก-๛]")
+_THAI_STRUCT_LABEL = re.compile(r"\n\s*(?:มาตรา|ข้อ)\s*[๐-๙0-9]")
+
+
+def _thai_ratio(text: str) -> float:
+    return len(_THAI_CHARS.findall(text)) / max(1, len(text))
+
+
 def _is_real_sentence_stop(source: str, index: int) -> bool:
     """Return true only for a sentence-closing full stop, not legal notation."""
+    if source[index] == "।":   # Devanagari danda — Hindi sentence terminator
+        return True
     if source[index] not in ".!?":
         return False
     if source[index] == ".":
@@ -210,7 +220,19 @@ def finalize_snippet_result(
     # deliberately begin the boundary search at its exact end and only accept a
     # real sentence stop, so the rest of that word and all list children travel.
     stop: int | None = None
+    # Thai statutory text carries no sentence-final punctuation at all: closure
+    # is STRUCTURAL — the passage runs to the start of the next มาตรา/ข้อ label
+    # (or end of the canonical context). Latin/Devanagari text keeps the strict
+    # sentence-stop rule below (the CPC mid-word lesson).
+    if _thai_ratio(source_text[start:max(start + 400, minimum_end)]) > 0.25:
+        label = _THAI_STRUCT_LABEL.search(source_text, max(start, minimum_end - 1))
+        candidate_stop = label.start() if label else len(source_text)
+        candidate = source_text[start:candidate_stop].rstrip()
+        if candidate and _balanced_structure(candidate):
+            stop = start + len(candidate)
     for index in range(max(start, minimum_end - 1), len(source_text)):
+        if stop is not None:
+            break
         if _is_real_sentence_stop(source_text, index):
             candidate = source_text[start:index + 1]
             if (_balanced_structure(candidate)

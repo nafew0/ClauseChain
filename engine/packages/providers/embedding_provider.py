@@ -37,6 +37,12 @@ class OpenAIEmbeddingProvider:
         api_key = os.getenv(self.api_key_env)
         if not api_key:
             raise RuntimeError(f"{self.api_key_env} is not set")
+        # Token-safety truncation: Thai/CJK tokenize near 1 token/char, so a long
+        # unit can blow the 8192-token embedding limit (400 Bad Request — hit on
+        # the Thai corpus, 1 Aug). 6000 chars stays safe in every script; only
+        # over-limit texts are cut, so existing cached embeddings stay valid.
+        max_chars = int(os.getenv("EMBED_MAX_CHARS", "6000"))
+        texts = [t if len(t) <= max_chars else t[:max_chars] for t in texts]
         body: dict = {"model": self.model, "input": texts}
         if self.dimensions:
             body["dimensions"] = self.dimensions

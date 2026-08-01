@@ -147,7 +147,12 @@ def validate_final_finding(finding: MappedFinding,
             elif closure_gates[-1].get("metadata", {}).get("closure_code") not in {
                     "PASS_CLOSED", "PASS_LONG_BUT_CLOSED"}:
                 errors.append("CitationProof does not prove a structurally closed snippet")
-            if not proof.exact_snippet.rstrip().endswith((".", "!", "?")):
+            trailing = proof.exact_snippet.rstrip()
+            # Thai has no sentence-final punctuation — closure there is proven
+            # structurally by G9 (next-มาตรา/ข้อ boundary), which is checked above.
+            # Devanagari sentences end with the danda "।".
+            thai_tail = bool(trailing) and "ก" <= trailing[-1] <= "๛"
+            if not (trailing.endswith((".", "!", "?", "।")) or thai_tail):
                 errors.append("exported snippet does not end at a sentence/paragraph boundary")
     if errors:
         raise FinalizationError(f"{finding_key(finding)}: " + "; ".join(errors))
