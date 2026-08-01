@@ -83,6 +83,17 @@ MALAY_SECTION_PATTERNS = [
 SECTION_GRAMMARS: dict[str, list[re.Pattern]] = {
     "treaty": TREATY_SECTION_PATTERNS,
     "malay": MALAY_SECTION_PATTERNS,
+    # Thai statutes: มาตรา = section (acts); ข้อ = clause (subordinate
+    # notifications). Thai digits ๐-๙ appear in gazette text; the R2 builder
+    # normalises captured labels to Arabic (text/spans untouched).
+    "thai": [
+        re.compile(r"^\s{0,6}มาตรา\s+([๐-๙0-9]{1,4}(?:/[๐-๙0-9]{1,3})?)\s*(\S.{0,110})?"),
+        re.compile(r"^\s{0,6}ข้อ\s+([๐-๙0-9]{1,3})\s*(\S.{0,110})?"),
+    ],
+    # Indonesian statutes/regulations: Pasal N (ayat handled at paragraph depth).
+    "indonesian": [
+        re.compile(r"^\s{0,6}Pasal\s+(\d{1,4}[A-Z]?)\s*(\S.{0,110})?", re.I),
+    ],
 }
 CITATION_TEMPLATES: dict[str, str] = {"treaty": "Art. {label}"}
 

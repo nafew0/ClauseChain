@@ -96,6 +96,35 @@ governing_instruments:
   P7-I2:   { law: "Cyber Security Maintenance Act B.E. 2562 (2019)", url: "https://www.ncsa.or.th" }
 
 status_assertions:
+  "Criminal Procedure Code (consolidated)":
+    status: in_force
+    fact_url: "https://ratchakitcha.soc.go.th/documents/1100264.pdf"
+    fact_text: "Official Royal Gazette consolidated code text; the CPC remains Thailand's operative criminal-procedure statute (amendments read with the consolidation)."
+  "Non-Life Insurance Act B.E. 2535":
+    status: in_force
+    fact_url: "https://oiceservice.oic.or.th/document/Law/file/00516/00516_aef1f2fa4a7ea760a8d84a23b325cff0.pdf"
+    fact_text: "OIC official legislation library publishes the Act as current (as amended); no 2024-2026 change found."
+  "OIC Notification: Customer Personal Data Guidelines (non-life)":
+    status: in_force
+    fact_url: "https://ratchakitcha.soc.go.th/documents/140D098S0000000001600.pdf"
+    fact_text: "Royal Gazette publication; amended by No.2 B.E. 2568 (20 Apr 2026) which does not touch kho 9."
+  "Credit Information Business Operation Act B.E. 2545":
+    status: in_force
+    fact_url: "https://www.bot.or.th/en/our-roles/financial-institutions/credit-information-business.html"
+    fact_text: "BOT's credit-information supervision pages treat the Act as the operative regime; ESCAP Round-2 government-verified gold records it as current evidence (TH 6.1/7.1/7.3 rows)."
+  "Telecommunications Business Act B.E. 2544":
+    status: in_force
+    fact_url: "https://www.nbtc.go.th"
+    fact_text: "NBTC's licensing regime operates under the Act; ESCAP Round-2 government-verified gold records ss.50/64/66/74/77 as current evidence."
+  "National Intelligence Act B.E. 2562":
+    status: in_force
+    fact_url: "https://www.ratchakitcha.soc.go.th/DATA/PDF/2562/A/050/T_0022.PDF"
+    fact_text: "Royal Gazette publication 2019; no amendment identified; ESCAP Round-2 government-verified gold cites ss.5-6 as current P7-I5 evidence."
+    effective_date: "2019-04-16"
+  "MICT Notification on Computer Traffic Data Retention 2007":
+    status: repealed
+    fact_url: "http://www.ratchakitcha.soc.go.th/DATA/PDF/2564/E/188/T_0009.PDF"
+    fact_text: "Repealed and replaced by the MDES Notification B.E. 2564 (phased 2021-2022); record as lead only, never as current evidence."
   "Personal Data Protection Act B.E. 2562":
     status: in_force
     fact_url: "https://ratchakitcha.soc.go.th/DATA/PDF/2562/A/069/T_0052.PDF"

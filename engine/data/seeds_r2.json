@@ -288,7 +288,8 @@
     "coverage": null,
     "policy": null,
     "indicator_code": "P6-I5",
-    "cluster": "deep-research 31-Jul-2026"
+    "cluster": "deep-research 31-Jul-2026",
+    "source_type": "treaty"
    },
    {
     "act": "AANZFTA Second Protocol Chapter 10 (E-Commerce)",
@@ -296,7 +297,8 @@
     "coverage": null,
     "policy": null,
     "indicator_code": "P6-I5",
-    "cluster": "deep-research 31-Jul-2026"
+    "cluster": "deep-research 31-Jul-2026",
+    "source_type": "treaty"
    }
   ],
   "India": [
@@ -1092,7 +1094,8 @@
     "coverage": null,
     "policy": null,
     "indicator_code": "P6-I5",
-    "cluster": "deep-research 31-Jul-2026"
+    "cluster": "deep-research 31-Jul-2026",
+    "source_type": "treaty"
    },
    {
     "act": "RCEP Chapter 12 (official text)",
@@ -1100,7 +1103,8 @@
     "coverage": null,
     "policy": null,
     "indicator_code": "P6-I5",
-    "cluster": "deep-research 31-Jul-2026"
+    "cluster": "deep-research 31-Jul-2026",
+    "source_type": "treaty"
    },
    {
     "act": "UU 4/2021 ASEAN E-Commerce ratification",
@@ -1108,7 +1112,8 @@
     "coverage": null,
     "policy": null,
     "indicator_code": "P6-I5",
-    "cluster": "deep-research 31-Jul-2026"
+    "cluster": "deep-research 31-Jul-2026",
+    "source_type": "treaty"
    }
   ]
  }

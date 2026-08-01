@@ -99,6 +99,27 @@ governing_instruments:
   P7-I2:   { law: "Presidential Regulation No. 47 of 2023 on National Cybersecurity Strategy", url: "https://peraturan.bpk.go.id/Details/255542/perpres-no-47-tahun-2023" }
 
 status_assertions:
+  "Regulation of the Minister of Communication and Informatics of the Republic of Indonesia No.20 on Protection of Personal Data 2016":
+    status: in_force
+    fact_url: "https://jdih.komdigi.go.id"
+    fact_text: "Permenkominfo 20/2016 remains operative for private-scope processing pending the PDP implementing PP; ESCAP Round-2 government-verified gold cites it as current."
+  "Regulation of the Minister of Communication and Informatics of the Republic of Indonesia No.5 of 2020":
+    status: in_force
+    fact_url: "https://jdih.komdigi.go.id/produk_hukum/view/id/759/t/peraturan%2Bmenteri%2Bkomunikasi%2Bdan%2Binformatika%2Bnomor%2B5%2Btahun%2B2020"
+    fact_text: "Promulgated 24 Nov 2020, amended 10/2021; the 2025 Komdigi rewrite touched the public scope only."
+  "POJK 69/POJK.05/2016 Insurance Business":
+    status: in_force
+    fact_url: "https://ojk.go.id/id/regulasi/Documents/Pages/POJK-tentang--Penyelenggaraan-Usaha-Perusahaan-Asuransi,-Asuransi-Syariah,-Reasuransi,-dan-Reasuransi-Syariah/pojk%2069-2016.pdf"
+    fact_text: "Pasal 49 intact; POJK 38/2020 inserted Pasal 49A. POJK 36/2024 interaction unverified (medium confidence)."
+  "POJK 38/POJK.05/2020 (inserts Pasal 49A)":
+    status: in_force
+    fact_url: "https://www.ojk.go.id/id/regulasi/Documents/Pages/Perubahan-Atas-Peraturan-Otoritas-Jasa-Keuangan-Nomor-69-tentang-Penyelenggaraan-Usaha-Perusahaan-Asuransi/pojk%2038-2020.pdf"
+    fact_text: "Established 15 June 2020, promulgated 18 June 2020."
+  "Omnibus Health Law No.17 2023 (UU Kesehatan)":
+    status: in_force
+    fact_url: "https://jdih.kemkes.go.id/storage/documents/pdfs/2023uu017.pdf"
+    fact_text: "Kemenkes JDIH official text; in force 2023; PP 28/2024 implements it (superseding PP 46/2014)."
+
   "UU 27/2022 (PDP Law)":
     status: in_force
     fact_url: "https://jdih.komdigi.go.id/produk_hukum/view/id/832/t/undangundang%2Bnomor%2B27%2Btahun%2B2022"
