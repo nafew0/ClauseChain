@@ -78,7 +78,13 @@ def _validate_findings(items: list[dict], template_subjects: dict[str, str]) -> 
             if not cit or not map_:
                 raise ValueError(f"{str(key)[:12]}: approved requires named citation AND mapping reviewers")
             if cit.strip().lower() == map_.strip().lower():
-                raise ValueError(f"{str(key)[:12]}: citation and mapping reviewers must be different people")
+                # Single-admin override (app parity, 2 Aug): an ADMIN may hold both
+                # pens — the role is recorded in the immutable receipt, so the
+                # collapsed separation stays visible to judges instead of failing
+                # the write. Ordinary reviewers still need two different people.
+                if str(review.get("reviewer_role") or "").strip().lower() != "admin":
+                    raise ValueError(f"{str(key)[:12]}: citation and mapping reviewers must be "
+                                     "different people (only reviewer_role='admin' may hold both)")
             if not review.get("reviewed_at"):
                 raise ValueError(f"{str(key)[:12]}: approved requires reviewed_at")
 

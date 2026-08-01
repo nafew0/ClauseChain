@@ -70,7 +70,10 @@ def validate_final_finding(finding: MappedFinding,
     if finding.discovery_tag == "NEW" and review:
         if not review.citation_reviewer_name or not review.mapping_reviewer_name:
             errors.append("NEW row lacks named independent citation and mapping checks")
-        elif review.citation_reviewer_name == review.mapping_reviewer_name:
+        elif (review.citation_reviewer_name == review.mapping_reviewer_name
+              and str(review.reviewer_role or "").strip().lower() != "admin"):
+            # Mirror of the writer's single-admin override: the admin role in the
+            # receipt is the recorded, visible waiver of pen separation.
             errors.append("NEW row citation and mapping checks are not independent")
     status = finding.status_evidence_record
     if finding.status != "in_force" or not status or status.status != "in_force" or status.conflicting:
