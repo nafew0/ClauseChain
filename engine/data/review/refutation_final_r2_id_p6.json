@@ -1,0 +1,86 @@
+[
+ {
+  "indicator": "P6-I5",
+  "law": "IA-CEPA Chapter 13 (E-Commerce)",
+  "article": "Art. 13.12",
+  "verdict": "RECOMMEND-KEEP",
+  "rubric_version": "full-indicator-v2",
+  "panel_type": "three-lens-single-configured-model",
+  "refuter_votes": [
+   {
+    "persona": "opposing_counsel",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "Article 13.12 contains a binding location-of-computing-facilities discipline: 'Neither Party shall require' covered persons to locate facilities domestically as a business condition. The stated exceptions are preserved and do not negate the existence of the commitment; the mapping does not confuse confidentiality, domestic disclosure, or a transfer ban with the cited location discipline."
+   },
+   {
+    "persona": "methodology_reviewer",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "Under P6-I5, hunt_in is unrestricted and the rubric expressly accepts location-of-computing-facilities disciplines as evidence of a binding cross-border data-transfer commitment. The quoted 'shall not require' obligation is a binding treaty commitment, while the score of 0 is correctly applied at scoring time because at least one such agreement exists. The exceptions do not eliminate the framework evidence."
+   },
+   {
+    "persona": "strict_textualist",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "The exact text establishes that neither Party shall require a covered person to use or locate computing facilities in its territory as a condition of conducting business, subject to stated grandfathering and public-policy/security exceptions. That is precisely a binding location-of-computing-facilities discipline identified by the rubric, although it does not establish an unqualified ban."
+   }
+  ]
+ },
+ {
+  "indicator": "P6-I5",
+  "law": "IA-CEPA Chapter 13 (E-Commerce)",
+  "article": "Art. 13.11",
+  "verdict": "RECOMMEND-KEEP",
+  "rubric_version": "full-indicator-v2",
+  "panel_type": "three-lens-single-configured-model",
+  "refuter_votes": [
+   {
+    "persona": "opposing_counsel",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "Article 13.11.2 expressly imposes a binding duty to allow cross-border transfers of information by electronic means. The public-policy and essential-security exceptions qualify that duty but do not convert it into a nonbinding or purely permissive rule, so no legal-function or scope defect is shown."
+   },
+   {
+    "persona": "methodology_reviewer",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "Under P6-I5, applies=true when the provision states a binding cross-border data-transfer commitment. The quoted “shall allow” language matches the rubric's positive cue and the cross-border electronic-transfer legal test. The framework's scoring inversion is applied later: this agreement supports a score of 0, not rejection of the evidence row."
+   },
+   {
+    "persona": "strict_textualist",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "The exact text states that each Party “shall allow the cross-border transfer of information by electronic means,” including personal information, for the business of a covered person. The surrounding exceptions permit specified measures under conditions but do not erase the stated commitment; the text therefore establishes precisely the rubric's required binding cross-border commitment."
+   }
+  ]
+ },
+ {
+  "indicator": "P6-I5",
+  "law": "RCEP Chapter 12 (official text)",
+  "article": "Art. 12.3",
+  "verdict": "RECOMMEND-REJECT",
+  "rubric_version": "full-indicator-v2",
+  "panel_type": "three-lens-single-configured-model",
+  "refuter_votes": [
+   {
+    "persona": "opposing_counsel",
+    "refuted": true,
+    "failure_mode": "provision evidences a different indicator than claimed",
+    "reason": "Article 12.3 is a scope provision. It does not state that a Party shall allow or shall not prohibit or restrict cross-border transfers, and merely references Article 12.15 without quoting its operative obligation. It therefore does not perform the binding data-transfer-commitment function required for P6-I5."
+   },
+   {
+    "persona": "methodology_reviewer",
+    "refuted": true,
+    "failure_mode": "snippet does not actually support the rationale",
+    "reason": "Under the supplied legal_test, applies=true requires the cited treaty provision itself to state a binding cross-border data-transfer commitment. The exact snippet only covers measures affecting electronic commerce; the rubric's hunt_in is empty and does not authorize treating a general framework scope clause or an unquoted cross-reference as sufficient evidence. The scoring polarity does not change that mapping requirement."
+   },
+   {
+    "persona": "strict_textualist",
+    "refuted": true,
+    "failure_mode": "keyword match without the legal FUNCTION",
+    "reason": "The quoted text establishes only that the Chapter applies to measures affecting electronic commerce. Although the surrounding text names Article 12.15, it does not quote any duty concerning cross-border transfer of information. On the exact text supplied, no binding transfer commitment is established."
+   }
+  ]
+ }
+]

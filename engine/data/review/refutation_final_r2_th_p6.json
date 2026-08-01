@@ -1,0 +1,114 @@
+[
+ {
+  "indicator": "P6-I5",
+  "law": "AANZFTA Second Protocol Chapter 10 (E-Commerce)",
+  "article": "s. 17",
+  "verdict": "RECOMMEND-KEEP",
+  "rubric_version": "full-indicator-v2",
+  "panel_type": "three-lens-single-configured-model",
+  "refuter_votes": [
+   {
+    "persona": "opposing_counsel",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "The text imposes a binding location-of-computing-facilities discipline as a condition of conducting business. The public-policy and security exceptions qualify the commitment but do not eliminate its legal function under P6-I5."
+   },
+   {
+    "persona": "methodology_reviewer",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "P6-I5 expressly accepts location-of-computing-facilities disciplines as evidence of a binding cross-border data-transfer commitment. The provision is within the stated hunt_in scope, and the rubric records the resulting agreement as evidence while applying the 0 score separately; the exceptions do not negate that evidence."
+   },
+   {
+    "persona": "strict_textualist",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "Article 17(2) literally states that no Party shall require covered persons to use or locate computing facilities in its territory as a condition of conducting business there. In context, that is a binding location-of-computing-facilities commitment, and the stated exceptions preserve rather than erase the commitment."
+   }
+  ]
+ },
+ {
+  "indicator": "P6-I5",
+  "law": "AANZFTA Second Protocol Chapter 10 (E-Commerce)",
+  "article": "s. 3",
+  "verdict": "RECOMMEND-REJECT",
+  "rubric_version": "full-indicator-v2",
+  "panel_type": "three-lens-single-configured-model",
+  "refuter_votes": [
+   {
+    "persona": "opposing_counsel",
+    "refuted": true,
+    "failure_mode": "provision evidences a different indicator than claimed",
+    "reason": "Article 3 is a scope provision and does not impose, or state, any binding cross-border data-transfer commitment. Its reference to Articles 17 and 18 does not establish the legal function required by P6-I5."
+   },
+   {
+    "persona": "methodology_reviewer",
+    "refuted": true,
+    "failure_mode": "snippet does not actually support the rationale",
+    "reason": "Under the rubric, the evidence row must state a binding commitment such as allowing or not restricting cross-border electronic transfers, or impose location-of-computing-facilities disciplines. The quoted scope text contains none of those cues; sectoral coverage is acceptable, but this provision does not evidence the required framework."
+   },
+   {
+    "persona": "strict_textualist",
+    "refuted": true,
+    "failure_mode": "provision evidences a different indicator than claimed",
+    "reason": "The exact text says only that the chapter applies to measures affecting electronic commerce, subject to exclusions. It does not say that a Party shall allow, or shall not prohibit or restrict, cross-border transfers, so the claimed rationale cannot be drawn from the cited text."
+   }
+  ]
+ },
+ {
+  "indicator": "P6-I5",
+  "law": "RCEP Chapter 12 (official text)",
+  "article": "s. 12.15",
+  "verdict": "RECOMMEND-KEEP",
+  "rubric_version": "full-indicator-v2",
+  "panel_type": "three-lens-single-configured-model",
+  "refuter_votes": [
+   {
+    "persona": "opposing_counsel",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "Section 12.15(2) performs the relevant legal function: it binds a Party not to prevent cross-border electronic transfers for the business of a covered person. The public-policy and security exceptions qualify the obligation but do not eliminate the binding commitment, and exclusion from dispute settlement does not by itself make the treaty obligation nonbinding."
+   },
+   {
+    "persona": "methodology_reviewer",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "Under P6-I5, the quoted text is a positive cue expressly stating that a Party shall not prevent cross-border transfer of information by electronic means. Hunt_in is empty, and the provision is horizontal rather than government-data-only. The mapping therefore applies=true as evidence of at least one binding agreement; the indicator's score is 0 at scoring time, not a reason to reject the mapping."
+   },
+   {
+    "persona": "strict_textualist",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "The exact text establishes a mandatory cross-border data-transfer commitment for the specified business activity and covered persons. Article 12.15(3) permits certain qualified exceptions, including legitimate public policy and essential security measures, but the context does not convert the commitment into a permission or erase its cross-border-transfer function."
+   }
+  ]
+ },
+ {
+  "indicator": "P6-I5",
+  "law": "RCEP Chapter 12 (official text)",
+  "article": "s. 12.3",
+  "verdict": "RECOMMEND-REJECT",
+  "rubric_version": "full-indicator-v2",
+  "panel_type": "three-lens-single-configured-model",
+  "refuter_votes": [
+   {
+    "persona": "opposing_counsel",
+    "refuted": true,
+    "failure_mode": "provision evidences a different indicator than claimed",
+    "reason": "Section 12.3 establishes only the Chapter's scope and references Article 12.15; it does not itself state a binding cross-border data-transfer commitment. Under P6-I5, the cited provision therefore does not establish the required legal function."
+   },
+   {
+    "persona": "methodology_reviewer",
+    "refuted": true,
+    "failure_mode": "snippet does not actually support the rationale",
+    "reason": "The rubric's hunt_in is unrestricted, but scoring requires evidence that the economy has at least one binding agreement containing a cross-border transfer commitment. The quoted scope language supplies no positive cue and cannot support the claimed P6-I5 evidence row or G7 pass."
+   },
+   {
+    "persona": "strict_textualist",
+    "refuted": true,
+    "failure_mode": "provision evidences a different indicator than claimed",
+    "reason": "The exact text says the Chapter applies to measures affecting electronic commerce and sets exclusions; it does not say a Party shall allow, or shall not prohibit or restrict, cross-border transfers. The surrounding reference to Article 12.15 is not the commitment's text."
+   }
+  ]
+ }
+]

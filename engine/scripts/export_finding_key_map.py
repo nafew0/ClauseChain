@@ -16,7 +16,9 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 RUNS = ["final_si_p6", "final_si_p7", "final_ma_p6", "final_ma_p7",
-        "final_au_p6", "final_au_p7"]
+        "final_au_p6", "final_au_p7",
+        "final_r2_th_p6", "final_r2_th_p7", "final_r2_in_p6", "final_r2_in_p7",
+        "final_r2_id_p6", "final_r2_id_p7"]
 
 
 def main() -> int:

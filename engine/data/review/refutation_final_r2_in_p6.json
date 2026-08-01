@@ -1,0 +1,58 @@
+[
+ {
+  "indicator": "P6-I2",
+  "law": "Companies (Accounts) Rules 2014 (as amended 2022)",
+  "article": "s. 3(5)",
+  "verdict": "RECOMMEND-KEEP",
+  "rubric_version": "full-indicator-v2",
+  "panel_type": "three-lens-single-configured-model",
+  "refuter_votes": [
+   {
+    "persona": "opposing_counsel",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "The provision expressly requires electronic-account backups to be kept on servers physically located in India on a periodic basis. That is a domestic-copy storage obligation, not merely confidentiality, operational localization, or a transfer ban. Its sectoral coverage is not a defect because the rubric awards 0.5 for a single non-personal or specific-data storage rule."
+   },
+   {
+    "persona": "methodology_reviewer",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "Under P6-I2, the text satisfies the storage function through the mandatory phrase “shall be kept in servers physically located in India,” and the backup is a copy of the electronic books and papers. Although hunt_in is empty, the supplied text directly establishes the indicator. It is one sectoral/specific-data requirement, so the correct score is 0.5; it does not establish P6-I1 or P6-I3."
+   },
+   {
+    "persona": "strict_textualist",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "The exact proviso states that backups of books of account and other books and papers, including those maintained outside India, shall be kept on servers physically located in India periodically. The surrounding context confirms the subject is company electronic accounting records. “Periodically” qualifies the backup obligation but does not eliminate the requirement to maintain a domestic copy, and nothing in the text makes India storage permissive or a ceiling."
+   }
+  ]
+ },
+ {
+  "indicator": "P6-I2",
+  "law": "Companies (Accounts) Rules 2014 (as amended 2022)",
+  "article": "s. 3(1)",
+  "verdict": "RECOMMEND-KEEP",
+  "rubric_version": "full-indicator-v2",
+  "panel_type": "three-lens-single-configured-model",
+  "refuter_votes": [
+   {
+    "persona": "opposing_counsel",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "The proviso requires backup copies of electronic books, including those maintained outside India, to be kept periodically on servers physically located in India. That is the legal function of domestic copy storage, not a transfer ban or an operational-server requirement; sectoral coverage is accepted by the rubric."
+   },
+   {
+    "persona": "methodology_reviewer",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "Although hunt_in is empty, the text directly establishes a local-storage requirement: a backup copy must be kept on India-located servers. It concerns specific company books rather than personal data or horizontal coverage, so the rubric scores it 0.5. It is not P6-I1 or P6-I3."
+   },
+   {
+    "persona": "strict_textualist",
+    "refuted": false,
+    "failure_mode": "none",
+    "reason": "The exact proviso says the backup of books and papers maintained electronically, including at a place outside India, shall be kept in servers physically located in India on a periodic basis. The text establishes domestic storage of a copy, while preserving the possibility of foreign maintenance and saying nothing about a transfer prohibition or server location as an operating precondition."
+   }
+  ]
+ }
+]

@@ -1345,3 +1345,702 @@ because of an authorisation given under subsection (2), an
 authorised officer of the Australian Federal Police may authorise 
 the disclosure of the information or documents so disclosed to a 
 foreign law enforcement agency.","This s.180A(4) permits onward disclosure by an AFP authorised officer. Maps to P7-I5 because it governs government access/disclosure of personal data without any independent judicial authorization for this step; the safeguard lies in subsection (2), not a court order. Function: permitted access/disc",https://www.legislation.gov.au/C2004A02124/latest,0.91,"Discovery: instrument is known but s. 180A is not among its recorded provisions (['10', '110', '317ZH', '474.34', '7']). Modality: may; exceptions: none",Sectoral (telecommunications),,in_force
+Thailand,Personal Data Protection Act B.E. 2562 (2019),,,P6-I1,n/a,KNOWN,n/a,NO_EVIDENCE_FOUND_PENDING_REVIEW,"No qualifying provision found for P6-I1 after a full-corpus sweep. The configured governing law is cited as the reference basis (score-0 pattern, A3).",https://ratchakitcha.soc.go.th/DATA/PDF/2562/A/069/T_0052.PDF,0.6,Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required before this becomes a score-0 final row (P3.5 A3).,Horizontal,,in_force
+India,Information Technology Act 2000 (Act 21 of 2000),,,P6-I1,n/a,KNOWN,n/a,NO_EVIDENCE_FOUND_PENDING_REVIEW,"No qualifying provision found for P6-I1 after a full-corpus sweep. The configured governing law is cited as the reference basis (score-0 pattern, A3).",https://www.indiacode.nic.in/handle/123456789/1999,0.6,Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required before this becomes a score-0 final row (P3.5 A3).,Horizontal,,in_force
+Indonesia,Law No. 27 of 2022 on Personal Data Protection,,,P6-I1,n/a,KNOWN,n/a,NO_EVIDENCE_FOUND_PENDING_REVIEW,"No qualifying provision found for P6-I1 after a full-corpus sweep. The configured governing law is cited as the reference basis (score-0 pattern, A3).",https://jdih.komdigi.go.id/produk_hukum/view/id/832/t/undangundang%2Bnomor%2B27%2Btahun%2B2022,0.6,Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required before this becomes a score-0 final row (P3.5 A3).,Horizontal,,in_force
+Thailand,Personal Data Protection Act B.E. 2562 (2019),,,P6-I2,n/a,KNOWN,n/a,NO_EVIDENCE_FOUND_PENDING_REVIEW,"No qualifying provision found for P6-I2 after a full-corpus sweep. The configured governing law is cited as the reference basis (score-0 pattern, A3).",https://ratchakitcha.soc.go.th/DATA/PDF/2562/A/069/T_0052.PDF,0.6,Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required before this becomes a score-0 final row (P3.5 A3).,Horizontal,,in_force
+India,Companies (Accounts) Rules 2014 (as amended 2022),,,P6-I2,s. 3(5),NEW,page 1,"(5) There shall be a proper system for storage, retrieval, display or printout of the electronic records as the Audit 
+Committee, if any, or the Board may deem appropriate and such records shall not be disposed of or rendered unusable, 
+unless permitted by law: 
+Provided that the back-up  of the books of account  and other books and papers of the company maintained in electronic 
+mode, including at a place outside India, if any, shall be kept in servers physically located in India on a periodic basis.","This section requires companies to keep electronic-account backups on servers physically located in India periodically. Maps to P6-I2 because it mandates a domestic copy as a local-storage requirement, not a transfer ban.","https://thc.nic.in/Central%20Governmental%20Rules/Companies%20(Accounts)%20Rules,%202014..pdf",0.99,Discovery: instrument not in the master dataset for India. Modality: shall; exceptions: none,Sectoral (Companies and corporate accounting records),,in_force
+India,Companies (Accounts) Rules 2014 (as amended 2022),,,P6-I2,s. 3(1),NEW,page 1,"(5) There shall be a proper system for storage, retrieval, display or printout of the electronic records as the Audit 
+Committee, if any, or the Board may deem appropriate and such records shall not be disposed of or rendered unusable, 
+unless permitted by law: 
+Provided that the back-up  of the books of account  and other books and papers of the company maintained in electronic 
+mode, including at a place outside India, if any, shall be kept in servers physically located in India on a periodic basis.","This section requires companies to keep periodic backup copies in India. Maps to P6-I2 because it establishes a local-storage requirement for a domestic copy, not a transfer ban or operational-server precondition.","https://thc.nic.in/Central%20Governmental%20Rules/Companies%20(Accounts)%20Rules,%202014..pdf",0.99,"Discovery: instrument not in the master dataset for India. Modality: shall; exceptions: The phrase 'unless permitted by law' qualifies disposal or rendering records unusable, not the India-location requirement for backups",Sectoral (Companies maintaining books of account in electronic mode),,in_force
+Indonesia,Law No. 27 of 2022 on Personal Data Protection,,,P6-I2,n/a,KNOWN,n/a,NO_EVIDENCE_FOUND_PENDING_REVIEW,"No qualifying provision found for P6-I2 after a full-corpus sweep. The configured governing law is cited as the reference basis (score-0 pattern, A3).",https://jdih.komdigi.go.id/produk_hukum/view/id/832/t/undangundang%2Bnomor%2B27%2Btahun%2B2022,0.6,Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required before this becomes a score-0 final row (P3.5 A3).,Horizontal,,in_force
+Thailand,Personal Data Protection Act B.E. 2562 (2019),,,P6-I3,n/a,KNOWN,n/a,NO_EVIDENCE_FOUND_PENDING_REVIEW,"No qualifying provision found for P6-I3 after a full-corpus sweep. The configured governing law is cited as the reference basis (score-0 pattern, A3).",https://ratchakitcha.soc.go.th/DATA/PDF/2562/A/069/T_0052.PDF,0.6,Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required before this becomes a score-0 final row (P3.5 A3).,Horizontal,,in_force
+India,Information Technology Act 2000 (Act 21 of 2000),,,P6-I3,n/a,KNOWN,n/a,NO_EVIDENCE_FOUND_PENDING_REVIEW,"No qualifying provision found for P6-I3 after a full-corpus sweep. The configured governing law is cited as the reference basis (score-0 pattern, A3).",https://www.indiacode.nic.in/handle/123456789/1999,0.6,Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required before this becomes a score-0 final row (P3.5 A3).,Horizontal,,in_force
+Indonesia,Law No. 27 of 2022 on Personal Data Protection,,,P6-I3,n/a,KNOWN,n/a,NO_EVIDENCE_FOUND_PENDING_REVIEW,"No qualifying provision found for P6-I3 after a full-corpus sweep. The configured governing law is cited as the reference basis (score-0 pattern, A3).",https://jdih.komdigi.go.id/produk_hukum/view/id/832/t/undangundang%2Bnomor%2B27%2Btahun%2B2022,0.6,Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required before this becomes a score-0 final row (P3.5 A3).,Horizontal,,in_force
+Thailand,Personal Data Protection Act B.E. 2562 (2019),,,P6-I4,n/a,KNOWN,n/a,NO_EVIDENCE_FOUND_PENDING_REVIEW,"No qualifying provision found for P6-I4 after a full-corpus sweep. The configured governing law is cited as the reference basis (score-0 pattern, A3).",https://ratchakitcha.soc.go.th/DATA/PDF/2562/A/069/T_0052.PDF,0.6,Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required before this becomes a score-0 final row (P3.5 A3).,Horizontal,,in_force
+India,Information Technology Act 2000 (Act 21 of 2000),,,P6-I4,n/a,KNOWN,n/a,NO_EVIDENCE_FOUND_PENDING_REVIEW,"No qualifying provision found for P6-I4 after a full-corpus sweep. The configured governing law is cited as the reference basis (score-0 pattern, A3).",https://www.indiacode.nic.in/handle/123456789/1999,0.6,Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required before this becomes a score-0 final row (P3.5 A3).,Horizontal,,in_force
+Indonesia,Law No. 27 of 2022 on Personal Data Protection,,,P6-I4,n/a,KNOWN,n/a,NO_EVIDENCE_FOUND_PENDING_REVIEW,"No qualifying provision found for P6-I4 after a full-corpus sweep. The configured governing law is cited as the reference basis (score-0 pattern, A3).",https://jdih.komdigi.go.id/produk_hukum/view/id/832/t/undangundang%2Bnomor%2B27%2Btahun%2B2022,0.6,Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required before this becomes a score-0 final row (P3.5 A3).,Horizontal,,in_force
+Thailand,AANZFTA Second Protocol Chapter 10 (E-Commerce),,,P6-I5,s. 17,NEW,page 15,"No Party shall require a covered person to use or locate
+computing facilities in that Party's territory as a condition for
+conducting business in that Party's territory.",This section prohibits Parties from imposing domestic computing-facility location as a business condition. Maps to P6-I5 because it establishes a binding location-of-computing-facilities commitment governing cross-border data flows.,https://www.dfat.gov.au/trade/agreements/in-force/aanzfta/official-documents/agreement-establishing-asean-australia-new-zealand-free-trade-area-aanzfta/chapter-10-electronic-commerce,0.98,"Discovery: instrument not in the master dataset for Thailand. Modality: shall not; exceptions: A measure inconsistent with paragraph 2 that the Party considers necessary to achieve a legitimate public policy objective, provided it is not applied as arbitrary or unjustifiable discrimination or a disguised restriction on trade; A measure the Party considers necessary for the protection of its essential security interests",Horizontal,,in_force
+Thailand,AANZFTA Second Protocol Chapter 10 (E-Commerce),,,P6-I5,s. 3,NEW,page 4,"Article 3
+Scope³
+This Chapter shall apply to measures adopted or
+maintained by a Party that affect electronic commerce.","This section establishes the e-commerce chapter's scope. Maps to P6-I5 because it evidences the binding framework containing cross-border data-transfer disciplines, without itself imposing a transfer rule.",https://www.dfat.gov.au/trade/agreements/in-force/aanzfta/official-documents/agreement-establishing-asean-australia-new-zealand-free-trade-area-aanzfta/chapter-10-electronic-commerce,0.94,"Discovery: instrument not in the master dataset for Thailand. Modality: shall; exceptions: government procurement; information held or processed by or on behalf of a Party, or measures related to such information, except for Article 15; Articles 17 and 18 do not apply to specified aspects of measures addressed by Chapter 8 or Chapter 11 obligations",Sectoral (Electronic commerce),,in_force
+Thailand,RCEP Chapter 12 (official text),,,P6-I5,s. 12.15,NEW,page 10,"A Party shall not prevent cross-border transfer of information by
+electronic means where such activity is for the conduct of the
+business of a covered person.",This section prohibits Parties from preventing covered-person business transfers of information by electronic means. Maps to P6-I5 because it establishes a binding horizontal data-transfer commitment.,https://www.mfat.govt.nz/assets/Trade-agreements/RCEP/RECP-Agreement-112020/Chapter-12.pdf,0.99,"Discovery: instrument not in the master dataset for Thailand. Modality: shall not; exceptions: A Party may adopt or maintain a measure inconsistent with paragraph 2 that it considers necessary to achieve a legitimate public policy objective, subject to non-discrimination and no disguised restriction on trade; A Party may adopt or maintain a measure it considers necessary for the protection of its essential security interests",Horizontal,,in_force
+Thailand,RCEP Chapter 12 (official text),,,P6-I5,s. 12.3,NEW,page 2,"This Chapter shall apply to measures adopted or maintained by a
+Party that affect electronic commerce.",This section establishes the Chapter 12 electronic-commerce framework. Maps to P6-I5 because its scope provision evidences the binding framework containing Article 12.15's cross-border transfer commitment.,https://www.mfat.govt.nz/assets/Trade-agreements/RCEP/RECP-Agreement-112020/Chapter-12.pdf,0.97,"Discovery: instrument not in the master dataset for Thailand. Modality: shall; exceptions: Government procurement.; Information held or processed by or on behalf of a Party, or measures related to such information, including collection measures.; Aspects of measures that do not conform with Chapter 8 or Chapter 10 obligations, where adopted or maintained in accordance with applicable reservations, commitments, limitations, conditions, non-covered sectors, or exceptions.",Horizontal,,in_force
+India,Information Technology Act 2000 (Act 21 of 2000),,,P6-I5,n/a,KNOWN,n/a,NO_EVIDENCE_FOUND_PENDING_REVIEW,"No qualifying provision found for P6-I5 after a full-corpus sweep. The configured governing law is cited as the reference basis (score-0 pattern, A3).",https://www.indiacode.nic.in/handle/123456789/1999,0.6,Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required before this becomes a score-0 final row (P3.5 A3).,Horizontal,,in_force
+Indonesia,IA-CEPA Chapter 13 (E-Commerce),,,P6-I5,Art. 13.12,NEW,page 7,"Neither Party shall require a covered person to use or locate computing facilities 
+in that Party’s territory as a condition for conducting business in that territory, except 
+where such a measure exists at the date of entry into force of this Agreement.",This Article 13.12 prohibits Parties from requiring covered persons to use or locate computing facilities domestically as a business condition. Maps to P6-I5 because it establishes a binding location-of-computing-facilities discipline.,https://www.dfat.gov.au/sites/default/files/iacepa-chapter-13-electronic-commerce.pdf,0.99,"Discovery: instrument not in the master dataset for Indonesia. Modality: shall not require; exceptions: A measure existing at the date of entry into force of the Agreement; Measures inconsistent with paragraph 2 to achieve a legitimate public policy objective, subject to the stated non-discrimination and non-disguised-restriction requirements; Measures considered necessary for the protection of essential security interests",Horizontal,,in_force
+Indonesia,IA-CEPA Chapter 13 (E-Commerce),,,P6-I5,Art. 13.11,NEW,page 7,"Each Party shall allow the cross-border transfer of information by electronic 
+means, including personal information, when this activity is for the conduct of the 
+business of a covered person.",This provision requires Parties to allow cross-border electronic information transfers for covered-person business. Maps to P6-I5 because it establishes a binding cross-border data-transfer commitment subject to public-policy and security exceptions.,https://www.dfat.gov.au/sites/default/files/iacepa-chapter-13-electronic-commerce.pdf,0.99,"Discovery: instrument not in the master dataset for Indonesia. Modality: shall; exceptions: Measures inconsistent with paragraph 2 to achieve a legitimate public policy objective, provided they are not applied as arbitrary or unjustifiable discrimination or a disguised restriction on trade; Any measure a Party considers necessary for protection of its essential security interests",Horizontal,,in_force
+Indonesia,RCEP Chapter 12 (official text),,,P6-I5,Art. 12.3,NEW,page 2,"This Chapter shall apply to measures adopted or maintained by a 
+Party that affect electronic commerce.",This section establishes the binding Chapter's scope for measures affecting electronic commerce. Maps to P6-I5 because it evidences the RCEP framework containing cross-border data-transfer disciplines.,https://www.mfat.govt.nz/assets/Trade-agreements/RCEP/RECP-Agreement-112020/Chapter-12.pdf,0.98,"Discovery: instrument not in the master dataset for Indonesia. Modality: shall; exceptions: government procurement; information held or processed by or on behalf of a Party, and measures related to such information; aspects of measures not conforming with Chapter 8 or Chapter 10 obligations, to the extent covered by reservations, limitations, conditions, non-covered sectors, or applicable exceptions",Horizontal,,in_force
+Thailand,Credit Information Business Operation Act B.E.2545 (พระราชบัญญัติการประกอบธุรกิจข้อมูลเครดิต พ.ศ. 2545); Bank of Thailand Notification Regarding Services related to Debit Cards Issued and Used Domesti,,,P7-I1,s. 25(1),NEW,page 9,"มาตรา ๒๕ เพื่อประโยชน์ในการคุ้มครองให้ความเป็นธรรมแก่เจ้าของข้อมูล ให้
+(๑) สิทธิที่จะรับรู้ว่าบริษัทข้อมูลเครดิตเก็บรักษาข้อมูลใดของตน
+สำนักงานคณะกรรมการ (๒) สิทธิที่จะตรวจสอบข้อมูลของตน มีการกฤษฎีกา
+(๓) สิทธิที่จะขอแก้ไขข้อมูลที่ไม่ถูกต้อง
+(๔) สิทธิที่จะโต้แย้งเมื่อทราบว่าข้อมูลของตนไม่ถูกต้อง กรรมการกฤษฎีกา
+(๕) สิทธิที่จะได้รับแจ้งผลการตรวจสอบข้อมูลของตนภายในระยะเวลาที่กำหนด
+สำนักงานคณะกรรมการ (5) สิทธิที่จะได้รับทราบเหตุแห่งการปฏิเสธคำขอสินเชื่อหรือบริการจากสถาบัน กฤษฎีกา
+การเงิน ในกรณีที่สถาบันการเงินใช้ข้อมูลของบริษัทข้อมูลเครดิตมาเป็นเหตุแห่งการปฏิเสธคำขอ
+สํานักงานคถ
+รรมการกฤษฎีกา
+สินเชื่อหรือบริการ
+*สำนักงานคณะกรรมการกฤษฎีกา
+สำนักงานคณะกรรมการกฤษฎีกา
+(๗) สิทธิที่จะอุทธรณ์ต่อคณะกรรมการตามมาตรา ๒๗
+สำนักงานคณะกรรมการกฤษฎีกา
+สานักงานคณะกรรมการกฤษฎีกำลั
+เจ้าของข้อมูลอาจเสียค่าธรรมเนียมในการตรวจสอบข้อมูลตามที่คณะกรรมการ
+ประกาศกำหนด ทั้งนี้ไม่เกินสองร้อยบาท ฎีกา สำนักงานคณะกรรมการกฤษฎีกา
+สำนักงานคณะกรรมการมาตรา ๒๖ เมื่อเจ้าของข้อมูลใช้สิทธิในการตรวจสอบหรือขอแก้ไขข้อมูลของตนที่มีปรกฤษฎีกา
+อยู่กับบริษัทข้อมูลเครดิตหรือสมาชิก ให้บริษัทข้อมูลเครดิตหรือสมาชิกนั้นพิจารณาคำขอและ
+ตรวจสอบข้อมูลนั้นโดยเร็ว และให้แจ้งผลการตรวจสอบหรือแก้ไขข้อมูลของตนพร้อมเหตุผลให้
+เจ้าของข้อมูลทราบภายในสามสิบวันนับแต่วันที่ได้รับคำขอ
+สำนักงานคณะกรรมการในกรณีที่บริษัทข้อมูลเครดิตหรือสมาชิกเห็นว่าข้อมูลไม่ถูกต้องไม่ว่าด้วยเหตุใด ให้กฤษฎีกา
+บริษัทข้อมูลเครดิตหรือสมาชิกนั้นแก้ไขข้อมูลให้ถูกต้องโดยเร็ว รวมทั้งต้องแจ้งข้อมูลที่แก้ไขให้แก่
+แหล่งข้อมูลสมาชิกหรือผู้ใช้บริการที่เกี่ยวข้องเพื่อนำไปแก้ไขข้อมูลให้ถูกต้องต่อไปด้วย
+ฉนักงานคุณ
+สำนักงานคณะกรรมการกฤษฎีกา
+สำนักงานคณะกรรมการกฤษฎีกา
+สำนักงานคณะกรรมการกฤษฎีกา","This section establishes a data subject’s right to know what credit information is held. Maps to P7-I1 because it is a sector-specific data-protection framework provision, not a horizontal comprehensive law.",https://www.bot.or.th/content/dam/bot/documents/th/laws-and-rules/laws-and-regulations/legal-department/7-ncb-act/7-1-ncb-act/7.1.2-Law_TH_CreditBureau%20Updated-2559.pdf,0.99,Discovery: instrument not in the master dataset for Thailand. Modality: Establishes/grants a right; exceptions: none,Sectoral (Credit information),,in_force
+Thailand,OIC Notification: Customer Personal Data Guidelines (non-life),,,P7-I1,s. 3,NEW,page 4,"ข้อ ๓  บริษัทต้องเก็บรวบรวม ใช้ หรือเปิดเผยข้อมูลส่วนบุคคลตามวัตถุประสงค์ที่ได้แจ้งลูกค้า 
+ไว้ก่อนหรือในขณะที่เก็บรวบรวมข้อมูลส่วนบุคคล หากบริษัทพบหรือทราบว่ามีวัตถุประสงค์ในการเก็บรวบรวม  
+ใช้ หรือเปิดเผยข้อมูลส่วนบุคคลเป็นการเพิ่มเติมจากวัตถุประสงค์เดิม ซึ่งนอกเหนือจากที่ได้ระบุไว้ในนโยบายการ
+คุ้มครองข้อมูลส่วนบุคคล (privacy notice) ในปัจจุบัน หรือในกรณีที่มีการเปลี่ยนแปลงวัตถุประสงค์ในการเก็บ
+รวบรวม ใช้ หรือเปิดเผยข้อมูลส่วนบุคคล บริษัทจะเพิ่มหรือเปลี่ยนแปลงวัตถุประสงค์ในการเก็บรวบรวม ใช้ หรือ
+เปิดเผยข้อมูลส่วนบุคคลก็ได้ 
+             
+ในกรณีที่วัตถุประสงค์ใหม่นั้นจําเป็นต้องอาศัยฐานความยินยอม บริษัทจะต้องขอความยินยอม
+จากลูกค้าสําหรับการเก็บรวบรวม ใช้ หรือเปิดเผยข้อมูลส่วนบุคคลเพื่อวัตถุประสงค์ใหม่เป็นการเพิ่มเติมด้วย 
+ทั้งนี้ บริษัทต้องทําการปรับปรุงนโยบายการคุ้มครองข้อมูลส่วนบุคคลให้ครอบคลุม 
+ถึงวัตถุประสงค์ใหม่ดังกล่าวและแจ้งวัตถุประสงค์ใหม่นั้นให้ลูกค้าทราบด้วย โดยอาจแจ้งในช่องทางต่าง ๆ ที่บริษัท
+สามารถพิสูจน์ได้ว่าเหมาะสมในการสื่อสารให้ลูกค้ารับทราบ โดยอาจพิจารณาจากช่องทางที่บริษัทมีปฏิสัมพันธ์กับ
+ลูกค้าตามปกติ หรือช่องทางที่ลูกค้าสามารถเข้าถึงหรือทราบนโยบายการคุ้มครองข้อมูลส่วนบุคคลได้โดยง่าย เช่น 
+การส่งทางไปรษณีย์ อีเมล ข้อความสื่อสารทางโทรศัพท์ (SMS) โดยอาจเป็นช่องทางเดียวกันกับช่องทางที่เคยแจ้ง
+นโยบายการคุ้มครองข้อมูลส่วนบุคคลไว้ก่อนหน้าก็ได้ และในกรณีที่บริษัทมีการใช้งานเว็บไซต์ในการปฏิสัมพันธ์กับ
+ลูกค้า ให้บริษัทประกาศทางเว็บไซต์ของบริษัทด้วย","This section requires companies to collect, use, or disclose personal data only for purposes notified to customers. Maps to P7-I1 because it evidences a sectoral personal-data-protection framework through purpose limitation.",https://ratchakitcha.soc.go.th/documents/140D098S0000000001600.pdf,0.98,"Discovery: instrument not in the master dataset for Thailand. Modality: Must; exceptions: A company may add or change purposes; if the new purpose requires consent, it must obtain consent, update the privacy notice, and notify the customer.",Sectoral (Non-life insurance),,in_force
+Thailand,PDPC BCR Certification Regulation B.E. 2568,,,P7-I1,s. 17(4),NEW,page 11,"No. 
+The Of昀؀ce of the Personal Data Protection Committee 
+ 
+120, Moo 3, 5th37th Floors, Government Complex 
+ 
+Building C, Chaeng Watthana Soi 7, Chaeng Watthana Road, 
+ 
+Thung Song Hong, Lak Si, Bangkok 10210 
+ 
+CERTIFICATE 
+ 
+ 
+This is to certify that the Binding Corporate Rules (BCR) of COMPANY NAME 
+have been approved as complying with the principles and standards of personal data protection  
+as prescribed under the Personal Data Protection Act B.E.",This section establishes approval of BCRs under the Personal Data Protection Act. Maps to P7-I1 because it evidences the controlling horizontal personal-data-protection framework.,https://ratchakitcha.soc.go.th/documents/103274.pdf,0.98,Discovery: instrument not in the master dataset for Thailand. Modality: have been approved; exceptions: none,Horizontal,,in_force
+Thailand,PDPC Notification on Personal Data Breach Notification B.E. 2565,,,P7-I1,s. 4(1),NEW,page 1,"ข้อ ๔ เหตุการละเมิดข้อมูลส่วนบุคคลที่ผู้ควบคุมข้อมูลส่วนบุคคลมีหน้าที่ต้องแจ้งแก่
+ส านักงานหรือเจ้าของข้อมูลส่วนบุคคลตามกฎหมายว่าด้วยการคุ้มครองข้อมูลส่วนบุคคล  ประกอบด้วย
+เหตุที่เกิดจากการละเมิดมาตรการรักษาความมั่นคงปลอดภัย  ที่ท าให้เกิดการสูญหาย  เข้าถึง  ใช้  
+เปลี่ยนแปลง  แก้ไข  หรือเปิดเผยข้อมูลส่วนบุคคลโดยปราศจากอ านาจหรือโดยมิชอบ  ไม่ว่าจะเกิดจาก
+เจตนา  ความจงใจ  ความประมาทเลินเล่อ  การกระท าโดยปราศจากอ านาจหรือโดยมิชอบ  การกระท า
+ความผิดเกี่ยวกับคอมพิวเตอร์  ภัยคุกคามทางไซเบอร์  ข้อผิดพลาดบกพร่องหรืออุบัติเหตุ  หรือเหตุอื่นใด  
+ซึ่งอาจเกิดจากการกระท าของผู้ควบคุมข้อมูลส่วนบุคคลนั้นเอง  ผู้ประมวลผลข้อมูลส่วนบุคคล 
+ที่ด าเนินการเกี่ยวกับการเก็บรวบรวม  ใช้  หรือเปิดเผยข้อมูลส่วนบุคคลตามค าสั่งหรือในนามของผู้ควบคุม 
+ข้อมูลส่วนบุคคลนั้น  ตลอดจนพนักงาน  ลูกจ้าง  ผู้รับจ้าง  ตัวแทน  หรือบุคคลที่เกี่ยวข้องของผู้ควบคุม
+ข้อมูลส่วนบุคคลหรือผู้ประมวลผลข้อมูลส่วนบุคคลดังกล่าว  หรือบุคคลอื่น  หรือเหตุปัจจัยอื่น   
+โดยเหตุการละเมิดข้อมูลส่วนบุคคลแต่ละเหตุอาจเกี่ยวข้องกับการละเมิดประเภทใดประเภทหนึ่ง 
+หรือหลายประเภท  ดังต่อไปนี้ 
+(๑) การละเมิดความลับของข้อมูลส่วนบุคคล  (Confidentiality  Breach)  ซึ่งมีการเข้าถึง
+หรือเปิดเผยข้อมูลส่วนบุคคล  โดยปราศจากอ านาจหรือโดยมิชอบ  หรือเกิดจากข้อผิดพลาดบกพร่อง
+หรืออุบัติเหตุ 
+้หนา   ๗
+่เลม   ๑๓๙   ตอนพิเศษ   ๒๙๒    ง
+ราชกิจจานุเบกษา
+๑๕   ธันวาคม   ๒๕๖๕",This section establishes the controller's duty to notify specified personal-data breaches. Maps to P7-I1 because it evidences the controlling horizontal personal-data-protection framework through its breach-notification function.,https://www.ratchakitcha.soc.go.th/DATA/PDF/2565/E/292/T_0007.PDF,0.98,Discovery: instrument not in the master dataset for Thailand. Modality: มีหน้าที่ต้อง (must/is obliged to); exceptions: none,Horizontal,,in_force
+Thailand,PDPC Notification on Security Measures of Controllers B.E. 2565,,,P7-I1,s. 4(4),NEW,page 1,"ข้อ ๔ ผู้ควบคุมข้อมูลส่วนบุคคลมีหน้าที่จัดให้มีมาตรการรักษาความมั่นคงปลอดภัย 
+ที่เหมาะสม  เพื่อป้องกันการสูญหาย  เข้าถึง  ใช้  เปลี่ยนแปลง  แก้ไข  หรือเปิดเผยข้อมูลส่วนบุคคล 
+โดยปราศจากอ านาจหรือโดยมิชอบ  โดยมาตรการรักษาความมั่นคงปลอดภัยดังกล่าว  อย่างน้อยต้องมี
+การด าเนินการ  ดังต่อไปนี้ 
+(๑) มาตรการรักษาความมั่นคงปลอดภัยดังกล่าว  จะต้องครอบคลุมการเก็บรวบรวม  ใช้   
+และเปิดเผยข้อมูลส่วนบุคคล  ตามกฎหมายว่าด้วยการคุ้มครองข้อมูลส่วนบุคคล  ไม่ว่าข้อมูลส่วนบุคคล
+ดังกล่าวจะอยู่ในรูปแบบเอกสารหรือในรูปแบบอิเล็กทรอนิกส์  หรือรูปแบบอื่นใดก็ตาม 
+(๒) มาตรการรักษาความมั่นคงปลอดภัยดังกล่าว  จะต้องประกอบด้วยมาตรการเชิงองค์กร  
+(organizational  measures)  และมาตรการเชิงเทคนิค  (technical  measures)  ที่เหมาะสม  ซึ่งอาจ
+รวมถึงมาตรการทางกายภาพ  (physical  measures)  ที่จ าเป็นด้วย  โดยค านึงถึงระดับความเสี่ยง 
+ตามลักษณะและวัตถุประสงค์ของการเก็บรวบรวม  ใช้  และเปิดเผยข้อมูลส่วนบุคคล  ตลอดจนโอกาสเกิด 
+และผลกระทบจากเหตุการละเมิดข้อมูลส่วนบุคคล 
+(๓) มาตรการรักษาความมั่นคงปลอดภัยดังกล่าว  จะต้องค านึงถึงการด าเนินการเกี่ยวกับการรักษา 
+ความมั่นคงปลอดภัย  ตั้งแต่การระบุความเสี่ยงที่ส าคัญที่อาจจะเกิดขึ้นกับทรัพย์สินสารสนเทศ   
+้หนา   ๒๘
+่เลม   ๑๓๙   ตอนพิเศษ   ๑๔๐    ง
+ราชกิจจานุเบกษา
+๒๐   มิถุนายน   ๒๕๖๕","This section requires controllers to establish appropriate security measures against unauthorized or unlawful loss, access, use, alteration, correction, or disclosure. Maps to P7-I1 because it establishes a core obligation within a horizontal personal-data-protection framework.",https://ratchakitcha.soc.go.th/DATA/PDF/2565/E/140/T_0028.PDF,0.97,Discovery: instrument not in the master dataset for Thailand. Modality: มีหน้าที่ / must; exceptions: none,Horizontal,,in_force
+Thailand,Personal Data Protection Act B.E. 2562 (2019),,,P7-I1,s. 5(2),NEW,page 3,"มาตรา ๕ 
+พระราชบัญญัตินี้ให้ใช้บังคับแก่การเก็บรวบรวม  ใช้  หรือเปิดเผยข้อมูล 
+ส่วนบุคคลโดยผู้ควบคุมข้อมูลส่วนบุคคลหรือผู้ประมวลผลข้อมูลส่วนบุคคลซึ่งอยู่ในราชอาณาจักร  ไม่ว่า
+การเก็บรวบรวม  ใช้  หรือเปิดเผยนั้น  ได้กระท าในหรือนอกราชอาณาจักรก็ตาม 
+ในกรณีที่ผู้ควบคุมข้อมูลส่วนบุคคลหรือผู้ประมวลผลข้อมูลส่วนบุคคลอยู่นอกราชอาณาจักร  
+พระราชบัญญัตินี้ให้ใช้บังคับแก่การเก็บรวบรวม  ใช้  หรือเปิดเผยข้อมูลส่วนบุคคลของเจ้าของข้อมูล 
+ส่วนบุคคลซึ่งอยู่ในราชอาณาจักรโดยการด าเนินกิจกรรมของผู้ควบคุมข้อมูลส่วนบุคคลหรือผู้ประมวลผล
+ข้อมูลส่วนบุคคลดังกล่าว  เมื่อเป็นกิจกรรม  ดังต่อไปนี้ 
+(๑) การเสนอสินค้าหรือบริการให้แก่เจ้าของข้อมูลส่วนบุคคลซึ่งอยู่ในราชอาณาจักร  ไม่ว่า 
+จะมีการช าระเงินของเจ้าของข้อมูลส่วนบุคคลหรือไม่ก็ตาม 
+(๒) การเฝ้าติดตามพฤติกรรมของเจ้าของข้อมูลส่วนบุคคลที่เกิดขึ้นในราชอาณาจักร","This section establishes the Act's horizontal application to collection, use, and disclosure of personal data. Maps to P7-I1 because it is the framework's controlling territorial-scope provision.",https://ratchakitcha.soc.go.th/DATA/PDF/2562/A/069/T_0052.PDF,0.99,Discovery: instrument not in the master dataset for Thailand. Modality: Applies to; exceptions: none,Horizontal,,in_force
+India,Aadhaar Act 2016,,,P7-I1,s. 32(3),NEW,page 16,"(3) The Authority shall not, either by itself or through any entity under its control, collect, keep or 
+maintain any information about the purpose of authentication.","This section prohibits the Authority from collecting, keeping, or maintaining information about authentication purposes. Maps to P7-I1 because it is a sectoral data-protection obligation evidencing the purpose-limitation function, not a comprehensive horizontal framework.",https://www.indiacode.nic.in/handle/123456789/21583,0.99,Discovery: instrument not in the master dataset for India. Modality: shall not; exceptions: none,Sectoral (Aadhaar/identity authentication),,in_force
+India,Information Technology (Guidelines for Cyber Café) Rules 2011,,,P7-I1,s. 9(4),NEW,page 5,"(4)  Body corporate or any person on its behalf holding sensitive personal data 
+or information shall not retain that information for longer than is required for the 
+purposes for which the information may lawfully be used or is otherwise required 
+under any other law for the time being in force..","This section 9(4) prohibits covered actors from retaining sensitive personal data longer than lawfully required. Maps to P7-I1 because it evidences a sectoral personal-data-protection framework, not a comprehensive horizontal law.",https://www.meity.gov.in/sites/upload_files/dit/files/RNUS_CyberLaw_15411.pdf,0.98,Discovery: instrument not in the master dataset for India. Modality: shall not; exceptions: Retention is permitted where otherwise required under any other law for the time being in force,Sectoral (cyber cafés),,in_force
+Indonesia,Law No.27 on Personal Data Protection 2022,,,P7-I1,Art. 21,NEW,page 21,"Untuk menjamin tanggung jawab dalam melakukan pemrosesan data 
+yang berdasarkan prinsip pelindungan data pribadi, Pengendali Data dan 
+Prosesor Data dibebankan untuk memenuhi kewajiban-kewajiban dalam 
+pelaksanaannya sebagaimana yang diatur di dalam Pasal 20 hingga 
+Pasal 50 UU PDP yang merupakan kewajiban dari Pengendali Data dan 
+Pasal 51 hingga Pasal 52 UU PDP yang merupakan kewajiban dari 
+Prosesor Data.",This Article 21 establishes obligations for Data Controllers and Data Processors. Maps to P7-I1 because it establishes the horizontal personal-data-protection framework's core obligations.,https://peraturan.bpk.go.id/Details/229798/uu-no-27-tahun-2022,0.99,Discovery: instrument not in the master dataset for Indonesia. Modality: Must / obligated; exceptions: none,Horizontal,,in_force
+Indonesia,Omnibus Health Law No.17 2023 (UU Kesehatan),,,P7-I1,Art. 351(1),NEW,page 153,"Pasal 351
+(1) Penyelenggara Sistem Informasi Kesehatan wajib
+menjamin pelindungan data dan informasi Kesehatan
+setiap individu.","This section requires health information-system providers to protect each individual's health data and information. Maps to P7-I1 because it is sectoral evidence of data protection, not a comprehensive horizontal framework.",https://jdih.kemkes.go.id/storage/documents/pdfs/2023uu017.pdf,0.99,Discovery: instrument not in the master dataset for Indonesia. Modality: wajib (must); exceptions: none,Sectoral (Health),,in_force
+Indonesia,PBI 23/6/PBI/2021 Payment Service Providers,,,P7-I1,Art. 118,NEW,page 75,"kewajiban PJP untuk menjaga keamanan dan kerahasiaan 
+data Pengguna Jasa; 
+c.","This Article 118 requires PJP to maintain the security and confidentiality of service-user data. Maps to P7-I1 because it evidences a sectoral data-protection obligation, not a comprehensive horizontal framework.",https://www.bi.go.id/id/publikasi/peraturan/Documents/PBI_230621.pdf,0.98,Discovery: instrument not in the master dataset for Indonesia. Modality: Must; exceptions: none,Sectoral (Payment services),,in_force
+Indonesia,PBI 23/7/PBI/2021 Payment System Infrastructure,,,P7-I1,Art. 133,NEW,page 79,"Pasal 133 
+ 
+Persyaratan aspek perlindungan konsumen untuk kerja sama 
+dengan kategori risiko sedang disertai dengan pemenuhan 
+paling sedikit dokumen yang menunjukkan kewajiban pihak 
+yang diajak bekerja sama untuk menjaga keamanan dan 
+kerahasiaan data konsumen.","This section requires cooperating parties to maintain the security and confidentiality of consumer data. Maps to P7-I1 because its legal function is sectoral data-protection framework evidence, not a comprehensive horizontal framework.",https://www.bi.go.id/id/publikasi/peraturan/Documents/PBI_230721.pdf,0.99,Discovery: instrument not in the master dataset for Indonesia. Modality: kewajiban; exceptions: none,Sectoral (Payment system infrastructure),,in_force
+Indonesia,POJK 22/2023 Consumer Protection,,,P7-I1,Art. 22(2),NEW,page 18,"(2) 
+PUJK dilarang mengharuskan calon Konsumen setuju 
+untuk membagikan data dan/atau informasi sebagai 
+syarat penggunaan produk dan/atau layanan.","This section prohibits PUJK from requiring prospective consumers to agree to share data or information as a condition of using products or services. Maps to P7-I1 because it evidences a sectoral data-protection rule, not a horizontal framework.",https://ojk.go.id/id/regulasi/Pages/Pelindungan-Konsumen-dan-Masyarakat-di-Sektor-Jasa-Keuangan.aspx,0.99,Discovery: instrument not in the master dataset for Indonesia. Modality: prohibited from requiring; exceptions: none,Sectoral (financial services),,in_force
+Indonesia,POJK 4/POJK.05/2021 NBFI IT Risk,,,P7-I1,Art. 29(2),NEW,page 28,"(1) 
+LJKNB 
+wajib 
+menerapkan 
+prinsip 
+pengendalian 
+pengamanan data konsumen dan transaksi Layanan 
+Keuangan Elektronik pada setiap Sistem Elektronik yang 
+digunakan oleh LJKNB.","This section requires LJKNB to apply consumer-data and electronic-financial-transaction security controls. Maps to P7-I1 because it evidences a sectoral data-protection framework, not a comprehensive horizontal one.",https://ojk.go.id/id/regulasi/Pages/Penerapan-Manajemen-Risiko-dalam-Penggunaan-Teknologi-Informasi-oleh-Lembaga-Jasa-Keuangan-Nonbank.aspx,0.98,Discovery: instrument not in the master dataset for Indonesia. Modality: Must (wajib); exceptions: none,Sectoral (Non-bank financial services),,in_force
+Indonesia,POJK 6/POJK.07/2022 Consumer and Community Protection in the Financial Services Sector (LN.2022/99),,,P7-I1,Art. 2,NEW,page 4,"Pasal 2 
+Perlindungan Konsumen dan Masyarakat di sektor jasa 
+keuangan menerapkan prinsip: 
+a. 
+edukasi yang memadai; 
+b. 
+keterbukaan dan transparansi informasi; 
+c. 
+perlakuan 
+yang 
+adil 
+dan 
+perilaku 
+bisnis 
+yang 
+bertanggung jawab; 
+d. 
+perlindungan aset, privasi, dan data Konsumen; dan 
+e. 
+penanganan pengaduan dan penyelesaian sengketa 
+yang efektif dan efisien.","This Article 2 establishes sectoral protection of consumer privacy and data. Maps to P7-I1 because it evidences a sectoral data-protection framework, not a comprehensive horizontal framework.",https://peraturan.bpk.go.id/Details/227355/peraturan-ojk-no-6pojk072022-tahun-2022,0.99,Discovery: instrument not in the master dataset for Indonesia. Modality: must (menerapkan); exceptions: none,Sectoral (financial services),,in_force
+Indonesia,Permenkes 24/2022 Medical Records,,,P7-I1,Art. 30(1),NEW,page 13,"(1) Dalam rangka keamanan dan perlindungan data Rekam 
+Medis 
+Elektronik, 
+pimpinan 
+Fasilitas 
+Pelayanan 
+Kesehatan memberikan hak akses kepada Tenaga 
+Kesehatan dan/atau tenaga lain di Fasilitas Pelayanan 
+Kesehatan.","This section requires healthcare-facility leaders to grant EHR access. Maps to P7-I1 because it establishes a sectoral medical-records data-protection and access-control framework, not a comprehensive horizontal framework.",https://peraturan.bpk.go.id/Details/245544/permenkes-no-24-tahun-2022,0.99,Discovery: instrument not in the master dataset for Indonesia. Modality: Requires; exceptions: none,Sectoral (Healthcare and medical records),,in_force
+Indonesia,Regulation of Financial Service Authority Regulation No. 11/POJK.03/2022 on Implementation of Information Technology by Commercial Banks 2022 ; Regulation of Financial Services Authority No.4/POJK.05/,,,P7-I1,Art. 45(1),NEW,page 30,"(1) 
+Dalam menerapkan pelindungan data pribadi pada 
+kegiatan pertukaran data, Bank wajib menetapkan 
+paling sedikit: 
+a. 
+klasifikasi data yang merupakan data pribadi; 
+b. 
+hak dan kewajiban para pihak yang terlibat dalam 
+pertukaran data pribadi; 
+c. 
+perjanjian pertukaran data pribadi; 
+d. 
+sarana pertukaran data pribadi; dan 
+e. 
+keamanan data pribadi.","This Article 45(1) requires banks to establish minimum personal-data-protection arrangements for data exchanges. Maps to P7-I1 because it evidences a sectoral data-protection framework, not a comprehensive horizontal law.",https://ojk.go.id/id/regulasi/Documents/Pages/Penyelenggaraan-Teknologi-Informasi-Oleh-Bank-Umum/POJK%2011%20-%2003%20-%202022.pdf,0.99,Discovery: instrument not in the master dataset for Indonesia. Modality: Must (wajib); exceptions: none,Sectoral (Commercial banking),,in_force
+Indonesia,Regulation of Financial Services Authority No.11/POJK.03/2022 on the Implementation of Information Technology by Commercial Banks 2022 ; Bank Indonesia Regulation No. 22/23/PBI/2020 on Payment Systems,,,P7-I1,Art. 45(1),NEW,page 30,"(1) 
+Dalam menerapkan pelindungan data pribadi pada 
+kegiatan pertukaran data, Bank wajib menetapkan 
+paling sedikit: 
+ 
+www.peraturan.go.id
+
+2022, No.5/OJK 
+-31- 
+a.","This Article 45(1) establishes minimum sectoral safeguards for banks’ personal-data exchanges. Maps to P7-I1 because it evidences a sectoral, not comprehensive horizontal, data-protection framework.",https://peraturan.bpk.go.id/Details/227376/peraturan-ojk-no-11pojk032022-tahun-2022,0.98,Discovery: instrument not in the master dataset for Indonesia. Modality: Must; exceptions: none,Sectoral (Commercial banking),,in_force
+Thailand,"Notification of the National Cyber Security Committee Regarding Characteristics and Measures for Prevention, Response, Assessment, Eradication, and Containment of Cyber Incidents at Each Level B.E. 25",,,P7-I2,s. 8(13),NEW,page 12,"(๑๓) ก าหนดแนวทางและระยะเวลาการเก็บรักษาหลักฐานเกี่ยวกับการก่อภัยคุกคาม       
+ทางไซเบอร์ 
+กรณีบริการ ระบบ หรือ
+อุปกรณ์มีแนวโน้มที่จะเกิด
+ผลกระทบเป็นภัยคุกคาม
+ทางไซเบอร์ในระดับ
+ร้ายแรง 
+กรณีบริการ ระบบ หรือ
+อุปกรณ์มีแนวโน้มที่จะเกิด
+ผลกระทบเป็นภัยคุกคาม
+ทางไซเบอร์ในระดับวิกฤติ",This section 8(13) establishes evidence-retention guidelines and periods for serious or critical cyber threats. Maps to P7-I2 because it evidences a horizontal cybersecurity framework's incident-response function.,https://drive.ncsa.or.th/s/YyyzPzcR2DbgxTw/download,0.94,Discovery: instrument not in the master dataset for Thailand. Modality: must; exceptions: none,Horizontal,,in_force
+Thailand,"Notification of the National Cyber Security Committee Regarding Characteristics and Measures for Prevention, Response, Assessment, Eradication, and Containment of Cyber Incidents at Each Level B.E. 25",,,P7-I2,s. 8(11),NEW,page 12,(๑๑) รวบรวมข่าวกรองเกี่ยวกับภัยคุกคามทางไซเบอร์ (threat Intelligence),This section establishes collection of cyber-threat intelligence. Maps to P7-I2 because it evidences a horizontal cybersecurity framework's threat-intelligence function.,https://drive.ncsa.or.th/s/YyyzPzcR2DbgxTw/download,0.94,Discovery: instrument not in the master dataset for Thailand. Modality: Prescribed measure; exceptions: none,Horizontal,,in_force
+Thailand,"Notification of the National Cyber Security Committee Regarding Characteristics, Duties, and Responsibilities of the Computer Emergency Response Team for Organizations of Critical Information Infrastr",,,P7-I2,s. 5.2.2,NEW,page 4,"๕.๒.๒ วิเคราะห์และตรวจสอบข่าวกรองเกี่ยวกับภัยคุกคามทางไซเบอร์ที่อาจเกิดขึ้น รวมถึง 
+การเผยแพร่ข้อมูลที่มีความจ าเป็นเพื่อให้หน่วยงาน CII สามารถด าเนินมาตรการป้องกันหรือจัดการกับ
+สถานการณ์ด้านภัยคุกคามทางไซเบอร์ที่อาจเกิดขึ้น เช่น การให้ค าแนะน าแก่หน่วยงาน CII ในการตรวจจับ
+เหตุการณ์ที่อาจน ามาสู่การบุกรุก และการวิเคราะห์ข้อมูล เป็นต้น 
+เพื่อประโยชน์ในการเฝ้าระวังและแจ้งเตือนเกี่ยวกับภัยคุกคามทางไซเบอร์ ให้ศูนย์ประสานการรักษา 
+ความมั่นคงปลอดภัยด าเนินการเพื่อให้มีการรับลงทะเบียนข้อมูลและจัดท าบัญชีช่องทางการติดต่อ (point of 
+contact) ของหน่วยงาน CII เพื่อใช้เป็นช่องทางหลักในการติดต่อสื่อสารระหว่างศูนย์ประสานการรักษาความมั่นคง",This section requires the security coordination center to register CII information and maintain CII contact channels. Maps to P7-I2 because it establishes a sectoral cybersecurity monitoring and response framework.,https://drive.ncsa.or.th/s/Y4JJQL3Kofg5Mg7/download,0.93,Discovery: instrument not in the master dataset for Thailand. Modality: Must/shall (ให้...ด าเนินการ); exceptions: none,Sectoral (Critical information infrastructure (CII)),,in_force
+Thailand,"Notification of the National Cyber Security Committee Regarding Establishment, Duties, and Powers of the Thailand Computer Emergency Response Team (ThaiCERT) B.E.2564 (ประกาศคณะกรรมการการรักษาความมั่น",,,P7-I2,s. 5.3.3(2),NEW,page 5,"๕.๓.๓ เมื่อได้รับการร้องขอจากหน่วยงานภายใต้การดูแล  ศูนย์ประสาน 
+การรักษาความมั่นคงปลอดภัยระบบคอมพิวเตอร์แห่งชาติอาจพิจารณาด าเนินการ  ดังนี้ 
+ 
+ 
+ 
+ 
+(๑) ให้การช่วยเหลือ  แนะน า  และสนับสนุนในการประเมิน 
+ความเสี่ยงของการเกิดภัยคุกคามทางไซเบอร์  โดยใช้กระบวนการเรียนรู้ที่ได้รับจากการด าเนินมาตรการ
+เชิงรุกเพื่อป้องกันและเฝ้าระวังความเสี่ยงในการเกิดภัยคุกคามทางไซเบอร์  และการด าเนินมาตรการ 
+เชิงรับเมื่อมีภัยคุกคามทางไซเบอร์เกิดขึ้น  เพื่อช่วยให้หน่วยงานดังกล่าวสามารถวางแผนการรับมือ 
+ในกรณีที่ต้องเผชิญเหตุภัยคุกคามทางไซเบอร์ 
+ 
+ 
+ 
+ 
+(๒) ให้การช่วยเหลือ  แนะน าและสนับสนุนในการจัดท าแผน 
+ความต่อเนื่องของการด าเนินงาน  (business  continuity  plan)  เพื่อรับมือในกรณีที่เกิดเหตุภัยคุกคาม
+ทางไซเบอร์  แผนการป้องกันโครงสร้างพื้นฐานส าคัญทางสารสนเทศ  (critical  information  
+infrastructure  protection  plan)  และแผนฟื้นฟู  (disaster  recovery  plan)  ภายหลังเกิด 
+ภัยคุกคามทางไซเบอร์","This section permits ThaiCERT to assist supervised agencies with cybersecurity continuity, CII-protection and recovery plans. Maps to P7-I2 because it evidences the dedicated national incident-response framework function.",https://drive.ncsa.or.th/s/DXs7pjtjFS5R2Zc/download,0.98,Discovery: instrument not in the master dataset for Thailand. Modality: อาจพิจารณาดำเนินการ (may consider undertaking); exceptions: none,Horizontal,,in_force
+Thailand,"Notification of the National Cyber Security Committee Regarding Establishment, Duties, and Powers of the Thailand Computer Emergency Response Team (ThaiCERT) B.E.2564 (ประกาศคณะกรรมการการรักษาความมั่น",,,P7-I2,s. 5.1.3,NEW,page 2,"๕.๑.๓ จัดท าข้อมูลทางสถิติด้านการตอบสนองและรับมือกับภัยคุกคาม 
+ทางไซเบอร์  ตลอดจนข้อมูลการแจ้งเตือนที่ส าคัญ  และข้อมูลอื่น ๆ  ที่เกี่ยวข้องเพื่อเผยแพร่ต่อสาธารณะ",This section requires ThaiCERT to compile and publish cyber-threat response statistics and alerts. Maps to P7-I2 because it evidences the dedicated horizontal cyber incident-response framework function.,https://drive.ncsa.or.th/s/DXs7pjtjFS5R2Zc/download,0.93,Discovery: instrument not in the master dataset for Thailand. Modality: Must; exceptions: none,Horizontal,,in_force
+India,"Government of India, Ministry of Communication and Information Technology, National Cyber Security Policy 2013",,,P7-I2,s. 6,NEW,page 2,"There are various ongoing activities and programs of the Government to address the cyber
+security challenges which have significantly contributed to the creation of a platform that is now
+capable of supporting and sustaining the efforts in securing the cyber space. Due to the dynamic
+nature of cyberspace, there is now a need for these actions to be unified under a National Cyber
+Security Policy, with an integrated vision and a set of sustained & coordinated strategies for
+implementation.",This section establishes a unified National Cyber Security Policy framework for cybersecurity actions. Maps to P7-I2 because it is the controlling horizontal cybersecurity framework provision (legal function: framework establishment).,https://www.meity.gov.in/sites/upload_files/dit/files/National%20Cyber%20Security%20Policy%20%281%29.pdf,0.98,Discovery: instrument not in the master dataset for India. Modality: States a need for unification under a national policy; exceptions: none,Horizontal,,in_force
+India,"Government of India, Ministry of Communication and Information Technology, National Cyber Security Policy 2013",,,P7-I2,s. 5,NEW,page 2,"The protection of information infrastructure and preservation
+of the confidentiality, integrity and availability of information in cyberspace is the essence of a secure
+cyber space.","This section establishes the objective of protecting information infrastructure and preserving confidentiality, integrity and availability. Maps to P7-I2 because its purpose clause evidences a dedicated horizontal cybersecurity framework.",https://www.meity.gov.in/sites/upload_files/dit/files/National%20Cyber%20Security%20Policy%20%281%29.pdf,0.96,Discovery: instrument not in the master dataset for India. Modality: is (declaratory); exceptions: none,Horizontal,,in_force
+India,International Financial Services Centres Authority (Capital Market Intermediaries) Regulations 2021,,,P7-I2,s. 18,NEW,page 12,"A registered capital market intermediary shall have robust cyber security and cyber resilience framework in 
+accordance with the requirements as may be specified by the Authority from time to time.",This section 18 requires registered capital market intermediaries to have a robust cyber security and cyber resilience framework. Maps to P7-I2 because it evidences sectoral framework establishment.,https://ifsca.gov.in/Document/Legal/ifsca-capital-market-intermediaries-regulations-2021-as-amended-up-to-july-3-202320072023040848.pdf,0.99,Discovery: instrument not in the master dataset for India. Modality: shall; exceptions: none,Sectoral (capital market intermediaries),,in_force
+India,International Financial Services Centres Authority (Fund Management) Regulations 2022,,,P7-I2,s. 122,NEW,page 52,"A registered FME shall have robust cyber security and cyber resilience framework in accordance with 
+the requirements as may be specified by the Authority from time to time.",This section requires registered FMEs to have a robust cyber security and cyber resilience framework. Maps to P7-I2 because it establishes a sectoral cybersecurity framework.,https://ifsca.gov.in/Document/Legal/ifsca-fund-management-regulations-2022-as-amended-upto-april-11-202324042023105305.pdf,0.99,Discovery: instrument not in the master dataset for India. Modality: shall; exceptions: none,Sectoral (Fund management),,in_force
+India,International Financial Services Centres Authority (Fund Management) Regulations 2022,,,P7-I2,s. 121(3),NEW,page 51,(3) A registered FME shall conduct an annual review of its business continuity plan.,This section 121(3) requires registered FMEs to review business continuity plans annually. Maps to P7-I2 because it evidences a sectoral cyber-resilience and business-continuity framework.,https://ifsca.gov.in/Document/Legal/ifsca-fund-management-regulations-2022-as-amended-upto-april-11-202324042023105305.pdf,0.94,Discovery: instrument not in the master dataset for India. Modality: shall; exceptions: none,Sectoral (fund management),,in_force
+India,SEBI CSCRF 2024,,,P7-I2,s. 3,NEW,page 2,"cybersecurity 
+incidents/ 
+attacks, 
+Cybersecurity and Cyber Resilience 
+Framework (CSCRF) for SEBI REs 
+has been formulated in consultation 
+with the stakeholders.","This section establishes the CSCRF for SEBI-regulated entities. Maps to P7-I2 because it is a dedicated cybersecurity and cyber-resilience framework, but its legal function is sectoral rather than horizontal.",https://www.sebi.gov.in/sebi_data/attachdocs/aug-2024/1724326790365.pdf,0.99,Discovery: instrument not in the master dataset for India. Modality: Has been formulated (establishes); exceptions: none,Sectoral (Securities market / SEBI-regulated entities),,in_force
+India,SEBI CSCRF 2024,,,P7-I2,s. 9,NEW,page 6,"9. CSCRF highlights the importance of 
+governance and supply chain risk 
+Management and at the same time, it 
+focuses on evolving security guidelines 
+such 
+as 
+data 
+classification 
+and 
+localization, Application Programming 
+Interface 
+(API) 
+security, 
+Security 
+Operations 
+Centre 
+(SOC) 
+and 
+measuring its efficacy, Software Bill of 
+Materials (SBOM), etc.",This section establishes a cybersecurity governance and security-guidelines framework. Maps to P7-I2 because it evidences a dedicated sectoral cybersecurity framework covering supply-chain risk and security controls.,https://www.sebi.gov.in/sebi_data/attachdocs/aug-2024/1724326790365.pdf,0.98,Discovery: instrument not in the master dataset for India. Modality: Indicative/descriptive; exceptions: none,Sectoral (Securities market),,in_force
+India,SEBI Cloud Framework 2023,,,P7-I2,s. 3,NEW,page 2,"Objective: The major purpose of this 
+framework is to highlight the key 
+risks, 
+and 
+mandatory 
+control 
+measures which REs need to put in 
+place 
+before 
+adopting 
+cloud 
+computing.","This section establishes mandatory security control measures for regulated entities adopting cloud computing. Maps to P7-I2 because its legal function is a sectoral cybersecurity framework, not a horizontal one.",https://www.sebi.gov.in/sebi_data/attachdocs/mar-2023/1678112480131.pdf,0.98,Discovery: instrument not in the master dataset for India. Modality: need to; exceptions: none,Sectoral (SEBI-regulated financial-market entities),,in_force
+India,SEBI Cloud Framework 2023,,,P7-I2,s. 7,NEW,page 8,"11 
+ 
+The cloud framework provides mandatory requirements to be fulfilled by the RE for 
+adopting cloud computing to augment the business prospects through scalability, 
+reduced operational cost, digital transformation and reduced IT infrastructure 
+complexity.","This Annexure-1 establishes mandatory cloud-security requirements for SEBI-regulated entities. Maps to P7-I2 because it evidences a dedicated sectoral cybersecurity framework, not a horizontal one.",https://www.sebi.gov.in/sebi_data/attachdocs/mar-2023/1678112480131.pdf,0.99,Discovery: instrument not in the master dataset for India. Modality: Mandatory; exceptions: none,Sectoral (Securities and financial market),,in_force
+Indonesia,BSSN Regulation 1/2024 Cyber Incident Management,,,P7-I2,Art. 1,NEW,page 1,"Keamanan Siber adalah upaya adaptif dan inovatif untuk 
+melindungi seluruh lapisan ruang siber, termasuk aset 
+informasi yang ada di dalamnya, dari ancaman dan 
+serangan siber, baik bersifat teknis maupun sosial.",This section establishes the cybersecurity concept and framework scope. Maps to P7-I2 because its legal function evidences a dedicated cyber-incident-management framework.,https://peraturan.bpk.go.id/Details/291240/peraturan-bssn-no-1-tahun-2024,0.9,Discovery: instrument not in the master dataset for Indonesia. Modality: is defined as; exceptions: none,Sectoral (Critical information infrastructure),,in_force
+Indonesia,BSSN Regulation 1/2024 Cyber Incident Management,,,P7-I2,Art. 11(2),NEW,page 6,"(1) 
+Pengajuan permohonan registrasi sebagaimana dimaksud 
+dalam Pasal 10 huruf a disampaikan oleh Tim Tanggap 
+Insiden Siber sektoral dan Tim Tanggap Insiden Siber 
+organisasi kepada Tim Tanggap Insiden Siber nasional. 
+(2) 
+Permohonan registrasi sebagaimana dimaksud pada ayat 
+(1) dilakukan dengan mengisi formulir registrasi dan 
+melampirkan: 
+a. 
+dokumen yang memuat profil Tim Tanggap Insiden 
+Siber sesuai format request for comment 2350; 
+b. 
+dokumen legal yang memuat pembentukan atau 
+pelaksanaan tugas Tim Tanggap Insiden Siber; 
+c. 
+data aset elektronik yang dapat diakses publik milik 
+konstituen Tim Tanggap Insiden Siber, termasuk di 
+dalamnya nama aset publik, alamat IP, dan nama 
+domain; dan 
+d. 
+data kompetensi sumber daya manusia Tim Tanggap 
+Insiden Siber.",This Article 11(2) requires incident-response teams to register and attach specified cybersecurity documents. Maps to P7-I2 because it establishes the dedicated cyber incident-management framework's core registration function.,https://peraturan.bpk.go.id/Details/291240/peraturan-bssn-no-1-tahun-2024,0.98,Discovery: instrument not in the master dataset for Indonesia. Modality: must; exceptions: none,Horizontal,,in_force
+Indonesia,BSSN Regulation 2/2024 Cyber Crisis Management,,,P7-I2,Art. 2,NEW,page 2,"Pasal 2 
+Ruang lingkup Peraturan Badan ini meliputi: 
+a. 
+persiapan penyelenggaraan Manajemen Krisis Siber; dan 
+b. 
+penyelenggaraan Manajemen Krisis Siber.","This section establishes the scope of cyber crisis management, covering preparation and implementation. Maps to P7-I2 because it is the controlling scope provision of a dedicated horizontal cybersecurity framework.",https://peraturan.bpk.go.id/Details/291245/peraturan-bssn-no-2-tahun-2024,0.94,Discovery: instrument not in the master dataset for Indonesia. Modality: establishes; exceptions: none,Horizontal,,in_force
+Indonesia,BSSN Regulation 2/2024 Cyber Crisis Management,,,P7-I2,Art. 1,NEW,page 1,"Keamanan Siber adalah upaya adaptif dan inovatif untuk 
+melindungi seluruh lapisan ruang siber, termasuk aset 
+informasi yang ada di dalamnya, dari ancaman dan 
+serangan siber, baik yang bersifat teknis maupun sosial.",This Article 1 establishes cybersecurity’s protective function and scope. Maps to P7-I2 because it evidences a dedicated horizontal cybersecurity framework addressing cyber threats and attacks.,https://peraturan.bpk.go.id/Details/291245/peraturan-bssn-no-2-tahun-2024,0.94,"Discovery: instrument not in the master dataset for Indonesia. Modality: Definitional (""adalah""); exceptions: none",Horizontal,,in_force
+Indonesia,BSSN Regulation 5/2024 National Cybersecurity Action Plan,,,P7-I2,Art. 1,NEW,page 1,"Rencana Aksi Nasional Keamanan Siber yang selanjutnya 
+disebut RAN Kamsiber adalah rencana aksi tingkat 
+nasional yang berisi upaya terencana dan terukur untuk 
+menjabarkan dan mengimplementasikan fokus area 
+strategi Keamanan Siber nasional.",This Article 1 establishes the national cybersecurity action-plan framework. Maps to P7-I2 because it evidences a horizontal cybersecurity framework through a national plan implementing the national cybersecurity strategy.,https://peraturan.bpk.go.id/Details/309728/peraturan-bssn-no-5-tahun-2024,0.94,Discovery: instrument not in the master dataset for Indonesia. Modality: is defined as; exceptions: none,Horizontal,,in_force
+Indonesia,BSSN Regulation 5/2024 National Cybersecurity Action Plan,,,P7-I2,Art. 11,NEW,page 4,"RAN Kamsiber digunakan untuk memberikan acuan bagi Instansi 
+Penyelenggara Negara dengan melibatkan pelaku usaha, akademisi, dan 
+
+- 6 - 
+ 
+komunitas dalam mengimplementasikan dan memastikan efektivitas 8 
+(delapan) fokus area strategi Keamanan Siber nasional yang mencakup tata 
+kelola, manajemen risiko, kesiapsiagaan dan ketahanan, penguatan 
+pelindungan infrastruktur informasi vital, kemandirian kriptografi nasional, 
+peningkatan kapabilitas, kapasitas, dan kualitas, kebijakan Keamanan 
+Siber, dan kerja sama internasional.",This annex establishes a national cybersecurity action plan. Maps to P7-I2 because its purpose and guidance function evidence a dedicated horizontal cybersecurity governance framework.,https://peraturan.bpk.go.id/Details/309728/peraturan-bssn-no-5-tahun-2024,0.94,Discovery: instrument not in the master dataset for Indonesia. Modality: digunakan; exceptions: none,Horizontal,,in_force
+Indonesia,Bank Indonesia Regulation No. 22/23/PBI/2020 on Payment Systems 2020 ; Regulation of Financial Services Authority No.11/POJK.03/2022 on the Implementation of Information Technology by Commercial Banks,,,P7-I2,Art. 34,NEW,page 19,"Pasal 34 
+Aspek standar keamanan sistem informasi sebagaimana 
+dimaksud dalam Pasal 31 ayat (2) huruf c mencakup: 
+a. 
+ketersediaan kebijakan dan prosedur tertulis sistem 
+informasi; 
+b. 
+penggunaan sistem yang aman dan andal paling sedikit: 
+1. 
+pengamanan dan perlindungan kerahasiaan data; 
+2. 
+pengelolaan fraud; 
+3. 
+pemenuhan sertifikasi dan/atau standar keamanan 
+dan keandalan sistem; dan 
+4. 
+pemeliharaan dan peningkatan keamanan teknologi; 
+c. 
+penerapan standar keamanan siber; 
+d. 
+pengamanan data dan/atau informasi; dan 
+e. 
+pelaksanaan audit sistem informasi secara berkala.","This Article 34 establishes information-security and cybersecurity-standard requirements. Maps to P7-I2 because it evidences a sectoral-only cybersecurity framework for commercial banks, not a horizontal framework.",https://peraturan.bpk.go.id/Details/219277/peraturan-bi-no-2223pbi2020,0.94,Discovery: instrument not in the master dataset for Indonesia. Modality: establishes/includes required security-standard elements; exceptions: none,Sectoral (Commercial banking),,in_force
+Indonesia,Bank Indonesia Regulation No. 22/23/PBI/2020 on Payment Systems 2020 ; Regulation of Financial Services Authority No.11/POJK.03/2022 on the Implementation of Information Technology by Commercial Banks,,,P7-I2,Art. 41,NEW,page 22,"Pasal 41 
+Aspek standar keamanan sistem informasi sebagaimana 
+dimaksud dalam Pasal 38 ayat (2) huruf c mencakup: 
+a. 
+ketersediaan kebijakan dan prosedur tertulis sistem 
+informasi; 
+b. 
+penggunaan sistem yang aman dan andal paling sedikit: 
+1. 
+pengamanan dan perlindungan kerahasiaan data; 
+2. 
+pengelolaan fraud; 
+3. 
+pemenuhan sertifikasi dan/atau standar keamanan 
+dan keandalan sistem; dan 
+4. 
+pemeliharaan dan peningkatan keamanan teknologi; 
+c. 
+penerapan standar keamanan siber;  
+d. 
+pengamanan data dan/atau informasi; dan 
+e. 
+pelaksanaan audit sistem informasi secara berkala.","This section requires regulated financial institutions to apply cybersecurity standards and related controls. Maps to P7-I2 because it evidences a sectoral cybersecurity-control framework, not a horizontal framework.",https://peraturan.bpk.go.id/Details/219277/peraturan-bi-no-2223pbi2020,0.98,Discovery: instrument not in the master dataset for Indonesia. Modality: Requires; exceptions: none,"Sectoral (Financial services, banking and payment systems)",,in_force
+Indonesia,PBI 23/6/PBI/2021 Payment Service Providers,,,P7-I2,Art. 71(1),NEW,page 45,"(1) 
+Pemenuhan kewajiban manajemen risiko dan standar 
+keamanan sistem informasi sebagaimana dimaksud dalam 
+Pasal 62 ayat (2) huruf b bagi PSPS paling sedikit meliputi: 
+a.","This section requires PSPS to meet minimum risk-management and information-system security requirements. Maps to P7-I2 because it evidences a sectoral cybersecurity framework for payment services, not a horizontal one.",https://www.bi.go.id/id/publikasi/peraturan/Documents/PBI_230621.pdf,0.97,"Discovery: instrument not in the master dataset for Indonesia. Modality: Must, at minimum (paling sedikit meliputi); exceptions: none",Sectoral (Payment services),,in_force
+Indonesia,PBI 23/7/PBI/2021 Payment System Infrastructure,,,P7-I2,Art. 70(1),NEW,page 39,"(1) 
+Pemenuhan kewajiban aspek standar keamanan sistem 
+informasi sebagaimana dimaksud dalam Pasal 67 ayat (1) 
+huruf a angka 3 paling sedikit meliputi: 
+a. 
+ketersediaan kebijakan dan prosedur tertulis sistem 
+informasi; 
+b. 
+penggunaan sistem yang aman dan andal paling 
+sedikit untuk: 
+1. 
+pengamanan dan perlindungan kerahasiaan 
+data; 
+2. 
+pengelolaan fraud; 
+3. 
+pemenuhan 
+sertifikasi 
+dan/atau 
+standar 
+keamanan dan keandalan sistem;  
+ 
+ 
+
+-40- 
+ 
+4. 
+pemeliharaan 
+dan 
+peningkatan 
+keamanan 
+teknologi; dan 
+5. 
+ketersediaan sistem informasi; 
+c. 
+penerapan standar keamanan siber; 
+d. 
+pengamanan data dan/atau informasi; dan 
+e. 
+pelaksanaan audit sistem informasi secara berkala.","This Article 70(1) requires payment-system infrastructure providers to meet information-security standards, including cybersecurity standards. Maps to P7-I2 because it evidences a dedicated sectoral cybersecurity framework for payment-system infrastructure.",https://www.bi.go.id/id/publikasi/peraturan/Documents/PBI_230721.pdf,0.98,Discovery: instrument not in the master dataset for Indonesia. Modality: must; exceptions: none,Sectoral (payment system infrastructure),,in_force
+Indonesia,Perpres 47/2023 National Cybersecurity Strategy,,,P7-I2,Art. 6,NEW,page 4,"Pasal 6
+Fokus area Strategi Keamanan Siber Nasional sebagaimana
+dimaksud dalam Pasal 5 huruf a terdiri atas:
+a. tata kelola;
+b. manajemen risiko;
+c. kesiapsiagaan dan ketahanan;
+d. penguatan pelindungan infrastruktur informasi vital;
+e. kemandirian kriptograli nasional;
+f. peningkatan kapabilitas, kapasitas, dan kualitas;
+g. kebijakan Keamanan Siber; dan
+h. kerja sama internasional.",This section establishes the National Cybersecurity Strategy's cybersecurity focus areas. Maps to P7-I2 because it evidences a dedicated horizontal cybersecurity framework through its controlling strategy provision.,https://peraturan.bpk.go.id/Details/255542/perpres-no-47-tahun-2023,0.98,Discovery: instrument not in the master dataset for Indonesia. Modality: consists of; exceptions: none,Horizontal,,in_force
+Indonesia,Perpres 47/2023 National Cybersecurity Strategy,,,P7-I2,Art. 4,NEW,page 3,"Pasal 4
+Strategi Keamanan Siber Nasional dan Manajemen Krisis
+Siber bertujuan:
+a. mewujudkan Keamanan Siber;
+b.",This section establishes the National Cybersecurity Strategy's objective of realizing cybersecurity. Maps to P7-I2 because its controlling purpose clause evidences a dedicated horizontal cybersecurity framework.,https://peraturan.bpk.go.id/Details/255542/perpres-no-47-tahun-2023,0.98,Discovery: instrument not in the master dataset for Indonesia. Modality: bertujuan; exceptions: none,Horizontal,,in_force
+Thailand,Personal Data Protection Act B.E. 2562 (2019),,,P7-I3,n/a,KNOWN,n/a,NO_EVIDENCE_FOUND_PENDING_REVIEW,"No qualifying provision found for P7-I3 after a full-corpus sweep. The configured governing law is cited as the reference basis (score-0 pattern, A3).",https://ratchakitcha.soc.go.th/DATA/PDF/2562/A/069/T_0052.PDF,0.6,Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required before this becomes a score-0 final row (P3.5 A3).,Horizontal,,in_force
+India,Companies (Accounts) Rules 2014 (as amended 2022),,,P7-I3,s. 3(5),NEW,page 1,"(5) There shall be a proper system for storage, retrieval, display or printout of the electronic records as the Audit 
+Committee, if any, or the Board may deem appropriate and such records shall not be disposed of or rendered unusable, 
+unless permitted by law: 
+Provided that the back-up  of the books of account  and other books and papers of the company maintained in electronic 
+mode, including at a place outside India, if any, shall be kept in servers physically located in India on a periodic basis.","This section 3(5) requires companies to retain electronic records by prohibiting their disposal or rendering unusable unless permitted by law. Maps to P7-I3 because it establishes a mandatory retention duty, although no minimum period is specified.","https://thc.nic.in/Central%20Governmental%20Rules/Companies%20(Accounts)%20Rules,%202014..pdf",0.99,Discovery: instrument not in the master dataset for India. Modality: shall not; exceptions: Unless permitted by law,Sectoral (Companies and corporate accounting),,in_force
+India,Companies (Accounts) Rules 2014 (as amended 2022),,,P7-I3,s. 3(2),NEW,page 1,"(2) The books of account and other relevant books and papers referred to in sub-rule (1) shall be retained completely in 
+the format in which they were originally generated, sent or received, or in a format which  shall  present accurately the 
+information generated, sent or received and the information contained in the electronic records shall remain complete 
+and unaltered.","This section requires retention of electronic books and papers in their original or accurate format. Maps to P7-I3 because it establishes a mandatory data-retention duty, although no minimum duration is specified.","https://thc.nic.in/Central%20Governmental%20Rules/Companies%20(Accounts)%20Rules,%202014..pdf",0.98,Discovery: instrument not in the master dataset for India. Modality: shall; exceptions: none,Sectoral (Companies (corporate accounting)),,in_force
+India,Companies Act No.18 2013,,,P7-I3,s. 125(8),NEW,page 77,"(8) The authority shall administer the Fund and maintain separate accounts and other relevant records 
+in relation to the Fund in such form as may be prescribed after consultation with the Comptroller and 
+Auditor-General of India.","This section requires the authority to maintain separate accounts and relevant records. Maps to P7-I3 because it imposes a mandatory records-retention function, but specifies no minimum retention period.",https://www.mca.gov.in/Ministry/pdf/CompaniesAct2013.pdf,0.98,Discovery: instrument not in the master dataset for India. Modality: shall; exceptions: none,Sectoral (Companies and investor protection),,in_force
+India,International Financial Services Centres Authority (Capital Market Intermediaries) Regulations 2021,,,P7-I3,s. 14(1),NEW,page 11,"(1) Every capital market intermediary shall maintain and preserve the following books of accounts, records and 
+documents, in electronic retrieval form for a minimum of ten years, namely: - 
+(a) a copy of the balance sheet at the end of each accounting period; 
+(b) a copy of profit and loss account for each accounting period;  
+(c) a copy of the auditor’s report on the accounts for each accounting period; 
+(d) a statement of net worth for each quarter;  
+(e) documentation relating to compliance with AML and CFT guidelines; 
+(f) documents relating to account opening of each client and any power of attorney or signature authority 
+forms of the clients; 
+(g) relevant records and documents relating to its activities in capital markets; and 
+(h) such other books of accounts, records and documents as may be specified by the Authority from time to 
+time. 
+
+12 
+ 
+(2) In relation to a capital market intermediary not being a body corporate, it shall maintain the following books 
+of accounts, records and documents, in electronic retrieval form for a minimum of ten years, namely, - 
+(a) all sums of money received and expended; 
+(b) its assets and liabilities; 
+(c) a statement of net worth for each quarter;  
+(d) documentation relating to compliance with AML and CFT guidelines; 
+(e) documents relating to account opening of each client and any power of attorney or signature authority 
+forms of the clients; 
+(f) relevant records and documents relating to its activities in capital markets; and  
+(g) such other books of accounts, record and documents as may be specified by the Authority from time to 
+time.","This section 14(1) requires capital market intermediaries to maintain and preserve specified books, records and documents for a minimum of ten years. Maps to P7-I3 because it establishes an explicit minimum data-retention duty.",https://ifsca.gov.in/Document/Legal/ifsca-capital-market-intermediaries-regulations-2021-as-amended-up-to-july-3-202320072023040848.pdf,0.99,Discovery: instrument not in the master dataset for India. Modality: shall; exceptions: none,Sectoral (Capital market intermediaries),,in_force
+India,International Financial Services Centres Authority (Fund Management) Regulations 2022,,,P7-I3,s. 119(4),NEW,page 50,"(2) Every FME shall maintain and preserve at least the following books of accounts, records and 
+documents, in electronic retrieval form for a minimum of ten years, namely: (a) 
+a copy of the balance 
+sheet at the end of each accounting period; 
+(b) 
+a copy of profit and loss account for each accounting period;  
+(c) 
+a copy of the auditor’s report on the accounts for each accounting period; 
+(d) 
+a statement of net worth for each quarter;  
+(e) 
+documents relating to compliance with AML and CFT guidelines; 
+(f) 
+documents relating to account opening of each client and any power of attorney or signature 
+authority forms of the clients; 
+(g) 
+relevant records and documents relating to its activities under these regulations; and 
+(h) 
+such other books of accounts, records and documents as may be specified by the Authority from 
+time to time.  
+(3)    The FME shall be required to maintain following records describing: 
+(a) 
+the assets under each scheme; 
+(b) 
+valuation policies and practices; 
+(c) 
+investment strategies; 
+(d) 
+particulars of investors and their contribution; 
+(e) 
+rationale for investments made.","This section requires FMEs to maintain and preserve specified books, records and documents for at least ten years. Maps to P7-I3 because it establishes a mandatory records-retention duty with an explicit minimum period.",https://ifsca.gov.in/Document/Legal/ifsca-fund-management-regulations-2022-as-amended-upto-april-11-202324042023105305.pdf,0.99,Discovery: instrument not in the master dataset for India. Modality: shall; exceptions: none,Sectoral (Fund management and financial services),,in_force
+India,International Financial Services Centres Authority (Fund Management) Regulations 2022,,,P7-I3,s. 119(2),NEW,page 50,"(2) Every FME shall maintain and preserve at least the following books of accounts, records and 
+documents, in electronic retrieval form for a minimum of ten years, namely: (a) 
+a copy of the balance 
+sheet at the end of each accounting period; 
+(b) 
+a copy of profit and loss account for each accounting period;  
+(c) 
+a copy of the auditor’s report on the accounts for each accounting period; 
+(d) 
+a statement of net worth for each quarter;  
+(e) 
+documents relating to compliance with AML and CFT guidelines; 
+(f) 
+documents relating to account opening of each client and any power of attorney or signature 
+authority forms of the clients; 
+(g) 
+relevant records and documents relating to its activities under these regulations; and 
+(h) 
+such other books of accounts, records and documents as may be specified by the Authority from 
+time to time.  
+(3)    The FME shall be required to maintain following records describing: 
+(a) 
+the assets under each scheme; 
+(b) 
+valuation policies and practices; 
+(c) 
+investment strategies; 
+(d) 
+particulars of investors and their contribution; 
+(e) 
+rationale for investments made.",This section requires FMEs to maintain and preserve specified records for a minimum of ten years. Maps to P7-I3 because it establishes an explicit minimum data-retention period.,https://ifsca.gov.in/Document/Legal/ifsca-fund-management-regulations-2022-as-amended-upto-april-11-202324042023105305.pdf,0.99,Discovery: instrument not in the master dataset for India. Modality: shall; exceptions: none,Sectoral (Fund management and financial services),,in_force
+India,Prevention of Money-laundering Act 2002,,,P7-I3,s. 11(5),NEW,page 13,"(3) The records referred to in clause (a) of sub-section (1) shall be maintained for a period of five 
+years from the date of transaction between a client and the reporting entity.",This section requires reporting entities to maintain transaction records for five years. Maps to P7-I3 because it establishes an explicit minimum data-retention period.,https://www.indiacode.nic.in/handle/123456789/2036,0.98,Discovery: instrument not in the master dataset for India. Modality: shall; exceptions: none,"Sectoral (banking companies, financial institutions and intermediaries)",,in_force
+Indonesia,Law No. 27 of 2022 on Personal Data Protection,,,P7-I3,n/a,KNOWN,n/a,NO_EVIDENCE_FOUND_PENDING_REVIEW,"No qualifying provision found for P7-I3 after a full-corpus sweep. The configured governing law is cited as the reference basis (score-0 pattern, A3).",https://jdih.komdigi.go.id/produk_hukum/view/id/832/t/undangundang%2Bnomor%2B27%2Btahun%2B2022,0.6,Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required before this becomes a score-0 final row (P3.5 A3).,Horizontal,,in_force
+Thailand,OIC Notification: Customer Personal Data Guidelines (non-life),,,P7-I4,s. 4(2),NEW,page 4,"(๒) แล้ว ในกรณีที่มีการประมวลผลข้อมูลที่
+มีความเสี่ยงสูงอันจะส่งผลกระทบต่อสิทธิเสรีภาพของลูกค้าตามที่กฎหมายว่าด้วยการคุ้มครองข้อมูลส่วนบุคคล
+กําหนด บริษัทต้องจัดให้มีการประเมินผลกระทบด้านการคุ้มครองข้อมูลส่วนบุคคล",This section requires non-life insurance companies to arrange DPIAs for high-risk processing. Maps to P7-I4 because it establishes a sector-specific DPIA accountability requirement.,https://ratchakitcha.soc.go.th/documents/140D098S0000000001600.pdf,0.98,Discovery: instrument not in the master dataset for Thailand. Modality: must; exceptions: none,Sectoral (non-life insurance),,in_force
+Thailand,Personal Data Protection Act B.E. 2562 (2019),,,P7-I4,s. 88,NEW,page 40,"มาตรา ๘๘ ตัวแทนผู้ควบคุมข้อมูลส่วนบุคคลหรือตัวแทนผู้ประมวลผลข้อมูลส่วนบุคคล
+ผู้ใดไม่ปฏิบัติตามมาตรา  ๓๙  วรรคหนึ่ง  ซึ่งได้น ามาใช้บังคับโดยอนุโลมตามมาตรา  ๓๙  วรรคสอง  
+และมาตรา  ๔๑  วรรคหนึ่ง  ซึ่งได้น ามาใช้บังคับโดยอนุโลมตามมาตรา  ๔๑  วรรคสี่  ต้องระวางโทษปรับ
+ทางปกครองไม่เกินหนึ่งล้านบาท",This section establishes an administrative penalty for failure to comply with the incorporated DPO-designation duty in section 41(1). Maps to P7-I4 because it enforces a conditional DPO accountability mechanism.,https://ratchakitcha.soc.go.th/DATA/PDF/2562/A/069/T_0052.PDF,0.94,Discovery: instrument not in the master dataset for Thailand. Modality: Must be subject to an administrative fine; exceptions: none,"Sectoral (Controllers and processors, including representatives, meeting section 41(1) conditions)",,in_force
+Thailand,Personal Data Protection Act B.E. 2562 (2019),,,P7-I4,s. 41(1),NEW,page 23,"มาตรา ๔๑ ผู้ควบคุมข้อมูลส่วนบุคคลและผู้ประมวลผลข้อมูลส่วนบุคคลต้องจัดให้มี
+เจ้าหน้าที่คุ้มครองข้อมูลส่วนบุคคลของตน  ในกรณีดังต่อไปนี้ 
+(๑) ผู้ควบคุมข้อมูลส่วนบุคคลหรือผู้ประมวลผลข้อมูลส่วนบุคคลเป็นหน่วยงานของรัฐตามที่
+คณะกรรมการประกาศก าหนด 
+(๒) การด าเนินกิจกรรมของผู้ควบคุมข้อมูลส่วนบุคคลหรือผู้ประมวลผลข้อมูลส่วนบุคคล 
+ในการเก็บรวบรวม  ใช้  หรือเปิดเผย  จ าเป็นต้องตรวจสอบข้อมูลส่วนบุคคลหรือระบบอย่างสม่ าเสมอ
+โดยเหตุที่มีข้อมูลส่วนบุคคลเป็นจ านวนมากตามที่คณะกรรมการประกาศก าหนด 
+(๓) กิจกรรมหลักของผู้ควบคุมข้อมูลส่วนบุคคลหรือผู้ประมวลผลข้อมูลส่วนบุคคลเป็น 
+การเก็บรวบรวม  ใช้  หรือเปิดเผยข้อมูลส่วนบุคคลตามมาตรา  ๒๖ 
+ในกรณีที่ผู้ควบคุมข้อมูลส่วนบุคคลหรือผู้ประมวลผลข้อมูลส่วนบุคคลอยู่ในเครือกิจการ 
+หรือเครือธุรกิจเดียวกันเพื่อการประกอบกิจการหรือธุรกิจร่วมกันตามที่คณะกรรมการประกาศก าหนด 
+ตามมาตรา  ๒๙  วรรคสอง  ผู้ควบคุมข้อมูลส่วนบุคคลหรือผู้ประมวลผลข้อมูลส่วนบุคคลดังกล่าว 
+อาจจัดให้มีเจ้าหน้าที่คุ้มครองข้อมูลส่วนบุคคลร่วมกันได้  ทั้งนี้  สถานที่ท าการแต่ละแห่งของผู้ควบคุม
+ข้อมูลส่วนบุคคลหรือผู้ประมวลผลข้อมูลส่วนบุคคลที่อยู่ในเครือกิจการหรือเครือธุรกิจเดียวกันดังกล่าว
+ต้องสามารถติดต่อกับเจ้าหน้าที่คุ้มครองข้อมูลส่วนบุคคลได้โดยง่าย 
+ความในวรรคสองให้น ามาใช้บังคับแก่ผู้ควบคุมข้อมูลส่วนบุคคลหรือผู้ประมวลผลข้อมูล 
+ส่วนบุคคลซึ่งเป็นหน่วยงานของรัฐตาม  (๑)  ซึ่งมีขนาดใหญ่หรือมีสถานที่ท าการหลายแห่งโดยอนุโลม 
+ในกรณีที่ผู้ควบคุมข้อมูลส่วนบุคคลหรือผู้ประมวลผลข้อมูลส่วนบุคคลตามวรรคหนึ่งต้องแต่งตั้ง
+ตัวแทนตามมาตรา  ๓๗  (๕)  ให้น าความในวรรคหนึ่งมาใช้บังคับแก่ตัวแทนโดยอนุโลม 
+้หนา   ๗๔
+่เลม   ๑๓๖   ตอนที่   ๖๙    ก
+ราชกิจจานุเบกษา
+๒๗   พฤษภาคม   ๒๕๖๒","This section requires controllers and processors to appoint a DPO in specified cases. Maps to P7-I4 because it establishes a conditional, sectoral DPO accountability requirement.",https://ratchakitcha.soc.go.th/DATA/PDF/2562/A/069/T_0052.PDF,0.99,"Discovery: instrument not in the master dataset for Thailand. Modality: Must; exceptions: Affiliated controllers or processors may share a DPO where permitted.; Large public authorities or public authorities with multiple establishments may share a DPO by analogy.; Where a controller or processor must appoint a representative under section 37(5), the DPO requirement applies to the representative by analogy.","Sectoral (Specified public bodies, large-scale monitoring, or sensitive-data processing)",,in_force
+India,Information Technology Act 2000 (Act 21 of 2000),,,P7-I4,n/a,KNOWN,n/a,NO_EVIDENCE_FOUND_PENDING_REVIEW,"No qualifying provision found for P7-I4 after a full-corpus sweep. The configured governing law is cited as the reference basis (score-0 pattern, A3).",https://www.indiacode.nic.in/handle/123456789/1999,0.6,Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required before this becomes a score-0 final row (P3.5 A3).,Horizontal,,in_force
+Indonesia,Law No.27 on Personal Data Protection 2022,,,P7-I4,Art. 65,NEW,page 48,"Sehingga apabila terdapat Pengendali Data yang melakukan 
+aktivitas pemrosesan Data Pribadi yang memenuhi salah 1 (satu) kriteria 
+dalam Pasal 34 ayat (2) UU PDP sudah diwajibkan untuk melakukan 
+Penilaian Dampak Pelindungan Data Pribadi.",This Article 65 requires qualifying Data Controllers to conduct a DPIA. Maps to P7-I4 because it establishes a conditional DPIA accountability requirement.,https://peraturan.bpk.go.id/Details/229798/uu-no-27-tahun-2022,0.98,Discovery: instrument not in the master dataset for Indonesia. Modality: must / is obliged; exceptions: none,Horizontal,,in_force
+Indonesia,Law No.27 on Personal Data Protection 2022,,,P7-I4,Art. 39,NEW,page 33,"34 
+(1) Pengendali Data Pribadi dan Prosesor Data Pribadi wajib menunjuk 
+pejabat atau petugas yang melaksanakan fungsi Pelindungan Data 
+Pribadi dalam hal: 
+a. pemrosesan Data Pribadi untuk kepentingan pelayanan publik; 
+b. kegiatan inti Pengendali Data Pribadi memiliki sifat, ruang lingkup, 
+dan/atau tujuan yang memerlukan pemantauan secara teratur dan 
+sistematis atas Data Pribadi dengan skala besar; dan 
+c. kegiatan inti Pengendali Data Pribadi terdiri dari pemrosesan Data 
+Pribadi dalam skala besar untuk Data Pribadi yang bersifat spesifik 
+dan/atau Data Pribadi yang berkaitan dengan tindak pidana.",This Article 39 requires Controllers and Processors to appoint a data-protection-function officer in specified cases. Maps to P7-I4 because it establishes a conditional DPO accountability mechanism.,https://peraturan.bpk.go.id/Details/229798/uu-no-27-tahun-2022,0.98,Discovery: instrument not in the master dataset for Indonesia. Modality: wajib; exceptions: Controllers and Processors not required to appoint a PPDP may appoint one voluntarily,Sectoral (Public service and large-scale or high-risk processing),,in_force
+Indonesia,Regulation of Financial Service Authority Regulation No. 11/POJK.03/2022 on Implementation of Information Technology by Commercial Banks 2022 ; Regulation of Financial Services Authority No.4/POJK.05/,,,P7-I4,Art. 44(2),NEW,page 29,"(2) 
+Dalam hal terdapat kondisi tertentu yang berpotensi 
+meningkatkan risiko bagi pemilik data pribadi, Bank 
+wajib melakukan penilaian dampak atas penerapan 
+prinsip 
+pelindungan 
+data 
+pribadi 
+sebagaimana 
+dimaksud pada ayat (1).",This Article 44(2) requires banks to conduct a DPIA under specified risk conditions. Maps to P7-I4 because it is a sector-specific DPIA accountability requirement.,https://ojk.go.id/id/regulasi/Documents/Pages/Penyelenggaraan-Teknologi-Informasi-Oleh-Bank-Umum/POJK%2011%20-%2003%20-%202022.pdf,0.98,Discovery: instrument not in the master dataset for Indonesia. Modality: Must; exceptions: none,Sectoral (Commercial banks),,in_force
+Indonesia,Regulation of Financial Services Authority No.11/POJK.03/2022 on the Implementation of Information Technology by Commercial Banks 2022 ; Bank Indonesia Regulation No. 22/23/PBI/2020 on Payment Systems,,,P7-I4,Art. 44(2),NEW,page 30,"(2) 
+Dalam hal terdapat kondisi tertentu yang berpotensi 
+meningkatkan risiko bagi pemilik data pribadi, Bank 
+wajib melakukan penilaian dampak atas penerapan 
+prinsip 
+pelindungan 
+data 
+pribadi 
+sebagaimana 
+dimaksud pada ayat (1).",This Article 44(2) requires banks to conduct a data protection impact assessment in specified higher-risk conditions. Maps to P7-I4 because it establishes a sector-specific DPIA accountability mechanism.,https://peraturan.bpk.go.id/Details/227376/peraturan-ojk-no-11pojk032022-tahun-2022,0.98,Discovery: instrument not in the master dataset for Indonesia. Modality: Must (wajib); exceptions: none,Sectoral (Commercial banking),,in_force
+Thailand,Personal Data Protection Act B.E. 2562 (2019),,,P7-I5,n/a,KNOWN,n/a,NO_EVIDENCE_FOUND_PENDING_REVIEW,"No qualifying provision found for P7-I5 after a full-corpus sweep. The configured governing law is cited as the reference basis (score-0 pattern, A3).",https://ratchakitcha.soc.go.th/DATA/PDF/2562/A/069/T_0052.PDF,0.6,Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required before this becomes a score-0 final row (P3.5 A3).,Horizontal,,in_force
+India,Bharatiya Nagarik Suraksha Sanhita 2023,,,P7-I5,s. 96(3),NEW,page 42,"When search-warrant may be issued.—(1) Where— 
+(a) any Court has reason to believe that a person to whom a summons order under section 94 or a 
+requisition under sub-section (1) of section 95 has been, or might be, addressed, will not or would not 
+produce the document or thing as required by such summons or requisition; or 
+(b) such document or thing is not known to the Court to be in the possession of any person; or 
+(c) the Court considers that the purposes of any inquiry, trial or other proceeding under this Sanhita will 
+be served by a general search or inspection,  
+it may issue a search-warrant; and the person to whom such warrant is directed, may search or inspect in 
+accordance therewith and the provisions hereinafter contained.","This section establishes court-authorised search-warrant access to documents or things. Maps to P7-I5 because it materially governs government access, but access is subject to an independent judicial safeguard: the Court issues the warrant.",https://www.indiacode.nic.in/handle/123456789/21920?locale=en,0.99,"Discovery: instrument not in the master dataset for India. Modality: may; exceptions: For documents, parcels or other things in postal-authority custody, only a District Magistrate or Chief Judicial Magistrate may grant the warrant.",Sectoral (Criminal justice and law enforcement),,in_force
+India,Bharatiya Nagarik Suraksha Sanhita 2023,,,P7-I5,s. 174(3),NEW,page 68,"(2) No police officer shall investigate a non-cognizable case without the order of a Magistrate having 
+power to try such case or commit the case for trial.","This section establishes judicially gated police investigative authority over non-cognizable cases. Maps to P7-I5 because consequent investigatory access is conditioned on a Magistrate’s order, an independent judicial authorization.",https://www.indiacode.nic.in/handle/123456789/21920?locale=en,0.97,"Discovery: instrument not in the master dataset for India. Modality: Shall not, unless authorized by a Magistrate; may upon receiving that order; exceptions: Following the order, the officer may exercise the investigative powers available in a cognizable case, except the power to arrest without warrant.",Sectoral (Criminal justice and law enforcement),,in_force
+India,Companies Act No.18 2013,,,P7-I5,s. 206(5),NEW,page 128,"(5) Without prejudice to the foregoing provisions of this section, the Central Government may, if it is 
+satisfied that the circumstances so warrant, direct inspection of books and papers of a company by an 
+inspector appointed by it for the purpose.",This section permits the Central Government to direct an inspector to inspect company books and papers. Maps to P7-I5 because it establishes executive access to company-held data without independent judicial authorization.,https://www.mca.gov.in/Ministry/pdf/CompaniesAct2013.pdf,0.98,Discovery: instrument not in the master dataset for India. Modality: may; exceptions: none,Sectoral (Companies),,in_force
+India,Information Technology (Guidelines for Cyber Café) Rules 2011,,,P7-I5,s. 6(4),NEW,page 4,"(4) The appropriate Government may also determine the manner of 
+provisioning secure access to the repository of digitally signed electronic 
+records.",This section 6(4) permits the appropriate Government to determine secure access to a repository of digitally signed electronic records. Maps to P7-I5 because it is an access-regulation power with no independent judicial authorization.,https://www.meity.gov.in/sites/upload_files/dit/files/RNUS_CyberLaw_15411.pdf,0.86,Discovery: instrument not in the master dataset for India. Modality: may; exceptions: none,Sectoral (Information technology / cyber cafés),,in_force
+India,Information Technology Act No.21 2000,,,P7-I5,s. 70(2),NEW,page 22,"(2) The appropriate Government may, by order in writing, authorise the persons who are 
+authorised to access protected systems notified under sub-section (1).","This section permits the appropriate Government to authorise persons to access protected systems. Maps to P7-I5 because executive authorization, not independent judicial authorization, governs access to systems that may contain personal data.",https://www.meity.gov.in/writereaddata/files/itbill2000.pdf,0.98,Discovery: instrument not in the master dataset for India. Modality: may; exceptions: none,Sectoral (information technology),,in_force
+India,Prevention of Money-laundering Act 2002,,,P7-I5,s. 18(6),NEW,page 18,"(6) Before making the search under sub-section (1) or sub-section (5), the authority shall call upon 
+two or more persons to attend and witness the search, and the search shall be made in the presence of such 
+persons.",This section requires the searching authority to use witnesses before searching. Maps to P7-I5 because the governed search power permits warrantless government access; a Magistrate’s direction applies only if the person requests it.,https://www.indiacode.nic.in/handle/123456789/2036,0.98,"Discovery: instrument not in the master dataset for India. Modality: shall; exceptions: If the person requests referral, the person is taken to a Gazetted Officer or Magistrate; a search under subsection (5) follows that officer’s or Magistrate’s direction; A female may be searched only by a female",Sectoral (Anti-money-laundering and financial crime),,in_force
+Indonesia,Law No. 27 of 2022 on Personal Data Protection,,,P7-I5,n/a,KNOWN,n/a,NO_EVIDENCE_FOUND_PENDING_REVIEW,"No qualifying provision found for P7-I5 after a full-corpus sweep. The configured governing law is cited as the reference basis (score-0 pattern, A3).",https://jdih.komdigi.go.id/produk_hukum/view/id/832/t/undangundang%2Bnomor%2B27%2Btahun%2B2022,0.6,Absence row (NO_EVIDENCE_FOUND_PENDING_REVIEW): human approval required before this becomes a score-0 final row (P3.5 A3).,Horizontal,,in_force
