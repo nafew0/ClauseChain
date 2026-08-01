@@ -225,9 +225,17 @@ def finalize_snippet_result(
     # (or end of the canonical context). Latin/Devanagari text keeps the strict
     # sentence-stop rule below (the CPC mid-word lesson).
     if _thai_ratio(source_text[start:max(start + 400, minimum_end)]) > 0.25:
-        label = _THAI_STRUCT_LABEL.search(source_text, max(start, minimum_end - 1))
-        candidate_stop = label.start() if label else len(source_text)
-        candidate = source_text[start:candidate_stop].rstrip()
+        search_from = max(start, minimum_end - 1)
+        candidates = [len(source_text)]
+        label = _THAI_STRUCT_LABEL.search(source_text, search_from)
+        if label:
+            candidates.append(label.start())
+        # Paragraph break is an equally real structural boundary — without it a
+        # passage can run through page furniture (page numbers, table headings).
+        blank = source_text.find("\n\n", search_from)
+        if blank >= 0:
+            candidates.append(blank)
+        candidate = source_text[start:min(candidates)].rstrip()
         if candidate and _balanced_structure(candidate):
             stop = start + len(candidate)
     for index in range(max(start, minimum_end - 1), len(source_text)):
