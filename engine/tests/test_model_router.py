@@ -31,7 +31,7 @@ class FakeLLM:
 
 def test_profiles_load_and_expand() -> None:
     profile = get_profile("hybrid_accuracy")  # Path B default
-    assert profile["bulk"]["primary"] == "openai:gpt-5.4-nano"
+    assert profile["bulk"]["primary"] == "openrouter:openai/gpt-5.6-luna"
     # Path B embeddings = cloud OpenAI (decided 4 Jul); EMBEDDING_PROVIDER can override
     assert profile["embedding"]["provider"] in {"openai", "bge_m3"}
     assert profile["embedding"]["model"] in {"text-embedding-3-small", "BAAI/bge-m3"}
@@ -66,9 +66,9 @@ def test_fallback_raises_without_fallback() -> None:
 def test_resolve_llm_and_embedding_construct_offline() -> None:
     llm = resolve_llm("hybrid_accuracy", tier="high_reasoning")
     assert isinstance(llm, FallbackLLM)
-    assert llm.primary.model == "gpt-5.4-nano"
+    assert llm.primary.model == "openai/gpt-5.6-luna"
     escalation = resolve_llm("hybrid_accuracy", tier="legal_escalation")
-    assert escalation.primary.model == "gpt-5.4-mini"
+    assert escalation.primary.model == "openai/gpt-5.6-terra"
     # Path B: cloud OpenAI embeddings (construction is offline-safe — no network until embed())
     embedder = resolve_embedding("hybrid_accuracy")
     assert embedder.model == "text-embedding-3-small"

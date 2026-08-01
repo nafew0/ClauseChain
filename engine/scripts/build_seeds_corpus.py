@@ -110,9 +110,12 @@ def main() -> int:
             if not pdf_file.is_file() and resolved:
                 _time2.sleep(2.0)
                 try:
-                    resp = _httpx.get(resolved, follow_redirects=True, timeout=120,
+                    from urllib.parse import quote as _q
+                    safe_ref = _q(url, safe=":/?&=%#")
+                    resp = _httpx.get(_q(resolved, safe=":/?&=%#"), follow_redirects=True,
+                                      timeout=120,
                                       headers={"User-Agent": "Mozilla/5.0 ClauseChain-research/0.1",
-                                               "Referer": url})
+                                               "Referer": safe_ref})
                     if resp.status_code == 200 and resp.content[:5] == b"%PDF-":
                         pdf_file.write_bytes(resp.content)
                 except _httpx.HTTPError:
