@@ -16,12 +16,20 @@ from .models import EngineSnapshot, EvidenceRow, ReviewItem, RunRecord, Snapshot
 
 
 RUN_NAMES = (
+    # Round 1
     "final_si_p6",
     "final_si_p7",
     "final_ma_p6",
     "final_ma_p7",
     "final_au_p6",
     "final_au_p7",
+    # Round 2 (TH/IN/ID sweeps, 1 Aug)
+    "final_r2_th_p6",
+    "final_r2_th_p7",
+    "final_r2_in_p6",
+    "final_r2_in_p7",
+    "final_r2_id_p6",
+    "final_r2_id_p7",
 )
 SHEETS = {
     ReviewItem.Queue.NEW: "NEW Findings",

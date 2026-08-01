@@ -24,7 +24,7 @@ import { cn } from '@/lib/utils'
 import { friendlyFailure, readinessLabel } from '@/lib/readiness'
 import type { EngineAction, JsonValue, RunRecord } from '@/types/workspace'
 
-const COUNTRY_NAMES: Record<string, string> = { SG: 'Singapore', MY: 'Malaysia', MA: 'Malaysia', AU: 'Australia' }
+const COUNTRY_NAMES: Record<string, string> = { SG: 'Singapore', MY: 'Malaysia', MA: 'Malaysia', AU: 'Australia', TH: 'Thailand', IN: 'India', ID: 'Indonesia' }
 
 function duration(seconds: number | null) {
   if (seconds === null || !Number.isFinite(seconds)) return 'not recorded'
@@ -99,12 +99,12 @@ export default function RunsWorkbench() {
     <LazyMotion features={domAnimation}>
       <MotionConfig reducedMotion="user">
         <div className="runs-workbench">
-          <header className="runs-header"><div><span><Activity size={14} /> Recorded engine execution</span><h1>Run history</h1><p>Six imported run envelopes. These are completed records—not simulated live progress.</p></div></header>
+          <header className="runs-header"><div><span><Activity size={14} /> Recorded engine execution</span><h1>Run history</h1><p>Imported run envelopes across all covered economies. These are completed records—not simulated live progress.</p></div></header>
           <section className={cn('runs-champion', String(champion?.status).toUpperCase() === 'PASS' ? 'pass' : 'fail')}>
             {String(champion?.status).toUpperCase() === 'PASS' ? <CheckCircle2 size={20} /> : <AlertTriangle size={20} />}
             <div><strong>Release readiness: {readinessLabel(champion?.status)}</strong>{failures.length ? <p>{failures.map(f => friendlyFailure(f)).join(' · ')}</p> : null}</div>
           </section>
-          {user?.is_superuser ? <section className="run-launch"><div><Play size={18} /><span><strong>Launch a real pipeline run</strong><small>Queued for the dedicated allowlisted worker; one run executes at a time.</small></span></div><select value={economy} onChange={(event) => setEconomy(event.target.value)}><option>Singapore</option><option>Malaysia</option><option>Australia</option></select><select value={pillar} onChange={(event) => setPillar(Number(event.target.value) as 6 | 7)}><option value={6}>Pillar 6</option><option value={7}>Pillar 7</option></select><button onClick={queueRun} disabled={launch.isPending}><Play size={14} /> Queue run</button></section> : null}
+          {user?.is_superuser ? <section className="run-launch"><div><Play size={18} /><span><strong>Launch a real pipeline run</strong><small>Queued for the dedicated allowlisted worker; one run executes at a time.</small></span></div><select value={economy} onChange={(event) => setEconomy(event.target.value)}><option>Singapore</option><option>Malaysia</option><option>Australia</option><option>Thailand</option><option>India</option><option>Indonesia</option></select><select value={pillar} onChange={(event) => setPillar(Number(event.target.value) as 6 | 7)}><option value={6}>Pillar 6</option><option value={7}>Pillar 7</option></select><button onClick={queueRun} disabled={launch.isPending}><Play size={14} /> Queue run</button></section> : null}
           <section className="run-grid">{query.data.results.map((run, index) => <RunCard key={run.run_name} run={run} index={index} />)}</section>
           <section className="run-actions"><header><div><TerminalSquare size={18} /><span><strong>Engine worker actions</strong><small>Authoritative queued/running/done states with captured output.</small></span></div>{user?.is_superuser ? <button onClick={() => launch.mutate({ kind: 'refresh' })} disabled={launch.isPending}><RotateCcw size={14} /> Refresh snapshot</button> : null}</header>{query.data.actions.length ? query.data.actions.map((action) => <ActionState action={action} key={action.id} />) : <p className="run-empty">No engine actions have been queued from the app.</p>}</section>
         </div>

@@ -25,7 +25,7 @@ import { useEngineActions, useLaunchEngineAction, useSubmission } from '@/hooks/
 import { cn } from '@/lib/utils'
 import type { SubmissionParams, SubmissionRow } from '@/types/workspace'
 
-const ECONOMIES = ['', 'Singapore', 'Malaysia', 'Australia']
+const ECONOMIES = ['', 'Singapore', 'Malaysia', 'Australia', 'Thailand', 'India', 'Indonesia']
 const REVIEWS = ['', 'pending', 'approved', 'rejected'] as const
 
 function text(value: unknown, fallback = '—') {
