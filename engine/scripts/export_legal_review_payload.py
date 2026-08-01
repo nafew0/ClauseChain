@@ -245,6 +245,12 @@ def build_payload() -> dict:
         "malaysia_p7": Path("outputs/final_ma_p7/output.json"),
         "australia_p6": Path("outputs/final_au_p6/output.json"),
         "australia_p7": Path("outputs/final_au_p7/output.json"),
+        "thailand_p6": Path("outputs/final_r2_th_p6/output.json"),
+        "thailand_p7": Path("outputs/final_r2_th_p7/output.json"),
+        "india_p6": Path("outputs/final_r2_in_p6/output.json"),
+        "india_p7": Path("outputs/final_r2_in_p7/output.json"),
+        "indonesia_p6": Path("outputs/final_r2_id_p6/output.json"),
+        "indonesia_p7": Path("outputs/final_r2_id_p7/output.json"),
     }
     for path in sorted(Path("data/zone3").glob("*_scores.json")):
         payload = json.loads(path.read_text())
