@@ -121,6 +121,19 @@ function itemTitle(record: JsonObject) {
   )
 }
 
+function itemSubtitle(record: JsonObject, queue: WorkspaceQueue) {
+  if (queue === 'zone3') return ''
+  const value = text(record['Article/section'] ?? record['Master citation'] ?? record['Indicator question'], '')
+  return value === itemTitle(record) ? '' : value
+}
+
+function zone3Reason(record: JsonObject) {
+  const reason = text(record['Deterministic reason'], '')
+  const score = text(record['Deterministic score'], '')
+  if (!reason || !score) return reason
+  return reason.replace(new RegExp(`\\s*(?:->|→)\\s*${score.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*$`), '').trim()
+}
+
 function isTyping(target: EventTarget | null) {
   const element = target as HTMLElement | null
   return Boolean(element?.closest('input, textarea, select, [contenteditable="true"]'))
@@ -201,9 +214,8 @@ function QueueSpecificEvidence({ queue, record }: { queue: WorkspaceQueue; recor
     return (
       <>
         <div className="review-score-hero">
-          <span>Deterministic score</span>
+          <div><span>Deterministic score</span><p>{zone3Reason(record)}</p></div>
           <strong>{text(record['Deterministic score'])}</strong>
-          <p>{text(record['Deterministic reason'])}</p>
         </div>
         <div className="review-fact-grid four">
           <div><span>Judge scores</span><strong>{text(record['Judge scores'])}</strong></div>
@@ -705,11 +717,11 @@ export default function ReviewWorkbench() {
                 <div className="review-canvas-toolbar"><button className="review-mobile-back" onClick={() => setMobileRailOpen(true)}><ArrowLeft size={17} /> Queue</button><div className="review-toolbar-meta"><span>{reviewId(selected.record, selected.item)}</span><span>{selectedIndex + 1} of {filtered.length}</span></div><div className="review-toolbar-actions">{selected.item.finding_key ? <Link className="review-reference-button" href={sourceMatchHref(selected.item.finding_key)}><FileCheck2 size={16} /> Source Match</Link> : null}<button className="review-reference-button" onClick={() => setDrawerOpen(true)}><BookOpenCheck size={16} /> Act reference <ChevronRight size={15} /></button></div></div>
                 <article className={cn('review-focus-card', selected.item.blocked && 'blocked')}>
                   <header>
-                    <div><span className="review-eyebrow">{text(selected.record['Economy'])} · {text(selected.record['Indicator'])}{selected.item.registry_change ? ` · ${selected.item.registry_change.kind.replace('_', ' ')}` : ''}</span><h2>{itemTitle(selected.record)}</h2><p>{text(selected.record['Article/section'] ?? selected.record['Master citation'] ?? selected.record['Indicator question'])}</p></div>
+                    <div><span className="review-eyebrow">{text(selected.record['Economy'])} · {text(selected.record['Indicator'])}{selected.item.registry_change ? ` · ${selected.item.registry_change.kind.replace('_', ' ')}` : ''}</span><h2>{itemTitle(selected.record)}</h2>{itemSubtitle(selected.record, queue) ? <p>{itemSubtitle(selected.record, queue)}</p> : null}</div>
                     <div className={cn('review-status-mark', selected.item.review_state?.decision === 'approved' && 'approved', selected.item.blocked && 'blocked')}>{selected.item.blocked ? <ShieldAlert size={18} /> : selected.item.review_state?.decision === 'approved' ? <CheckCircle2 size={18} /> : <CircleDashed size={18} />}<span>{selected.item.blocked ? 'Blocked' : selected.item.review_state?.decision ?? 'Pending'}</span></div>
                   </header>
                   {selected.item.blocked ? <div className="review-block"><ShieldAlert size={18} /><span>{selected.item.block_reason}</span></div> : null}
-                  {context.data?.score_semantics ? <div className="review-score-semantics"><Info size={17} /><div><strong>Evidence row—not a standalone score</strong><span>{context.data.score_semantics.explanation} Effective indicator score: <b>{context.data.zone3?.effective_score ?? 'pending'}</b> ({context.data.zone3?.source ?? 'not available'}).</span></div></div> : null}
+                  {context.data?.score_semantics && queue !== 'zone3' && queue !== 'recall' ? <div className="review-score-semantics"><Info size={17} /><div><strong>Evidence row—not a standalone score</strong><span>{context.data.score_semantics.explanation} Effective indicator score: <b>{context.data.zone3?.effective_score ?? 'pending'}</b> ({context.data.zone3?.source ?? 'not available'}).</span></div></div> : null}
                   <QueueSpecificEvidence queue={queue} record={selected.record} />
                 </article>
                 <DecisionPanel key={selected.item.stable_key} queue={queue} item={selected.item} record={selected.record} context={context.data} />

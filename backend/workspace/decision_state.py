@@ -97,6 +97,12 @@ def _reviewer_separation_satisfied(citation, mapping):
     mapping_user = _value(mapping, "created_by_id")
     if citation_user != mapping_user:
         return True
+    # Ledger-imported decisions: one importer account writes both stages, but the
+    # NAMED reviewers differ — that is the engine writer's own separation rule.
+    citation_name = str(_value(citation, "reviewer_name", "") or "").strip().casefold()
+    mapping_name = str(_value(mapping, "reviewer_name", "") or "").strip().casefold()
+    if citation_name and mapping_name and citation_name != mapping_name:
+        return True
     return bool(
         citation_user
         and "admin"
