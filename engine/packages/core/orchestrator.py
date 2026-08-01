@@ -88,6 +88,25 @@ def _participating_proof_spans(snippet: str, evidence: list[dict]) -> tuple[list
         return [], []
     position = haystack.find(target)
     if position < 0:
+        # Thai carries no meaningful inter-word spaces, but Vision OCR emits
+        # word-level tokens (spaces between every Thai word) while unit text is
+        # line-level (no spaces) — window location must ignore spaces entirely.
+        # Latin text keeps the space-sensitive path above.
+        thai_in_target = sum(1 for c in target if "ก" <= c <= "๛")
+        if thai_in_target > len(target) * 0.25:
+            squeezed_chars, squeezed_map = [], []
+            for char, owner in zip(chars, span_map, strict=True):
+                if char != " ":
+                    squeezed_chars.append(char)
+                    squeezed_map.append(owner)
+            squeezed_target = target.replace(" ", "")
+            pos2 = "".join(squeezed_chars).find(squeezed_target)
+            if pos2 >= 0 and squeezed_target:
+                first = squeezed_map[pos2]
+                last = squeezed_map[pos2 + len(squeezed_target) - 1]
+                participating = evidence[first:last + 1]
+                return ([str(span["id"]) for span in participating],
+                        [list(span["bbox"]) for span in participating])
         return [], []
     first = span_map[position]
     last = span_map[position + len(target) - 1]

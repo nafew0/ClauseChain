@@ -149,4 +149,8 @@ def test_current_run_artifacts_never_emit_open_snippets():
             assert gates[-1].get("metadata", {}).get("closure_code") in {
                 "PASS_CLOSED", "PASS_LONG_BUT_CLOSED"
             }
-            assert snippet.rstrip().endswith((".", "!", "?"))
+            trailing = snippet.rstrip()
+            # Script-aware boundary rule (mirrors finalization): Thai closes
+            # structurally (no sentence punctuation exists); Hindi ends with danda.
+            thai_tail = bool(trailing) and "ก" <= trailing[-1] <= "๛"
+            assert trailing.endswith((".", "!", "?", "।")) or thai_tail

@@ -68,6 +68,13 @@ class OpenAIChatProvider:
                     )
                 response.raise_for_status()
                 payload = response.json()
+                if "choices" not in payload:
+                    # OpenRouter can return HTTP 200 with an error body
+                    # ({"error": {...}}) on upstream rate limits — retryable.
+                    message = str((payload.get("error") or {}).get("message") or payload)[:200]
+                    raise httpx.HTTPStatusError(
+                        f"retryable gateway error body: {message}",
+                        request=response.request, response=response)
                 self.last_usage = payload.get("usage")
                 if self.last_usage:
                     from packages.providers import cost
