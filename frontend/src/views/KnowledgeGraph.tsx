@@ -45,7 +45,7 @@ export default function KnowledgeGraph() {
         ) : (
           <>
             <SnapshotBanner snapshot={summary.data.snapshot} />
-            <section className={`graph-verification ${status}`}><div>{status === 'verified' ? <ShieldCheck /> : <AlertTriangle />}<span><strong>{status === 'verified' ? 'Neo4j parity verified' : status === 'parity_failed' ? 'Neo4j parity failed' : 'Neo4j snapshot unavailable'}</strong><small>Schema {summary.data.schema_version ?? 'n/a'} · {summary.data.node_count} exported nodes · {summary.data.edge_count} relationships</small></span></div><code>{summary.data.artifact.sha256}</code>{summary.data.reason ? <p>{summary.data.reason}</p> : null}</section>
+            <section className={`graph-verification ${status}`}><div>{status === 'verified' ? <ShieldCheck /> : <AlertTriangle />}<span><strong>{status === 'verified' ? 'Neo4j parity verified' : status === 'parity_failed' ? 'Mirror reconciliation pending' : 'Neo4j snapshot unavailable'}</strong><small>Schema {summary.data.schema_version ?? 'n/a'} · {summary.data.node_count} exported nodes · {summary.data.edge_count} relationships</small></span></div><code>{summary.data.artifact.sha256}</code>{summary.data.reason ? <p>{summary.data.reason}</p> : null}</section>
             {status === 'unavailable' ? (
               <PageUnavailable title="Neo4j was unavailable during snapshot import" detail={summary.data.reason ?? undefined} />
             ) : (
