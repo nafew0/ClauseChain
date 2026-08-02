@@ -41,8 +41,6 @@ export default function WorkspaceDashboard() {
   return <WorkspaceShell breadcrumbs={[{ label: 'Dashboard' }]}><div className="cc-page live-dashboard">
     <div className="cc-page-header"><div><TruthBadge state="live" /><h1 className="cc-page-title text-[36px] mt-3">ESCAP legal evidence registry</h1><p className="text-cc-ink-500 mt-1.5">Current legal evidence, controlled updates and attributable review history.</p></div><div className="cc-actions"><Link className="truth-primary-link" href="/review">Open legal review <ArrowRight size={15} /></Link></div></div>
     {query.isError || !data ? <PageUnavailable title={query.isPending ? 'Loading the authoritative registry…' : 'Registry data is unavailable'} /> : <>
-      <SnapshotBanner snapshot={data.snapshot} />
-
       <section className="registry-overview" data-data-card>
         <div className="registry-overview-title"><Database /><div><span>Current evidence registry</span><strong>{data.registry.current.toLocaleString()} active evidence records</strong><small>{data.registry.retired.toLocaleString()} retired · {data.registry.not_reproduced.toLocaleString()} marked not reproduced</small></div></div>
         <dl>
@@ -54,6 +52,7 @@ export default function WorkspaceDashboard() {
       </section>
 
       <div className="dashboard-status-row" role="group" aria-label="Registry status indicators">
+        <SnapshotBanner snapshot={data.snapshot} />
         {update ? <button type="button" className={`dashboard-status-chip update ${update.state}`} aria-expanded={openStatus === 'update'} onClick={() => toggleStatus('update')} title="Latest evidence update"><RefreshCw size={15} /><span>Evidence update</span><b>{update.state.toUpperCase()}</b></button> : null}
         <button type="button" className={`dashboard-status-chip integrity ${integrityPass ? 'pass' : 'fail'}`} aria-expanded={openStatus === 'integrity'} onClick={() => toggleStatus('integrity')} title="Automated evidence integrity">{integrityPass ? <CheckCircle2 size={15} /> : <ShieldAlert size={15} />}<span>Evidence integrity</span><b>{integrityPass ? 'PASS' : integrityItems.length || '!'}</b></button>
       </div>

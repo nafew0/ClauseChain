@@ -7,7 +7,7 @@ export default function ReviewPage() {
   return (
     <ProtectedRoute>
       <WorkspaceShell breadcrumbs={[{ label: 'Review & approve' }]} contentMode="contained">
-        <SnapshotBanner />
+        <div className="snapshot-chip-row"><SnapshotBanner /></div>
         <Suspense fallback={<div className="review-canvas-loading" aria-label="Loading review workspace" />}>
           <ReviewWorkbench />
         </Suspense>
