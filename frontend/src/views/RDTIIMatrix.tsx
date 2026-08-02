@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
-import { AlertTriangle, ArrowUpRight, CheckCircle2, CircleDashed, Gavel, LoaderCircle, Scale, X, XCircle } from 'lucide-react'
+import { AlertTriangle, ArrowUpRight, CheckCircle2, CircleDashed, Gavel, LoaderCircle, PenLine, Scale, X, XCircle } from 'lucide-react'
 
 import WorkspaceShell from '@/components/clausechain/WorkspaceShell'
 import { TruthBadge } from '@/components/clausechain/TruthState'
@@ -13,26 +13,21 @@ import { cn } from '@/lib/utils'
 
 type Zone3Score = 0 | 0.5 | 1
 
-function scoreLabel(value: number | null | undefined) {
-  if (value === null || value === undefined || Number.isNaN(Number(value))) return '—'
-  return Number(value) % 1 === 0 ? String(Number(value)) : String(value)
+function scoreLabel(value: number | string | null | undefined) {
+  if (value === null || value === undefined || value === '' || Number.isNaN(Number(value))) return '—'
+  return Number(value) % 1 === 0 ? String(Number(value)) : String(Number(value))
 }
 
-function CellButton({ cell, selected, onSelect }: { cell: Zone3MatrixCell; selected: boolean; onSelect: () => void }) {
-  const shown = cell.state === 'pending' ? cell.deterministic : cell.effective
-  return (
-    <button
-      type="button"
-      onClick={onSelect}
-      className={cn('z3-cell', `is-${cell.state}`, selected && 'is-selected', cell.blocked && 'is-blocked')}
-      title={`${cell.economy} · ${cell.indicator} — ${cell.state === 'pending' ? 'engine proposal awaiting reviewer decision' : `${cell.state} by ${cell.reviewer_name}`}`}
-    >
-      <strong>{scoreLabel(shown)}</strong>
-      {cell.state === 'pending' ? <span>proposed</span> : <span>{cell.state === 'overridden' ? 'override' : 'approved'}</span>}
-      {cell.flagged || cell.gold_divergence ? <AlertTriangle size={11} /> : null}
-    </button>
-  )
+function indicatorShort(question: string | undefined) {
+  const text = (question || '').replace(/^Does the law\s*/i, '').replace(/^Is there\s*/i, '')
+  return text.length > 30 ? `${text.slice(0, 30).trimEnd()}…` : text || '—'
 }
+
+const STATE_ICON = {
+  approved: <CheckCircle2 size={13} />,
+  overridden: <PenLine size={13} />,
+  pending: <CircleDashed size={13} />,
+} as const
 
 export default function RDTIIMatrix() {
   const matrix = useZone3Matrix()
@@ -75,24 +70,58 @@ export default function RDTIIMatrix() {
   if (matrix.isError || !matrix.data) return <WorkspaceShell breadcrumbs={[{ label: 'RDTII Matrix' }]}><div className="run-page-state error"><XCircle size={28} /> The score matrix API is unavailable.</div></WorkspaceShell>
   const data = matrix.data
 
+  const pillar6 = data.indicators.filter((indicator) => indicator.toUpperCase().startsWith('P6'))
+  const pillar7 = data.indicators.filter((indicator) => indicator.toUpperCase().startsWith('P7'))
+  const orderedIndicators = [...pillar6, ...pillar7]
+  const cellFor = (economy: string, indicator: string) => data.cells.find((entry) => entry.economy === economy && entry.indicator === indicator)
+  const questionFor = (indicator: string) => data.cells.find((entry) => entry.indicator === indicator)?.question
+  const overrides = data.cells.filter((cell) => cell.state === 'overridden').length
+  const divergences = data.cells.filter((cell) => cell.gold_divergence).length
+  const evidenceCount = (economy: string) => data.cells.filter((cell) => cell.economy === economy).reduce((total, cell) => total + cell.evidence.length, 0)
+
   return (
     <WorkspaceShell breadcrumbs={[{ label: 'RDTII Matrix' }]}>
       <div className="cc-page z3-page">
-        <div className="cc-page-header"><div><div className="truth-chiprow"><TruthBadge state="live" /><SnapshotBanner /></div><h1 className="cc-page-title text-[32px] mt-3">RDTII indicator matrix</h1><p className="text-cc-ink-500 mt-1.5">Indicator-level 0 / 0.5 / 1 decisions. The engine proposes; a named reviewer approves or overrides with reasoning. Every cell traces to its evidence rows.</p></div>
-          <div className="z3-progress"><span><strong>{data.counts.decided}</strong> decided</span><span><strong>{data.counts.pending}</strong> awaiting reviewer</span></div>
+        <div className="cc-page-header"><div><div className="truth-chiprow"><TruthBadge state="live" /><SnapshotBanner /></div><h1 className="cc-page-title text-[32px] mt-3">RDTII indicator matrix</h1><p className="text-cc-ink-500 mt-1.5">Economies × indicators · engine-proposed, reviewer-decided, evidence-anchored. Scores are 0 / 0.5 / 1 at indicator level.</p></div></div>
+
+        <div className="z3-kpis">
+          <article data-data-card><span>Decided</span><strong className="ok">{data.counts.decided}<small> of {data.counts.total}</small></strong><p>named reviewer approvals & overrides</p></article>
+          <article data-data-card><span>Awaiting reviewer</span><strong className="warn">{data.counts.pending}</strong><p>engine proposals — not effective yet</p></article>
+          <article data-data-card><span>Overrides</span><strong className="info">{overrides}</strong><p>reviewer changed the engine&apos;s score</p></article>
+          <article data-data-card><span>Gold divergences</span><strong className="alert">{divergences}</strong><p>flagged for human adjudication</p></article>
         </div>
 
         <div className="z3-layout">
           <div className="z3-table-wrap" data-data-card>
             <table className="z3-table">
-              <thead><tr><th>Indicator</th>{data.economies.map((economy) => <th key={economy}>{economy}</th>)}</tr></thead>
+              <thead>
+                <tr className="z3-pillar-row"><th /><th colSpan={pillar6.length}>Pillar 6 · Cross-border data policies</th><th colSpan={pillar7.length}>Pillar 7 · Personal data protection</th></tr>
+                <tr>
+                  <th>Economy</th>
+                  {orderedIndicators.map((indicator) => <th key={indicator} title={questionFor(indicator) || indicator}><b>{indicator}</b><i>{indicatorShort(questionFor(indicator))}</i></th>)}
+                </tr>
+              </thead>
               <tbody>
-                {data.indicators.map((indicator) => (
-                  <tr key={indicator}>
-                    <th scope="row">{indicator}</th>
-                    {data.economies.map((economy) => {
-                      const cell = data.cells.find((entry) => entry.economy === economy && entry.indicator === indicator)
-                      return <td key={economy}>{cell ? <CellButton cell={cell} selected={selected?.score_key === cell.score_key} onSelect={() => openCell(cell)} /> : <span className="z3-empty">n/a</span>}</td>
+                {data.economies.map((economy) => (
+                  <tr key={economy}>
+                    <th scope="row"><strong>{economy}</strong><small>{evidenceCount(economy)} evidence rows</small></th>
+                    {orderedIndicators.map((indicator) => {
+                      const cell = cellFor(economy, indicator)
+                      if (!cell) return <td key={indicator}><span className="z3-empty">n/a</span></td>
+                      return (
+                        <td key={indicator}>
+                          <button
+                            type="button"
+                            onClick={() => openCell(cell)}
+                            className={cn('z3-cell', `is-${cell.state}`, selected?.score_key === cell.score_key && 'is-selected', cell.blocked && 'is-blocked')}
+                            title={`${economy} · ${indicator} — ${cell.state === 'pending' ? 'engine proposal awaiting reviewer decision' : `${cell.state} by ${cell.reviewer_name}`}`}
+                          >
+                            {STATE_ICON[cell.state]}
+                            <strong>{scoreLabel(cell.state === 'pending' ? cell.deterministic : cell.effective)}</strong>
+                            {cell.flagged || cell.gold_divergence ? <AlertTriangle size={11} className="z3-flag" /> : null}
+                          </button>
+                        </td>
+                      )
                     })}
                   </tr>
                 ))}
@@ -103,6 +132,7 @@ export default function RDTIIMatrix() {
               <span className="is-overridden">override</span>
               <span className="is-pending">proposed — awaiting named reviewer</span>
               <span><AlertTriangle size={11} /> low agreement or gold divergence</span>
+              <em>Click any cell to see the engine proposal, judge panel, reviewer decision and evidence.</em>
             </footer>
           </div>
 
@@ -117,6 +147,7 @@ export default function RDTIIMatrix() {
                 <h3><Scale size={13} /> Engine proposal</h3>
                 <p className="z3-det"><b>{scoreLabel(selected.deterministic)}</b> {selected.deterministic_reason}</p>
                 {selected.judge_scores ? <p className="z3-judges"><Gavel size={12} /> {selected.judge_scores} · α {String(selected.agreement_alpha ?? 'n/a')} · band {selected.score_band || 'n/a'}</p> : null}
+                <p className="z3-gold">Master gold suggests <b>{scoreLabel(selected.master_gold as number | string | null)}</b>{selected.gold_divergence ? ' — diverges from the engine proposal' : ' — agrees with the engine proposal'}</p>
                 {selected.gold_divergence ? <p className="z3-divergence"><AlertTriangle size={12} /> {selected.gold_divergence}</p> : null}
               </section>
 
@@ -161,7 +192,7 @@ export default function RDTIIMatrix() {
               ) : <p className="z3-pending-note">Read-only access — scoring requires a mapping reviewer or admin role.</p>}
             </aside>
           ) : (
-            <aside className="z3-drawer z3-drawer-empty" data-data-card><Scale size={20} /><p>Select a cell to see the engine proposal, the judge panel, the reviewer decision and the exact evidence rows behind it.</p></aside>
+            <aside className="z3-drawer z3-drawer-empty" data-data-card><Scale size={20} /><p>Select a cell to see the engine proposal, the judge panel, the gold reference, the reviewer decision and the exact evidence rows behind it.</p></aside>
           )}
         </div>
       </div>

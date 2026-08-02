@@ -2045,7 +2045,9 @@ class Zone3MatrixView(APIView):
             state = "pending"
             effective = None
             if decision is not None:
-                state = "overridden" if decision.verdict == Zone3Decision.Verdict.OVERRIDDEN else "approved"
+                # The engine ledger stores writer-style actions (approve/override);
+                # app-written rows store the model verdicts (approved/overridden).
+                state = "overridden" if str(decision.verdict) in ("override", "overridden") else "approved"
                 effective = float(decision.score) if decision.score is not None else deterministic
                 decided += 1
             cells.append({
@@ -2056,7 +2058,7 @@ class Zone3MatrixView(APIView):
                 "deterministic": deterministic,
                 "deterministic_reason": record.get("Deterministic reason"),
                 "master_gold": record.get("Master gold score"),
-                "gold_divergence": record.get("Gold divergence") or None,
+                "gold_divergence": (lambda value: value if value and value.casefold() not in ("agrees", "none", "n/a", "—") else None)(str(record.get("Gold divergence") or "").strip()),
                 "judge_scores": record.get("Judge scores"),
                 "judge_reasoning": record.get("Judge reasoning"),
                 "agreement_alpha": record.get("Agreement alpha"),
