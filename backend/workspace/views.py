@@ -1481,13 +1481,17 @@ def finding_ineligibility(item, snapshot):
             return "The finding lacks a complete citation proof."
         if proof.get("alignment_status") in ("unaligned", "ambiguous", "review", None):
             return "The source citation is unresolved or ambiguously aligned."
+        # Engine gate contract (gates.py / finalization.validate_final_finding):
+        # FAIL = the row can never ship; WARN = a signal the named reviewer must
+        # weigh individually. Only FAIL blocks approval here — WARN rows stay
+        # approvable one-by-one (bulk approval still excludes them).
         failed_gates = [
             gate.get("gate_id")
             for gate in proof.get("gate_results") or []
-            if gate.get("status") != "PASS"
+            if gate.get("status") == "FAIL"
         ]
         if failed_gates:
-            return f"Evidence gates are not passing: {', '.join(filter(None, failed_gates))}."
+            return f"Evidence gates are failing: {', '.join(filter(None, failed_gates))}."
     return ""
 
 

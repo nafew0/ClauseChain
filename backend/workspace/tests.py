@@ -371,7 +371,13 @@ class WorkspaceApiTests(TestCase):
         self.assertEqual(runs["results"][0]["rows_produced"], 0)
         self.assertIn("champion", runs)
 
-        submission = self.client.get("/api/workspace/submission/?economy=Singapore")
+        # Sandbox ENGINE_ROOT: the developer machine's real engine tree may hold
+        # replayed final artifacts, which is environment state, not app behavior.
+        with tempfile.TemporaryDirectory() as empty_root:
+            with override_settings(ENGINE_ROOT=Path(empty_root)):
+                submission = self.client.get(
+                    "/api/workspace/submission/?economy=Singapore"
+                )
         self.assertEqual(submission.status_code, 200)
         self.assertEqual(submission.data["count"], 3)
         self.assertEqual(len(submission.data["template_columns"]), 13)
@@ -853,6 +859,44 @@ class WorkspaceApiTests(TestCase):
         )
         self.assertEqual(response.status_code, 400)
         writer.assert_not_called()
+
+    @patch("workspace.views.apply_authoritative_decision", return_value=RECEIPT)
+    def test_warn_gates_stay_approvable_but_fail_gates_block(self, writer):
+        # Engine contract: FAIL = the row can never ship; WARN = a signal the
+        # named reviewer weighs individually. WARN must not disable approval.
+        evidence = EvidenceRow.objects.get(finding_key="1" * 64)
+        proof = dict(evidence.row_json["citation_proof"])
+        payload = {
+            "finding_key": "1" * 64,
+            "queue": "new",
+            "review_stage": "citation",
+            "decision": "approved",
+            "citation_checked": True,
+            "expected_latest_decision_id": None,
+        }
+        self.authenticate(self.citation)
+
+        proof["gate_results"] = [
+            {"gate_id": "G1", "status": "PASS"},
+            {"gate_id": "G4", "status": "WARN",
+             "reason": "no current-version assertion found on the source page"},
+        ]
+        evidence.row_json = {**evidence.row_json, "citation_proof": proof}
+        evidence.save(update_fields=["row_json"])
+        response = self.client.post(
+            "/api/workspace/decisions/findings/", payload, format="json"
+        )
+        self.assertEqual(response.status_code, 201, response.data)
+
+        proof["gate_results"] = [{"gate_id": "G9", "status": "FAIL"}]
+        evidence.row_json = {**evidence.row_json, "citation_proof": proof}
+        evidence.save(update_fields=["row_json"])
+        payload["expected_latest_decision_id"] = str(FindingDecision.objects.get().pk)
+        response = self.client.post(
+            "/api/workspace/decisions/findings/", payload, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("G9", str(response.data))
 
     @patch("workspace.views.apply_authoritative_decision", return_value=RECEIPT)
     def test_bulk_known_approval_fails_closed_on_incomplete_proof(self, writer):
