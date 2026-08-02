@@ -79,12 +79,25 @@ export default function KnowledgeGraph() {
 
 function useForceLayout(nodes: GraphNode[], edges: { id: string; source: string; target: string; type: string }[]) {
   return useMemo(() => {
-    const positioned: Positioned[] = nodes.map((node, index) => ({ ...node, x: 450 + Math.cos(index * 2.399) * (80 + index % 180), y: 280 + Math.sin(index * 2.399) * (80 + index % 180) }))
-    const links = edges.map(edge => ({ ...edge }))
+    const seenNodeIds = new Set<string>()
+    const closedNodes = nodes.filter((node) => {
+      if (!node.id || seenNodeIds.has(node.id)) return false
+      seenNodeIds.add(node.id)
+      return true
+    })
+    const seenEdgeIds = new Set<string>()
+    const closedEdges = edges.filter((edge) => {
+      if (!seenNodeIds.has(edge.source) || !seenNodeIds.has(edge.target)) return false
+      if (seenEdgeIds.has(edge.id)) return false
+      seenEdgeIds.add(edge.id)
+      return true
+    })
+    const positioned: Positioned[] = closedNodes.map((node, index) => ({ ...node, x: 450 + Math.cos(index * 2.399) * (80 + index % 180), y: 280 + Math.sin(index * 2.399) * (80 + index % 180) }))
+    const links = closedEdges.map(edge => ({ ...edge }))
     const simulation = forceSimulation<Positioned>(positioned).randomSource(() => 0.42).force('link', forceLink<Positioned, typeof links[number]>(links).id(node => node.id).distance(72).strength(.45)).force('charge', forceManyBody().strength(-150)).force('center', forceCenter(450, 280)).force('x', forceX(450).strength(.04)).force('y', forceY(280).strength(.04)).stop()
     for (let index = 0; index < 150; index += 1) simulation.tick()
     const byId = new Map(positioned.map(node => [node.id, node]))
-    return { nodes: positioned.map(node => ({ ...node, x: Math.max(25, Math.min(875, node.x ?? 450)), y: Math.max(25, Math.min(535, node.y ?? 280)) })), edges: edges.flatMap(edge => { const source = byId.get(edge.source); const target = byId.get(edge.target); return source && target ? [{ ...edge, source, target }] : [] }) }
+    return { nodes: positioned.map(node => ({ ...node, x: Math.max(25, Math.min(875, node.x ?? 450)), y: Math.max(25, Math.min(535, node.y ?? 280)) })), edges: closedEdges.flatMap(edge => { const source = byId.get(edge.source); const target = byId.get(edge.target); return source && target ? [{ ...edge, source, target }] : [] }) }
   }, [nodes, edges])
 }
 function nodeLabel(node: GraphNode) { const p = node.properties; return String(p.article_section ?? p.law_name ?? p.indicator ?? p.law ?? p.official_domain ?? node.id).slice(0, 60) }

@@ -656,7 +656,34 @@ class KnowledgeGraphSubgraphView(APIView):
             nodes = [node for node in nodes if node.get("id") in seeds]
             node_ids = {node.get("id") for node in nodes}
             edges = [edge for edge in edges if edge.get("source") in node_ids and edge.get("target") in node_ids]
-        return Response({"snapshot": snapshot_identity(snapshot), "status": graph.get("status", "unavailable"), "nodes": nodes[:500], "edges": edges[:1000], "caps": {"nodes": 500, "edges": 1000}})
+
+        # A capped or filtered graph must be closed over its relationships.
+        # D3's forceLink throws when even one edge references a node omitted by
+        # the payload, so deduplicate nodes first and always remove orphan edges.
+        closed_nodes = []
+        node_ids = set()
+        for node in nodes[:500]:
+            node_id = node.get("id")
+            if not isinstance(node_id, str) or not node_id or node_id in node_ids:
+                continue
+            node_ids.add(node_id)
+            closed_nodes.append(node)
+        closed_edges = []
+        edge_ids = set()
+        for edge in edges:
+            source = edge.get("source")
+            target = edge.get("target")
+            edge_id = edge.get("id")
+            if source not in node_ids or target not in node_ids:
+                continue
+            if isinstance(edge_id, str) and edge_id in edge_ids:
+                continue
+            if isinstance(edge_id, str):
+                edge_ids.add(edge_id)
+            closed_edges.append(edge)
+            if len(closed_edges) == 1000:
+                break
+        return Response({"snapshot": snapshot_identity(snapshot), "status": graph.get("status", "unavailable"), "nodes": closed_nodes, "edges": closed_edges, "caps": {"nodes": 500, "edges": 1000}})
 
 
 class ReviewQueueView(APIView):

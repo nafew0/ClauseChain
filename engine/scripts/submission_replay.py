@@ -35,6 +35,10 @@ def main() -> int:
         d["finding_key"]: (d.get("review_subject_hash"),
                            ReviewDecision.model_validate(d["review"]))
         for d in decision_items
+        # Template-complete ledgers carry UNSIGNED placeholders (empty reviewer,
+        # empty timestamps) for rows not yet reviewed — they can never finalize,
+        # so they are skipped rather than crashing schema validation.
+        if (d.get("review") or {}).get("reviewer_name", "").strip()
     }
     candidate_keys = {finding_key(f) for f in candidates}
     unknown = sorted(set(decisions) - candidate_keys)

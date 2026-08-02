@@ -417,8 +417,16 @@ class WorkspaceApiTests(TestCase):
         self.assertEqual(self.client.get("/api/workspace/raw/../../etc/passwd/").status_code, 404)
         graph = self.client.get("/api/workspace/knowledge-graph/")
         self.assertEqual(graph.data["status"], "verified")
+        graph_artifact = self.snapshot.artifacts.get(key="neo4j-graph-snapshot")
+        graph_payload = dict(graph_artifact.parsed_json)
+        graph_payload["edges"] = [
+            {"id": "valid", "source": "p1", "target": "p1", "type": "CROSS_REFERENCES", "properties": {}},
+            {"id": "orphan", "source": "p1", "target": "missing", "type": "CROSS_REFERENCES", "properties": {}},
+        ]
+        SnapshotArtifact.objects.filter(pk=graph_artifact.pk).update(parsed_json=graph_payload)
         subgraph = self.client.get("/api/workspace/knowledge-graph/subgraph/?economy=Singapore")
         self.assertLessEqual(len(subgraph.data["nodes"]), 500)
+        self.assertEqual([edge["id"] for edge in subgraph.data["edges"]], ["valid"])
         invalid = self.client.get("/api/workspace/knowledge-graph/subgraph/?relationship=DELETE")
         self.assertEqual(invalid.status_code, 400)
         self.assertEqual(self.client.post("/api/workspace/knowledge-graph/", {}, format="json").status_code, 405)

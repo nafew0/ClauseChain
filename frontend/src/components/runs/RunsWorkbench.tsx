@@ -61,7 +61,8 @@ function RunCard({ run, index }: { run: RunRecord; index: number }) {
         <div><strong>{run.rows_produced}</strong><span>rows</span></div>
         <div><strong>{run.discovery_counts.NEW}</strong><span>NEW</span></div>
         <div><strong>{run.discovery_counts.KNOWN}</strong><span>KNOWN</span></div>
-        <div className={cn(run.warning_count && 'warn')}><strong>{run.warning_count}</strong><span>warnings</span></div>
+        <div className={cn(run.warning_count && 'warn')}><strong>{(run.warnings || []).filter((w) => String(w).includes('REJECTED')).length}</strong><span>review signals</span></div>
+        <div className={cn((run.warnings || []).some((w) => !String(w).includes('REJECTED')) && 'warn')}><strong>{(run.warnings || []).filter((w) => !String(w).includes('REJECTED')).length}</strong><span>blocking failures</span></div>
       </div>
       <dl>
         <div><dt><Coins size={13} /> Measured cost</dt><dd>{run.total_usd === null ? 'not recorded' : `$${run.total_usd.toFixed(4)}`}</dd></div>
@@ -70,7 +71,7 @@ function RunCard({ run, index }: { run: RunRecord; index: number }) {
       </dl>
       <section className="run-model"><span>Model route</span><code>{run.model_version || 'not recorded in findings'}</code></section>
       <button className="run-warning-toggle" onClick={() => setWarningsOpen((open) => !open)} disabled={!run.warning_count}>
-        <AlertTriangle size={14} /> Full warnings ({run.warning_count}) {warningsOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+        <AlertTriangle size={14} /> All signals ({run.warning_count}) {warningsOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
       </button>
       {warningsOpen ? <div className="run-warning-list">{run.warnings.map((warning, warningIndex) => <p key={warningIndex}>{warningText(warning)}</p>)}</div> : null}
       <footer><span>{run.generated_at ? new Date(run.generated_at).toLocaleString() : 'time unavailable'}</span><code>{run.source_hash.slice(0, 10)}…</code></footer>
