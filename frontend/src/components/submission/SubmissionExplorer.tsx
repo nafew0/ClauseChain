@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import {
   AlertTriangle,
   CheckCircle2,
@@ -69,7 +69,6 @@ function SubmissionDrawer({ item, close }: { item: SubmissionRow; close: () => v
 
 export default function SubmissionExplorer() {
   const search = useSearchParams()
-  const router = useRouter()
   const pathname = usePathname()
   const params = useMemo(() => readParams(search), [search])
   const query = useSubmission(params)
@@ -91,7 +90,9 @@ export default function SubmissionExplorer() {
       if (value === undefined || value === '') next.delete(key)
       else next.set(key, String(value))
     }
-    router.replace(`${pathname}?${next.toString()}`, { scroll: false })
+    // Same-page searchParams update: native History API (router.replace
+    // silently no-ops for query-only changes in production builds).
+    window.history.replaceState(null, '', `${pathname}?${next.toString()}`)
   }
   const replay = () => {
     if (!window.confirm('Queue deterministic submission replay from current named approvals? This does not approve any pending row.')) return

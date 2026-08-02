@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import axios from 'axios'
 import {
@@ -487,7 +487,6 @@ export function DecisionPanel({ queue, item, record, context, approvalEligibilit
 }
 
 export default function ReviewWorkbench() {
-  const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const requestedQueue = searchParams.get('queue') as WorkspaceQueue | null
@@ -577,8 +576,11 @@ export default function ReviewWorkbench() {
     if (nextFilters.economies.length) params.set('economy', nextFilters.economies.join(','))
     if (nextFilters.pillars.length) params.set('pillar', nextFilters.pillars.join(','))
     if (nextFilters.indicators.length) params.set('indicator', nextFilters.indicators.join(','))
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false })
-  }, [activeFilters, pathname, router])
+    // Same-page searchParams update: the native History API is the documented
+    // path in this Next version (integrates with useSearchParams); router.replace
+    // silently no-ops for query-only changes in production builds.
+    window.history.replaceState(null, '', `${pathname}?${params.toString()}`)
+  }, [activeFilters, pathname])
 
   useEffect(() => {
     if (!requestedItem && filtered[0]) setUrl(queue, filtered[0].item.stable_key)
