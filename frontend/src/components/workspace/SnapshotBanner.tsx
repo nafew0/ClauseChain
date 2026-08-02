@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { AlertTriangle, Database, ShieldCheck } from 'lucide-react'
 
 import { useSummary } from '@/hooks/workspace'
@@ -15,15 +16,26 @@ function snapshotTime(value: string) {
   }).format(parsed)
 }
 
-export function SnapshotBanner({ className }: { className?: string }) {
+export function SnapshotBanner({ className, compact = false }: { className?: string; compact?: boolean }) {
   const summary = useSummary()
+  const [open, setOpen] = useState(false)
 
   if (summary.isPending) {
+    if (compact) return <span className={cn('snapshot-chip is-loading', className)} aria-label="Loading snapshot status"><Database size={15} /></span>
     return (
       <div className={cn('h-10 animate-pulse border-b border-slate-200 bg-slate-100', className)} />
     )
   }
   if (summary.isError || !summary.data) {
+    const unavailable = 'Snapshot status unavailable. Do not make review decisions until the API reconnects.'
+    if (compact) {
+      return (
+        <span className={cn('snapshot-chip-wrap', className)}>
+          <button type="button" className="snapshot-chip is-error" aria-expanded={open} title="Snapshot status" onClick={() => setOpen(value => !value)}><AlertTriangle size={15} /></button>
+          {open ? <span role="alert" className="snapshot-pop">{unavailable}</span> : null}
+        </span>
+      )
+    }
     return (
       <div
         role="alert"
@@ -33,7 +45,7 @@ export function SnapshotBanner({ className }: { className?: string }) {
         )}
       >
         <AlertTriangle size={14} aria-hidden="true" />
-        Snapshot status unavailable. Do not make review decisions until the API reconnects.
+        {unavailable}
       </div>
     )
   }
@@ -47,6 +59,29 @@ export function SnapshotBanner({ className }: { className?: string }) {
     : championStatus === 'FAIL'
       ? 'Reviewer sign-offs are still in progress.'
       : ''
+
+  if (compact) {
+    return (
+      <span className={cn('snapshot-chip-wrap', className)}>
+        <button
+          type="button"
+          className={cn('snapshot-chip', warning ? 'is-warning' : 'is-ok')}
+          aria-expanded={open}
+          title="Data snapshot status"
+          onClick={() => setOpen(value => !value)}
+        >
+          <Icon size={15} />
+        </button>
+        {open ? (
+          <span role="status" className="snapshot-pop">
+            <span>Data as of {snapshotTime(snapshot.generated_at)}</span>
+            <span className="font-mono">bundle {snapshot.bundle_hash.slice(0, 8)}</span>
+            {warningReason ? <span>{warningReason}</span> : null}
+          </span>
+        ) : null}
+      </span>
+    )
+  }
 
   return (
     <div
