@@ -790,6 +790,41 @@ class WorkspaceApiTests(TestCase):
         ]
         self.assertTrue(review_state["correction_pending"])
 
+    @patch("workspace.views.apply_authoritative_decision", return_value=RECEIPT)
+    def test_zone3_matrix_overlays_decisions_and_traces_evidence(self, writer):
+        self.authenticate(self.citation)
+        response = self.client.get("/api/workspace/zone3-matrix/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["counts"], {"total": 1, "decided": 0, "pending": 1})
+        cell = response.data["cells"][0]
+        self.assertEqual((cell["economy"], cell["indicator"]), ("Singapore", "P7-I3"))
+        self.assertEqual(cell["state"], "pending")
+        self.assertIsNone(cell["latest_decision_id"])
+        self.assertIn("evidence", cell)
+
+        self.authenticate(self.mapping)
+        zone_item = ReviewItem.objects.get(queue=ReviewItem.Queue.ZONE3)
+        decision = self.client.post(
+            "/api/workspace/decisions/zone3/",
+            {
+                "score_key": zone_item.stable_key,
+                "verdict": "overridden",
+                "score": "0.5",
+                "reasoning": "Legal scope supports the intermediate score.",
+                "expected_latest_decision_id": None,
+            },
+            format="json",
+        )
+        self.assertEqual(decision.status_code, 201, decision.data)
+        response = self.client.get("/api/workspace/zone3-matrix/")
+        cell = response.data["cells"][0]
+        self.assertEqual(cell["state"], "overridden")
+        self.assertEqual(float(cell["effective"]), 0.5)
+        self.assertEqual(cell["reviewer_name"], self.mapping.full_name)
+        self.assertEqual(cell["reasoning"], "Legal scope supports the intermediate score.")
+        self.assertTrue(cell["latest_decision_id"])
+        self.assertEqual(response.data["counts"]["decided"], 1)
+
     @patch(
         "workspace.views.apply_authoritative_decision",
         side_effect=RuntimeError("should not be called"),

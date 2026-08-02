@@ -38,7 +38,7 @@ export const WORKSPACE_NAV_ITEMS: WorkspaceNavItem[] = [
   { href: '/jurisdictions/sg/documents/SG-PDPA-2012', icon: ShieldCheck, label: 'Evidence Audit', state: 'prototype', section: 'workspace' },
   { href: '/source-status', icon: Network, label: 'Source Status', state: 'prototype', section: 'workspace' },
   { href: '/benchmark', icon: Gauge, label: 'Benchmark', state: 'prototype', section: 'workspace' },
-  { href: '/matrix', icon: Table2, label: 'RDTII Matrix', state: 'prototype', section: 'workspace' },
+  { href: '/matrix', icon: Table2, label: 'RDTII Matrix', state: 'live', section: 'workspace' },
   { href: '/ledger', icon: BookOpen, label: 'Ledger', state: 'live', section: 'workspace' },
   { href: '/raw-data', icon: Braces, label: 'Raw Data', state: 'live', section: 'workspace' },
   { href: '/knowledge-graph', icon: Share2, label: 'Knowledge Graph', state: 'readonly', section: 'workspace' },

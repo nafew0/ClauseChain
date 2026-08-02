@@ -31,6 +31,7 @@ from .views import (
     SourceMatchView,
     SubmissionView,
     Zone3DecisionView,
+    Zone3MatrixView,
 )
 
 
@@ -98,5 +99,6 @@ urlpatterns = [
     ),
     path("decisions/recall/", RecallDecisionView.as_view(), name="recall_decision"),
     path("decisions/zone3/", Zone3DecisionView.as_view(), name="zone3_decision"),
+    path("zone3-matrix/", Zone3MatrixView.as_view(), name="zone3_matrix"),
     path("corrections/", CorrectionRequestView.as_view(), name="correction_request"),
 ]

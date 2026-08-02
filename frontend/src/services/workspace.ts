@@ -252,6 +252,54 @@ export async function decideRecall(
   return data
 }
 
+export interface Zone3MatrixEvidence {
+  finding_key: string
+  stable_key: string
+  queue: 'new' | 'known' | 'absence'
+  law: string
+  article: string
+  tag: string
+  blocked: boolean
+}
+
+export interface Zone3MatrixCell {
+  economy: string
+  indicator: string
+  score_key: string
+  question?: string
+  deterministic: number | null
+  deterministic_reason?: string
+  master_gold?: number | string | null
+  gold_divergence?: string | null
+  judge_scores?: string
+  judge_reasoning?: string
+  agreement_alpha?: number | string | null
+  score_band?: string
+  flagged: boolean
+  state: 'pending' | 'approved' | 'overridden'
+  effective: number | null
+  reviewer_name: string
+  reviewed_at: string | null
+  reasoning: string
+  latest_decision_id: string | null
+  blocked: boolean
+  evidence: Zone3MatrixEvidence[]
+}
+
+export interface Zone3MatrixResponse {
+  snapshot: { generated_at: string; bundle_hash: string; stale: boolean }
+  economies: string[]
+  indicators: string[]
+  counts: { total: number; decided: number; pending: number }
+  score_semantics: { explanation: string; allowed_scores: number[] }
+  cells: Zone3MatrixCell[]
+}
+
+export async function getZone3Matrix(): Promise<Zone3MatrixResponse> {
+  const { data } = await api.get<Zone3MatrixResponse>('/workspace/zone3-matrix/')
+  return data
+}
+
 export async function decideZone3(
   payload: Zone3DecisionInput
 ): Promise<DecisionWriteResponse> {

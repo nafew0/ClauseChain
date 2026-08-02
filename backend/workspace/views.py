@@ -1995,6 +1995,98 @@ class Zone3DecisionView(APIView):
         )
 
 
+MATRIX_ECONOMY_ORDER = ["Singapore", "Malaysia", "Australia", "Thailand", "India", "Indonesia"]
+
+
+class Zone3MatrixView(APIView):
+    """Real indicator-score matrix: engine Zone-3 proposals overlaid with the
+    attributable reviewer decisions, plus the evidence rows each score rests on."""
+
+    def get(self, request):
+        snapshot = active_snapshot()
+
+        latest_decisions = {}
+        for decision in Zone3Decision.objects.order_by("created_at"):
+            latest_decisions[decision.score_key] = decision
+
+        evidence_index = {}
+        evidence_queues = (ReviewItem.Queue.NEW, ReviewItem.Queue.KNOWN, ReviewItem.Queue.ABSENCE)
+        for item in ReviewItem.objects.filter(snapshot=snapshot, queue__in=evidence_queues).order_by("position"):
+            record = sheet_record({"headers": snapshot.headers_json.get(item.queue) or []}, item.row_json)
+            economy = str(record.get("Economy") or "").strip()
+            indicator = str(record.get("Indicator") or record.get("Indicator ID") or "").strip()
+            if not economy or not indicator:
+                continue
+            evidence_index.setdefault((economy.casefold(), indicator.casefold()), []).append({
+                "finding_key": item.finding_key,
+                "stable_key": item.stable_key,
+                "queue": item.queue,
+                "law": str(record.get("Law/instrument") or record.get("Law Name")
+                           or record.get("Configured governing instrument") or ""),
+                "article": str(record.get("Article/section") or record.get("Article / Section")
+                               or record.get("Master citation") or ""),
+                "tag": str(record.get("Discovery Tag") or ("ABSENCE" if item.queue == ReviewItem.Queue.ABSENCE else "")),
+                "blocked": item.blocked,
+            })
+
+        cells = []
+        economies, indicators = [], []
+        decided = 0
+        for item in ReviewItem.objects.filter(snapshot=snapshot, queue=ReviewItem.Queue.ZONE3).order_by("position"):
+            record = sheet_record({"headers": snapshot.headers_json.get(ReviewItem.Queue.ZONE3) or []}, item.row_json)
+            economy = str(record.get("Economy") or "").strip()
+            indicator = str(record.get("Indicator") or "").strip()
+            if economy not in economies:
+                economies.append(economy)
+            if indicator not in indicators:
+                indicators.append(indicator)
+            deterministic = record.get("Deterministic score")
+            decision = latest_decisions.get(item.stable_key)
+            state = "pending"
+            effective = None
+            if decision is not None:
+                state = "overridden" if decision.verdict == Zone3Decision.Verdict.OVERRIDDEN else "approved"
+                effective = float(decision.score) if decision.score is not None else deterministic
+                decided += 1
+            cells.append({
+                "economy": economy,
+                "indicator": indicator,
+                "score_key": item.stable_key,
+                "question": record.get("Indicator question"),
+                "deterministic": deterministic,
+                "deterministic_reason": record.get("Deterministic reason"),
+                "master_gold": record.get("Master gold score"),
+                "gold_divergence": record.get("Gold divergence") or None,
+                "judge_scores": record.get("Judge scores"),
+                "judge_reasoning": record.get("Judge reasoning"),
+                "agreement_alpha": record.get("Agreement alpha"),
+                "score_band": record.get("Score band"),
+                "flagged": bool(record.get("Flagged for review")),
+                "state": state,
+                "effective": effective,
+                "reviewer_name": decision.reviewer_name if decision else "",
+                "reviewed_at": decision.reviewed_at.isoformat() if decision else None,
+                "reasoning": (decision.reasoning if decision and hasattr(decision, "reasoning") else "") or "",
+                "latest_decision_id": str(decision.pk) if decision else None,
+                "blocked": item.blocked,
+                "evidence": evidence_index.get((economy.casefold(), indicator.casefold()), []),
+            })
+
+        economies.sort(key=lambda name: (MATRIX_ECONOMY_ORDER.index(name) if name in MATRIX_ECONOMY_ORDER else 99, name))
+        indicators.sort()
+        return Response({
+            "snapshot": snapshot_identity(snapshot),
+            "economies": economies,
+            "indicators": indicators,
+            "counts": {"total": len(cells), "decided": decided, "pending": len(cells) - decided},
+            "score_semantics": {
+                "explanation": "A cell is an indicator-level decision. The engine proposes a deterministic score with judge-panel context; only a named reviewer approval or override makes it effective.",
+                "allowed_scores": [0, 0.5, 1],
+            },
+            "cells": cells,
+        })
+
+
 class CorrectionRequestView(APIView):
     def post(self, request):
         serializer = CorrectionRequestWriteSerializer(data=request.data)

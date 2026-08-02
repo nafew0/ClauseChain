@@ -10,6 +10,7 @@ import {
   decideFindingsBulk,
   decideRecall,
   decideZone3,
+  getZone3Matrix,
   getDecisionHistory,
   getEvidence,
   getEvidenceChanges,
@@ -64,6 +65,7 @@ export const workspaceKeys = {
   proofAsset: (assetUrl: string) =>
     [...workspaceKeys.all, 'proof-asset', assetUrl] as const,
   runs: () => [...workspaceKeys.all, 'runs'] as const,
+  zone3Matrix: () => [...workspaceKeys.all, 'zone3-matrix'] as const,
   submission: (params: SubmissionParams) =>
     [...workspaceKeys.all, 'submission', params] as const,
   actions: () => [...workspaceKeys.all, 'engine-actions'] as const,
@@ -233,6 +235,10 @@ export function useLaunchEngineAction() {
       })
     },
   })
+}
+
+export function useZone3Matrix() {
+  return useQuery({ queryKey: workspaceKeys.zone3Matrix(), queryFn: getZone3Matrix })
 }
 
 export function useDecisionHistory(
