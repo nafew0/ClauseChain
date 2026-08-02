@@ -518,6 +518,23 @@ class WorkspaceApiTests(TestCase):
                         {"action": "run_pipeline", "economy": "Singapore; rm -rf /"}
                     )
 
+            # A live pipeline run produces artifacts only — it must never
+            # auto-import a snapshot (the reviewed app data changes solely
+            # through the explicit refresh action).
+            run_action = EngineAction.objects.create(
+                kind=EngineAction.Kind.RUN,
+                arguments_json={"action": "run_pipeline", "economy": "Singapore", "pillar": "6", "cc": "si"},
+                requested_by=admin,
+            )
+            with override_settings(ENGINE_ROOT=root, ENGINE_ALLOWLIST=allowlist), patch(
+                "workspace.engine_worker.subprocess.run",
+                return_value=SimpleNamespace(returncode=0, stdout="wrote outputs", stderr=""),
+            ), patch("workspace.engine_worker.import_snapshot") as auto_import:
+                execute_action(run_action)
+                run_action.refresh_from_db()
+                self.assertEqual(run_action.status, EngineAction.Status.SUCCEEDED)
+                auto_import.assert_not_called()
+
     def test_source_match_supports_exact_anchor_blocked_and_queue_navigation(self):
         self.authenticate(self.citation)
         exact_key = "1" * 64

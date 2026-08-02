@@ -150,7 +150,12 @@ def execute_action(action):
                 f"Allowlisted command exited {completed.returncode}.\n{output}".strip()
             )
         hashes = artifact_hashes(action_name, action.arguments_json)
-        if action_name in {"replay", "refresh_payload", "run_pipeline"}:
+        # run_pipeline deliberately does NOT auto-import: a live run produces
+        # immutable artifacts only, and the reviewed app snapshot changes solely
+        # through the explicit refresh action. (Auto-importing also fails closed
+        # whenever fresh run outputs diverge from the consolidated candidate set,
+        # which marked otherwise-successful runs as failed.)
+        if action_name in {"replay", "refresh_payload"}:
             snapshot, _ = import_snapshot()
             hashes["snapshot"] = {
                 "id": str(snapshot.pk),
