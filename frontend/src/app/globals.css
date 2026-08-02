@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* D6-R truth states and real-data workspaces */
-.truth-badge { display:inline-flex;align-items:center;gap:6px;width:max-content;padding:4px 9px;border-radius:999px;font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;border:1px solid; }
+.truth-badge { display:inline-flex;align-items:center;gap:6px;width:max-content;min-height:30px;padding:5px 12px;border-radius:999px;font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;border:1px solid; }
 .truth-live { color:#14548F;background:#EDF5FC;border-color:#B8D8F0; }
 .truth-readonly { color:#475569;background:#F8FAFC;border-color:#CBD5E1; }
 .truth-prototype { color:#9A3412;background:#FFF7ED;border-color:#FDBA74; }
@@ -2188,7 +2188,7 @@
 
 /* Dashboard status chips: the update/integrity banners collapsed into small toggles. */
 .dashboard-status-row{display:flex;flex-wrap:wrap;gap:10px}
-.dashboard-status-chip{display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:7px 12px;border-radius:999px;border:1px solid #d4d4d8;background:#fff;font-size:12px;font-weight:600;color:#3f3f46;cursor:pointer}
+.dashboard-status-chip{display:inline-flex;align-items:center;gap:8px;min-height:30px;padding:5px 12px;border-radius:999px;border:1px solid #d4d4d8;background:#fff;font-size:12px;font-weight:600;color:#3f3f46;cursor:pointer}
 .dashboard-status-chip b{padding:3px 8px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.06em}
 .dashboard-status-chip.update{border-color:#fde68a;background:#fffbeb;color:#92400e}
 .dashboard-status-chip.update svg{color:#b45309}
@@ -2204,10 +2204,14 @@
 .dashboard-status-chip.integrity.pass b{background:#d1fae5;color:#047857}
 .dashboard-status-chip[aria-expanded="true"]{box-shadow:0 0 0 2px rgba(29,111,184,.25)}
 
+/* Eyebrow row: page truth badge + status chips sit together, uniformly sized. */
+.truth-chiprow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.truth-chiprow .dashboard-status-chip span,.truth-chiprow .snapshot-chip>span{font:600 12px/1 inherit;letter-spacing:normal;text-transform:none;color:inherit}
+
 /* Compact snapshot status: a dashboard-style chip with a click-to-reveal popover. */
 .snapshot-chip-wrap{position:relative;display:inline-flex;align-self:flex-start}
 .snapshot-chip-row{display:flex;justify-content:flex-end;padding:12px 24px 0}
-.snapshot-chip{display:inline-flex;align-items:center;gap:8px;min-height:34px;padding:6px 12px;border-radius:999px;border:1px solid #d4d4d8;background:#fff;font-size:12px;font-weight:600;color:#3f3f46;cursor:pointer}
+.snapshot-chip{display:inline-flex;align-items:center;gap:8px;min-height:30px;padding:5px 12px;border-radius:999px;border:1px solid #d4d4d8;background:#fff;font-size:12px;font-weight:600;color:#3f3f46;cursor:pointer}
 .snapshot-chip>span{font:600 12px/1 inherit;letter-spacing:normal;text-transform:none;color:inherit}
 .snapshot-chip b{padding:3px 8px;border-radius:999px;font:700 10px var(--cc-font-mono,monospace);letter-spacing:.04em}
 .snapshot-chip.is-ok{border-color:#a7f3d0;background:#ecfdf5;color:#047857}
@@ -2220,7 +2224,6 @@
 .snapshot-chip.is-loading{opacity:.55;animation:pulse 1.6s ease-in-out infinite;cursor:default}
 .snapshot-chip[aria-expanded="true"]{box-shadow:0 0 0 2px rgba(29,111,184,.25)}
 .snapshot-pop{position:absolute;top:calc(100% + 8px);left:0;z-index:40;display:flex;flex-direction:column;gap:4px;min-width:240px;max-width:320px;padding:11px 13px;border:1px solid #e4e4e7;border-radius:10px;background:#fff;box-shadow:0 12px 32px rgba(24,39,54,.14);font-size:12px;color:#3f3f46}
-.snapshot-chip-row .snapshot-pop,.runs-header .snapshot-pop{left:auto;right:0}
 .snapshot-pop span{font:500 12px/1.5 var(--cc-font-sans,inherit);letter-spacing:normal;text-transform:none;color:#3f3f46}
 .snapshot-pop span.font-mono{font-family:var(--cc-font-mono,monospace);font-size:11px}
 

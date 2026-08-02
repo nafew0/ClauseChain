@@ -36,6 +36,7 @@ import {
 } from 'lucide-react'
 
 import { useAuth } from '@/contexts/AuthContext'
+import { SnapshotBanner } from '@/components/workspace/SnapshotBanner'
 import {
   useDecide,
   useDecisionHistory,
@@ -657,7 +658,7 @@ export default function ReviewWorkbench() {
         <div className="review-workbench">
           <header className="review-page-header">
             <div>
-              <span className="review-eyebrow"><ShieldCheck size={14} /> Authoritative legal review</span>
+              <div className="truth-chiprow"><span className="review-eyebrow"><ShieldCheck size={14} /> Authoritative legal review</span><SnapshotBanner /></div>
               <h1>Review & approve</h1>
               <p>Every decision is staged, attributed and written through the engine&apos;s authoritative audit path.</p>
             </div>

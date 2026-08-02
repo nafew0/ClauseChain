@@ -39,12 +39,11 @@ export default function KnowledgeGraph() {
   return (
     <WorkspaceShell breadcrumbs={[{ label: 'Knowledge Graph' }]}>
       <div className="cc-page graph-page">
-        <div className="cc-page-header"><div><TruthBadge state="readonly" label={status === 'verified' ? 'READ-ONLY · VERIFIED NEO4J SNAPSHOT' : 'READ-ONLY · NEO4J SNAPSHOT'} /><h1 className="cc-page-title text-[32px] mt-3">Legal provenance knowledge graph</h1><p className="text-cc-ink-500 mt-1.5">Neo4j mirror for audit paths and cross-references—not an unmeasured retrieval-lift claim.</p></div></div>
+        <div className="cc-page-header"><div><div className="truth-chiprow"><TruthBadge state="readonly" label={status === 'verified' ? 'READ-ONLY · VERIFIED NEO4J SNAPSHOT' : 'READ-ONLY · NEO4J SNAPSHOT'} />{summary.data ? <SnapshotBanner snapshot={summary.data.snapshot} /> : null}</div><h1 className="cc-page-title text-[32px] mt-3">Legal provenance knowledge graph</h1><p className="text-cc-ink-500 mt-1.5">Neo4j mirror for audit paths and cross-references—not an unmeasured retrieval-lift claim.</p></div></div>
         {summary.isError || !summary.data ? (
           <PageUnavailable title={summary.isPending ? 'Loading Neo4j snapshot metadata…' : 'Knowledge graph metadata is unavailable'} />
         ) : (
           <>
-            <SnapshotBanner snapshot={summary.data.snapshot} />
             <section className={`graph-verification ${status}`}><div>{status === 'verified' ? <ShieldCheck /> : <AlertTriangle />}<span><strong>{status === 'verified' ? 'Neo4j parity verified' : status === 'parity_failed' ? 'Mirror reconciliation pending' : 'Neo4j snapshot unavailable'}</strong><small>Schema {summary.data.schema_version ?? 'n/a'} · {summary.data.node_count} exported nodes · {summary.data.edge_count} relationships</small></span></div><code>{summary.data.artifact.sha256}</code>{summary.data.reason ? <p>{summary.data.reason}</p> : null}</section>
             {status === 'unavailable' ? (
               <PageUnavailable title="Neo4j was unavailable during snapshot import" detail={summary.data.reason ?? undefined} />
