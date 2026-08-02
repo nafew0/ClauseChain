@@ -2186,6 +2186,24 @@
 @media(max-width:1024px){.registry-overview dl{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:720px){.live-dashboard,.evidence-updates{gap:18px}.registry-update-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
+/* Dashboard status chips: the update/integrity banners collapsed into small toggles. */
+.dashboard-status-row{display:flex;flex-wrap:wrap;gap:10px}
+.dashboard-status-chip{display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:7px 12px;border-radius:999px;border:1px solid #d4d4d8;background:#fff;font-size:12px;font-weight:600;color:#3f3f46;cursor:pointer}
+.dashboard-status-chip b{padding:3px 8px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.06em}
+.dashboard-status-chip.update{border-color:#fde68a;background:#fffbeb;color:#92400e}
+.dashboard-status-chip.update svg{color:#b45309}
+.dashboard-status-chip.update b{background:#fef3c7;color:#92400e}
+.dashboard-status-chip.update.published{border-color:#99f6e4;background:#f0fdfa;color:#115e59}
+.dashboard-status-chip.update.published svg{color:#0f766e}
+.dashboard-status-chip.update.published b{background:#ccfbf1;color:#115e59}
+.dashboard-status-chip.integrity.fail{border-color:#fecaca;background:#fef2f2;color:#b91c1c}
+.dashboard-status-chip.integrity.fail svg{color:#b91c1c}
+.dashboard-status-chip.integrity.fail b{background:#fee2e2;color:#b91c1c}
+.dashboard-status-chip.integrity.pass{border-color:#a7f3d0;background:#ecfdf5;color:#047857}
+.dashboard-status-chip.integrity.pass svg{color:#047857}
+.dashboard-status-chip.integrity.pass b{background:#d1fae5;color:#047857}
+.dashboard-status-chip[aria-expanded="true"]{box-shadow:0 0 0 2px rgba(29,111,184,.25)}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import {
   Activity,
@@ -33,6 +34,9 @@ export default function WorkspaceDashboard() {
   const update = data?.registry.change_set
   const updateCounts = update?.counts
   const integrityPass = data?.champion.status === 'PASS'
+  const integrityItems = Array.isArray(data?.champion.failures) ? data.champion.failures : []
+  const [openStatus, setOpenStatus] = useState<'update' | 'integrity' | null>(null)
+  const toggleStatus = (panel: 'update' | 'integrity') => setOpenStatus((current) => current === panel ? null : panel)
 
   return <WorkspaceShell breadcrumbs={[{ label: 'Dashboard' }]}><div className="cc-page live-dashboard">
     <div className="cc-page-header"><div><TruthBadge state="live" /><h1 className="cc-page-title text-[36px] mt-3">ESCAP legal evidence registry</h1><p className="text-cc-ink-500 mt-1.5">Current legal evidence, controlled updates and attributable review history.</p></div><div className="cc-actions"><Link className="truth-primary-link" href="/review">Open legal review <ArrowRight size={15} /></Link></div></div>
@@ -49,7 +53,12 @@ export default function WorkspaceDashboard() {
         </dl>
       </section>
 
-      {update ? <section className={`registry-update ${update.state}`} data-data-card>
+      <div className="dashboard-status-row" role="group" aria-label="Registry status indicators">
+        {update ? <button type="button" className={`dashboard-status-chip update ${update.state}`} aria-expanded={openStatus === 'update'} onClick={() => toggleStatus('update')} title="Latest evidence update"><RefreshCw size={15} /><span>Evidence update</span><b>{update.state.toUpperCase()}</b></button> : null}
+        <button type="button" className={`dashboard-status-chip integrity ${integrityPass ? 'pass' : 'fail'}`} aria-expanded={openStatus === 'integrity'} onClick={() => toggleStatus('integrity')} title="Automated evidence integrity">{integrityPass ? <CheckCircle2 size={15} /> : <ShieldAlert size={15} />}<span>Evidence integrity</span><b>{integrityPass ? 'PASS' : integrityItems.length || '!'}</b></button>
+      </div>
+
+      {update && openStatus === 'update' ? <section className={`registry-update ${update.state}`} data-data-card>
         <header><div><RefreshCw /><span><small>Latest evidence update</small><strong>{update.state === 'draft' ? 'Candidate update awaiting resolution' : 'Update incorporated into the registry'}</strong></span></div><b>{update.state.toUpperCase()}</b></header>
         <div className="registry-update-grid">
           <span><strong>{updateCounts?.unchanged ?? 0}</strong> unchanged</span>
@@ -57,10 +66,10 @@ export default function WorkspaceDashboard() {
           <span><strong>{updateCounts?.new ?? 0}</strong> new</span>
           <span><strong>{updateCounts?.not_reproduced ?? 0}</strong> not reproduced</span>
         </div>
-        <footer><History size={14} />{update.state === 'draft' ? `${update.attention.decided} of ${update.attention.total} changed records resolved. Unchanged decisions remain attached to their evidence.` : `Published ${update.published_at ? new Date(update.published_at).toLocaleString() : 'as the initial registry baseline'}.`}<Link href="/evidence-updates">View comparison <ArrowRight size={13} /></Link></footer>
+        <footer><History size={14} />{update.state === 'draft' ? `${update.attention?.decided ?? 0} of ${update.attention?.total ?? 0} changed records resolved. Unchanged decisions remain attached to their evidence.` : `Published ${update.published_at ? new Date(update.published_at).toLocaleString() : 'as the initial registry baseline'}.`}<Link href="/evidence-updates">View comparison <ArrowRight size={13} /></Link></footer>
       </section> : null}
 
-      <section className="dashboard-champion" data-data-card><div className={integrityPass ? 'pass' : 'fail'}>{integrityPass ? <CheckCircle2 /> : <ShieldAlert />}<div><span>Automated evidence integrity</span><strong>{integrityPass ? 'GATES PASS' : 'ATTENTION REQUIRED'}</strong></div></div><ul>{Array.isArray(data.champion.failures) && data.champion.failures.length ? data.champion.failures.map((failure, index) => <li key={index}>{friendlyFailure(failure)}</li>) : <li>All automated evidence checks are green.</li>}</ul></section>
+      {openStatus === 'integrity' ? <section className="dashboard-champion" data-data-card><div className={integrityPass ? 'pass' : 'fail'}>{integrityPass ? <CheckCircle2 /> : <ShieldAlert />}<div><span>Automated evidence integrity</span><strong>{integrityPass ? 'GATES PASS' : 'ATTENTION REQUIRED'}</strong></div></div><ul>{integrityItems.length ? integrityItems.map((failure, index) => <li key={index}>{friendlyFailure(failure)}</li>) : <li>All automated evidence checks are green.</li>}</ul></section> : null}
 
       <section><div className="truth-section-heading"><div><span>Active engine snapshot</span><h2>Review queues for this update</h2><p>These percentages describe only the currently imported evidence update—not the completeness of the ESCAP registry.</p></div><Link href="/review">Review workbench <ArrowRight size={14} /></Link></div><div className="cc-kpi-grid-five">{QUEUES.map(({ key, label }) => { const progress = data.progress[key]; const pct = progress?.total ? Math.round(progress.decided / progress.total * 100) : 0; return <Link href={`/review?queue=${key}`} key={key} className="truth-stat-card" data-data-card><span>{label}</span><strong>{progress?.decided ?? 0}<small> / {progress?.total ?? 0}</small></strong><div><i style={{ width: `${pct}%` }} /></div><em>{pct}% recorded</em></Link> })}</div></section>
 
