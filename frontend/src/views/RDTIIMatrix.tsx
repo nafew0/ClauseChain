@@ -116,8 +116,8 @@ export default function RDTIIMatrix() {
                             className={cn('z3-cell', `is-${cell.state}`, selected?.score_key === cell.score_key && 'is-selected', cell.blocked && 'is-blocked')}
                             title={`${economy} · ${indicator} — ${cell.state === 'pending' ? 'engine proposal awaiting reviewer decision' : `${cell.state} by ${cell.reviewer_name}`}`}
                           >
-                            {STATE_ICON[cell.state]}
-                            <strong>{scoreLabel(cell.state === 'pending' ? cell.deterministic : cell.effective)}</strong>
+                            <span className="z3-cell-top">{STATE_ICON[cell.state]}<strong>{scoreLabel(cell.state === 'pending' ? cell.deterministic : cell.effective)}</strong></span>
+                            <em>{cell.evidence.length} evidence</em>
                             {cell.flagged || cell.gold_divergence ? <AlertTriangle size={11} className="z3-flag" /> : null}
                           </button>
                         </td>
@@ -159,7 +159,7 @@ export default function RDTIIMatrix() {
               </section>
 
               <section>
-                <h3>Evidence this score rests on</h3>
+                <h3>Evidence this score rests on ({selected.evidence.length})</h3>
                 {selected.evidence.length ? (
                   <ul className="z3-evidence">
                     {selected.evidence.map((row) => (
