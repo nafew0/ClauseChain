@@ -4,7 +4,7 @@ The judge-/reviewer-facing web UI: dashboard, review workbench, run console,
 consolidated RDTII dataset, decision ledger, raw-data explorer, knowledge graph.
 
 > Optional component — the engine (`../engine`) runs standalone. See the root
-> `README.md` and `README_WEB.md` (screen-by-screen guide with screenshots).
+> `README.md` and `../docs/README_WEB.md` (screen-by-screen guide with screenshots).
 
 ## Local setup
 

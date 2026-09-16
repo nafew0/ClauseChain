@@ -8,7 +8,7 @@
 | Operating model | **You = lead + verifier. Claude (me) = executes all build/legal/research tasks; you check the output.** The "AI-1 / AI-2 / Legal" labels below are **task-buckets, not people.** |
 | Window | **REBASED 4 Jul 2026 → submit 19 Jul (buffer day; hard deadline 20 Jul Bangkok, no resubmission after).** ~15 days. **P0 is DONE** (engine scaffold green) but **P1/P2 never started — engine idle since 23 Jun.** **Core freeze Jul 16.** |
 | Scope (rebased 4 Jul) | **Core ONLY: SG/AU/MY × Pillars 6&7 flawless.** The 22-Jun stretch tracks are **CUT by default**: Round-2 economies (score 0 in Round 1; the R2 gold ingest is already banked as finals insurance) and the bonus pillar. They return ONLY if the core freezes early. Order if time appears: bonus pillar (scores in R1) → R2 economies (doesn't). **NEW in scope: the Malaysia error-audit pass (§6 P2′ — MY carries double weight for error-checking, confirmed).** |
-| Companion docs | **`ClauseChain_Gap_Analysis_4Jul.md` (the full-corpus delta list — source of the 4-Jul changes)** · `ClauseChain_Round1_Build_Guide.md` (architecture · phases · **§7.1 official Zone-3 scoring/weights/polarity**) · `ClauseChain_Legal_Matching_DoDont.md` (legal rules · **§9.1 scoring criteria** · §13 worked-example bank) · `ClauseChain_Championship_GraphRAG_Strategy.md` (graph: **§12 swappable `GraphStore`, SQLite default / Neo4j optional**) · `Hackthon_Knowledge/CHAMPION_GUIDE_*.md` (manual-SOP→component map + pitch arsenal) · the **`NOTES_*June_*.md`** session digests in `Hackthon_Knowledge/` |
+| Companion docs | **`ClauseChain_Gap_Analysis_4Jul.md` (the full-corpus delta list — source of the 4-Jul changes)** · `ClauseChain_Round1_Build_Guide.md` (architecture · phases · **§7.1 official Zone-3 scoring/weights/polarity**) · `ClauseChain_Legal_Matching_DoDont.md` (legal rules · **§9.1 scoring criteria** · §13 worked-example bank) · `ClauseChain_Championship_GraphRAG_Strategy.md` (graph: **§12 swappable `GraphStore`, SQLite default / Neo4j optional**) · `Hackthon_Knowledge` (manual-SOP→component map + pitch arsenal) · the **`NOTES_*June_*.md`** session digests in `Hackthon_Knowledge` |
 
 > **North star.** Win Round 1 by making SG/AU/MY unbeatable, then bank finals insurance by covering the 7 Round-2 economies before the window closes — **without ever letting Round-2 work destabilize the frozen core.** Cost-efficiency, speed, and reviewable evidence are all scored; build for them on purpose.
 
@@ -61,7 +61,7 @@ Every session (slides×transcripts, 1/4/5/11/12/15 Jun), the submission kit, and
 
 ## 1. Operating model (the rules that keep us shippable)
 
-1. **Contracts first, then build.** The shared shapes (Pydantic stage models + the `LLMProvider`/`OCREngine`/`GraphStore` interfaces + the template-exact writer) are locked. ✅ **Done in P0.** Don't change shapes casually; if you must, note it in `engine/DECISIONS.md`.
+1. **Contracts first, then build.** The shared shapes (Pydantic stage models + the `LLMProvider`/`OCREngine`/`GraphStore` interfaces + the template-exact writer) are locked. ✅ **Done in P0.** Don't change shapes casually; if you must, note it in `../engine/DECISIONS.md`.
 2. **Main is always green.** At any moment `run.py --economy Singapore --pillar 6` must run end-to-end and write a template-valid file. A change that breaks that doesn't land. This is what lets us "submit early if we had to."
 3. **One vertical slice before breadth.** One economy + one pillar fully working (crawl→…→CSV) before adding more. Depth first kills integration risk.
 4. **Core only (4 Jul).** SG/AU/MY × P6+P7 reaches flawless and **freezes Jul 16**. Round-2 economies and the bonus pillar are cut by default; anything reinstated lives on branches, **additive-only** to the frozen core.
@@ -127,7 +127,7 @@ Same pipeline, but cloud LLM → **local LLM** (Ollama/llama.cpp, small quantize
 
 - **Branches:** `main` stays green; feature work on short branches (`feat/sg-connector`, `feat/zone3-noise-audit`, `feat/r2-thailand`). Round-2 economies live on their own branches and merge only when they don't touch the frozen core.
 - **Definition of mergeable:** `run.py` still runs for SG, a smoke test exists, no silent schema change.
-- **`engine/DECISIONS.md`:** one line every time a shared shape or a routing/scope call changes.
+- **`../engine/DECISIONS.md`:** one line every time a shared shape or a routing/scope call changes.
 - **Verification loop replaces standups:** I land a task → you run the checkpoint command / review the rows → accept or send back. Keep a simple Todo/Doing/Verify/Done list.
 
 ---
@@ -189,7 +189,7 @@ Goal: **Singapore + Pillar 6, real, end-to-end, no manual steps.** No UI.
 > review bundle were generated; and the independent validator correctly remains red until
 > recall repair/adjudication, human gold sign-off, named row decisions, Zone-3 approvals,
 > and deterministic replay are complete. The machine-readable source of current gate state
-> is `engine/reports/champion_validation.json`.
+> is `../engine/reports/champion_validation.json`.
 > **Kept against the addendum's cuts (user decision):** the noise audit and the Neo4j demo — Neo4j is presented as the **provenance/audit graph** (retrieval-lift claims only if measured).
 > **Deferred to Known Limitations:** VLM repair lane (R8, disabled) and Docling JSON sidecar (R7, disabled — Markdown permanently banned from the evidence path). AU units that cannot recover exact authorised-PDF spans remain explicitly unaligned and are blocked from export.
 > **Champion-core Tasks 1–2 complete:** immutable evidence/CitationProof contracts · lossless schema-v2 SQLite/Neo4j storage · source/coordinate native spans · geometry/frequency furniture detection · paired AU PDF/EPUB compilation roles · semantic XHTML hierarchy · exact PDF-span alignment with unresolved rows blocked · boxed Paddle/Tesseract disagreement checks · gold-based OCR metrics. Docling and VLM remain disabled.
@@ -207,7 +207,7 @@ The R2 gold DB is already ingested (`data/known_index_round2.json`, 809 rows) �
 
 ## 7. Where we are now (4 Jul) & immediate next actions
 
-**Done (P0 + 23-Jun P1 kickoff, in `engine/`):** clean Apache-2.0 repo; schemas + interfaces + template-asserting writer (16 tests green); `models.yaml` two profiles (`hybrid_accuracy` default + `local_fallback`) with Ollama + BGE-M3 providers; **SqliteGraphStore** (default) + Neo4j optional behind `GRAPH_BACKEND`; OpenAI+Gemini REST providers + fallback; rubric YAMLs (**P7 criteria corrected 4 Jul** — court-order test, 0.5 tiers, weights); SG/MY/AU jurisdiction packs; **KNOWN indexes built from BOTH gold DBs** (R1: 252 rows/306 article refs; R2: 809 rows/1373 refs); appended output columns (Coverage/Verbatim-English/Status) in the writer; eval scoreboard; SG fetch + scanned-PDF spikes passed. **NOT built: everything between the connector and the writer** — extractors, retrieval, predicate, rdtii mapper, verifier gates, discovery diff. `run.py` still emits stubs.
+**Done (P0 + 23-Jun P1 kickoff, in `../engine`):** clean Apache-2.0 repo; schemas + interfaces + template-asserting writer (16 tests green); `models.yaml` two profiles (`hybrid_accuracy` default + `local_fallback`) with Ollama + BGE-M3 providers; **SqliteGraphStore** (default) + Neo4j optional behind `GRAPH_BACKEND`; OpenAI+Gemini REST providers + fallback; rubric YAMLs (**P7 criteria corrected 4 Jul** — court-order test, 0.5 tiers, weights); SG/MY/AU jurisdiction packs; **KNOWN indexes built from BOTH gold DBs** (R1: 252 rows/306 article refs; R2: 809 rows/1373 refs); appended output columns (Coverage/Verbatim-English/Status) in the writer; eval scoreboard; SG fetch + scanned-PDF spikes passed. **NOT built: everything between the connector and the writer** — extractors, retrieval, predicate, rdtii mapper, verifier gates, discovery diff. `run.py` still emits stubs.
 
 **Do next (P1′ kickoff — in order):**
 1. **Retrieve the ~28-Jun submission-portal email** (team-head inbox; application mail testidp@just.edu.bd) → form link + deck/video format/size specs.

@@ -1,6 +1,6 @@
 # ClauseChain Frontend Plan — Judge-Facing Web Application
 
-**Status:** Planning doc (11 Jul). Supersedes the `Cancelled/frontend` prototype as the UI plan of record; inherits its design language, discards its SaaS scaffolding. The engine (`engine/`) is the frozen core — **the UI is additive-only: it never modifies engine code paths; it reads artifacts and drives `run.py` as a subprocess.**
+**Status:** Planning doc (11 Jul). Supersedes the `Cancelled/frontend` prototype as the UI plan of record; inherits its design language, discards its SaaS scaffolding. The engine (`../engine`) is the frozen core — **the UI is additive-only: it never modifies engine code paths; it reads artifacts and drives `run.py` as a subprocess.**
 
 ---
 
@@ -141,7 +141,7 @@ Cut order if time runs short: F4 → Matrix → (never F1/F2). A stale-but-hones
 **H1 — Build against REAL artifacts, never invented mocks.** The cancelled prototype died because its 1,528-line mock file drifted from the engine. The repo contains real data for every screen — copy a snapshot into `apps/web/fixtures/` and type against it:
 | Screen | Real source of truth (field names live here, not in this doc) |
 |---|---|
-| Run Console (replay) | `engine/outputs/final_*_p*/output.json` (RunEnvelope: `findings`, `gates`, `warnings`, `metadata.stats`) + `engine/logs/cost_report.json` |
+| Run Console (replay) | `engine/outputs/final_*_p*/output.json` (RunEnvelope: `findings`, `gates`, `warnings`, `metadata.stats`) + `../engine/logs/cost_report.json` |
 | Review — NEW findings | `engine/data/review/refutation_final_*.json` (verdicts: `RECOMMEND-KEEP` / `SPLIT-REVIEW` / `RECOMMEND-REJECT` + named failure modes) |
 | Review — zone-3 | `engine/data/zone3/*_scores.json` (score, uncertainty band, `alpha`, flagged) |
 | Review — adjudication | `engine/data/review/recall_adjudication.json` (`stats`, `misses[]` with `class`, `proposed_verdict`, `evidence`) |
@@ -151,7 +151,7 @@ Cut order if time runs short: F4 → Matrix → (never F1/F2). A stale-but-hones
 | Existing static reference | `engine/submission/review/index.html` (Sol's static review bundle — the webapp supersedes it; mine it for row semantics) |
 Field names in the table above are indicative — **verify against the actual files before typing interfaces.** Where a MappedFinding field exists in JSON but not CSV, the JSON is authoritative.
 
-**H2 — Handoff boundary.** The engine-side event emitter (F0) and FastAPI service are built on the engine side, NOT by the design session. Design builds `apps/web` against a **typed API client with a fixture adapter** (same interface, reads the files above + a recorded `events.jsonl`). A hand-written sample `events.jsonl` matching §3's vocabulary belongs in fixtures so the Run Console is fully buildable before F0 lands. Do not touch anything under `engine/` — additive-only is absolute.
+**H2 — Handoff boundary.** The engine-side event emitter (F0) and FastAPI service are built on the engine side, NOT by the design session. Design builds `apps/web` against a **typed API client with a fixture adapter** (same interface, reads the files above + a recorded `events.jsonl`). A hand-written sample `events.jsonl` matching §3's vocabulary belongs in fixtures so the Run Console is fully buildable before F0 lands. Do not touch anything under `../engine` — additive-only is absolute.
 
 **H3 — Location & reuse.** New code goes in `engine/apps/web` (+ `engine/apps/api` reserved). Do **not** fork `Cancelled/frontend`; copy only: the `--cc-*` token blocks from its `globals.css`, `components/clausechain/ui.tsx`, `WorkspaceShell.tsx`, `PipelineStepper.tsx`, the chart wrappers, and the shadcn `ui/` set. Leave auth/admin/billing/marketing behind.
 

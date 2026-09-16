@@ -36,8 +36,8 @@ Skip to [Quick Start](#quick-start) to run it in under 10 minutes.
 - The demo account can browse everything and write nothing: decision endpoints
   require reviewer roles and run-launch requires an administrator.
 - Screen-by-screen guide with screenshots: [README_WEB.md](README_WEB.md).
-  Deployment notes: [backend/README.md](backend/README.md) ·
-  [frontend/README.md](frontend/README.md).
+  Deployment notes: [backend/README.md](../backend/README.md) ·
+  [frontend/README.md](../frontend/README.md).
 
 ---
 
@@ -79,7 +79,7 @@ pip install -r requirements.txt
 ### 3. Get the corpus (choose one)
 
 **Option A — prebuilt corpus (recommended, ~2 minutes):**
-Download `clausechain_corpus_sqlite.zip` from this repository's **GitHub Releases** page and unzip into `engine/data/`:
+Download `clausechain_corpus_sqlite.zip` from this repository's **GitHub Releases** page and unzip into `../engine/data`:
 
 ```bash
 unzip clausechain_corpus_sqlite.zip -d data/

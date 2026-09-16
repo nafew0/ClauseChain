@@ -164,10 +164,10 @@ Also click every link one more time. A broken link = a wrong row.
 
 1. Save the Excel file.
 2. Send it to the team lead.
-3. We copy your rows into `engine/data/gold/gold_rows.csv` and mark them **verified**. From that moment, your rows are the standard. The engine is "correct" only when it finds what you found.
+3. We copy your rows into `../../../engine/data/gold/gold_rows.csv` and mark them **verified**. From that moment, your rows are the standard. The engine is "correct" only when it finds what you found.
 
 If anything in this guide is not clear, ask. A question costs 1 minute. A wrong row costs points.
 
 ---
 
-*Where do the rules in this guide come from? The 5-June workshop (Juntong + Nikita), the Format requirements PDF in this folder, and the RDTII 2.1 Guide. The full (harder-English) version of these rules lives in `ClauseChain_Legal_Matching_DoDont.md` in the repo root — read it later, when you feel ready.*
+*Where do the rules in this guide come from? The 5-June workshop (Juntong + Nikita), the Format requirements PDF in this folder, and the RDTII 2.1 Guide. The full (harder-English) version of these rules lives in `../../ClauseChain_Legal_Matching_DoDont.md` in the repo root — read it later, when you feel ready.*

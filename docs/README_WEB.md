@@ -140,6 +140,6 @@ The heart of the console. For each finding:
 
 ## Running it yourself
 
-- Backend (Django API + engine worker): [backend/README.md](backend/README.md)
-- Frontend (Next.js console): [frontend/README.md](frontend/README.md)
+- Backend (Django API + engine worker): [backend/README.md](../backend/README.md)
+- Frontend (Next.js console): [frontend/README.md](../frontend/README.md)
 - The engine itself needs neither — see the root [README.md](README.md).

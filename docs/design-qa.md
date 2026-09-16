@@ -1,10 +1,10 @@
 # D3 Review Workbench — Design QA
 
 - Source visual truth: `Frontend prototype design request/ClauseChain.dc.html`, Review & Approve state
-- Source capture: `design-qa-evidence/reference-review-1440.png`
-- Implementation capture: `design-qa-evidence/review-desktop-1440-final.png`
-- Combined comparison: `design-qa-evidence/review-comparison-1440.png`
-- Responsive captures: `design-qa-evidence/review-tablet-1024.png`, `design-qa-evidence/review-mobile-390.png`
+- Source capture: `design-qa-evidence`
+- Implementation capture: `design-qa-evidence`
+- Combined comparison: `design-qa-evidence`
+- Responsive captures: `design-qa-evidence`, `docs/design-qa-evidence`
 - Viewports: 1440 × 1000, 1024 × 900, 390 × 844
 - State: NEW focused evidence on desktop; Recall on tablet; Absence focused evidence on phone
 
@@ -90,7 +90,7 @@ final result: passed
 
 ## Visual QA status
 
-- Capture: `design-qa-evidence/d6r-dashboard.png` records the required fail-closed loading/unavailable presentation; it is not an authenticated real-data approval capture.
+- Capture: `design-qa-evidence` records the required fail-closed loading/unavailable presentation; it is not an authenticated real-data approval capture.
 - Authenticated captures for Dashboard, pipeline screens, Ledger, Raw Data, Knowledge Graph, config tabs and mobile remain pending. The in-app browser security policy blocked the temporary QA login; no sample data or fabricated capture was substituted. The temporary non-superuser QA account was deleted immediately afterward.
 
 final result: implementation and automated gates passed; authenticated visual captures pending; Neo4j parity failed truthfully
@@ -110,9 +110,9 @@ final result: implementation and automated gates passed; authenticated visual ca
 
 ## Captures
 
-- Homepage desktop: `design-qa-evidence/d61-home-desktop.png`.
-- Login desktop shell: `design-qa-evidence/d61-login-desktop.png`.
-- Registration desktop shell: `design-qa-evidence/d61-register-desktop.png`.
+- Homepage desktop: `design-qa-evidence`.
+- Login desktop shell: `design-qa-evidence`.
+- Registration desktop shell: `design-qa-evidence`.
 - The first homepage pass exposed an opacity-based progressive-enhancement defect: essential content could remain hidden when Motion did not hydrate. Essential content now remains visible without animation; motion only changes position/scale.
 
 ## Automated verification

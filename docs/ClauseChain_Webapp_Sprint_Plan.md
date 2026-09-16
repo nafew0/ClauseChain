@@ -1,6 +1,6 @@
 # ClauseChain Web-App Sprint Plan — Reuse the Hosted SaaS (T-minus: 19 Jul 11:00)
 
-**Decisions locked (18 Jul, user):** reuse the already-hosted `frontend/` (Next.js) + `backend/` (Django) with the demo workspace; frontend-only cleanup for judges now, code cleanup after the 20th; priority screens = **Review & Approve (with act references)** and **Source Match**, Run Console lighter; decisions stored in **Django DB + synced to the engine's decisions file**; the ≤10-min video is a screen recording of this app in the final hour.
+**Decisions locked (18 Jul, user):** reuse the already-hosted `../frontend` (Next.js) + `backend/` (Django) with the demo workspace; frontend-only cleanup for judges now, code cleanup after the 20th; priority screens = **Review & Approve (with act references)** and **Source Match**, Run Console lighter; decisions stored in **Django DB + synced to the engine's decisions file**; the ≤10-min video is a screen recording of this app in the final hour.
 
 **Supersedes** the "fresh local app" build path in `ClauseChain_Frontend_Plan.md` for Round 1 — that doc's screen specs, design language, and honesty rules still apply verbatim; only §2 architecture and §6 phases are replaced by this sprint. The fresh-local/offline path returns post-20th as the repo's judge-runnable UI.
 
@@ -9,7 +9,7 @@
 ## 0. The one rule that cannot break
 
 **The engine's files are the single source of truth. The DB is a mirror.**
-The final export is produced ONLY by `engine/scripts/submission_replay.py`, which reads `data/review/decisions.json`. A reviewer click that never reaches that file does not exist. Therefore the Django export (§3.4) is a **release gate**, not a nice-to-have — the video must show the export step or the human-in-the-loop story is theater.
+The final export is produced ONLY by `../engine/scripts/submission_replay.py`, which reads `data/review/decisions.json`. A reviewer click that never reaches that file does not exist. Therefore the Django export (§3.4) is a **release gate**, not a nice-to-have — the video must show the export step or the human-in-the-loop story is theater.
 
 Corollaries:
 - No screen renders invented data. Every screen binds to an imported engine artifact (§2). If an artifact lacks a field, the screen shows "—", never a made-up value.
@@ -62,7 +62,7 @@ loop, no bundle uploads — Django and the engine share one filesystem.
 
 ### P0 — Server deployment + contracts (Claude + 1 backend dev) — TONIGHT, first 2h
 - **Backend dev:** deploy the engine per §1 checklist (clone + rsync data + venv + .env + pytest green). Then Django app `workspace`: models `Finding`, `ReviewDecision`, `RecallMiss`, `Zone3Score`, `RunEnvelope` hydrated by an `engine_refresh` management command that calls `build_payload()`/reads artifacts from `ENGINE_ROOT` (idempotent, keyed by `finding_key`/ids); DRF read endpoints mirroring §2 shapes 1:1 (no reshaping); `POST /decisions` writes the DB **and** regenerates `data/review/decisions.json` from the template + all stored decisions on every write (file is always current — no separate sync step to forget); `engine_replay` command wraps `submission_replay.py`.
-- **Claude (already delivered):** `export_ui_bundle.py` → `ui_export.zip` for the frontend teams' local fixtures while the server is being set up; decisions round-trip contract verified.
+- **Claude (already delivered):** `export_ui_bundle.py` → `../ui_export.zip` for the frontend teams' local fixtures while the server is being set up; decisions round-trip contract verified.
 - **Gate:** hosted API serves the real 102 rows + 24 NEW + 17 misses + 27 zone-3; one test decision POST visibly lands in `data/review/decisions.json` on the server.
 
 ### P1 — Review & Approve (frontend Team A) — the centerpiece

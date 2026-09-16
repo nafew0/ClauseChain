@@ -1,6 +1,6 @@
 # ClauseChain — Full-Corpus Gap Analysis (4 July 2026)
 
-**What this is:** every workshop day (1/4/5/11/12/15 June — slides matched against transcripts/SRTs), the submission kit (templates, output xlsx, QnA.docx, 10-June mail, assignments), and the official RDTII 2.1 guides + both gold databases were deep-read and cross-checked against our plan suite (Dev Plan · Build Guide · DoDont · GraphRAG Strategy · Simple Guide · Champion Guide) and the actual `engine/` state.
+**What this is:** every workshop day (1/4/5/11/12/15 June — slides matched against transcripts/SRTs), the submission kit (templates, output xlsx, QnA.docx, 10-June mail, assignments), and the official RDTII 2.1 guides + both gold databases were deep-read and cross-checked against our plan suite (Dev Plan · Build Guide · DoDont · GraphRAG Strategy · Simple Guide · Champion Guide) and the actual `../engine` state.
 
 **Verdict in one line:** the plan is knowledge-complete to ~95% and better-informed than any competitor's is likely to be — but (a) we are **~11 days behind our own schedule with 16 days left**, (b) our **Pillar-7 scoring rubric contains three real errors** vs the official guide, and (c) a handful of judge-stated facts (Malaysia planted errors, output-file-first judging, CPU/no-key eval environment) need to reshape priorities *now*.
 
@@ -8,7 +8,7 @@
 
 ## 🔴 1. CRITICAL — Execution, not knowledge, is the gap
 
-- Engine last touched **23 June** (git + `engine/DECISIONS.md`). It runs green end-to-end (16/16 tests, template-valid CSV/JSON) **but still emits stub data**. The pipeline's middle — `extractors`, `retrieval`, `predicate`, `rdtii` mapper, `verifier` (G1–G8), `discovery` (NEW/KNOWN) — does not exist as code.
+- Engine last touched **23 June** (git + `../engine/DECISIONS.md`). It runs green end-to-end (16/16 tests, template-valid CSV/JSON) **but still emits stub data**. The pipeline's middle — `extractors`, `retrieval`, `predicate`, `rdtii` mapper, `verifier` (G1–G8), `discovery` (NEW/KNOWN) — does not exist as code.
 - Per the Dev Plan: P1 (real SG slice) was due 27 Jun, P2 (3 economies × P6+P7) due 6 Jul, core freeze 11 Jul. None started. **Deadline: 20 July, Bangkok time. No resubmission after.**
 - **Proposed rebase (apply Dev Plan §12 cut order):**
   - **P1′ Jul 5–9:** real SG × P6 vertical slice (connector→extract→broad-recall retrieve→map→G1/G3/G4→NEW/KNOWN→CSV).
@@ -32,7 +32,7 @@ Official criteria (RDTII 2.1 guide pp.57–63 + methodology sheet — full read)
 | 6.3 (nuance) | Rules on **already-established** data centres (security/registration/licensing) → record, **score 0.00**; data-centre *licensing* → 9.4 not 6.3 | Not captured | Add exclusion. |
 | 6.1/6.2 | 0.5 includes "transfer prohibited to **one country**"; 1 includes "≥2 category-2 measures" | Mostly present | Confirm YAML wording. |
 
-Update order per doc governance: **DoDont §9.1 first → mirror Build Guide §7.1 → `engine/configs/rdtii/pillar_7.yaml`**.
+Update order per doc governance: **DoDont §9.1 first → mirror Build Guide §7.1 → `../engine/configs/rdtii/pillar_7.yaml`**.
 
 ## 🟠 3. HIGH — Malaysia's sample data contains DELIBERATE planted errors (we never planned for this)
 

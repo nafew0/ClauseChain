@@ -1,7 +1,7 @@
 # ClauseChain — Champion Guide
 ## From ESCAP's Manual RDTII Process to an Automated Evidence Engine
 
-**Status:** Knowledge synthesis + pitch-narrative source (the manual-SOP→automation mapping in Parts 2–3 and the ranked differentiators in Part 9 feed the deck and interview). **Team execution governs from `../ClauseChain_Dev_Plan_and_Task_Distribution.md` (the guiding star) and its companion docs** — this guide's scoring rules were merged into Build Guide §7.1 / DoDont §9.1 on 11 June; where wording differs, those files win. Built from every file in `Hackthon_Knowledge/` (workshops 1/4/5 June, 10 June mail, RDTII 2.1 guides, sample kit, templates, assignments). Today = 11 June. **Submission = 20 July, midnight.**
+**Status:** Knowledge synthesis + pitch-narrative source (the manual-SOP→automation mapping in Parts 2–3 and the ranked differentiators in Part 9 feed the deck and interview). **Team execution governs from `../ClauseChain_Dev_Plan_and_Task_Distribution.md` (the guiding star) and its companion docs** — this guide's scoring rules were merged into Build Guide §7.1 / DoDont §9.1 on 11 June; where wording differs, those files win. Built from every file in `` (workshops 1/4/5 June, 10 June mail, RDTII 2.1 guides, sample kit, templates, assignments). Today = 11 June. **Submission = 20 July, midnight.**
 
 **The premise of this document:** only the champion's solution gets adopted. We are not building "a tool that works" — we are building the tool ESCAP can actually run instead of their researchers. Every design decision below is traceable to (a) how their researchers actually work, and (b) how judges score.
 

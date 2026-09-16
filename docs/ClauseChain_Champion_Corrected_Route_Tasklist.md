@@ -464,7 +464,7 @@ ClauseChain is champion-ready only when a judge can select any submitted row and
 
 Tasks A1-A3, L2-L4, V3, and the V4 execution/replay infrastructure are implemented.
 The AU/SG/MY graph has been rebuilt under schema v3 and passes the independent graph
-validator. The current machine-readable audit is `engine/reports/champion_validation.json`.
+validator. The current machine-readable audit is `../engine/reports/champion_validation.json`.
 
 Champion freeze is intentionally **not** declared. Remaining gates are explicit:
 
