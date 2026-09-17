@@ -150,6 +150,61 @@ services:
     volumes: *engine_data_volumes
     command: ["python", "manage.py", "run_engine_worker"]
 
+  # Non-blocking: backend/frontend/nginx do NOT depend on this, so the app is
+  # reachable immediately. Runs the engine pipeline for any of the 12
+  # economy/pillar combos engine_refresh needs that aren't already in
+  # engine/outputs/, then imports them — self-healing "no snapshot" without a
+  # manual command. Each run can be slow and, depending on
+  # CLAUSECHAIN_PROVIDER_PROFILE, call real LLM APIs; set AUTO_SEED_PIPELINE=false
+  # in .env to disable and do it yourself (see the docker compose exec
+  # instructions start.sh prints).
+  pipeline-seed:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      <<: *backend_env
+      AUTO_SEED_PIPELINE: ${AUTO_SEED_PIPELINE:-true}
+    volumes: *engine_data_volumes
+    command:
+      - sh
+      - -c
+      - >
+        if [ "$$AUTO_SEED_PIPELINE" = "false" ]; then
+          echo '[pipeline-seed] AUTO_SEED_PIPELINE=false, skipping.'; exit 0;
+        fi;
+        set -e;
+        cd /srv/clausechain/engine;
+        run_if_missing() {
+          out="outputs/$$1";
+          if [ -f "$$out/output.json" ]; then
+            echo "[pipeline-seed] $$out already present, skipping";
+            return 0;
+          fi;
+          echo "[pipeline-seed] running economy=$$2 pillar=$$3 -> $$out";
+          .venv/bin/python run.py --economy "$$2" --pillar "$$3" --out "$$out";
+        };
+        run_if_missing final_si_p6 SG 6;
+        run_if_missing final_si_p7 SG 7;
+        run_if_missing final_ma_p6 MY 6;
+        run_if_missing final_ma_p7 MY 7;
+        run_if_missing final_au_p6 AU 6;
+        run_if_missing final_au_p7 AU 7;
+        run_if_missing final_r2_th_p6 TH 6;
+        run_if_missing final_r2_th_p7 TH 7;
+        run_if_missing final_r2_in_p6 IN 6;
+        run_if_missing final_r2_in_p7 IN 7;
+        run_if_missing final_r2_id_p6 ID 6;
+        run_if_missing final_r2_id_p7 ID 7;
+        cd /srv/clausechain/backend;
+        python manage.py engine_refresh
+
   frontend:
     build:
       context: ./frontend
@@ -174,7 +229,7 @@ services:
       - backend
       - frontend
     ports:
-      - "80:80"
+      - "8080:80"
     volumes:
       - backend_static:/srv/clausechain/backend/staticfiles:ro
       - backend_media:/srv/clausechain/backend/media:ro
