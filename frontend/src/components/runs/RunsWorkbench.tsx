@@ -24,7 +24,7 @@ import { RunModeTabs, useRunMode } from '@/components/workspace/RunModeTabs'
 import { SnapshotBanner } from '@/components/workspace/SnapshotBanner'
 import { useLaunchEngineAction, useRuns } from '@/hooks/workspace'
 import { cn } from '@/lib/utils'
-import type { EngineAction, JsonValue, RunRecord } from '@/types/workspace'
+import type { EngineAction, EngineWorkerStatus, JsonValue, RunRecord } from '@/types/workspace'
 
 const COUNTRY_NAMES: Record<string, string> = { SG: 'Singapore', MY: 'Malaysia', MA: 'Malaysia', AU: 'Australia', TH: 'Thailand', IN: 'India', ID: 'Indonesia' }
 
@@ -39,6 +39,19 @@ function duration(seconds: number | null) {
 function warningText(value: JsonValue) {
   if (typeof value === 'string') return value
   return JSON.stringify(value)
+}
+
+function WorkerPill({ worker }: { worker: EngineWorkerStatus | undefined }) {
+  if (!worker) return null
+  const label = worker.alive
+    ? worker.current_action_id ? 'Worker busy' : 'Worker online'
+    : worker.autostart ? 'Worker offline · starts on queue' : 'Worker offline'
+  const title = worker.alive
+    ? `Engine worker ${worker.hostname ?? ''} (pid ${worker.pid ?? '?'}) last seen ${worker.last_seen ? new Date(worker.last_seen).toLocaleTimeString() : 'now'}`
+    : worker.autostart
+      ? 'No worker is running. Queueing a run starts one automatically.'
+      : 'No worker is running. Start the clausechain-engine service on the server.'
+  return <span className={cn('run-worker-pill', worker.alive ? 'is-online' : worker.autostart ? 'is-standby' : 'is-offline')} title={title}><i />{label}</span>
 }
 
 function ActionState({ action }: { action: EngineAction }) {
@@ -120,7 +133,7 @@ export default function RunsWorkbench() {
         <div className="runs-workbench">
           {tabs}
           <header className="runs-header"><div><div className="truth-chiprow"><span>{mode === 'local' ? <Server size={14} /> : <Activity size={14} />} Recorded engine execution</span>{mode === 'hybrid' ? <SnapshotBanner /> : null}</div><h1>{copy.title}</h1><p>{copy.intro}</p></div></header>
-          {user?.is_superuser ? <section className="run-launch"><div><Play size={18} /><span><strong>Launch a real {mode === 'local' ? 'local' : 'hybrid'} pipeline run</strong><small>{copy.launch}</small></span></div><select value={economy} onChange={(event) => setEconomy(event.target.value)}><option>Singapore</option><option>Malaysia</option><option>Australia</option><option>Thailand</option><option>India</option><option>Indonesia</option></select><select value={pillar} onChange={(event) => setPillar(Number(event.target.value) as 6 | 7)}><option value={6}>Pillar 6</option><option value={7}>Pillar 7</option></select><button onClick={queueRun} disabled={launch.isPending}><Play size={14} /> Queue run</button></section> : null}
+          {user?.is_superuser ? <section className="run-launch"><div><Play size={18} /><span><strong>Launch a real {mode === 'local' ? 'local' : 'hybrid'} pipeline run</strong><small>{copy.launch}</small></span></div><WorkerPill worker={query.data.worker} /><select value={economy} onChange={(event) => setEconomy(event.target.value)}><option>Singapore</option><option>Malaysia</option><option>Australia</option><option>Thailand</option><option>India</option><option>Indonesia</option></select><select value={pillar} onChange={(event) => setPillar(Number(event.target.value) as 6 | 7)}><option value={6}>Pillar 6</option><option value={7}>Pillar 7</option></select><button onClick={queueRun} disabled={launch.isPending}><Play size={14} /> Queue run</button></section> : null}
           {query.data.results.length
             ? <section className="run-grid">{query.data.results.map((run, index) => <RunCard key={run.run_name} run={run} index={index} />)}</section>
             : <section className="run-empty-state"><Server size={22} /><strong>No {mode} runs yet</strong><p>{mode === 'local' ? 'Launch a run above to process an economy and pillar on the open-weights model. Finished runs appear here and on the RDTII Matrix Local tab.' : 'No run envelopes in the active snapshot.'}</p></section>}

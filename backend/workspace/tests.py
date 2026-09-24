@@ -807,6 +807,59 @@ class WorkspaceApiTests(TestCase):
         ]
         self.assertTrue(review_state["correction_pending"])
 
+    def test_queueing_starts_a_worker_only_when_none_is_alive(self):
+        from datetime import timedelta
+        from .models import EngineWorkerHeartbeat
+        from .worker_supervisor import ensure_worker
+
+        admin = self.make_user("worker-boss", "Worker Boss", "admin")
+        admin.is_superuser = True
+        admin.is_staff = True
+        admin.save(update_fields=("is_superuser", "is_staff"))
+        self.authenticate(admin)
+        self.assertFalse(self.client.get("/api/workspace/engine/worker/").data["alive"])
+
+        with tempfile.TemporaryDirectory() as temporary, override_settings(
+            ENGINE_WORKER_AUTOSTART=True,
+            WORKSPACE_LOCK_DIR=Path(temporary),
+            ENGINE_WORKER_LOG=Path(temporary) / "worker.log",
+        ), patch("workspace.worker_supervisor.subprocess.Popen",
+                 return_value=SimpleNamespace(pid=4242)) as popen:
+            queued = self.client.post(
+                "/api/workspace/engine/run/",
+                {"economy": "Singapore", "pillar": 6, "mode": "local"},
+                format="json",
+            )
+            self.assertEqual(queued.status_code, 202, queued.data)
+            self.assertTrue(queued.data["worker"]["started"])
+            self.assertEqual(popen.call_count, 1)
+            self.assertIn("run_engine_worker", popen.call_args.args[0])
+            # A second request while the first worker is still booting does not pile on.
+            self.assertFalse(ensure_worker()["started"])
+            self.assertEqual(popen.call_count, 1)
+
+            # A fresh heartbeat means a worker is alive: nothing is started.
+            (Path(temporary) / "engine_worker.spawned").unlink()
+            EngineWorkerHeartbeat.objects.create(
+                worker_id="host:1", hostname="host", pid=1,
+                started_at=timezone.now(), last_seen=timezone.now(),
+            )
+            self.assertFalse(ensure_worker()["started"])
+            self.assertEqual(popen.call_count, 1)
+            self.assertTrue(self.client.get("/api/workspace/runs/").data["worker"]["alive"])
+
+            # A stale heartbeat (crashed worker) triggers a new start.
+            EngineWorkerHeartbeat.objects.update(last_seen=timezone.now() - timedelta(minutes=5))
+            self.assertTrue(ensure_worker()["started"])
+            self.assertEqual(popen.call_count, 2)
+
+        with override_settings(ENGINE_WORKER_AUTOSTART=False), patch(
+            "workspace.worker_supervisor.subprocess.Popen"
+        ) as popen:
+            status = ensure_worker()
+            self.assertEqual((status["started"], status["autostart"]), (False, False))
+            popen.assert_not_called()
+
     def test_local_mode_runs_are_separate_and_feed_local_tabs(self):
         admin = self.make_user("mode-admin", "Mode Admin", "admin")
         admin.is_superuser = True

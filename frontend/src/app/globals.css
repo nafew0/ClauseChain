@@ -2415,3 +2415,9 @@
 .z3-legend .is-absence::before{border-color:#e4e4e7;background:#fafafa}
 .z3-snippet{margin:6px 0 0;font-size:11px;line-height:1.5;color:#3f3f46;white-space:pre-wrap}
 @media (max-width:640px){.run-mode-tabs{width:100%}.run-mode-tabs button{flex:1;justify-content:center;padding:0 8px}.run-mode-tabs small{display:none}}
+.run-worker-pill{display:inline-flex;flex-shrink:0;align-items:center;gap:6px;min-height:28px;padding:0 10px;border:1px solid var(--cc-ink-200);border-radius:999px;background:white;color:var(--cc-ink-600);font:700 10px var(--cc-font-mono);letter-spacing:.03em;white-space:nowrap}
+.run-worker-pill i{width:7px;height:7px;border-radius:50%;background:currentColor}
+.run-worker-pill.is-online{border-color:#bbf0da;background:#ecfdf5;color:#047857}
+.run-worker-pill.is-standby{border-color:#fbe6ad;background:#fffbeb;color:#92400e}
+.run-worker-pill.is-offline{border-color:#fecaca;background:#fef2f2;color:#b91c1c}
+.run-launch .run-worker-pill{flex-direction:row}

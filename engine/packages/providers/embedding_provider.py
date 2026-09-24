@@ -37,8 +37,10 @@ class OpenAIEmbeddingProvider:
         import time as _time
 
         api_key = os.getenv(self.api_key_env)
-        if not api_key:
+        # OpenAI proper needs a key; a self-hosted server may run without auth.
+        if not api_key and self.base_url == "https://api.openai.com/v1":
             raise RuntimeError(f"{self.api_key_env} is not set")
+        headers = {"Authorization": f"Bearer {api_key}"} if api_key else {}
         # Token-safety truncation: Thai/CJK tokenize near 1 token/char, so a long
         # unit can blow the 8192-token embedding limit (400 Bad Request — hit on
         # the Thai corpus, 1 Aug). 6000 chars stays safe in every script; only
@@ -53,7 +55,7 @@ class OpenAIEmbeddingProvider:
             try:
                 response = httpx.post(
                     f"{self.base_url}/embeddings",
-                    headers={"Authorization": f"Bearer {api_key}"},
+                    headers=headers,
                     json=body,
                     timeout=self.timeout,
                 )
@@ -121,7 +123,9 @@ def build_embedding(config: dict):
         return OpenAIEmbeddingProvider(
             model=config.get("model") or os.getenv("LOCALAI_EMBED_MODEL", "bge-m3"),
             dimensions=None,
-            api_key_env="LOCALAI_EMBED_API_KEY",
+            # Same key as the LLM server unless a separate one is configured.
+            api_key_env=("LOCALAI_EMBED_API_KEY" if os.getenv("LOCALAI_EMBED_API_KEY")
+                         else "LOCALAI_API_KEY"),
             base_url=base_url,
         )
     if provider in {"bge_m3", "bge-m3", "local"}:

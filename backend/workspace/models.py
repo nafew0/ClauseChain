@@ -535,6 +535,22 @@ class Release(models.Model):
         ordering = ["-created_at"]
 
 
+class EngineWorkerHeartbeat(models.Model):
+    """Liveness signal written by run_engine_worker every few seconds (also
+    while an action executes), read by the API to show worker status and to
+    decide whether a queued action needs a worker started."""
+
+    worker_id = models.CharField(max_length=255, unique=True)
+    hostname = models.CharField(max_length=255)
+    pid = models.IntegerField()
+    started_at = models.DateTimeField()
+    last_seen = models.DateTimeField()
+    current_action_id = models.UUIDField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["-last_seen"]
+
+
 class EngineAction(models.Model):
     class Kind(models.TextChoices):
         REFRESH = "refresh", "Refresh"

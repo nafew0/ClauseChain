@@ -174,10 +174,12 @@ export function useRuns(mode: RunMode = 'hybrid') {
   return useQuery({
     queryKey: workspaceKeys.runs(mode),
     queryFn: () => getRuns(mode),
+    // 3s while an action is queued/running; otherwise 15s so the worker
+    // status pill stays current.
     refetchInterval: (query) =>
       query.state.data?.actions.some((action) => ['queued', 'running'].includes(action.status))
         ? 3_000
-        : false,
+        : 15_000,
   })
 }
 
@@ -219,7 +221,13 @@ export function useLaunchEngineAction() {
       if (context?.toastId) {
         update(context.toastId, {
           title: 'Engine action queued',
-          description: `${action.kind} · ${action.id.slice(0, 8)}. Status will refresh automatically.`,
+          description: `${action.kind} · ${action.id.slice(0, 8)}. ${
+            action.worker?.started
+              ? 'No worker was running, so one was started. '
+              : action.worker && !action.worker.alive && !action.worker.autostart
+                ? 'No engine worker is online. Start the clausechain-engine service. '
+                : ''
+          }Status will refresh automatically.`,
           variant: 'success',
           duration: 5_000,
         })

@@ -26,6 +26,7 @@ from .decision_writer import (
     decision_domain_lock,
 )
 from .engine_worker import EngineWorkerError, load_allowlist
+from .worker_supervisor import ensure_worker, worker_status
 from .models import (
     CorrectionRequest,
     EngineSnapshot,
@@ -1055,6 +1056,7 @@ class RunsView(APIView):
                     serialize_engine_action(action)
                     for action in actions_for_mode(mode)[:20]
                 ],
+                "worker": worker_status(),
                 "can_launch": request.user.is_superuser,
             }
         )
@@ -1315,7 +1317,20 @@ class EngineActionCreateView(APIView):
                 arguments_json=arguments,
                 requested_by=request.user,
             )
-        return Response(serialize_engine_action(action), status=status.HTTP_202_ACCEPTED)
+        # The action is committed and claimable; make sure something will run it.
+        try:
+            worker = ensure_worker()
+        except OSError as exc:
+            worker = worker_status() | {"started": False, "error": str(exc)[:300]}
+        return Response(
+            serialize_engine_action(action) | {"worker": worker},
+            status=status.HTTP_202_ACCEPTED,
+        )
+
+
+class EngineWorkerStatusView(APIView):
+    def get(self, request):
+        return Response(worker_status())
 
 
 class EngineReplayView(EngineActionCreateView):

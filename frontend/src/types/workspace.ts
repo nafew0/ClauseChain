@@ -381,6 +381,18 @@ export interface RunModeInfo {
   models: string
 }
 
+export interface EngineWorkerStatus {
+  alive: boolean
+  autostart: boolean
+  last_seen: string | null
+  hostname: string | null
+  pid: number | null
+  current_action_id: string | null
+  started?: boolean
+  starting?: boolean
+  error?: string
+}
+
 export interface EngineAction {
   id: string
   kind: 'refresh' | 'replay' | 'run'
@@ -394,6 +406,8 @@ export interface EngineAction {
   stdout: string
   result_hashes: JsonObject
   error: string
+  /** present on the queue response: worker status after ensuring one runs */
+  worker?: EngineWorkerStatus
 }
 
 export interface RunRecord {
@@ -421,6 +435,7 @@ export interface RunsResponse {
   results: RunRecord[]
   champion: JsonObject
   actions: EngineAction[]
+  worker: EngineWorkerStatus
   can_launch: boolean
 }
 
