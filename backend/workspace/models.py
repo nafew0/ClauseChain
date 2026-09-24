@@ -561,6 +561,10 @@ class EngineAction(models.Model):
     lease_expires_at = models.DateTimeField(null=True, blank=True)
     stdout = models.TextField(blank=True, default="")
     result_hashes_json = models.JSONField(default=dict)
+    # Trimmed run envelope captured when a run_pipeline action succeeds, so run
+    # modes without an imported snapshot (local open-weights runs) still have
+    # something to show and compare. Never feeds the reviewed snapshot.
+    result_json = models.JSONField(default=dict, blank=True)
     error = models.TextField(blank=True, default="")
 
     class Meta:

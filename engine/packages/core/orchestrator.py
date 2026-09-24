@@ -327,7 +327,7 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
     from packages.providers.model_router import resolve_embedding, resolve_llm
     from packages.rdtii.mapper import (SCREEN_CAP_PER_INDICATOR, MapDecision,
                                        map_candidates, screen_candidates)
-    from packages.retrieval.hybrid import EmbeddingCache, retrieve_for_indicator
+    from packages.retrieval.hybrid import EmbeddingCache, embedding_cache_path, retrieve_for_indicator
     from packages.verifier.gates import run_gates
 
     started = time.time()
@@ -353,7 +353,7 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
     llm_high = resolve_llm(provider_profile, tier="high_reasoning")
     llm_escalation = resolve_llm(provider_profile, tier="legal_escalation")
     embedder = resolve_embedding(provider_profile)
-    cache = EmbeddingCache(embedder, f"data/cache/embeddings_{code.lower()}.json")
+    cache = EmbeddingCache(embedder, embedding_cache_path(code, embedder))
     # Query packs are deterministic and small. Embed all cues for this pillar in
     # one provider call, then reuse the persistent cache inside each indicator.
     # This removes dozens of sequential network round trips from a fresh sweep.

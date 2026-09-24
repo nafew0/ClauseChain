@@ -371,11 +371,22 @@ export interface SourceMatchDetail {
   }
 }
 
+/** One engine, two model backends: hybrid = commercial hosted (reviewed
+ * snapshot), local = self-hosted open-weights model (captured run envelopes). */
+export type RunMode = 'hybrid' | 'local'
+
+export interface RunModeInfo {
+  id: RunMode
+  label: string
+  models: string
+}
+
 export interface EngineAction {
   id: string
   kind: 'refresh' | 'replay' | 'run'
   status: 'queued' | 'running' | 'succeeded' | 'failed'
   arguments: JsonObject
+  mode: RunMode
   requested_by: string
   requested_at: string
   started_at: string | null
@@ -388,6 +399,7 @@ export interface EngineAction {
 export interface RunRecord {
   run_name: string
   run_id: string | null
+  provider_profile: string | null
   country: string
   pillar: number
   generated_at: string | null
@@ -404,6 +416,8 @@ export interface RunRecord {
 }
 
 export interface RunsResponse {
+  mode: RunMode
+  modes: RunModeInfo[]
   results: RunRecord[]
   champion: JsonObject
   actions: EngineAction[]

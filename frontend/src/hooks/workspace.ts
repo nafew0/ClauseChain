@@ -41,6 +41,7 @@ import type {
   FindingDecisionResponse,
   SubmissionParams,
   ReviewQueueParams,
+  RunMode,
   WorkspaceQueue,
 } from '@/types/workspace'
 
@@ -64,8 +65,8 @@ export const workspaceKeys = {
     [...workspaceKeys.all, 'source-match', findingKey, params] as const,
   proofAsset: (assetUrl: string) =>
     [...workspaceKeys.all, 'proof-asset', assetUrl] as const,
-  runs: () => [...workspaceKeys.all, 'runs'] as const,
-  zone3Matrix: () => [...workspaceKeys.all, 'zone3-matrix'] as const,
+  runs: (mode: RunMode = 'hybrid') => [...workspaceKeys.all, 'runs', mode] as const,
+  zone3Matrix: (mode: RunMode = 'hybrid') => [...workspaceKeys.all, 'zone3-matrix', mode] as const,
   submission: (params: SubmissionParams) =>
     [...workspaceKeys.all, 'submission', params] as const,
   actions: () => [...workspaceKeys.all, 'engine-actions'] as const,
@@ -169,10 +170,10 @@ export function useProofAsset(assetUrl: string | null | undefined) {
   })
 }
 
-export function useRuns() {
+export function useRuns(mode: RunMode = 'hybrid') {
   return useQuery({
-    queryKey: workspaceKeys.runs(),
-    queryFn: getRuns,
+    queryKey: workspaceKeys.runs(mode),
+    queryFn: () => getRuns(mode),
     refetchInterval: (query) =>
       query.state.data?.actions.some((action) => ['queued', 'running'].includes(action.status))
         ? 3_000
@@ -204,7 +205,7 @@ export function useLaunchEngineAction() {
   return useMutation({
     mutationFn: ({ kind, payload }: {
       kind: 'replay' | 'refresh' | 'run'
-      payload?: { economy?: string; pillar?: 6 | 7 }
+      payload?: { economy?: string; pillar?: 6 | 7; mode?: RunMode }
     }) => launchEngineAction(kind, payload),
     onMutate: ({ kind }) => ({
       toastId: toast({
@@ -237,8 +238,8 @@ export function useLaunchEngineAction() {
   })
 }
 
-export function useZone3Matrix() {
-  return useQuery({ queryKey: workspaceKeys.zone3Matrix(), queryFn: getZone3Matrix })
+export function useZone3Matrix(mode: RunMode = 'hybrid') {
+  return useQuery({ queryKey: workspaceKeys.zone3Matrix(mode), queryFn: () => getZone3Matrix(mode) })
 }
 
 export function useDecisionHistory(

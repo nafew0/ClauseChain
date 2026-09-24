@@ -13,12 +13,14 @@ import {
   LoaderCircle,
   Play,
   RotateCcw,
+  Server,
   TerminalSquare,
   XCircle,
 } from 'lucide-react'
 import { LazyMotion, MotionConfig, domAnimation, m } from 'motion/react'
 
 import { useAuth } from '@/contexts/AuthContext'
+import { RunModeTabs, useRunMode } from '@/components/workspace/RunModeTabs'
 import { SnapshotBanner } from '@/components/workspace/SnapshotBanner'
 import { useLaunchEngineAction, useRuns } from '@/hooks/workspace'
 import { cn } from '@/lib/utils'
@@ -65,11 +67,11 @@ function RunCard({ run, index }: { run: RunRecord; index: number }) {
         <div className={cn((run.warnings || []).some((w) => !String(w).includes('REJECTED')) && 'warn')}><strong>{(run.warnings || []).filter((w) => !String(w).includes('REJECTED')).length}</strong><span>blocking failures</span></div>
       </div>
       <dl>
-        <div><dt><Coins size={13} /> Measured cost</dt><dd>{run.total_usd === null ? 'not recorded' : `$${run.total_usd.toFixed(4)}`}</dd></div>
+        <div><dt><Coins size={13} /> Measured cost</dt><dd>{run.total_usd === null || run.total_usd === undefined ? 'not recorded' : run.provider_profile === 'local_openweights' ? '$0 API · self-hosted' : `$${run.total_usd.toFixed(4)}`}</dd></div>
         <div><dt><Clock3 size={13} /> Elapsed</dt><dd>{duration(run.elapsed_seconds)}</dd></div>
         <div><dt><Gauge size={13} /> Screened / mapped</dt><dd>{String(pipeline.screened_in ?? '—')} / {String(pipeline.mapped ?? '—')}</dd></div>
       </dl>
-      <section className="run-model"><span>Model route</span><code>{run.model_version || 'not recorded in findings'}</code></section>
+      <section className="run-model"><span>Model route{run.provider_profile ? ` · ${run.provider_profile}` : ''}</span><code>{run.model_version || 'not recorded in findings'}</code></section>
       <button className="run-warning-toggle" onClick={() => setWarningsOpen((open) => !open)} disabled={!run.warning_count}>
         <AlertTriangle size={14} /> All signals ({run.warning_count}) {warningsOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
       </button>
@@ -79,29 +81,50 @@ function RunCard({ run, index }: { run: RunRecord; index: number }) {
   )
 }
 
+const MODE_COPY = {
+  hybrid: {
+    title: 'Run history',
+    intro: 'Imported run envelopes across all covered economies. These are completed records—not simulated live progress.',
+    launch: 'Queued for the dedicated allowlisted worker; one run executes at a time.',
+    confirm: 'This may incur commercial model cost.',
+  },
+  local: {
+    title: 'Local run history',
+    intro: 'The same pipeline, gates and output schema, run on the self-hosted open-weights model. Local runs are unreviewed engine output kept separate from the reviewed snapshot, so they can be compared with the hybrid runs.',
+    launch: 'Runs on the open-weights model only (no commercial API). Queued for the same worker; one run executes at a time.',
+    confirm: 'It runs on the self-hosted open-weights model (no API cost).',
+  },
+} as const
+
 export default function RunsWorkbench() {
-  const query = useRuns()
+  const [mode, setMode] = useRunMode()
+  const query = useRuns(mode)
   const launch = useLaunchEngineAction()
   const { user } = useAuth()
   const [economy, setEconomy] = useState('Singapore')
   const [pillar, setPillar] = useState<6 | 7>(6)
+  const copy = MODE_COPY[mode]
 
   const queueRun = () => {
-    if (!window.confirm(`Queue a real ${economy} Pillar ${pillar} engine run? This may incur model cost.`)) return
-    launch.mutate({ kind: 'run', payload: { economy, pillar } })
+    if (!window.confirm(`Queue a real ${economy} Pillar ${pillar} ${mode} engine run? ${copy.confirm}`)) return
+    launch.mutate({ kind: 'run', payload: { economy, pillar, mode } })
   }
 
-  if (query.isPending) return <div className="run-page-state"><LoaderCircle size={28} /> Loading immutable run history…</div>
-  if (query.isError || !query.data) return <div className="run-page-state error"><XCircle size={28} /> Run history API is unavailable.</div>
+  const tabs = <RunModeTabs mode={mode} onChange={setMode} modes={query.data?.modes} />
+  if (query.isPending) return <div className="runs-workbench">{tabs}<div className="run-page-state"><LoaderCircle size={28} /> Loading immutable run history…</div></div>
+  if (query.isError || !query.data) return <div className="runs-workbench">{tabs}<div className="run-page-state error"><XCircle size={28} /> Run history API is unavailable.</div></div>
 
   return (
     <LazyMotion features={domAnimation}>
       <MotionConfig reducedMotion="user">
         <div className="runs-workbench">
-          <header className="runs-header"><div><div className="truth-chiprow"><span><Activity size={14} /> Recorded engine execution</span><SnapshotBanner /></div><h1>Run history</h1><p>Imported run envelopes across all covered economies. These are completed records—not simulated live progress.</p></div></header>
-          {user?.is_superuser ? <section className="run-launch"><div><Play size={18} /><span><strong>Launch a real pipeline run</strong><small>Queued for the dedicated allowlisted worker; one run executes at a time.</small></span></div><select value={economy} onChange={(event) => setEconomy(event.target.value)}><option>Singapore</option><option>Malaysia</option><option>Australia</option><option>Thailand</option><option>India</option><option>Indonesia</option></select><select value={pillar} onChange={(event) => setPillar(Number(event.target.value) as 6 | 7)}><option value={6}>Pillar 6</option><option value={7}>Pillar 7</option></select><button onClick={queueRun} disabled={launch.isPending}><Play size={14} /> Queue run</button></section> : null}
-          <section className="run-grid">{query.data.results.map((run, index) => <RunCard key={run.run_name} run={run} index={index} />)}</section>
-          <section className="run-actions"><header><div><TerminalSquare size={18} /><span><strong>Engine worker actions</strong><small>Authoritative queued/running/done states with captured output.</small></span></div>{user?.is_superuser ? <button onClick={() => launch.mutate({ kind: 'refresh' })} disabled={launch.isPending}><RotateCcw size={14} /> Refresh snapshot</button> : null}</header>{query.data.actions.length ? query.data.actions.map((action) => <ActionState action={action} key={action.id} />) : <p className="run-empty">No engine actions have been queued from the app.</p>}</section>
+          {tabs}
+          <header className="runs-header"><div><div className="truth-chiprow"><span>{mode === 'local' ? <Server size={14} /> : <Activity size={14} />} Recorded engine execution</span>{mode === 'hybrid' ? <SnapshotBanner /> : null}</div><h1>{copy.title}</h1><p>{copy.intro}</p></div></header>
+          {user?.is_superuser ? <section className="run-launch"><div><Play size={18} /><span><strong>Launch a real {mode === 'local' ? 'local' : 'hybrid'} pipeline run</strong><small>{copy.launch}</small></span></div><select value={economy} onChange={(event) => setEconomy(event.target.value)}><option>Singapore</option><option>Malaysia</option><option>Australia</option><option>Thailand</option><option>India</option><option>Indonesia</option></select><select value={pillar} onChange={(event) => setPillar(Number(event.target.value) as 6 | 7)}><option value={6}>Pillar 6</option><option value={7}>Pillar 7</option></select><button onClick={queueRun} disabled={launch.isPending}><Play size={14} /> Queue run</button></section> : null}
+          {query.data.results.length
+            ? <section className="run-grid">{query.data.results.map((run, index) => <RunCard key={run.run_name} run={run} index={index} />)}</section>
+            : <section className="run-empty-state"><Server size={22} /><strong>No {mode} runs yet</strong><p>{mode === 'local' ? 'Launch a run above to process an economy and pillar on the open-weights model. Finished runs appear here and on the RDTII Matrix Local tab.' : 'No run envelopes in the active snapshot.'}</p></section>}
+          <section className="run-actions"><header><div><TerminalSquare size={18} /><span><strong>Engine worker actions</strong><small>Authoritative queued/running/done states with captured output{mode === 'local' ? ' · local runs only' : ''}.</small></span></div>{user?.is_superuser && mode === 'hybrid' ? <button onClick={() => launch.mutate({ kind: 'refresh' })} disabled={launch.isPending}><RotateCcw size={14} /> Refresh snapshot</button> : null}</header>{query.data.actions.length ? query.data.actions.map((action) => <ActionState action={action} key={action.id} />) : <p className="run-empty">No {mode} engine actions have been queued from the app.</p>}</section>
         </div>
       </MotionConfig>
     </LazyMotion>

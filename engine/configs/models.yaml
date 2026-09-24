@@ -27,6 +27,29 @@ profiles:
       provider: ${GRAPH_BACKEND:-sqlite}   # Path B: export GRAPH_BACKEND=neo4j (self-hosted)
       sqlite_path: data/graph.db
 
+  local_openweights:          # LOCAL MODE — open-weights model on our self-hosted OpenAI-compatible server
+    # Same pipeline, gates and schemas as hybrid_accuracy; only the models differ.
+    # No proprietary fallback in any tier: a failed call fails the run instead of
+    # silently routing to a commercial API (checklist #12).
+    bulk:
+      primary: openai_compatible:${LOCALAI_MODEL:-qwen3.8-27b}
+    high_reasoning:
+      primary: openai_compatible:${LOCALAI_MODEL:-qwen3.8-27b}
+    legal_escalation:
+      primary: openai_compatible:${LOCALAI_MODEL:-qwen3.8-27b}
+    embedding:                # open-weights too; own cache file per model (never mixed with OpenAI vectors)
+      provider: ${LOCALAI_EMBED_PROVIDER:-bge_m3}   # bge_m3 = on the run host; openai_compatible = LOCALAI_EMBED_ENDPOINT
+      model: ${LOCALAI_EMBED_MODEL:-BAAI/bge-m3}
+      dimensions: 1024
+    ocr:
+      provider: ${OCR_PROVIDER:-local}
+      endpoint: ${OCR_ENDPOINT:-http://localhost:8089}
+      api_key: ${OCR_API_KEY:-}
+      model: ${LOCAL_OCR_MODEL:-local-ocr-placeholder}
+    graph:
+      provider: ${GRAPH_BACKEND:-sqlite}
+      sqlite_path: data/graph.db
+
   local_fallback:             # PATH A — key-free fallback (ships in repo; runs anywhere)
     bulk:
       primary: ollama:${OLLAMA_BULK_MODEL:-qwen2.5:7b}

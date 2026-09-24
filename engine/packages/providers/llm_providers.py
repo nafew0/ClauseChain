@@ -26,8 +26,12 @@ OPENAI_BASE_URL = "https://api.openai.com/v1"
 
 class OpenAIChatProvider:
     def __init__(self, model: str, api_key_env: str = "OPENAI_API_KEY", timeout: float = 90.0,
-                 base_url: str = OPENAI_BASE_URL) -> None:
+                 base_url: str = OPENAI_BASE_URL, request_model: str | None = None) -> None:
+        # `model` is what runs record (model_version, cost report); `request_model`
+        # is the id the endpoint expects when a self-hosted server serves the
+        # weights under an alias.
         self.model = model
+        self.request_model = request_model or model
         self.api_key_env = api_key_env
         self.timeout = timeout
         self.base_url = base_url.rstrip("/")
@@ -48,7 +52,7 @@ class OpenAIChatProvider:
         for attempt in range(1 + len(self.RETRY_BACKOFFS_S)):
             try:
                 body = {
-                    "model": self.model,
+                    "model": self.request_model,
                     "messages": [{"role": "user", "content": prompt}],
                     "response_format": {"type": "json_object"},
                     "temperature": 0,
@@ -350,4 +354,17 @@ def build_llm(spec: str):
         return GeminiChatProvider(model)
     if provider == "ollama":
         return OllamaProvider(model)
+    if provider in {"openai_compatible", "openweights"}:
+        # Self-hosted open-weights model behind any OpenAI-compatible server
+        # (vLLM, Ollama /v1, hosted open-weights APIs). No proprietary fallback.
+        base_url = os.getenv("LOCALAI_ENDPOINT", "")
+        if not base_url:
+            raise RuntimeError("LOCALAI_ENDPOINT is not set")
+        return OpenAIChatProvider(
+            os.getenv("LOCALAI_MODEL_LABEL") or model,
+            api_key_env="LOCALAI_API_KEY",
+            base_url=base_url,
+            timeout=float(os.getenv("LOCALAI_TIMEOUT_S", "300")),
+            request_model=model,
+        )
     raise ValueError(f"Unknown LLM provider in spec {spec!r}")

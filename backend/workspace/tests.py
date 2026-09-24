@@ -807,6 +807,99 @@ class WorkspaceApiTests(TestCase):
         ]
         self.assertTrue(review_state["correction_pending"])
 
+    def test_local_mode_runs_are_separate_and_feed_local_tabs(self):
+        admin = self.make_user("mode-admin", "Mode Admin", "admin")
+        admin.is_superuser = True
+        admin.is_staff = True
+        admin.save(update_fields=("is_superuser", "is_staff"))
+        self.authenticate(admin)
+
+        # Local tabs start blank; hybrid keeps reading the reviewed snapshot.
+        local_runs = self.client.get("/api/workspace/runs/?mode=local")
+        self.assertEqual(local_runs.status_code, 200)
+        self.assertEqual((local_runs.data["mode"], local_runs.data["results"]), ("local", []))
+        self.assertEqual([mode["id"] for mode in local_runs.data["modes"]], ["hybrid", "local"])
+        local_matrix = self.client.get("/api/workspace/zone3-matrix/?mode=local")
+        self.assertEqual(local_matrix.status_code, 200)
+        self.assertEqual((local_matrix.data["cells"], local_matrix.data["snapshot"]), ([], None))
+        self.assertEqual(self.client.get("/api/workspace/zone3-matrix/").data["mode"], "hybrid")
+        self.assertEqual(self.client.get("/api/workspace/runs/?mode=cloudy").status_code, 400)
+
+        # The run endpoint maps the mode onto the engine profile + output folder.
+        allowlist = settings.ENGINE_ALLOWLIST
+        queued = self.client.post(
+            "/api/workspace/engine/run/",
+            {"economy": "Singapore", "pillar": 6, "mode": "local"},
+            format="json",
+        )
+        self.assertEqual(queued.status_code, 202, queued.data)
+        self.assertEqual(queued.data["mode"], "local")
+        self.assertEqual(queued.data["arguments"]["provider_profile"], "local_openweights")
+        self.assertEqual(queued.data["arguments"]["out_prefix"], "local")
+        _, argv, _ = build_allowlisted_command(queued.data["arguments"])
+        self.assertIn("local_openweights", argv)
+        self.assertIn("outputs/local_si_p6", argv)
+        self.assertEqual(
+            self.client.post(
+                "/api/workspace/engine/run/",
+                {"economy": "Singapore", "pillar": 6, "mode": "cloudy"},
+                format="json",
+            ).status_code,
+            400,
+        )
+        self.assertTrue(allowlist.is_file())
+
+        # A succeeded local run captures its envelope and appears only in local views.
+        action = EngineAction.objects.get(pk=queued.data["id"])
+        envelope = {
+            "run_id": "local-run-1", "generated_at": "2026-09-24T10:00:00Z", "country": "SG",
+            "pillar": 6, "provider_profile": "local_openweights", "warnings": [],
+            "metadata": {"pipeline_stats": {"mapped": 2}},
+            "findings": [
+                {"Economy": "Singapore", "Indicator ID": "P6-I2", "Law Name": "PDPA 2012",
+                 "Article / Section": "s. 26", "Discovery Tag": "KNOWN",
+                 "Verbatim Snippet": "An organisation shall not transfer any personal data",
+                 "Source URL": "https://sso.agc.gov.sg/Act/PDPA2012", "raw_context": "x" * 50,
+                 "model_version": "unsloth/Qwen3.8-27B-NVFP4/escalate:unsloth/Qwen3.8-27B-NVFP4+BAAI/bge-m3"},
+                {"Economy": "Singapore", "Indicator ID": "P6-I1", "Law Name": "PDPA 2012",
+                 "Discovery Tag": "KNOWN", "Verbatim Snippet": "NO_EVIDENCE_FOUND_PENDING_REVIEW"},
+            ],
+        }
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            output = root / "outputs" / "local_si_p6" / "output.json"
+            output.parent.mkdir(parents=True)
+            output.write_text(json.dumps(envelope), encoding="utf-8")
+            with override_settings(ENGINE_ROOT=root), patch(
+                "workspace.engine_worker.subprocess.run",
+                return_value=SimpleNamespace(returncode=0, stdout="wrote outputs", stderr=""),
+            ), patch("workspace.engine_worker.import_snapshot") as auto_import:
+                execute_action(action)
+                auto_import.assert_not_called()
+        action.refresh_from_db()
+        self.assertEqual(action.status, EngineAction.Status.SUCCEEDED, action.error)
+        self.assertIn("outputs/local_si_p6/output.json", action.result_hashes_json)
+        self.assertNotIn("raw_context", action.result_json["findings"][0])
+
+        local_runs = self.client.get("/api/workspace/runs/?mode=local").data
+        self.assertEqual(len(local_runs["results"]), 1)
+        self.assertEqual(local_runs["results"][0]["provider_profile"], "local_openweights")
+        self.assertEqual(local_runs["results"][0]["rows_produced"], 2)
+        self.assertEqual([row["id"] for row in local_runs["actions"]], [str(action.pk)])
+        hybrid_runs = self.client.get("/api/workspace/runs/").data
+        self.assertNotIn(str(action.pk), [row["id"] for row in hybrid_runs["actions"]])
+        self.assertNotIn("local_openweights", [run["provider_profile"] for run in hybrid_runs["results"]])
+
+        matrix = self.client.get("/api/workspace/zone3-matrix/?mode=local").data
+        cells = {cell["indicator"]: cell for cell in matrix["cells"]}
+        self.assertEqual(matrix["economies"], ["Singapore"])
+        self.assertEqual(cells["P6-I2"]["state"], "evidence")
+        self.assertEqual(cells["P6-I2"]["evidence"][0]["article"], "s. 26")
+        self.assertIsNone(cells["P6-I2"]["deterministic"])
+        self.assertEqual(cells["P6-I1"]["state"], "absence")
+        self.assertEqual(cells["P6-I1"]["evidence"], [])
+        self.assertEqual(matrix["counts"]["with_evidence"], 1)
+
     @patch("workspace.views.apply_authoritative_decision", return_value=RECEIPT)
     def test_zone3_matrix_overlays_decisions_and_traces_evidence(self, writer):
         self.authenticate(self.citation)

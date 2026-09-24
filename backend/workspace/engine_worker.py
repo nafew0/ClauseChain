@@ -88,12 +88,35 @@ def _sha256(path):
     return digest.hexdigest()
 
 
+def run_output_path(arguments):
+    prefix = arguments.get("out_prefix") or "final"
+    return f"outputs/{prefix}_{arguments['cc']}_p{arguments['pillar']}/output.json"
+
+
+# Heavy proof/debug fields dropped from the stored copy; the full envelope stays
+# on disk as the immutable artifact whose hash is recorded.
+ENVELOPE_DROP_FIELDS = (
+    "raw_context", "citation_proof", "search_coverage_manifest", "graph_path",
+    "status_evidence_record", "review",
+)
+
+
+def compact_envelope(envelope):
+    findings = [
+        {key: value for key, value in finding.items() if key not in ENVELOPE_DROP_FIELDS}
+        for finding in envelope.get("findings") or []
+    ]
+    return {
+        key: envelope.get(key)
+        for key in ("run_id", "generated_at", "country", "pillar", "provider_profile",
+                    "warnings", "metadata")
+    } | {"findings": findings}
+
+
 def artifact_hashes(action_name, arguments):
     paths = list(ACTION_ARTIFACTS.get(action_name, ()))
     if action_name == "run_pipeline":
-        paths.append(
-            f"outputs/final_{arguments['cc']}_p{arguments['pillar']}/output.json"
-        )
+        paths.append(run_output_path(arguments))
     result = {}
     for relative in paths:
         path = settings.ENGINE_ROOT / relative
@@ -150,6 +173,14 @@ def execute_action(action):
                 f"Allowlisted command exited {completed.returncode}.\n{output}".strip()
             )
         hashes = artifact_hashes(action_name, action.arguments_json)
+        if action_name == "run_pipeline":
+            output = settings.ENGINE_ROOT / run_output_path(action.arguments_json)
+            try:
+                action.result_json = compact_envelope(
+                    json.loads(output.read_text(encoding="utf-8"))
+                )
+            except (OSError, json.JSONDecodeError):
+                action.result_json = {}
         # run_pipeline deliberately does NOT auto-import: a live run produces
         # immutable artifacts only, and the reviewed app snapshot changes solely
         # through the explicit refresh action. (Auto-importing also fails closed
@@ -172,8 +203,8 @@ def execute_action(action):
     action.lease_expires_at = None
     action.save(
         update_fields=(
-            "status", "stdout", "result_hashes_json", "error", "finished_at",
-            "lease_expires_at",
+            "status", "stdout", "result_hashes_json", "result_json", "error",
+            "finished_at", "lease_expires_at",
         )
     )
     return action

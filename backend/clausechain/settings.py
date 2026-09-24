@@ -284,6 +284,18 @@ WORKSPACE_LOCK_DIR = Path(
 ENGINE_ALLOWLIST = Path(
     os.environ.get("ENGINE_ALLOWLIST", BASE_DIR.parent / "deploy" / "engine_allowlist.json")
 ).resolve()
+# Display-only descriptions of the models behind each run mode (the engine's
+# configs/models.yaml profiles are authoritative for what actually runs).
+ENGINE_MODE_LABELS = {
+    "hybrid": os.environ.get(
+        "ENGINE_MODE_LABEL_HYBRID",
+        "Commercial hosted: OpenRouter GPT-5.6 luna/terra + OpenAI embeddings",
+    ),
+    "local": os.environ.get(
+        "ENGINE_MODE_LABEL_LOCAL",
+        "Open weights, self-hosted: Qwen3.8-27B (vLLM, OpenAI-compatible) + BGE-M3 embeddings",
+    ),
+}
 
 # Simple JWT
 SIMPLE_JWT = {

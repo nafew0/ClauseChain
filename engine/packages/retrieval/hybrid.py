@@ -12,6 +12,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -47,6 +48,20 @@ def _cosine(a: list[float], b: list[float]) -> float:
     na = math.sqrt(sum(x * x for x in a))
     nb = math.sqrt(sum(y * y for y in b))
     return dot / (na * nb) if na and nb else 0.0
+
+
+LEGACY_EMBEDDING_MODEL = "text-embedding-3-small"
+
+
+def embedding_cache_path(code: str, embedder) -> str:
+    """One cache file per economy AND embedding model: vectors from different
+    models live in different spaces and must never be mixed. The original
+    OpenAI caches keep their legacy name so existing corpora stay valid."""
+    model = str(getattr(embedder, "model", "") or "")
+    if not model or model == LEGACY_EMBEDDING_MODEL:
+        return f"data/cache/embeddings_{code.lower()}.json"
+    slug = re.sub(r"[^a-z0-9]+", "-", model.lower()).strip("-")
+    return f"data/cache/embeddings_{code.lower()}__{slug}.json"
 
 
 class EmbeddingCache:
