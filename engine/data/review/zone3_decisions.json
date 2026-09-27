@@ -277,5 +277,15 @@
   "reviewed_at": "2026-07-20T16:46:48.495118+00:00",
   "note": "Criminal Procedure Code s.34(1) expressly permits a police search without a search warrant when its conditions hold, and s.39 permits investigating police/authorised persons to access and inspect computers without prior independent judicial authorization. One such power gives 1. [AI suggestion ratified as final by reviewer instruction, 20 Jul final session.]",
   "action": "approve"
+ },
+ {
+  "action": "approve",
+  "economy": "Thailand",
+  "indicator": "P6-I4",
+  "reasoning": "Approve 1: matches ESCAP Round-2 gold (PDPA s.28, adequacy-conditioned transfers; plus PDPC Notifications B.E. 2566 under s.28/s.29). Evidence caveat: the currently attached row s.80(3) is a confidentiality offence, not the transfer regime, and the local run's s.15(5) is a parser mislabel of s.16(5). Both engines found s.28 and it passed G1-G9 but was dropped at proof-span resolution; the evidence row will be replaced by s.28/s.29 after the section-heading/page-break parser fix and a Thailand corpus rebuild.",
+  "reviewed_at": "2026-09-27T13:26:36.476312+00:00",
+  "reviewer_name": "Abu Naser Md. Nafew",
+  "reviewer_role": "mapping",
+  "score": 1.0
  }
 ]

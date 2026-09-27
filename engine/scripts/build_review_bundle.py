@@ -14,6 +14,22 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from packages.core.finalization import finding_key, review_subject_hash  # noqa: E402
 from packages.core.schemas import MappedFinding, SourceArtifact  # noqa: E402
 
+# OCR tokens carry pixel coordinates of the page raster (both OCR routes render
+# at 200 DPI); native PyMuPDF spans are already in PDF points. The stored boxes
+# stay untouched because they are part of the signed review subject hash.
+OCR_RASTER_DPI = 200
+NATIVE_SPAN_METHOD = "pymupdf_rawdict"
+
+
+def _box_scale(conn: sqlite3.Connection, span_ids: list[str]) -> float:
+    """Return the factor that maps a proof's stored boxes into PDF points."""
+    if not span_ids:
+        return 1.0
+    row = conn.execute("SELECT payload FROM text_spans WHERE id=?", (span_ids[0],)).fetchone()
+    if not row or json.loads(row[0]).get("extraction_method") == NATIVE_SPAN_METHOD:
+        return 1.0
+    return 72 / OCR_RASTER_DPI
+
 
 def main() -> int:
     p = argparse.ArgumentParser(); p.add_argument("--candidates", default="submission/consolidated.json")
@@ -34,8 +50,9 @@ def main() -> int:
             with fitz.open(artifact.local_path) as doc:
                 page = doc[proof.page_number - 1]
                 shape = page.new_shape()
+                scale = _box_scale(conn, proof.span_ids)
                 for box in proof.bboxes:
-                    shape.draw_rect(fitz.Rect(box)); shape.finish(color=(1, 0, 0), width=1.5)
+                    shape.draw_rect(fitz.Rect(box) * scale); shape.finish(color=(1, 0, 0), width=1.5)
                 shape.commit()
                 image_rel = f"assets/{key}.png"
                 image_path = out / image_rel

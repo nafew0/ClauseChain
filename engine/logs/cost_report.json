@@ -2790,5 +2790,59 @@
   "economy": "India",
   "pillar": 7,
   "elapsed_seconds": 1421.8
+ },
+ {
+  "run_id": "run-th-p6-1790510821",
+  "at": "2026-09-27T12:25:42.494616+00:00",
+  "models": {
+   "unsloth/Qwen3.8-27B-NVFP4": {
+    "input_tokens": 262765,
+    "cached_input_tokens": 0,
+    "output_tokens": 62210,
+    "calls": 124,
+    "usd": 0.0,
+    "priced": false
+   },
+   "bge-m3": {
+    "input_tokens": 6765,
+    "cached_input_tokens": 0,
+    "output_tokens": 0,
+    "calls": 1,
+    "usd": 0.0,
+    "priced": false
+   }
+  },
+  "total_usd": 0.0,
+  "note": "measured from real API usage objects; prices per 1M tokens (PRICES)",
+  "economy": "Thailand",
+  "pillar": 6,
+  "elapsed_seconds": 1120.9
+ },
+ {
+  "run_id": "run-my-p6-1790527007",
+  "at": "2026-09-27T16:49:36.551495+00:00",
+  "models": {
+   "bge-m3": {
+    "input_tokens": 381528,
+    "cached_input_tokens": 0,
+    "output_tokens": 0,
+    "calls": 42,
+    "usd": 0.0,
+    "priced": false
+   },
+   "unsloth/Qwen3.8-27B-NVFP4": {
+    "input_tokens": 205619,
+    "cached_input_tokens": 0,
+    "output_tokens": 57719,
+    "calls": 114,
+    "usd": 0.0,
+    "priced": false
+   }
+  },
+  "total_usd": 0.0,
+  "note": "measured from real API usage objects; prices per 1M tokens (PRICES)",
+  "economy": "Malaysia",
+  "pillar": 6,
+  "elapsed_seconds": 769.5
  }
 ]
