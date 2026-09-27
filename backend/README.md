@@ -5,7 +5,7 @@ engine artifacts into immutable snapshots, enforces role-separated review
 decisions, and runs engine actions through an argv-allowlisted worker (no shell).
 
 > The judged artifact is the engine (`../engine`). This backend is the optional
-> web console — see the root `README.md` and `../docs/README_WEB.md`.
+> web console — see the root `README.md` and `README_WEB.md`.
 
 ## Local setup
 

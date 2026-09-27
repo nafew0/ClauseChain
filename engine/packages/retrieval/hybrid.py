@@ -12,6 +12,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -49,6 +50,20 @@ def _cosine(a: list[float], b: list[float]) -> float:
     return dot / (na * nb) if na and nb else 0.0
 
 
+LEGACY_EMBEDDING_MODEL = "text-embedding-3-small"
+
+
+def embedding_cache_path(code: str, embedder) -> str:
+    """One cache file per economy AND embedding model: vectors from different
+    models live in different spaces and must never be mixed. The original
+    OpenAI caches keep their legacy name so existing corpora stay valid."""
+    model = str(getattr(embedder, "model", "") or "")
+    if not model or model == LEGACY_EMBEDDING_MODEL:
+        return f"data/cache/embeddings_{code.lower()}.json"
+    slug = re.sub(r"[^a-z0-9]+", "-", model.lower()).strip("-")
+    return f"data/cache/embeddings_{code.lower()}__{slug}.json"
+
+
 class EmbeddingCache:
     """Disk-cached corpus embeddings: embed each provision text at most once, ever."""
 
@@ -73,11 +88,18 @@ class EmbeddingCache:
 
     def ensure(self, items: list[tuple[str, str]]) -> None:
         """items = [(provision_id, text)]; embeds only the missing ones, in chunked batches."""
+        from packages.core import progress
+
         missing = [(pid, text) for pid, text in items if self._key(pid, text) not in self._cache]
         if not missing:
+            progress.emit("embed", f"{len(items):,} provision vectors already cached")
             return
+        batches = (len(missing) + self.BATCH - 1) // self.BATCH
+        progress.emit("embed", f"embedding {len(missing):,} new provisions with "
+                               f"{getattr(self._embedder, 'model', '?')} ({batches} batches)")
         for start in range(0, len(missing), self.BATCH):
             chunk = missing[start:start + self.BATCH]
+            progress.emit("embed", f"batch {start // self.BATCH + 1}/{batches} ({len(chunk)} texts)")
             vectors = self._embedder.embed([self._sanitize(text) for _, text in chunk])
             for (pid, text), vec in zip(chunk, vectors):
                 self._cache[self._key(pid, text)] = vec
@@ -99,7 +121,11 @@ class EmbeddingCache:
         every economy/pillar run.
         """
         unique = list(dict.fromkeys(q.strip() for q in queries if q.strip()))
+        from packages.core import progress
+
         missing = [query for query in unique if self._query_key(query) not in self._cache]
+        progress.emit("embed", f"{len(unique)} search queries for this pillar "
+                               f"({len(missing)} new to embed)", detail="\n".join(unique))
         if not missing:
             return
         vectors = self._embedder.embed([self._sanitize(query) for query in missing])

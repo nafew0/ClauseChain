@@ -31,6 +31,9 @@ import type {
   ReviewQueueParams,
   ReviewQueueResponse,
   ReviewContext,
+  EngineActionEventsPage,
+  RunMode,
+  RunModeInfo,
   RunsResponse,
   SourceMatchDetail,
   SubmissionParams,
@@ -177,9 +180,12 @@ export async function getProofAsset(assetUrl: string): Promise<Blob> {
   return data
 }
 
-export async function getRuns(): Promise<RunsResponse> {
-  if (WORKSPACE_FIXTURE_MODE) return (await loadWorkspaceFixture()).runs
-  const { data } = await api.get<RunsResponse>('/workspace/runs/')
+export async function getRuns(mode: RunMode = 'hybrid'): Promise<RunsResponse> {
+  if (WORKSPACE_FIXTURE_MODE) {
+    const runs = (await loadWorkspaceFixture()).runs
+    return mode === 'hybrid' ? runs : { ...runs, mode, results: [], actions: [], champion: {} }
+  }
+  const { data } = await api.get<RunsResponse>('/workspace/runs/', { params: { mode } })
   return data
 }
 
@@ -199,9 +205,30 @@ export async function getEngineActions(): Promise<EngineActionResponse> {
   return data
 }
 
+export async function getEngineActionEvents(actionId: string, after = 0): Promise<EngineActionEventsPage> {
+  const { data } = await api.get<EngineActionEventsPage>(`/workspace/engine/actions/${actionId}/events/`, {
+    params: { after },
+  })
+  return data
+}
+
+export async function cancelEngineAction(actionId: string): Promise<EngineAction> {
+  if (WORKSPACE_FIXTURE_MODE) return rejectFixtureWrite()
+  const { data } = await api.post<EngineAction>(`/workspace/engine/actions/${actionId}/cancel/`)
+  return data
+}
+
+export async function cancelAllEngineActions(
+  mode: RunMode
+): Promise<{ mode: RunMode; cancelled: number; stopping: number; cleared: number }> {
+  if (WORKSPACE_FIXTURE_MODE) return rejectFixtureWrite()
+  const { data } = await api.post('/workspace/engine/actions/cancel-all/', { mode })
+  return data
+}
+
 export async function launchEngineAction(
   kind: 'replay' | 'refresh' | 'run',
-  payload: { economy?: string; pillar?: 6 | 7 } = {}
+  payload: { economy?: string; pillar?: 6 | 7; mode?: RunMode } = {}
 ): Promise<EngineAction> {
   if (WORKSPACE_FIXTURE_MODE) return rejectFixtureWrite()
   const { data } = await api.post<EngineAction>(`/workspace/engine/${kind}/`, payload)
@@ -253,13 +280,18 @@ export async function decideRecall(
 }
 
 export interface Zone3MatrixEvidence {
-  finding_key: string
+  /** null for local-mode rows: unreviewed run output has no review item yet */
+  finding_key: string | null
   stable_key: string
-  queue: 'new' | 'known' | 'absence'
+  queue: 'new' | 'known' | 'absence' | null
   law: string
   article: string
   tag: string
   blocked: boolean
+  snippet?: string
+  source_url?: string | null
+  confidence?: string | number | null
+  absence?: boolean
 }
 
 export interface Zone3MatrixCell {
@@ -276,7 +308,8 @@ export interface Zone3MatrixCell {
   agreement_alpha?: number | string | null
   score_band?: string
   flagged: boolean
-  state: 'pending' | 'approved' | 'overridden'
+  /** hybrid: reviewer states; local: evidence found / absence concluded (unscored) */
+  state: 'pending' | 'approved' | 'overridden' | 'evidence' | 'absence'
   effective: number | null
   reviewer_name: string
   reviewed_at: string | null
@@ -284,19 +317,40 @@ export interface Zone3MatrixCell {
   latest_decision_id: string | null
   blocked: boolean
   evidence: Zone3MatrixEvidence[]
+  absence_rows?: Zone3MatrixEvidence[]
+}
+
+export interface Zone3MatrixRun {
+  run_id: string | null
+  country: string
+  pillar: number
+  generated_at: string | null
+  action_id: string
 }
 
 export interface Zone3MatrixResponse {
-  snapshot: { generated_at: string; bundle_hash: string; stale: boolean }
+  mode: RunMode
+  modes: RunModeInfo[]
+  snapshot: { generated_at: string; bundle_hash: string; stale: boolean } | null
+  runs?: Zone3MatrixRun[]
   economies: string[]
   indicators: string[]
-  counts: { total: number; decided: number; pending: number }
+  counts: {
+    total: number
+    decided: number
+    pending: number
+    with_evidence?: number
+    absence?: number
+    evidence_rows?: number
+  }
   score_semantics: { explanation: string; allowed_scores: number[] }
   cells: Zone3MatrixCell[]
 }
 
-export async function getZone3Matrix(): Promise<Zone3MatrixResponse> {
-  const { data } = await api.get<Zone3MatrixResponse>('/workspace/zone3-matrix/')
+export async function getZone3Matrix(mode: RunMode = 'hybrid'): Promise<Zone3MatrixResponse> {
+  const { data } = await api.get<Zone3MatrixResponse>('/workspace/zone3-matrix/', {
+    params: { mode },
+  })
   return data
 }
 

@@ -531,7 +531,8 @@ def build_ocr(config: dict | None):
             language_hints=hints)
     if provider in {"remote_paddle", "paddle_remote", "remote"}:
         endpoint = config.get("endpoint") or os.getenv("OCR_ENDPOINT", "http://localhost:8089")
-        api_key = config.get("api_key") or os.getenv("OCR_API_KEY") or None
+        api_key = (config.get("api_key") or os.getenv("PADDLE_OCR_API_KEY")
+                   or os.getenv("OCR_API_KEY") or None)
         request_format = (
             config.get("request_format") or os.getenv("OCR_REQUEST_FORMAT") or "multipart"
         )

@@ -23,13 +23,18 @@ from packages.core.rule_units import classify_rule_components
 # (gazette), AU "13  Heading" (no dot), and AU Schedule decimals "474.17A  Heading".
 # Parsed with each; the richer result wins.
 _SECTION_PATTERNS = [
-    re.compile(r"^\s{0,6}Section\s+(\d{1,3}[A-Z]{0,2})\.?\s+(.{0,120})", re.IGNORECASE),
+    # Heading text may follow on the same line or start on the next one
+    # ("Section 29" alone on its line, as in the Thai PDPA official translation).
+    re.compile(r"^\s{0,6}Section\s+(\d{1,3}[A-Z]{0,2})\.?(?:\s+(.{0,120})|\s*$)", re.IGNORECASE),
     # Schedule decimals (474.17A) and official-code hierarchy (3.5.14).
     re.compile(r"^\s{0,6}(\d{1,3}(?:\.\d{1,2}){1,2}[A-Z]{0,2})\s+(\S.{0,110})"),
     re.compile(r"^\s{0,6}(\d{1,3}[A-Z]{0,2})\.\s+(.{0,120})", re.I),
     # AU Commonwealth compilations: "13  Interferences with privacy" (no dot, 2+ spaces)
     re.compile(r"^\s{0,6}(\d{1,3}[A-Z]{0,2})\s{2,}(\S.{0,110})", re.I),
+    CLAUSE_PATTERN := re.compile(r"^\s{0,6}Clause\s+(\d{1,3}[A-Z]?)\.?(?:\s+(.{0,120})|\s*$)", re.I),
 ]
+# Notifications/regulations number provisions "Clause 4." (PDPC cross-border
+# notifications); cited "cl. 4" as in ESCAP gold, unless a caller set a template.
 
 # R5 (P3.5) heading-plausibility guards — the user-verified failure modes:
 #  (a) note/body sentences: "Section 187B removes..." — heading text starting with a
@@ -37,6 +42,13 @@ _SECTION_PATTERNS = [
 #  (b) page footers: "102  Telecommunications (Interception and Access) Act 1979" —
 #      heading text that is (or starts like) the act's own name is page furniture.
 _LOWERCASE_CONTINUATION = re.compile(r"^[a-z]")
+# Words that continue a sentence after a wrapped cross-reference
+# ("... under\nSection 29\nof this Act", "... dalam\nPasal 20\nayat (1)").
+# Deliberately a word list, not "any lowercase": text-layer glitches ("l,embaga"
+# for "Lembaga") and page-footer URLs also start lowercase after real headings.
+_REFERENCE_CONTINUATION = re.compile(
+    r"^(?:of|and|or|to|in|is|are|shall|may|applies|apply|does|has|have|as|by|under|"
+    r"with|for|ayat|huruf|angka|dan|atau|sampai|jo|juncto|sebagaimana)\b")
 
 
 def _plausible_heading(heading_text: str, act_name: str) -> bool:
@@ -92,7 +104,15 @@ SECTION_GRAMMARS: dict[str, list[re.Pattern]] = {
     ],
     # Indonesian statutes/regulations: Pasal N (ayat handled at paragraph depth).
     "indonesian": [
-        re.compile(r"^\s{0,6}Pasal\s+(\d{1,4}[A-Z]?)\s*(\S.{0,110})?", re.I),
+        # A heading is "Pasal N" alone on its line, or followed by a capital or
+        # "(" when the text layer glues the first sentence on. Lines like
+        # "Pasal 20, Pasal 21, ... ayat (1)" (the "Mengingat" preamble),
+        # "Pasal 20 ayat (1) ..." (a wrapped cross-reference) and "Pasal 11 . . ."
+        # (the page-turn catchword) are not headings: accepting the preamble one
+        # made the monotonic filter reject Articles 2-19 of whole Acts.
+        # "Pasal 1 1" is a text-layer spacing glitch for "Pasal 11" (the label is
+        # de-spaced in parse_act_text).
+        re.compile(r"^\s{0,6}(?i:pasal)\s+(\d{1,4}(?: \d{1,2})?[A-Z]?)(?:\s*|\s+([A-Z(][^,]{0,110}))$"),
     ],
 }
 CITATION_TEMPLATES: dict[str, str] = {"treaty": "Art. {label}"}
@@ -172,7 +192,14 @@ def parse_act_text(pages: list, economy: str, act_name: str, act_ref: str,
     # every pattern is tried and the one yielding more sections wins. A declared
     # profile grammar (extra_section_patterns) is tried FIRST so equal-yield ties
     # resolve to the declared grammar, not the Commonwealth default.
+    def _next_text(index: int) -> str:
+        for _, following in lines[index + 1:index + 4]:
+            if following.strip():
+                return following.strip()
+        return ""
+
     best: list[dict] = []
+    best_pattern = None
     for pattern in (extra_section_patterns or []) + _SECTION_PATTERNS:
         sections: list[dict] = []
         last_key = (0, -1, -1, "")
@@ -184,22 +211,29 @@ def parse_act_text(pages: list, economy: str, act_name: str, act_ref: str,
             # running headers/footers (page number + act name) are not headings.
             if not _plausible_heading(match.group(2) or "", act_name):
                 continue
-            key = _sec_sort_key(match.group(1))
+            # A bare heading line ("Section 29") followed by a lowercase
+            # continuation ("of this Act ...") is a wrapped cross-reference.
+            if not (match.group(2) or "").strip() and _REFERENCE_CONTINUATION.match(_next_text(index)):
+                continue
+            number = re.sub(r"\s+", "", match.group(1))
+            key = _sec_sort_key(number)
             if sections:
                 same_base_sibling = key[:-1] == last_key[:-1] and key[-1] != last_key[-1]
                 if not same_base_sibling and (key <= last_key or key[0] > last_key[0] + 40):
                     continue  # non-monotonic or absurd jump = list item / page artifact
                 # letter-suffix siblings (25 -> 25AA -> 25A) may print out of order
                 # in multi-column compilations; accept any order within one base number
-                if same_base_sibling and any(s["number"] == match.group(1) for s in sections[-6:]):
+                if same_base_sibling and any(s["number"] == number for s in sections[-6:]):
                     continue  # exact duplicate
             elif key[0] == 0:
                 continue
-            sections.append({"number": match.group(1), "page": page_no, "line_index": index})
+            sections.append({"number": number, "page": page_no, "line_index": index})
             last_key = max(last_key, key)
         if len(sections) > len(best):
-            best = sections
+            best, best_pattern = sections, pattern
     sections = best
+    if best_pattern is CLAUSE_PATTERN and citation_template == "s. {label}":
+        citation_template = "cl. {label}"
 
     units: list[RuleUnit] = []
     for pos, sec in enumerate(sections):

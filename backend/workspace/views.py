@@ -26,6 +26,7 @@ from .decision_writer import (
     decision_domain_lock,
 )
 from .engine_worker import EngineWorkerError, load_allowlist
+from .worker_supervisor import ensure_worker, worker_status
 from .models import (
     CorrectionRequest,
     EngineSnapshot,
@@ -994,29 +995,112 @@ class ProofAssetView(APIView):
         return FileResponse(path.open("rb"), content_type="image/png")
 
 
+# One engine, two model backends. "hybrid" is the reviewed production path
+# (commercial hosted models, data via the imported snapshot); "local" runs the
+# same pipeline on the self-hosted open-weights model and is read straight from
+# the worker's captured run envelopes. Labels are display-only.
+RUN_MODES = {
+    "hybrid": {
+        "label": "Hybrid",
+        "provider_profile": "hybrid_accuracy",
+        "out_prefix": "final",
+        "models": settings.ENGINE_MODE_LABELS.get("hybrid", ""),
+    },
+    "local": {
+        "label": "Local",
+        "provider_profile": "local_openweights",
+        "out_prefix": "local",
+        "models": settings.ENGINE_MODE_LABELS.get("local", ""),
+    },
+}
+
+
+def request_mode(request, source=None):
+    value = str((source if source is not None else request.query_params).get("mode") or "hybrid")
+    if value not in RUN_MODES:
+        raise ValidationError({"mode": f"Choose one of: {', '.join(RUN_MODES)}."})
+    return value
+
+
+def actions_for_mode(mode):
+    queryset = EngineAction.objects.all()
+    if mode == "hybrid":
+        return queryset.exclude(arguments_json__mode="local")
+    return queryset.filter(arguments_json__mode=mode)
+
+
+def serialize_modes():
+    return [
+        {"id": key, "label": value["label"], "models": value["models"]}
+        for key, value in RUN_MODES.items()
+    ]
+
+
 class RunsView(APIView):
     def get(self, request):
-        snapshot = active_snapshot()
-        records = RunRecord.objects.filter(snapshot=snapshot)
+        mode = request_mode(request)
+        if mode == "hybrid":
+            snapshot = active_snapshot()
+            results = [serialize_run(record) for record in RunRecord.objects.filter(snapshot=snapshot)]
+            champion = snapshot.champion_json
+        else:
+            results = [serialize_action_run(action) for action in local_run_actions(mode)]
+            champion = {}
         return Response(
             {
-                "results": [serialize_run(record) for record in records],
-                "champion": snapshot.champion_json,
+                "mode": mode,
+                "modes": serialize_modes(),
+                "results": results,
+                "champion": champion,
                 "actions": [
                     serialize_engine_action(action)
-                    for action in EngineAction.objects.all()[:20]
+                    for action in actions_for_mode(mode).filter(cleared_at__isnull=True)[:20]
                 ],
+                "worker": worker_status(),
                 "can_launch": request.user.is_superuser,
             }
         )
 
 
+def local_run_actions(mode):
+    """Succeeded run actions of a mode that captured an envelope, newest first."""
+    return [
+        action
+        for action in actions_for_mode(mode).filter(
+            kind=EngineAction.Kind.RUN, status=EngineAction.Status.SUCCEEDED
+        )
+        if action.result_json.get("findings") is not None
+    ]
+
+
+def serialize_action_run(action):
+    envelope = action.result_json
+    output = next(
+        (value for key, value in (action.result_hashes_json or {}).items()
+         if key.endswith("output.json")),
+        {},
+    )
+    arguments = action.arguments_json
+    return serialize_envelope(
+        f"{arguments.get('out_prefix', 'local')}_{arguments.get('cc')}_p{arguments.get('pillar')}"
+        f"@{action.finished_at.isoformat() if action.finished_at else action.pk}",
+        envelope,
+        {},
+        output.get("sha256") or "",
+    )
+
+
 def serialize_run(record):
-    envelope = record.envelope_json
+    return serialize_envelope(
+        record.run_name, record.envelope_json, record.cost_json, record.source_hash
+    )
+
+
+def serialize_envelope(run_name, envelope, cost_json, source_hash):
     findings = envelope.get("findings") or []
     warnings = envelope.get("warnings") or []
     metadata = envelope.get("metadata") or {}
-    cost = record.cost_json or metadata.get("cost_report") or {}
+    cost = cost_json or metadata.get("cost_report") or {}
     discovery = {"NEW": 0, "KNOWN": 0}
     for finding in findings:
         tag = str(finding.get("Discovery Tag") or "").upper()
@@ -1030,8 +1114,9 @@ def serialize_run(record):
         }
     )
     return {
-        "run_name": record.run_name,
+        "run_name": run_name,
         "run_id": envelope.get("run_id") or cost.get("run_id"),
+        "provider_profile": envelope.get("provider_profile"),
         "country": envelope.get("country"),
         "pillar": envelope.get("pillar"),
         "generated_at": envelope.get("generated_at") or cost.get("at"),
@@ -1044,7 +1129,7 @@ def serialize_run(record):
         "total_usd": cost.get("total_usd"),
         "models": cost.get("models") or {},
         "pipeline_stats": metadata.get("pipeline_stats") or {},
-        "source_hash": record.source_hash,
+        "source_hash": source_hash,
     }
 
 
@@ -1193,6 +1278,7 @@ def serialize_engine_action(action):
         "kind": action.kind,
         "status": action.status,
         "arguments": action.arguments_json,
+        "mode": (action.arguments_json or {}).get("mode") or "hybrid",
         "requested_by": action.requested_by.full_name,
         "requested_at": action.requested_at.isoformat(),
         "started_at": action.started_at.isoformat() if action.started_at else None,
@@ -1200,6 +1286,10 @@ def serialize_engine_action(action):
         "stdout": action.stdout,
         "result_hashes": action.result_hashes_json,
         "error": action.error,
+        "cancel_requested_at": (
+            action.cancel_requested_at.isoformat() if action.cancel_requested_at else None
+        ),
+        "cancelled_by": action.cancelled_by,
     }
 
 
@@ -1231,7 +1321,114 @@ class EngineActionCreateView(APIView):
                 arguments_json=arguments,
                 requested_by=request.user,
             )
-        return Response(serialize_engine_action(action), status=status.HTTP_202_ACCEPTED)
+        # The action is committed and claimable; make sure something will run it.
+        try:
+            worker = ensure_worker()
+        except OSError as exc:
+            worker = worker_status() | {"started": False, "error": str(exc)[:300]}
+        return Response(
+            serialize_engine_action(action) | {"worker": worker},
+            status=status.HTTP_202_ACCEPTED,
+        )
+
+
+ACTIVE_STATUSES = (EngineAction.Status.QUEUED, EngineAction.Status.RUNNING)
+
+
+def worker_is_running(action, status):
+    """True only when a live worker reports THIS action as its current one."""
+    return bool(status.get("alive")) and status.get("current_action_id") == str(action.pk)
+
+
+def cancel_action(action, user, *, worker_running_it):
+    """Cancel one queued/running action (caller holds the row lock).
+
+    Queued -> cancelled now. Running -> a stop request the worker executing it
+    acts on within seconds. If no live worker is executing it (worker restarted
+    or crashed mid-run), nothing will ever act on a request, so it is closed
+    here instead of waiting for the lease to expire and the action to re-run."""
+    now = timezone.now()
+    action.cancelled_by = user.full_name or user.email
+    if action.status == EngineAction.Status.QUEUED or not worker_running_it:
+        action.status = EngineAction.Status.CANCELLED
+        action.finished_at = now
+        action.lease_expires_at = None
+        action.error = f"Cancelled by {action.cancelled_by} before it ran." if not action.started_at \
+            else f"Cancelled by {action.cancelled_by}; no worker was running it."
+        action.save(update_fields=("status", "finished_at", "lease_expires_at", "error", "cancelled_by"))
+    else:
+        action.cancel_requested_at = now
+        action.save(update_fields=("cancel_requested_at", "cancelled_by"))
+    return action
+
+
+class EngineActionCancelView(APIView):
+    permission_classes = [IsSuperuserPermission]
+
+    def post(self, request, action_id):
+        status_now = worker_status()
+        with transaction.atomic():
+            action = get_object_or_404(EngineAction.objects.select_for_update(), pk=action_id)
+            if action.status not in ACTIVE_STATUSES:
+                raise DecisionConflict(f"This action already {action.status}.")
+            cancel_action(action, request.user,
+                          worker_running_it=worker_is_running(action, status_now))
+        return Response(serialize_engine_action(action))
+
+
+class EngineActionCancelAllView(APIView):
+    """Cancel everything queued/running in one run mode and clear that mode's
+    finished actions from the list (rows are kept; results stay visible)."""
+
+    permission_classes = [IsSuperuserPermission]
+
+    def post(self, request):
+        mode = request_mode(request, request.data)
+        status_now = worker_status()
+        now = timezone.now()
+        with transaction.atomic():
+            active = list(actions_for_mode(mode).select_for_update().filter(status__in=ACTIVE_STATUSES))
+            for action in active:
+                cancel_action(action, request.user,
+                              worker_running_it=worker_is_running(action, status_now))
+            cleared = actions_for_mode(mode).filter(cleared_at__isnull=True).exclude(
+                status__in=ACTIVE_STATUSES
+            ).update(cleared_at=now)
+        return Response({
+            "mode": mode,
+            "cancelled": sum(1 for action in active if action.status == EngineAction.Status.CANCELLED),
+            "stopping": sum(1 for action in active if action.status == EngineAction.Status.RUNNING),
+            "cleared": cleared,
+        })
+
+
+class EngineActionEventsView(APIView):
+    """Live run console: events after ``?after=<seq>`` (max 500 per poll)."""
+
+    def get(self, request, action_id):
+        action = get_object_or_404(EngineAction, pk=action_id)
+        try:
+            after = int(request.query_params.get("after") or 0)
+        except ValueError:
+            raise ValidationError({"after": "Must be an integer sequence number."})
+        rows = list(action.events.filter(seq__gt=after).order_by("seq")[:500])
+        return Response({
+            "action_id": str(action.pk),
+            "status": action.status,
+            "cancel_requested_at": action.cancel_requested_at.isoformat() if action.cancel_requested_at else None,
+            "events": [
+                {"seq": row.seq, "ts": row.ts.isoformat(), "stage": row.stage, "label": row.label,
+                 "level": row.level, "message": row.message, "detail": row.detail}
+                for row in rows
+            ],
+            "last_seq": rows[-1].seq if rows else after,
+            "more": len(rows) == 500,
+        })
+
+
+class EngineWorkerStatusView(APIView):
+    def get(self, request):
+        return Response(worker_status())
 
 
 class EngineReplayView(EngineActionCreateView):
@@ -1268,11 +1465,15 @@ class EngineRunView(EngineActionCreateView):
             )
         if pillar not in {"6", "7"}:
             raise ValidationError({"pillar": "Choose pillar 6 or 7."})
+        mode = request_mode(request, request.data)
         return {
             "action": "run_pipeline",
             "economy": economy,
             "pillar": pillar,
             "cc": run_code,
+            "mode": mode,
+            "provider_profile": RUN_MODES[mode]["provider_profile"],
+            "out_prefix": RUN_MODES[mode]["out_prefix"],
         }
 
 
@@ -2003,6 +2204,9 @@ class Zone3MatrixView(APIView):
     attributable reviewer decisions, plus the evidence rows each score rests on."""
 
     def get(self, request):
+        mode = request_mode(request)
+        if mode != "hybrid":
+            return Response(local_matrix(mode))
         snapshot = active_snapshot()
 
         latest_decisions = {}
@@ -2077,6 +2281,8 @@ class Zone3MatrixView(APIView):
         economies.sort(key=lambda name: (MATRIX_ECONOMY_ORDER.index(name) if name in MATRIX_ECONOMY_ORDER else 99, name))
         indicators.sort()
         return Response({
+            "mode": mode,
+            "modes": serialize_modes(),
             "snapshot": snapshot_identity(snapshot),
             "economies": economies,
             "indicators": indicators,
@@ -2087,6 +2293,113 @@ class Zone3MatrixView(APIView):
             },
             "cells": cells,
         })
+
+
+ABSENCE_SNIPPET = "NO_EVIDENCE_FOUND_PENDING_REVIEW"
+
+
+def local_matrix(mode):
+    """Evidence-only matrix from a mode's latest run per economy x pillar.
+
+    Local runs are unreviewed engine output: cells show what evidence the model
+    found (and where it concluded absence) so it can be compared with the hybrid
+    matrix, but carry no proposed or effective score.
+    """
+    latest = {}
+    for action in local_run_actions(mode):  # newest first
+        envelope = action.result_json
+        latest.setdefault((str(envelope.get("country")), str(envelope.get("pillar"))), action)
+
+    questions = {}
+    snapshot = EngineSnapshot.objects.filter(active=True).first()
+    if snapshot is not None:
+        for item in ReviewItem.objects.filter(snapshot=snapshot, queue=ReviewItem.Queue.ZONE3):
+            record = sheet_record({"headers": snapshot.headers_json.get(ReviewItem.Queue.ZONE3) or []}, item.row_json)
+            questions.setdefault(str(record.get("Indicator") or "").strip(), record.get("Indicator question"))
+
+    grouped = {}
+    runs = []
+    for action in latest.values():
+        envelope = action.result_json
+        runs.append({
+            "run_id": envelope.get("run_id"),
+            "country": envelope.get("country"),
+            "pillar": envelope.get("pillar"),
+            "generated_at": envelope.get("generated_at"),
+            "action_id": str(action.pk),
+        })
+        for index, finding in enumerate(envelope.get("findings") or []):
+            economy = str(finding.get("Economy") or "").strip()
+            indicator = str(finding.get("Indicator ID") or "").strip()
+            if not economy or not indicator:
+                continue
+            absence = str(finding.get("Verbatim Snippet") or "") == ABSENCE_SNIPPET
+            grouped.setdefault((economy, indicator), []).append({
+                "finding_key": None,
+                "stable_key": f"{envelope.get('run_id')}:{index}",
+                "queue": None,
+                "law": str(finding.get("Law Name") or ""),
+                "article": str(finding.get("Article / Section") or ""),
+                "tag": "ABSENCE" if absence else str(finding.get("Discovery Tag") or ""),
+                "blocked": False,
+                "absence": absence,
+                "snippet": "" if absence else str(finding.get("Verbatim Snippet") or "")[:600],
+                "source_url": finding.get("Source URL"),
+                "confidence": finding.get("Confidence"),
+                "run_id": envelope.get("run_id"),
+            })
+
+    cells = []
+    for (economy, indicator), rows in grouped.items():
+        evidence = [row for row in rows if not row["absence"]]
+        cells.append({
+            "economy": economy,
+            "indicator": indicator,
+            "score_key": f"{mode}:{economy}:{indicator}",
+            "question": questions.get(indicator),
+            "deterministic": None,
+            "deterministic_reason": "",
+            "master_gold": None,
+            "gold_divergence": None,
+            "judge_scores": None,
+            "judge_reasoning": None,
+            "agreement_alpha": None,
+            "score_band": None,
+            "flagged": False,
+            "state": "evidence" if evidence else "absence",
+            "effective": None,
+            "reviewer_name": "",
+            "reviewed_at": None,
+            "reasoning": "",
+            "latest_decision_id": None,
+            "blocked": False,
+            "evidence": evidence,
+            "absence_rows": [row for row in rows if row["absence"]],
+        })
+    economies = sorted({cell["economy"] for cell in cells},
+                       key=lambda name: (MATRIX_ECONOMY_ORDER.index(name) if name in MATRIX_ECONOMY_ORDER else 99, name))
+    with_evidence = sum(1 for cell in cells if cell["state"] == "evidence")
+    return {
+        "mode": mode,
+        "modes": serialize_modes(),
+        "snapshot": None,
+        "runs": sorted(runs, key=lambda run: (str(run["country"]), str(run["pillar"]))),
+        "economies": economies,
+        "indicators": sorted({cell["indicator"] for cell in cells}),
+        "counts": {
+            "total": len(cells),
+            "decided": 0,
+            "pending": 0,
+            "with_evidence": with_evidence,
+            "absence": len(cells) - with_evidence,
+            "evidence_rows": sum(len(cell["evidence"]) for cell in cells),
+        },
+        "score_semantics": {
+            "explanation": "Local-mode cells are unreviewed engine output: the evidence the open-weights model found per indicator. They carry no proposed or effective score.",
+            "allowed_scores": [0, 0.5, 1],
+        },
+        "cells": cells,
+    }
 
 
 class CorrectionRequestView(APIView):

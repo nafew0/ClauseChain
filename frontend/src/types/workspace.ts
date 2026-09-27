@@ -371,11 +371,53 @@ export interface SourceMatchDetail {
   }
 }
 
+/** One engine, two model backends: hybrid = commercial hosted (reviewed
+ * snapshot), local = self-hosted open-weights model (captured run envelopes). */
+export type RunMode = 'hybrid' | 'local'
+
+export interface RunModeInfo {
+  id: RunMode
+  label: string
+  models: string
+}
+
+export interface EngineActionEvent {
+  seq: number
+  ts: string
+  stage: string
+  label: string
+  level: 'info' | 'warn' | 'error' | string
+  message: string
+  detail: string
+}
+
+export interface EngineActionEventsPage {
+  action_id: string
+  status: EngineAction['status']
+  cancel_requested_at: string | null
+  events: EngineActionEvent[]
+  last_seq: number
+  more: boolean
+}
+
+export interface EngineWorkerStatus {
+  alive: boolean
+  autostart: boolean
+  last_seen: string | null
+  hostname: string | null
+  pid: number | null
+  current_action_id: string | null
+  started?: boolean
+  starting?: boolean
+  error?: string
+}
+
 export interface EngineAction {
   id: string
   kind: 'refresh' | 'replay' | 'run'
-  status: 'queued' | 'running' | 'succeeded' | 'failed'
+  status: 'queued' | 'running' | 'succeeded' | 'failed' | 'cancelled'
   arguments: JsonObject
+  mode: RunMode
   requested_by: string
   requested_at: string
   started_at: string | null
@@ -383,11 +425,17 @@ export interface EngineAction {
   stdout: string
   result_hashes: JsonObject
   error: string
+  /** set while a running action is being stopped */
+  cancel_requested_at: string | null
+  cancelled_by: string
+  /** present on the queue response: worker status after ensuring one runs */
+  worker?: EngineWorkerStatus
 }
 
 export interface RunRecord {
   run_name: string
   run_id: string | null
+  provider_profile: string | null
   country: string
   pillar: number
   generated_at: string | null
@@ -404,9 +452,12 @@ export interface RunRecord {
 }
 
 export interface RunsResponse {
+  mode: RunMode
+  modes: RunModeInfo[]
   results: RunRecord[]
   champion: JsonObject
   actions: EngineAction[]
+  worker: EngineWorkerStatus
   can_launch: boolean
 }
 

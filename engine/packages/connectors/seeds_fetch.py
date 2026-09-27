@@ -10,7 +10,6 @@ static); dead links are retried on each run.
 """
 from __future__ import annotations
 
-import concurrent.futures
 import hashlib
 import json
 import time
@@ -19,33 +18,6 @@ from pathlib import Path
 
 import httpx
 import os
-
-# httpx's `timeout` only bounds the gap between reads, not the request as a
-# whole. A host that trickles bytes slowly enough (verified 24 Sep 2026:
-# dfat.gov.au's Akamai edge, ~11+ min with the socket sitting ESTABLISHED at
-# 0% CPU) never lets the per-read timer expire, so `client.get()` can hang
-# indefinitely — and since dead rows are retried on every run, that's not a
-# one-off, it repeats on every AU corpus build. Running the call in a thread
-# with a hard wall-clock deadline gives it an actual ceiling regardless of
-# how the far side paces its response. The stuck thread is abandoned (not
-# joined) rather than blocking the caller on it too; it dies on its own once
-# the underlying socket eventually times out at the OS/httpx level.
-_HARD_DEADLINE_S = 100  # a few seconds past the httpx client's own timeout=90
-
-
-def _get_with_deadline(client: httpx.Client, url: str, **kwargs) -> httpx.Response:
-    executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
-    future = executor.submit(client.get, url, **kwargs)
-    try:
-        return future.result(timeout=_HARD_DEADLINE_S)
-    except concurrent.futures.TimeoutError as exc:
-        raise httpx.ReadTimeout(
-            f"hard wall-clock deadline ({_HARD_DEADLINE_S}s) exceeded fetching {url} "
-            "— slow-trickle guard, see _get_with_deadline", request=None,
-        ) from exc
-    finally:
-        executor.shutdown(wait=False)
-
 
 _HEADERS = {
     "User-Agent": ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
@@ -146,7 +118,7 @@ def fetch_seeds(economy: str, only_pillars: tuple[str, ...] | None = None,
             entry = dict(meta_fields, access_date=date.today().isoformat())
             status_code, content, content_type, final_url, via = 0, b"", "", url, "httpx"
             try:
-                response = _get_with_deadline(client, url)
+                response = client.get(url)
                 status_code, content = response.status_code, response.content
                 content_type = response.headers.get("content-type", "")
                 final_url = str(response.url)
@@ -159,7 +131,7 @@ def fetch_seeds(economy: str, only_pillars: tuple[str, ...] | None = None,
                 from urllib.parse import urlsplit
                 parts = urlsplit(url)
                 try:
-                    response = _get_with_deadline(client, url, headers={
+                    response = client.get(url, headers={
                         "Referer": f"{parts.scheme}://{parts.netloc}/",
                         "Accept-Language": "th-TH,th;q=0.9,id;q=0.9,hi;q=0.9,en;q=0.8"})
                     status_code, content = response.status_code, response.content

@@ -3930,17 +3930,17 @@
   "finding_key": "6d9f58f7bfecfb69baf6c2230102576f4a944aec0ba2efceda7908f122e1ed2c",
   "review_subject_hash": "4402e62557466c726556ac956e51a2af926e3275d0be6921316be58df70f4995",
   "review": {
-   "decision": "rejected",
-   "reviewer_name": "",
-   "reviewer_role": "",
-   "reviewed_at": "",
-   "citation_checked": false,
-   "mapping_checked": false,
-   "status_checked": false,
-   "citation_reviewer_name": "",
-   "mapping_reviewer_name": "",
-   "status_reviewer_name": "",
-   "correction_note": "UNSIGNED TEMPLATE — change only after human review"
+   "citation_checked": true,
+   "citation_reviewer_name": "Abu Naser Md. Nafew",
+   "correction_note": null,
+   "decision": "approved",
+   "mapping_checked": true,
+   "mapping_reviewer_name": "Abu Naser Md. Nafew",
+   "reviewed_at": "2026-08-02T15:38:59.571491+00:00",
+   "reviewer_name": "Abu Naser Md. Nafew",
+   "reviewer_role": "admin",
+   "status_checked": true,
+   "status_reviewer_name": "Abu Naser Md. Nafew"
   }
  },
  {

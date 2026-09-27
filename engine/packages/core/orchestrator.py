@@ -8,6 +8,7 @@ citing the governing law (never blank — 15-Jun rule).
 """
 from __future__ import annotations
 
+import json
 import time
 import unicodedata
 from pathlib import Path
@@ -62,6 +63,10 @@ def _participating_proof_spans(snippet: str, evidence: list[dict]) -> tuple[list
                 previous = values[index - 1] if index else ""
                 following = values[index + 1] if index + 1 < len(values) else ""
                 if following in ",.;:!?)]}" or previous in "([{":
+                    continue
+                # "16 ( 5 )": PDFs that store a sub-reference's bracket as its own
+                # text run must still locate a snippet quoting "16(5)".
+                if following == "(" and previous.isalnum():
                     continue
             kept.append(char)
             if owners is not None:
@@ -310,6 +315,19 @@ def _stub_envelope(code: str, economy: str, pillar: int, provider_profile: str) 
     )
 
 
+class _EmittingWarnings(list):
+    """Run warnings that also stream to the live console as they are recorded."""
+
+    def append(self, message) -> None:  # noqa: D401
+        from packages.core import progress
+
+        super().append(message)
+        text = str(message)
+        stage = ("gate" if text.startswith("REJECTED") else
+                 "recall" if "HOLE" in text else "warn")
+        progress.emit(stage, text, level="warn")
+
+
 def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") -> RunEnvelope:
     import os as _os
 
@@ -327,7 +345,7 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
     from packages.providers.model_router import resolve_embedding, resolve_llm
     from packages.rdtii.mapper import (SCREEN_CAP_PER_INDICATOR, MapDecision,
                                        map_candidates, screen_candidates)
-    from packages.retrieval.hybrid import EmbeddingCache, retrieve_for_indicator
+    from packages.retrieval.hybrid import EmbeddingCache, embedding_cache_path, retrieve_for_indicator
     from packages.verifier.gates import run_gates
 
     started = time.time()
@@ -342,18 +360,29 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
             "add configs/jurisdictions/<code>.yaml + seeds, no code change required."
         )
 
+    from packages.core import progress
+
+    progress.emit("start", f"{economy} · Pillar {pillar} · profile {provider_profile}")
     pack = _load_yaml(f"configs/jurisdictions/{code.lower()}.yaml")
     rubric = _load_yaml(f"configs/rdtii/pillar_{pillar}.yaml")
     whitelist = _whitelist(pack)
     store = get_graph_store()
+    progress.emit("corpus", f"loading the {economy} corpus from {type(store).__name__} …")
     corpus = _ensure_corpus(store, pack, economy)
+    instruments = sorted({c["props"].get("law_name", "") for c in corpus})
+    progress.emit("corpus", f"{len(corpus):,} provisions from {len(instruments)} instruments",
+                  detail="\n".join(instruments))
 
     known_reconcile_only = _os.getenv("CLAUSECHAIN_KNOWN_RECONCILE_ONLY") == "1"
     llm_bulk = resolve_llm(provider_profile, tier="bulk")
     llm_high = resolve_llm(provider_profile, tier="high_reasoning")
     llm_escalation = resolve_llm(provider_profile, tier="legal_escalation")
     embedder = resolve_embedding(provider_profile)
-    cache = EmbeddingCache(embedder, f"data/cache/embeddings_{code.lower()}.json")
+    progress.emit("models", f"screen: {getattr(llm_bulk.primary, 'model', '?')} · map: "
+                            f"{getattr(llm_high.primary, 'model', '?')} · escalate: "
+                            f"{getattr(llm_escalation.primary, 'model', '?')} · embeddings: "
+                            f"{getattr(embedder, 'model', '?')}")
+    cache = EmbeddingCache(embedder, embedding_cache_path(code, embedder))
     # Query packs are deterministic and small. Embed all cues for this pillar in
     # one provider call, then reuse the persistent cache inside each indicator.
     # This removes dozens of sequential network round trips from a fresh sweep.
@@ -376,7 +405,8 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
 
     findings: list[MappedFinding] = []
     gates_out: list[GateResult] = []
-    warnings: list[str] = []
+    warnings: list[str] = _EmittingWarnings()
+    regulatory = [i for i, c in rubric.get("indicators", {}).items() if c.get("regulatory") is not False]
     stats = {"candidates": 0, "screened_in": 0, "mapped": 0, "gate_rejected": 0,
              "nano_mappings": 0, "mini_escalations": 0, "escalation_reasons": {},
              "by_indicator": {}}
@@ -384,14 +414,14 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
     for indicator_id, cfg in rubric.get("indicators", {}).items():
         if cfg.get("regulatory") is False:
             continue  # 6.5: non-regulatory — engine does not extract
-        _indicator_started = time.time()
-        print(f"[indicator] {indicator_id}: starting (retrieval)", flush=True)
+        label_token = progress.set_label(indicator_id)
+        progress.emit("indicator",
+                      f"[{regulatory.index(indicator_id) + 1}/{len(regulatory)}] "
+                      f"{cfg.get('name', '')}: {cfg.get('question', '')}")
         retrieval_caps: list[dict] = []
         candidates = ([] if known_reconcile_only else
                       retrieve_for_indicator(store, cache, corpus, indicator_id, cfg, economy,
                                              caps_out=retrieval_caps))
-        print(f"[indicator] {indicator_id}: {len(candidates)} candidate(s) retrieved",
-              flush=True)
         for cap in retrieval_caps:
             warnings.append(f"{indicator_id}: retrieval union capped at {cap['limit']} of "
                             f"{cap['input_count']} candidates (cap logged, not silent)")
@@ -492,6 +522,12 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                                                  if anchor_matches else None)
         indicator_stats["injected_anchor_count"] = injected_anchor_count
         stats["candidates"] += len(candidates)
+        progress.emit(
+            "search",
+            f"{len(candidates)} candidate provisions (hybrid keyword + embedding search"
+            f"{f'; {len(gold_anchor_ids)} ESCAP-known anchors' if gold_anchor_ids else ''})",
+            detail="\n".join(f"{c.props.get('law_name', '')[:70]} {c.props.get('article_section', '')}"
+                             for c in candidates[:60]))
         if len(candidates) > SCREEN_CAP_PER_INDICATOR:
             warnings.append(
                 f"{indicator_id}: screened top {SCREEN_CAP_PER_INDICATOR} of "
@@ -507,8 +543,13 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
         # parent ref to bypass hundreds of unrelated descendants under every indicator.
         protected_anchor_ids = gold_anchor_ids | research_anchor_ids
         anchors, rest = _partition_current_anchors(candidates, protected_anchor_ids)
+        stage_token = progress.set_label(f"{indicator_id} · screen")
         survivors = (anchors if known_reconcile_only else
                      anchors + screen_candidates(llm_bulk, indicator_id, cfg, rest))
+        progress.reset_label(stage_token)
+        progress.emit("screen", f"{len(survivors)} of {len(candidates)} candidates kept for legal mapping",
+                      detail="\n".join(f"{c.props.get('law_name', '')[:70]} {c.props.get('article_section', '')}"
+                                       for c in survivors))
         survivor_ids = {c.provision_id for c in survivors}
         indicator_stats["screen_survival_recall"] = (
             sum(bool(ids & survivor_ids) for ids in anchor_matches.values()) / len(anchor_matches)
@@ -538,11 +579,20 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
             for decision in mapping_decisions:
                 decision._model_route = "deterministic-known"
         else:
+            stage_token = progress.set_label(f"{indicator_id} · map")
             mapping_decisions = map_candidates(
                 llm_high, indicator_id, cfg, survivors, gold_anchor_ids,
                 llm_escalation=llm_escalation,
                 expected_anchor_ids=research_anchor_ids,
             )
+            progress.reset_label(stage_token)
+            applies = sum(1 for d in mapping_decisions if d.applies)
+            progress.emit("map", f"{applies} of {len(mapping_decisions)} provisions satisfy the legal test",
+                          detail="\n".join(
+                              f"{'✓' if d.applies else '✗'} {c.props.get('law_name', '')[:60]} "
+                              f"{c.props.get('article_section', '')} ({d._model_route}, conf "
+                              f"{d.confidence:.2f}): {d.rationale[:200]}"
+                              for c, d in zip(survivors, mapping_decisions, strict=True)))
         for candidate, decision in zip(survivors, mapping_decisions, strict=True):
             if decision._model_route == "mini-escalation":
                 stats["mini_escalations"] += 1
@@ -745,6 +795,10 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                 passed_research_ids.add(candidate.provision_id)
             indicator_rows += 1
             stats["mapped"] += 1
+            progress.emit("finding",
+                          f"{tag} · {props.get('law_name', '')[:60]} {props.get('article_section', '')} "
+                          f"passed all checks (confidence {decision.confidence:.2f})",
+                          detail=f"{decision.rationale}\n\n“{decision.verbatim_snippet[:3000]}”")
 
         indicator_stats["mapper_survival_recall"] = (
             sum(bool(ids & mapped_anchor_ids) for ids in anchor_matches.values()) / len(anchor_matches)
@@ -773,8 +827,9 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                 "outcome": outcome,
             })
         stats["by_indicator"][indicator_id] = indicator_stats
-        print(f"[indicator] {indicator_id}: done in {time.time() - _indicator_started:.0f}s "
-              f"— {len(survivors)} screened in, {indicator_rows} row(s) mapped", flush=True)
+        if indicator_rows == 0:
+            progress.emit("absence", "no provision passed; an absence row goes to human review")
+        progress.reset_label(label_token)
 
         if indicator_rows == 0 and not any(f.indicator_id == indicator_id for f in findings):
             gov = (pack.get("governing_instruments") or {}).get(
@@ -827,6 +882,11 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
             store.upsert_finding(finding_key(finding), run_id, finding)
     cost_entry = cost.append_log(run_id, {"economy": economy, "pillar": pillar,
                                           "elapsed_seconds": round(time.time() - started, 1)})
+    report = cost.report()
+    progress.emit("done",
+                  f"{len(findings)} rows · {stats['mapped']} mapped · {stats['gate_rejected']} rejected · "
+                  f"{round(time.time() - started)}s · ${report.get('total_usd', 0):.4f}",
+                  detail=json.dumps(report.get("models", {}), indent=1))
     return RunEnvelope(
         run_id=run_id,
         country=code,

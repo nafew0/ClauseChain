@@ -22,7 +22,9 @@ class OpenAIEmbeddingProvider:
         dimensions: int | None = None,
         api_key_env: str = "OPENAI_API_KEY",
         timeout: float = 60.0,
+        base_url: str = "https://api.openai.com/v1",
     ) -> None:
+        self.base_url = base_url.rstrip("/")
         self.model = model
         self.dimensions = dimensions
         self.api_key_env = api_key_env
@@ -35,8 +37,10 @@ class OpenAIEmbeddingProvider:
         import time as _time
 
         api_key = os.getenv(self.api_key_env)
-        if not api_key:
+        # OpenAI proper needs a key; a self-hosted server may run without auth.
+        if not api_key and self.base_url == "https://api.openai.com/v1":
             raise RuntimeError(f"{self.api_key_env} is not set")
+        headers = {"Authorization": f"Bearer {api_key}"} if api_key else {}
         # Token-safety truncation: Thai/CJK tokenize near 1 token/char, so a long
         # unit can blow the 8192-token embedding limit (400 Bad Request — hit on
         # the Thai corpus, 1 Aug). 6000 chars stays safe in every script; only
@@ -50,8 +54,8 @@ class OpenAIEmbeddingProvider:
         for attempt in range(1 + len(self.RETRY_BACKOFFS_S)):
             try:
                 response = httpx.post(
-                    "https://api.openai.com/v1/embeddings",
-                    headers={"Authorization": f"Bearer {api_key}"},
+                    f"{self.base_url}/embeddings",
+                    headers=headers,
                     json=body,
                     timeout=self.timeout,
                 )
@@ -110,6 +114,19 @@ def build_embedding(config: dict):
         return OpenAIEmbeddingProvider(
             model=config.get("model", "text-embedding-3-small"),
             dimensions=config.get("dimensions"),
+        )
+    if provider in {"openai_compatible", "openweights"}:
+        # Open-weights embedding model on a self-hosted OpenAI-compatible server.
+        base_url = config.get("base_url") or os.getenv("LOCALAI_EMBED_ENDPOINT", "")
+        if not base_url:
+            raise RuntimeError("LOCALAI_EMBED_ENDPOINT is not set")
+        return OpenAIEmbeddingProvider(
+            model=config.get("model") or os.getenv("LOCALAI_EMBED_MODEL", "bge-m3"),
+            dimensions=None,
+            # Same key as the LLM server unless a separate one is configured.
+            api_key_env=("LOCALAI_EMBED_API_KEY" if os.getenv("LOCALAI_EMBED_API_KEY")
+                         else "LOCALAI_API_KEY"),
+            base_url=base_url,
         )
     if provider in {"bge_m3", "bge-m3", "local"}:
         return BgeM3EmbeddingProvider(

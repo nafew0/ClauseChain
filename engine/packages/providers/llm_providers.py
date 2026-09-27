@@ -9,7 +9,6 @@ from __future__ import annotations
 import json
 import os
 import sys
-import time
 
 import httpx
 from pydantic import BaseModel, ValidationError
@@ -27,8 +26,17 @@ OPENAI_BASE_URL = "https://api.openai.com/v1"
 
 class OpenAIChatProvider:
     def __init__(self, model: str, api_key_env: str = "OPENAI_API_KEY", timeout: float = 90.0,
-                 base_url: str = OPENAI_BASE_URL) -> None:
+                 base_url: str = OPENAI_BASE_URL, request_model: str | None = None,
+                 extra_body: dict | None = None, concurrency: int | None = None) -> None:
+        # `model` is what runs record (model_version, cost report); `request_model`
+        # is the id the endpoint expects when a self-hosted server serves the
+        # weights under an alias.
         self.model = model
+        self.request_model = request_model or model
+        # Server-specific request fields (e.g. vLLM chat_template_kwargs).
+        self.extra_body = dict(extra_body or {})
+        # Parallel calls in complete_many; None = CLAUSECHAIN_LLM_CONCURRENCY (6).
+        self.concurrency = concurrency
         self.api_key_env = api_key_env
         self.timeout = timeout
         self.base_url = base_url.rstrip("/")
@@ -42,17 +50,22 @@ class OpenAIChatProvider:
     def _call(self, prompt: str, prompt_cache_key: str | None = None) -> str:
         import time as _time
 
+        from packages.core import progress
+
         api_key = os.getenv(self.api_key_env)
         if not api_key:
             raise RuntimeError(f"{self.api_key_env} is not set")
+        progress.emit("llm", f"→ {self.model} · prompt {len(prompt):,} chars", detail=prompt)
+        started = _time.time()
         last_error: Exception | None = None
         for attempt in range(1 + len(self.RETRY_BACKOFFS_S)):
             try:
                 body = {
-                    "model": self.model,
+                    "model": self.request_model,
                     "messages": [{"role": "user", "content": prompt}],
                     "response_format": {"type": "json_object"},
                     "temperature": 0,
+                    **self.extra_body,
                 }
                 if prompt_cache_key and self.base_url == OPENAI_BASE_URL:
                     body["prompt_cache_key"] = prompt_cache_key
@@ -87,11 +100,22 @@ class OpenAIChatProvider:
                         self.last_usage.get("completion_tokens", 0),
                         cached_input_tokens=details.get("cached_tokens", 0),
                     )
-                return payload["choices"][0]["message"]["content"]
+                content = payload["choices"][0]["message"]["content"]
+                usage = self.last_usage or {}
+                progress.emit(
+                    "llm",
+                    f"← {self.model} · {_time.time() - started:.1f}s · "
+                    f"{usage.get('prompt_tokens', '?')} in / {usage.get('completion_tokens', '?')} out tokens",
+                    detail=content,
+                )
+                return content
             except (httpx.HTTPStatusError, httpx.TransportError) as error:
                 last_error = error
                 if attempt < len(self.RETRY_BACKOFFS_S):
+                    progress.emit("llm", f"retry {attempt + 1} after {type(error).__name__}: "
+                                         f"{str(error)[:120]}", level="warn")
                     _time.sleep(self.RETRY_BACKOFFS_S[attempt])
+        progress.emit("llm", f"FAILED {self.model}: {str(last_error)[:200]}", level="error")
         raise last_error  # type: ignore[misc]
 
     def complete(self, prompt: str, schema: type[BaseModel], *,
@@ -115,18 +139,29 @@ class OpenAIChatProvider:
             # These mapping requests are independent. A bounded worker pool keeps
             # live runs from paying one network round trip at a time while
             # preserving input order and the provider's existing retry policy.
-            workers = max(1, int(os.getenv("CLAUSECHAIN_LLM_CONCURRENCY", "6")))
+            workers = max(1, self.concurrency or int(os.getenv("CLAUSECHAIN_LLM_CONCURRENCY", "6")))
             if workers == 1 or len(prompts) < 2:
                 return [self.complete(p, schema, prompt_cache_key=k)
                         for p, k in zip(prompts, keys, strict=True)]
             from concurrent.futures import ThreadPoolExecutor
 
-            def invoke(item):
-                prompt, key = item
+            import contextvars
+
+            from packages.core import progress
+
+            base_label = progress.current_label()
+            total = len(prompts)
+
+            def invoke(index, prompt, key):
+                # Each task runs in its own copy of the caller's context, so the
+                # indicator/stage label survives the thread hop.
+                progress.set_label(f"{base_label} {index + 1}/{total}".strip())
                 return self.complete(prompt, schema, prompt_cache_key=key)
 
             with ThreadPoolExecutor(max_workers=min(workers, len(prompts))) as pool:
-                return list(pool.map(invoke, zip(prompts, keys, strict=True)))
+                futures = [pool.submit(contextvars.copy_context().run, invoke, index, prompt, key)
+                           for index, (prompt, key) in enumerate(zip(prompts, keys, strict=True))]
+                return [future.result() for future in futures]
 
         if (os.getenv("CLAUSECHAIN_OPENAI_BATCH") != "1" or len(prompts) < 2
                 or self._batch_available is False):
@@ -292,19 +327,9 @@ class FallbackLLM:
             if hasattr(self.primary, "complete_many"):
                 return self.primary.complete_many(
                     prompts, schema, prompt_cache_keys=prompt_cache_keys)
-            # No batch API (e.g. OllamaProvider/local_fallback): one blocking call
-            # per prompt, sequentially — previously silent for the whole stretch,
-            # which for a handful of provider timeouts (up to timeout=180s each)
-            # reads as a hang rather than progress. A line per call is cheap and
-            # makes that visible without changing what's returned.
-            keys = prompt_cache_keys or [None] * len(prompts)
-            results = []
-            started = time.time()
-            for i, p in enumerate(prompts):
-                results.append(self.complete(p, schema, prompt_cache_key=keys[i]))
-                print(f"[llm] {i + 1}/{len(prompts)} calls done "
-                      f"({time.time() - started:.0f}s elapsed)", file=sys.stderr, flush=True)
-            return results
+            return [self.complete(p, schema,
+                                  prompt_cache_key=(prompt_cache_keys or [None] * len(prompts))[i])
+                    for i, p in enumerate(prompts)]
         except Exception as error:  # noqa: BLE001
             if self.fallback is None:
                 raise
@@ -361,4 +386,27 @@ def build_llm(spec: str):
         return GeminiChatProvider(model)
     if provider == "ollama":
         return OllamaProvider(model)
+    if provider in {"openai_compatible", "openweights"}:
+        # Self-hosted open-weights model behind any OpenAI-compatible server
+        # (vLLM, Ollama /v1, hosted open-weights APIs). No proprietary fallback.
+        base_url = os.getenv("LOCALAI_ENDPOINT", "")
+        if not base_url:
+            raise RuntimeError("LOCALAI_ENDPOINT is not set")
+        return OpenAIChatProvider(
+            os.getenv("LOCALAI_MODEL_LABEL") or model,
+            api_key_env="LOCALAI_API_KEY",
+            base_url=base_url,
+            timeout=float(os.getenv("LOCALAI_TIMEOUT_S", "300")),
+            request_model=model,
+            # One self-hosted GPU serves every parallel call: fewer in flight than
+            # the commercial APIs (hybrid keeps CLAUSECHAIN_LLM_CONCURRENCY).
+            concurrency=int(os.getenv("LOCALAI_CONCURRENCY", "3")),
+            # Qwen3-style hybrid reasoning models think before answering by
+            # default (~10x the output tokens). The pipeline asks for bounded JSON
+            # decisions, so thinking is off unless LOCALAI_ENABLE_THINKING=1.
+            extra_body={"chat_template_kwargs": {
+                "enable_thinking": os.getenv("LOCALAI_ENABLE_THINKING", "0").strip().lower()
+                in {"1", "true", "yes", "on"},
+            }},
+        )
     raise ValueError(f"Unknown LLM provider in spec {spec!r}")

@@ -10,6 +10,7 @@ Usage: .venv/bin/python scripts/build_seeds_corpus.py --economy Thailand [--only
 from __future__ import annotations
 
 import argparse
+import re
 import json
 import sys
 from datetime import datetime, timezone
@@ -39,6 +40,21 @@ from packages.providers.ocr_provider import build_ocr  # noqa: E402
 
 CC = {"Thailand": "th", "India": "in", "Indonesia": "id"}
 THAI_DIGITS = str.maketrans("๐๑๒๓๔๕๖๗๘๙", "0123456789")
+
+
+_ENGLISH_FUNCTION_WORDS = frozenset(
+    "the of and to in a is shall be by or for that this with as on any such which may "
+    "under from not are an it where data personal".split())
+
+
+def readable_english(text: str) -> bool:
+    """True for genuine English prose: at least 12% of tokens are common English
+    function words. Subset-font mojibake ("Nล@$>@/...") and letter soup never
+    reach that; a real statute translation sits around 35-45%."""
+    tokens = re.findall(r"[A-Za-z]+", text.casefold())
+    if len(tokens) < 50:
+        return False
+    return sum(1 for token in tokens if token in _ENGLISH_FUNCTION_WORDS) >= 0.12 * len(tokens)
 
 
 def _normalize_labels(units) -> None:
@@ -238,7 +254,12 @@ def main() -> int:
             if script_range:
                 lo, hi = script_range
                 joined = "".join(p.text for p in pages)
-                if joined.strip() and sum(1 for ch in joined if lo <= ch <= hi) < len(joined) * 0.05:
+                # Official English translations (PDPA EN, PDPC notifications) are
+                # legitimately script-free: only a text layer that is readable in
+                # neither the pack script nor English is font garbage.
+                if (joined.strip()
+                        and sum(1 for ch in joined if lo <= ch <= hi) < len(joined) * 0.05
+                        and not readable_english(joined)):
                     print(f"  mojibake text layer -> forced OCR: {act_name[:44]}")
                     pages = ocr.extract(file)
                     for p in pages:

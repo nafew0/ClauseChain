@@ -21,6 +21,8 @@ import {
   getRuns,
   getSubmission,
   getEngineActions,
+  cancelAllEngineActions,
+  cancelEngineAction,
   launchEngineAction,
   getSourceMatch,
   getSummary,
@@ -41,6 +43,7 @@ import type {
   FindingDecisionResponse,
   SubmissionParams,
   ReviewQueueParams,
+  RunMode,
   WorkspaceQueue,
 } from '@/types/workspace'
 
@@ -64,8 +67,8 @@ export const workspaceKeys = {
     [...workspaceKeys.all, 'source-match', findingKey, params] as const,
   proofAsset: (assetUrl: string) =>
     [...workspaceKeys.all, 'proof-asset', assetUrl] as const,
-  runs: () => [...workspaceKeys.all, 'runs'] as const,
-  zone3Matrix: () => [...workspaceKeys.all, 'zone3-matrix'] as const,
+  runs: (mode: RunMode = 'hybrid') => [...workspaceKeys.all, 'runs', mode] as const,
+  zone3Matrix: (mode: RunMode = 'hybrid') => [...workspaceKeys.all, 'zone3-matrix', mode] as const,
   submission: (params: SubmissionParams) =>
     [...workspaceKeys.all, 'submission', params] as const,
   actions: () => [...workspaceKeys.all, 'engine-actions'] as const,
@@ -169,14 +172,16 @@ export function useProofAsset(assetUrl: string | null | undefined) {
   })
 }
 
-export function useRuns() {
+export function useRuns(mode: RunMode = 'hybrid') {
   return useQuery({
-    queryKey: workspaceKeys.runs(),
-    queryFn: getRuns,
+    queryKey: workspaceKeys.runs(mode),
+    queryFn: () => getRuns(mode),
+    // 3s while an action is queued/running; otherwise 15s so the worker
+    // status pill stays current.
     refetchInterval: (query) =>
       query.state.data?.actions.some((action) => ['queued', 'running'].includes(action.status))
         ? 3_000
-        : false,
+        : 15_000,
   })
 }
 
@@ -198,13 +203,47 @@ export function useEngineActions() {
   })
 }
 
+/** Cancel one action, or (actionId omitted) cancel & clear everything in a run mode. */
+export function useCancelEngineActions() {
+  const queryClient = useQueryClient()
+  const { toast } = useToast()
+  return useMutation({
+    mutationFn: async ({ actionId, mode }: { actionId?: string; mode: RunMode }) =>
+      actionId ? { one: await cancelEngineAction(actionId) } : { all: await cancelAllEngineActions(mode) },
+    onSuccess: async (result) => {
+      if (result.one) {
+        toast({
+          title: result.one.status === 'cancelled' ? 'Action cancelled' : 'Stopping the run…',
+          description: result.one.status === 'cancelled'
+            ? `${result.one.kind} · ${result.one.id.slice(0, 8)} will not run.`
+            : 'The worker is stopping the pipeline process; this takes a few seconds.',
+          variant: 'success',
+          duration: 5_000,
+        })
+      } else if (result.all) {
+        const { cancelled, stopping, cleared } = result.all
+        toast({
+          title: 'Cancelled and cleared',
+          description: `${cancelled} cancelled${stopping ? `, ${stopping} stopping` : ''}, ${cleared} cleared from the list (kept in the audit log).`,
+          variant: 'success',
+          duration: 6_000,
+        })
+      }
+      await queryClient.invalidateQueries({ queryKey: workspaceKeys.all })
+    },
+    onError: (error) => {
+      toast({ title: 'Cancel failed', description: errorMessage(error), variant: 'error', duration: 7_000 })
+    },
+  })
+}
+
 export function useLaunchEngineAction() {
   const queryClient = useQueryClient()
   const { toast, update } = useToast()
   return useMutation({
     mutationFn: ({ kind, payload }: {
       kind: 'replay' | 'refresh' | 'run'
-      payload?: { economy?: string; pillar?: 6 | 7 }
+      payload?: { economy?: string; pillar?: 6 | 7; mode?: RunMode }
     }) => launchEngineAction(kind, payload),
     onMutate: ({ kind }) => ({
       toastId: toast({
@@ -218,7 +257,13 @@ export function useLaunchEngineAction() {
       if (context?.toastId) {
         update(context.toastId, {
           title: 'Engine action queued',
-          description: `${action.kind} · ${action.id.slice(0, 8)}. Status will refresh automatically.`,
+          description: `${action.kind} · ${action.id.slice(0, 8)}. ${
+            action.worker?.started
+              ? 'No worker was running, so one was started. '
+              : action.worker && !action.worker.alive && !action.worker.autostart
+                ? 'No engine worker is online. Start the clausechain-engine service. '
+                : ''
+          }Status will refresh automatically.`,
           variant: 'success',
           duration: 5_000,
         })
@@ -237,8 +282,8 @@ export function useLaunchEngineAction() {
   })
 }
 
-export function useZone3Matrix() {
-  return useQuery({ queryKey: workspaceKeys.zone3Matrix(), queryFn: getZone3Matrix })
+export function useZone3Matrix(mode: RunMode = 'hybrid') {
+  return useQuery({ queryKey: workspaceKeys.zone3Matrix(mode), queryFn: () => getZone3Matrix(mode) })
 }
 
 export function useDecisionHistory(

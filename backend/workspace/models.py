@@ -535,6 +535,42 @@ class Release(models.Model):
         ordering = ["-created_at"]
 
 
+class EngineActionEvent(models.Model):
+    """One live progress line of an engine action (run console), copied by the
+    worker from the engine's CLAUSECHAIN_EVENT_LOG while the action runs."""
+
+    action = models.ForeignKey("EngineAction", on_delete=models.CASCADE, related_name="events")
+    seq = models.PositiveIntegerField()
+    ts = models.DateTimeField()
+    stage = models.CharField(max_length=32)
+    label = models.CharField(max_length=160, blank=True, default="")
+    level = models.CharField(max_length=8, default="info")
+    message = models.TextField()
+    detail = models.TextField(blank=True, default="")
+
+    class Meta:
+        ordering = ["action", "seq"]
+        constraints = [
+            models.UniqueConstraint(fields=["action", "seq"], name="workspace_action_event_seq_uniq")
+        ]
+
+
+class EngineWorkerHeartbeat(models.Model):
+    """Liveness signal written by run_engine_worker every few seconds (also
+    while an action executes), read by the API to show worker status and to
+    decide whether a queued action needs a worker started."""
+
+    worker_id = models.CharField(max_length=255, unique=True)
+    hostname = models.CharField(max_length=255)
+    pid = models.IntegerField()
+    started_at = models.DateTimeField()
+    last_seen = models.DateTimeField()
+    current_action_id = models.UUIDField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["-last_seen"]
+
+
 class EngineAction(models.Model):
     class Kind(models.TextChoices):
         REFRESH = "refresh", "Refresh"
@@ -546,6 +582,7 @@ class EngineAction(models.Model):
         RUNNING = "running", "Running"
         SUCCEEDED = "succeeded", "Succeeded"
         FAILED = "failed", "Failed"
+        CANCELLED = "cancelled", "Cancelled"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     kind = models.CharField(max_length=16, choices=Kind.choices)
@@ -561,7 +598,18 @@ class EngineAction(models.Model):
     lease_expires_at = models.DateTimeField(null=True, blank=True)
     stdout = models.TextField(blank=True, default="")
     result_hashes_json = models.JSONField(default=dict)
+    # Trimmed run envelope captured when a run_pipeline action succeeds, so run
+    # modes without an imported snapshot (local open-weights runs) still have
+    # something to show and compare. Never feeds the reviewed snapshot.
+    result_json = models.JSONField(default=dict, blank=True)
     error = models.TextField(blank=True, default="")
+    # Cancellation: queued actions are cancelled directly; for a running one the
+    # worker sees cancel_requested_at and stops the process group.
+    cancel_requested_at = models.DateTimeField(null=True, blank=True)
+    cancelled_by = models.CharField(max_length=255, blank=True, default="")
+    # "Clear" hides a finished action from the worker-action list; the row is
+    # kept as the audit record (and any run results stay visible).
+    cleared_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         ordering = ["-requested_at"]

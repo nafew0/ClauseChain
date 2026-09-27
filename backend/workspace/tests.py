@@ -503,8 +503,8 @@ class WorkspaceApiTests(TestCase):
                 requested_by=admin,
             )
             with override_settings(ENGINE_ROOT=root, ENGINE_ALLOWLIST=allowlist), patch(
-                "workspace.engine_worker.subprocess.run",
-                return_value=SimpleNamespace(returncode=0, stdout="submission replay: 1", stderr=""),
+                "workspace.engine_worker.run_allowlisted",
+                return_value=(0, "submission replay: 1"),
             ), patch(
                 "workspace.engine_worker.import_snapshot",
                 return_value=(self.snapshot, False),
@@ -527,8 +527,8 @@ class WorkspaceApiTests(TestCase):
                 requested_by=admin,
             )
             with override_settings(ENGINE_ROOT=root, ENGINE_ALLOWLIST=allowlist), patch(
-                "workspace.engine_worker.subprocess.run",
-                return_value=SimpleNamespace(returncode=0, stdout="wrote outputs", stderr=""),
+                "workspace.engine_worker.run_allowlisted",
+                return_value=(0, "wrote outputs"),
             ), patch("workspace.engine_worker.import_snapshot") as auto_import:
                 execute_action(run_action)
                 run_action.refresh_from_db()
@@ -806,6 +806,253 @@ class WorkspaceApiTests(TestCase):
             "review_state"
         ]
         self.assertTrue(review_state["correction_pending"])
+
+    def test_run_events_stream_from_engine_log_to_console_endpoint(self):
+        admin = self.make_user("events-admin", "Events Admin", "admin")
+        self.authenticate(self.citation)
+        action = EngineAction.objects.create(
+            kind=EngineAction.Kind.RUN, requested_by=admin,
+            arguments_json={"action": "run_pipeline", "economy": "Singapore", "pillar": "6", "cc": "si",
+                            "mode": "local", "provider_profile": "local_openweights", "out_prefix": "local"},
+        )
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+
+            def fake_run(argv, timeout, should_cancel, env=None, on_poll=None):
+                log = Path(env["CLAUSECHAIN_EVENT_LOG"])
+                lines = [json.dumps({"seq": i, "ts": 1790000000 + i, "stage": stage, "label": "P6-I4",
+                                     "message": msg, "detail": "prompt text" if stage == "llm" else ""})
+                         for i, (stage, msg) in enumerate([("start", "Singapore P6"), ("llm", "-> model"),
+                                                           ("done", "finished")], start=1)]
+                log.write_text("\n".join(lines[:2]) + "\n" + lines[2][:10])  # last line half-written
+                on_poll()
+                self.assertEqual(action.events.count(), 2)
+                log.write_text("\n".join(lines) + "\n")
+                return 0, "ok"
+
+            with override_settings(ENGINE_ROOT=root), patch(
+                "workspace.engine_worker.run_allowlisted", side_effect=fake_run
+            ):
+                execute_action(action)
+        page = self.client.get(f"/api/workspace/engine/actions/{action.pk}/events/").data
+        self.assertEqual([e["stage"] for e in page["events"]], ["start", "llm", "done"])
+        self.assertEqual(page["events"][1]["detail"], "prompt text")
+        self.assertEqual(page["last_seq"], 3)
+        later = self.client.get(f"/api/workspace/engine/actions/{action.pk}/events/?after=2").data
+        self.assertEqual([e["seq"] for e in later["events"]], [3])
+        self.assertEqual(self.client.get(f"/api/workspace/engine/actions/{action.pk}/events/?after=x").status_code, 400)
+
+    def test_cancel_one_and_cancel_and_clear_all(self):
+        from .engine_worker import EngineActionCancelled
+
+        admin = self.make_user("cancel-admin", "Cancel Admin", "admin")
+        admin.is_superuser = True
+        admin.is_staff = True
+        admin.save(update_fields=("is_superuser", "is_staff"))
+        self.authenticate(self.citation)
+        queued = EngineAction.objects.create(
+            kind=EngineAction.Kind.RUN, requested_by=admin,
+            arguments_json={"action": "run_pipeline", "economy": "Singapore", "pillar": "6",
+                            "cc": "si", "mode": "local", "provider_profile": "local_openweights",
+                            "out_prefix": "local"},
+        )
+        self.assertEqual(
+            self.client.post(f"/api/workspace/engine/actions/{queued.pk}/cancel/").status_code, 403
+        )
+        self.authenticate(admin)
+
+        # Queued -> cancelled immediately, and it is no longer claimable.
+        response = self.client.post(f"/api/workspace/engine/actions/{queued.pk}/cancel/")
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual((response.data["status"], response.data["cancelled_by"]), ("cancelled", "Cancel Admin"))
+        self.assertEqual(self.client.post(f"/api/workspace/engine/actions/{queued.pk}/cancel/").status_code, 409)
+
+        # Running with a live worker -> stop request; the worker stops the process group.
+        running = EngineAction.objects.create(
+            kind=EngineAction.Kind.RUN, requested_by=admin, status=EngineAction.Status.RUNNING,
+            started_at=timezone.now(), arguments_json=queued.arguments_json,
+        )
+        with patch("workspace.views.worker_status",
+                   return_value={"alive": True, "current_action_id": str(running.pk)}):
+            response = self.client.post(f"/api/workspace/engine/actions/{running.pk}/cancel/")
+        self.assertEqual(response.data["status"], "running")
+        self.assertTrue(response.data["cancel_requested_at"])
+        with patch("workspace.engine_worker.run_allowlisted",
+                   side_effect=EngineActionCancelled("partial output")):
+            execute_action(running)
+        running.refresh_from_db()
+        self.assertEqual(running.status, EngineAction.Status.CANCELLED)
+        self.assertIn("Cancel Admin", running.error)
+
+        # Cancel & clear all (local tab): cancels active local work, hides finished
+        # local rows, leaves hybrid actions alone, keeps every row.
+        orphan = EngineAction.objects.create(
+            kind=EngineAction.Kind.RUN, requested_by=admin, status=EngineAction.Status.RUNNING,
+            started_at=timezone.now(), arguments_json=queued.arguments_json,
+        )
+        hybrid = EngineAction.objects.create(
+            kind=EngineAction.Kind.REPLAY, requested_by=admin, arguments_json={"action": "replay"},
+        )
+        # A live worker busy with something else is not running the orphan: close it directly.
+        with patch("workspace.views.worker_status",
+                   return_value={"alive": True, "current_action_id": None}):
+            response = self.client.post(
+                "/api/workspace/engine/actions/cancel-all/", {"mode": "local"}, format="json"
+            )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual((response.data["cancelled"], response.data["cleared"]), (1, 3))
+        orphan.refresh_from_db()
+        self.assertEqual(orphan.status, EngineAction.Status.CANCELLED)  # nobody running it: closed directly
+        self.assertEqual(self.client.get("/api/workspace/runs/?mode=local").data["actions"], [])
+        hybrid.refresh_from_db()
+        self.assertEqual(hybrid.status, EngineAction.Status.QUEUED)
+        self.assertEqual(EngineAction.objects.filter(pk__in=[queued.pk, running.pk, orphan.pk]).count(), 3)
+
+    def test_queueing_starts_a_worker_only_when_none_is_alive(self):
+        from datetime import timedelta
+        from .models import EngineWorkerHeartbeat
+        from .worker_supervisor import ensure_worker
+
+        admin = self.make_user("worker-boss", "Worker Boss", "admin")
+        admin.is_superuser = True
+        admin.is_staff = True
+        admin.save(update_fields=("is_superuser", "is_staff"))
+        self.authenticate(admin)
+        self.assertFalse(self.client.get("/api/workspace/engine/worker/").data["alive"])
+
+        with tempfile.TemporaryDirectory() as temporary, override_settings(
+            ENGINE_WORKER_AUTOSTART=True,
+            WORKSPACE_LOCK_DIR=Path(temporary),
+            ENGINE_WORKER_LOG=Path(temporary) / "worker.log",
+        ), patch("workspace.worker_supervisor.subprocess.Popen",
+                 return_value=SimpleNamespace(pid=4242)) as popen:
+            queued = self.client.post(
+                "/api/workspace/engine/run/",
+                {"economy": "Singapore", "pillar": 6, "mode": "local"},
+                format="json",
+            )
+            self.assertEqual(queued.status_code, 202, queued.data)
+            self.assertTrue(queued.data["worker"]["started"])
+            self.assertEqual(popen.call_count, 1)
+            self.assertIn("run_engine_worker", popen.call_args.args[0])
+            # A second request while the first worker is still booting does not pile on.
+            self.assertFalse(ensure_worker()["started"])
+            self.assertEqual(popen.call_count, 1)
+
+            # A fresh heartbeat means a worker is alive: nothing is started.
+            (Path(temporary) / "engine_worker.spawned").unlink()
+            EngineWorkerHeartbeat.objects.create(
+                worker_id="host:1", hostname="host", pid=1,
+                started_at=timezone.now(), last_seen=timezone.now(),
+            )
+            self.assertFalse(ensure_worker()["started"])
+            self.assertEqual(popen.call_count, 1)
+            self.assertTrue(self.client.get("/api/workspace/runs/").data["worker"]["alive"])
+
+            # A stale heartbeat (crashed worker) triggers a new start.
+            EngineWorkerHeartbeat.objects.update(last_seen=timezone.now() - timedelta(minutes=5))
+            self.assertTrue(ensure_worker()["started"])
+            self.assertEqual(popen.call_count, 2)
+
+        with override_settings(ENGINE_WORKER_AUTOSTART=False), patch(
+            "workspace.worker_supervisor.subprocess.Popen"
+        ) as popen:
+            status = ensure_worker()
+            self.assertEqual((status["started"], status["autostart"]), (False, False))
+            popen.assert_not_called()
+
+    def test_local_mode_runs_are_separate_and_feed_local_tabs(self):
+        admin = self.make_user("mode-admin", "Mode Admin", "admin")
+        admin.is_superuser = True
+        admin.is_staff = True
+        admin.save(update_fields=("is_superuser", "is_staff"))
+        self.authenticate(admin)
+
+        # Local tabs start blank; hybrid keeps reading the reviewed snapshot.
+        local_runs = self.client.get("/api/workspace/runs/?mode=local")
+        self.assertEqual(local_runs.status_code, 200)
+        self.assertEqual((local_runs.data["mode"], local_runs.data["results"]), ("local", []))
+        self.assertEqual([mode["id"] for mode in local_runs.data["modes"]], ["hybrid", "local"])
+        local_matrix = self.client.get("/api/workspace/zone3-matrix/?mode=local")
+        self.assertEqual(local_matrix.status_code, 200)
+        self.assertEqual((local_matrix.data["cells"], local_matrix.data["snapshot"]), ([], None))
+        self.assertEqual(self.client.get("/api/workspace/zone3-matrix/").data["mode"], "hybrid")
+        self.assertEqual(self.client.get("/api/workspace/runs/?mode=cloudy").status_code, 400)
+
+        # The run endpoint maps the mode onto the engine profile + output folder.
+        allowlist = settings.ENGINE_ALLOWLIST
+        queued = self.client.post(
+            "/api/workspace/engine/run/",
+            {"economy": "Singapore", "pillar": 6, "mode": "local"},
+            format="json",
+        )
+        self.assertEqual(queued.status_code, 202, queued.data)
+        self.assertEqual(queued.data["mode"], "local")
+        self.assertEqual(queued.data["arguments"]["provider_profile"], "local_openweights")
+        self.assertEqual(queued.data["arguments"]["out_prefix"], "local")
+        _, argv, _ = build_allowlisted_command(queued.data["arguments"])
+        self.assertIn("local_openweights", argv)
+        self.assertIn("outputs/local_si_p6", argv)
+        self.assertEqual(
+            self.client.post(
+                "/api/workspace/engine/run/",
+                {"economy": "Singapore", "pillar": 6, "mode": "cloudy"},
+                format="json",
+            ).status_code,
+            400,
+        )
+        self.assertTrue(allowlist.is_file())
+
+        # A succeeded local run captures its envelope and appears only in local views.
+        action = EngineAction.objects.get(pk=queued.data["id"])
+        envelope = {
+            "run_id": "local-run-1", "generated_at": "2026-09-24T10:00:00Z", "country": "SG",
+            "pillar": 6, "provider_profile": "local_openweights", "warnings": [],
+            "metadata": {"pipeline_stats": {"mapped": 2}},
+            "findings": [
+                {"Economy": "Singapore", "Indicator ID": "P6-I2", "Law Name": "PDPA 2012",
+                 "Article / Section": "s. 26", "Discovery Tag": "KNOWN",
+                 "Verbatim Snippet": "An organisation shall not transfer any personal data",
+                 "Source URL": "https://sso.agc.gov.sg/Act/PDPA2012", "raw_context": "x" * 50,
+                 "model_version": "unsloth/Qwen3.8-27B-NVFP4/escalate:unsloth/Qwen3.8-27B-NVFP4+BAAI/bge-m3"},
+                {"Economy": "Singapore", "Indicator ID": "P6-I1", "Law Name": "PDPA 2012",
+                 "Discovery Tag": "KNOWN", "Verbatim Snippet": "NO_EVIDENCE_FOUND_PENDING_REVIEW"},
+            ],
+        }
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            output = root / "outputs" / "local_si_p6" / "output.json"
+            output.parent.mkdir(parents=True)
+            output.write_text(json.dumps(envelope), encoding="utf-8")
+            with override_settings(ENGINE_ROOT=root), patch(
+                "workspace.engine_worker.run_allowlisted",
+                return_value=(0, "wrote outputs"),
+            ), patch("workspace.engine_worker.import_snapshot") as auto_import:
+                execute_action(action)
+                auto_import.assert_not_called()
+        action.refresh_from_db()
+        self.assertEqual(action.status, EngineAction.Status.SUCCEEDED, action.error)
+        self.assertIn("outputs/local_si_p6/output.json", action.result_hashes_json)
+        self.assertNotIn("raw_context", action.result_json["findings"][0])
+
+        local_runs = self.client.get("/api/workspace/runs/?mode=local").data
+        self.assertEqual(len(local_runs["results"]), 1)
+        self.assertEqual(local_runs["results"][0]["provider_profile"], "local_openweights")
+        self.assertEqual(local_runs["results"][0]["rows_produced"], 2)
+        self.assertEqual([row["id"] for row in local_runs["actions"]], [str(action.pk)])
+        hybrid_runs = self.client.get("/api/workspace/runs/").data
+        self.assertNotIn(str(action.pk), [row["id"] for row in hybrid_runs["actions"]])
+        self.assertNotIn("local_openweights", [run["provider_profile"] for run in hybrid_runs["results"]])
+
+        matrix = self.client.get("/api/workspace/zone3-matrix/?mode=local").data
+        cells = {cell["indicator"]: cell for cell in matrix["cells"]}
+        self.assertEqual(matrix["economies"], ["Singapore"])
+        self.assertEqual(cells["P6-I2"]["state"], "evidence")
+        self.assertEqual(cells["P6-I2"]["evidence"][0]["article"], "s. 26")
+        self.assertIsNone(cells["P6-I2"]["deterministic"])
+        self.assertEqual(cells["P6-I1"]["state"], "absence")
+        self.assertEqual(cells["P6-I1"]["evidence"], [])
+        self.assertEqual(matrix["counts"]["with_evidence"], 1)
 
     @patch("workspace.views.apply_authoritative_decision", return_value=RECEIPT)
     def test_zone3_matrix_overlays_decisions_and_traces_evidence(self, writer):

@@ -80,7 +80,7 @@
       "timeout_s": 900
     },
     "run_pipeline": {
-      "_doc": "superuser-only at the API layer (G4); spend cap is the backstop",
+      "_doc": "superuser-only at the API layer (G4); spend cap is the backstop. provider_profile/out_prefix come from the app's run mode: hybrid -> hybrid_accuracy/final, local -> local_openweights/local",
       "argv": [
         ".venv/bin/python",
         "run.py",
@@ -88,8 +88,10 @@
         "{economy}",
         "--pillar",
         "{pillar}",
+        "--provider-profile",
+        "{provider_profile}",
         "--out",
-        "outputs/final_{cc}_p{pillar}"
+        "outputs/{out_prefix}_{cc}_p{pillar}"
       ],
       "params": {
         "economy": {
@@ -116,6 +118,18 @@
             "th",
             "in",
             "id"
+          ]
+        },
+        "provider_profile": {
+          "enum": [
+            "hybrid_accuracy",
+            "local_openweights"
+          ]
+        },
+        "out_prefix": {
+          "enum": [
+            "final",
+            "local"
           ]
         }
       },
