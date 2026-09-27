@@ -154,8 +154,10 @@ def screen_candidates(llm_bulk, indicator_id: str, cfg: dict, candidates: list) 
     """Cheap relevance screen over retrieval candidates. Returns the surviving subset."""
     survivors = []
     pool = candidates[:SCREEN_CAP_PER_INDICATOR]
-    for start in range(0, len(pool), SCREEN_BATCH_SIZE):
-        batch = pool[start:start + SCREEN_BATCH_SIZE]
+    batches = [pool[start:start + SCREEN_BATCH_SIZE]
+               for start in range(0, len(pool), SCREEN_BATCH_SIZE)]
+    prompts = []
+    for batch in batches:
         listing = "\n\n".join(
             f"[{i}] ({c.props.get('article_section', '?')} — {c.props.get('heading', '')}) {c.text[:900]}"
             for i, c in enumerate(batch)
@@ -174,8 +176,17 @@ CANDIDATES:
 {listing}
 
 Return one decision per candidate, using each candidate's index number."""
-        result = _complete(llm_bulk, prompt, ScreenBatch,
-                           f"clausechain:screen:v2:{indicator_id}")
+        prompts.append(prompt)
+    # Batches are independent: send them concurrently (the provider's bounded
+    # pool, CLAUSECHAIN_LLM_CONCURRENCY) exactly like the mapping stage. Results
+    # come back in input order, so survivors match the sequential screen.
+    cache_key = f"clausechain:screen:v2:{indicator_id}"
+    if len(prompts) > 1 and hasattr(llm_bulk, "complete_many"):
+        results = llm_bulk.complete_many(prompts, ScreenBatch,
+                                         prompt_cache_keys=[cache_key] * len(prompts))
+    else:
+        results = [_complete(llm_bulk, prompt, ScreenBatch, cache_key) for prompt in prompts]
+    for batch, result in zip(batches, results, strict=True):
         for decision in result.decisions:
             if decision.relevant and 0 <= decision.candidate_index < len(batch):
                 survivors.append(batch[decision.candidate_index])

@@ -26,12 +26,17 @@ OPENAI_BASE_URL = "https://api.openai.com/v1"
 
 class OpenAIChatProvider:
     def __init__(self, model: str, api_key_env: str = "OPENAI_API_KEY", timeout: float = 90.0,
-                 base_url: str = OPENAI_BASE_URL, request_model: str | None = None) -> None:
+                 base_url: str = OPENAI_BASE_URL, request_model: str | None = None,
+                 extra_body: dict | None = None, concurrency: int | None = None) -> None:
         # `model` is what runs record (model_version, cost report); `request_model`
         # is the id the endpoint expects when a self-hosted server serves the
         # weights under an alias.
         self.model = model
         self.request_model = request_model or model
+        # Server-specific request fields (e.g. vLLM chat_template_kwargs).
+        self.extra_body = dict(extra_body or {})
+        # Parallel calls in complete_many; None = CLAUSECHAIN_LLM_CONCURRENCY (6).
+        self.concurrency = concurrency
         self.api_key_env = api_key_env
         self.timeout = timeout
         self.base_url = base_url.rstrip("/")
@@ -56,6 +61,7 @@ class OpenAIChatProvider:
                     "messages": [{"role": "user", "content": prompt}],
                     "response_format": {"type": "json_object"},
                     "temperature": 0,
+                    **self.extra_body,
                 }
                 if prompt_cache_key and self.base_url == OPENAI_BASE_URL:
                     body["prompt_cache_key"] = prompt_cache_key
@@ -118,7 +124,7 @@ class OpenAIChatProvider:
             # These mapping requests are independent. A bounded worker pool keeps
             # live runs from paying one network round trip at a time while
             # preserving input order and the provider's existing retry policy.
-            workers = max(1, int(os.getenv("CLAUSECHAIN_LLM_CONCURRENCY", "6")))
+            workers = max(1, self.concurrency or int(os.getenv("CLAUSECHAIN_LLM_CONCURRENCY", "6")))
             if workers == 1 or len(prompts) < 2:
                 return [self.complete(p, schema, prompt_cache_key=k)
                         for p, k in zip(prompts, keys, strict=True)]
@@ -366,5 +372,15 @@ def build_llm(spec: str):
             base_url=base_url,
             timeout=float(os.getenv("LOCALAI_TIMEOUT_S", "300")),
             request_model=model,
+            # One self-hosted GPU serves every parallel call: fewer in flight than
+            # the commercial APIs (hybrid keeps CLAUSECHAIN_LLM_CONCURRENCY).
+            concurrency=int(os.getenv("LOCALAI_CONCURRENCY", "3")),
+            # Qwen3-style hybrid reasoning models think before answering by
+            # default (~10x the output tokens). The pipeline asks for bounded JSON
+            # decisions, so thinking is off unless LOCALAI_ENABLE_THINKING=1.
+            extra_body={"chat_template_kwargs": {
+                "enable_thinking": os.getenv("LOCALAI_ENABLE_THINKING", "0").strip().lower()
+                in {"1", "true", "yes", "on"},
+            }},
         )
     raise ValueError(f"Unknown LLM provider in spec {spec!r}")
