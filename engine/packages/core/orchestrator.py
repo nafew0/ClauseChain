@@ -63,6 +63,10 @@ def _participating_proof_spans(snippet: str, evidence: list[dict]) -> tuple[list
                 following = values[index + 1] if index + 1 < len(values) else ""
                 if following in ",.;:!?)]}" or previous in "([{":
                     continue
+                # "16 ( 5 )": PDFs that store a sub-reference's bracket as its own
+                # text run must still locate a snippet quoting "16(5)".
+                if following == "(" and previous.isalnum():
+                    continue
             kept.append(char)
             if owners is not None:
                 kept_owners.append(owners[index])
