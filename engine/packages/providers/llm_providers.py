@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+import time
 
 import httpx
 from pydantic import BaseModel, ValidationError
@@ -291,9 +292,19 @@ class FallbackLLM:
             if hasattr(self.primary, "complete_many"):
                 return self.primary.complete_many(
                     prompts, schema, prompt_cache_keys=prompt_cache_keys)
-            return [self.complete(p, schema,
-                                  prompt_cache_key=(prompt_cache_keys or [None] * len(prompts))[i])
-                    for i, p in enumerate(prompts)]
+            # No batch API (e.g. OllamaProvider/local_fallback): one blocking call
+            # per prompt, sequentially — previously silent for the whole stretch,
+            # which for a handful of provider timeouts (up to timeout=180s each)
+            # reads as a hang rather than progress. A line per call is cheap and
+            # makes that visible without changing what's returned.
+            keys = prompt_cache_keys or [None] * len(prompts)
+            results = []
+            started = time.time()
+            for i, p in enumerate(prompts):
+                results.append(self.complete(p, schema, prompt_cache_key=keys[i]))
+                print(f"[llm] {i + 1}/{len(prompts)} calls done "
+                      f"({time.time() - started:.0f}s elapsed)", file=sys.stderr, flush=True)
+            return results
         except Exception as error:  # noqa: BLE001
             if self.fallback is None:
                 raise

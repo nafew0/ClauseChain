@@ -7,6 +7,7 @@ Every mapping decision returns a verbatim snippet that MUST later pass G1
 from __future__ import annotations
 
 import re
+import sys as _sys
 
 from pydantic import BaseModel, Field, PrivateAttr
 
@@ -154,8 +155,11 @@ def screen_candidates(llm_bulk, indicator_id: str, cfg: dict, candidates: list) 
     """Cheap relevance screen over retrieval candidates. Returns the surviving subset."""
     survivors = []
     pool = candidates[:SCREEN_CAP_PER_INDICATOR]
-    for start in range(0, len(pool), SCREEN_BATCH_SIZE):
+    total_batches = -(-len(pool) // SCREEN_BATCH_SIZE) if pool else 0
+    for batch_num, start in enumerate(range(0, len(pool), SCREEN_BATCH_SIZE), start=1):
         batch = pool[start:start + SCREEN_BATCH_SIZE]
+        print(f"[screen] {indicator_id}: batch {batch_num}/{total_batches} "
+              f"({len(batch)} candidates)", file=_sys.stderr, flush=True)
         listing = "\n\n".join(
             f"[{i}] ({c.props.get('article_section', '?')} — {c.props.get('heading', '')}) {c.text[:900]}"
             for i, c in enumerate(batch)
@@ -250,6 +254,8 @@ def map_candidates(llm_primary, indicator_id: str, cfg: dict, candidates: list,
     """Map an indicator pool together so final sweeps can use the 50%-off Batch API."""
     if not candidates:
         return []
+    print(f"[map] {indicator_id}: mapping {len(candidates)} screened candidate(s)",
+          file=_sys.stderr, flush=True)
     expected_anchor_ids = expected_anchor_ids or set()
     prompts = [_mapping_prompt(
                    indicator_id, cfg, candidate,
@@ -285,6 +291,8 @@ def map_candidates(llm_primary, indicator_id: str, cfg: dict, candidates: list,
                 f"{', '.join(reasons)}.\nIndependently correct the decision. Do not defer "
                 "to the provisional answer.")
     if escalation_prompts:
+        print(f"[map] {indicator_id}: escalating {len(escalation_prompts)} decision(s) "
+              "to legal_escalation tier", file=_sys.stderr, flush=True)
         escalation_keys = [f"clausechain:legal-escalation:v1:{indicator_id}"] * len(escalation_prompts)
         if hasattr(llm_escalation, "complete_many"):
             reviewed = llm_escalation.complete_many(

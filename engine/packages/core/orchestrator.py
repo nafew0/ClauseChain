@@ -384,10 +384,14 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
     for indicator_id, cfg in rubric.get("indicators", {}).items():
         if cfg.get("regulatory") is False:
             continue  # 6.5: non-regulatory — engine does not extract
+        _indicator_started = time.time()
+        print(f"[indicator] {indicator_id}: starting (retrieval)", flush=True)
         retrieval_caps: list[dict] = []
         candidates = ([] if known_reconcile_only else
                       retrieve_for_indicator(store, cache, corpus, indicator_id, cfg, economy,
                                              caps_out=retrieval_caps))
+        print(f"[indicator] {indicator_id}: {len(candidates)} candidate(s) retrieved",
+              flush=True)
         for cap in retrieval_caps:
             warnings.append(f"{indicator_id}: retrieval union capped at {cap['limit']} of "
                             f"{cap['input_count']} candidates (cap logged, not silent)")
@@ -769,6 +773,8 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                 "outcome": outcome,
             })
         stats["by_indicator"][indicator_id] = indicator_stats
+        print(f"[indicator] {indicator_id}: done in {time.time() - _indicator_started:.0f}s "
+              f"— {len(survivors)} screened in, {indicator_rows} row(s) mapped", flush=True)
 
         if indicator_rows == 0 and not any(f.indicator_id == indicator_id for f in findings):
             gov = (pack.get("governing_instruments") or {}).get(

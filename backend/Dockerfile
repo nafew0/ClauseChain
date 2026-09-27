@@ -35,8 +35,18 @@ COPY engine/run.py engine/run.py
 # No editable install: engine scripts/tests are always invoked with
 # cwd=ENGINE_ROOT (see engine_worker.py, pyproject's pytest pythonpath=["."]),
 # which is how they resolve `packages.*` imports — not a pip-installed package.
+#
+# engine/requirements.txt now includes sentence-transformers (Path A / BGE-M3
+# embeddings, required by CLAUSECHAIN_PROVIDER_PROFILE=local_fallback in
+# engine/configs/models.yaml). Install CPU-only torch FIRST, via the official
+# CPU wheel index, so pip finds it already satisfied instead of pulling the
+# ~2GB CUDA build as sentence-transformers' transitive dependency. The
+# BAAI/bge-m3 model itself (~2GB) downloads from HuggingFace on first use,
+# cached in the hf_cache volume (see docker-compose.yml) so it isn't
+# re-fetched on every rebuild.
 RUN python -m venv engine/.venv \
     && engine/.venv/bin/pip install --no-cache-dir -U pip \
+    && engine/.venv/bin/pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu torch \
     && engine/.venv/bin/pip install --no-cache-dir -r engine/requirements.txt
 
 COPY deploy/engine_allowlist.json deploy/engine_allowlist.json
