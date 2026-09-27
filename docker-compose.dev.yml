@@ -1,0 +1,196 @@
+# ClauseChain — local development stack (hot reload, no manual setup steps).
+#
+# Quick start:
+#   docker compose -f docker-compose.dev.yml up --build
+#   Backend API:        http://localhost:8000
+#   Frontend UI:         http://localhost:3000
+#   Traefik (optional):  http://backend.localhost:8090 / http://frontend.localhost:8090
+#   Traefik dashboard:   http://localhost:8080
+#
+# Mirrors backend/README.md and frontend/README.md's local setup (pip
+# install / npm ci, migrate, runserver / next dev) inside containers instead
+# of host venvs/node_modules, with source bind-mounted so edits hot-reload.
+# First boot also runs migrations and creates the public read-only demo
+# account (viewer / escap-rdtii-2026 — see accounts/management/commands/
+# ensure_demo_viewer.py). Create an admin account with:
+#   docker compose -f docker-compose.dev.yml exec backend python manage.py createsuperuser
+#
+# All credentials below are dev-only placeholders committed on purpose —
+# fine for a throwaway local Postgres, never reuse them anywhere reachable.
+# For the production/self-contained deploy path see docker-compose.yml +
+# .env.example instead.
+#
+# Engine note: engine/ is bind-mounted read-only so ENGINE_ROOT (clausechain/
+# settings.py) resolves, and ENGINE_PYTHON points at a small export-only venv
+# baked into backend/Dockerfile.dev (PyYAML + openpyxl only), so
+# `manage.py engine_refresh` can actually run its export scripts and import
+# whatever run outputs already exist on your host (see engine/README.md to
+# produce them — it needs ALL 12 of RUN_NAMES in backend/workspace/
+# importer.py present under engine/outputs/*/output.json, or it fails; an
+# incomplete sweep is a real, common state, not a docker problem). It's
+# still best-effort at container startup (same as docker-compose.yml's
+# pipeline-seed): missing/incomplete outputs make it skip with a logged
+# reason rather than failing the container — run it again by hand once your
+# outputs are complete:
+#   docker compose -f docker-compose.dev.yml exec backend python manage.py engine_refresh
+# Launching NEW engine runs, or the neo4j graph-snapshot export inside
+# engine_refresh, needs the engine's real .venv (torch/sentence-transformers
+# etc.) — out of scope for this lightweight export-only venv; run those via
+# engine/ on the host, or use docker-compose.yml's full stack (which builds
+# its own Linux engine venv in backend/Dockerfile).
+#
+# `name:` below gives this its own Compose project namespace so it can never
+# collide with docker-compose.yml again — both files previously defaulted to
+# the same project name (the directory name) AND reused the same service
+# names (postgres/redis/backend/frontend), so `up` on one would recreate
+# (stop + remove) the other's live containers. Root-caused 24 Sep 2026 after
+# it took down a running prod stack's postgres/redis mid-session.
+name: clausechain-dev
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: clausechain-dev-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: clausechain_dev
+      POSTGRES_USER: clausechain
+      POSTGRES_PASSWORD: dev
+    ports:
+      - "5433:5432"  # host 5433: avoids clashing with a native Postgres on 5432
+    volumes:
+      - dev_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U clausechain -d clausechain_dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    container_name: clausechain-dev-redis
+    restart: unless-stopped
+    ports:
+      - "6380:6379"  # host 6380: avoids clashing with a native Redis on 6379
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: clausechain-dev-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/srv/clausechain/backend
+      - ./engine:/srv/clausechain/engine:ro
+    environment:
+      DJANGO_SECRET_KEY: dev-secret-key-not-for-production-use-only
+      JWT_SIGNING_KEY: dev-jwt-signing-key-not-for-production-use-only
+      DEBUG: "True"
+      ENVIRONMENT: development
+      APP_ORIGIN: http://localhost:3000
+      PUBLIC_APP_URL: http://localhost:3000
+      API_ORIGIN: http://localhost:8000
+      TRUST_X_FORWARDED_PROTO: "False"
+      ALLOWED_HOSTS: "localhost,127.0.0.1,backend,backend.localhost"
+      # Points engine_refresh at the small export-only venv baked into
+      # Dockerfile.dev instead of the default engine/.venv/bin/python (which
+      # lives on the read-only ../engine mount and is built for your HOST
+      # os — can't exec inside this Linux container). See Dockerfile.dev.
+      ENGINE_PYTHON: /opt/engine-export-venv/bin/python
+      DB_NAME: clausechain_dev
+      DB_USER: clausechain
+      DB_PASSWORD: dev
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      USE_REDIS: "True"
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      CELERY_BROKER_URL: redis://redis:6379/2
+      CELERY_RESULT_BACKEND: redis://redis:6379/2
+    command:
+      - sh
+      - -c
+      - >
+        python manage.py migrate &&
+        python manage.py ensure_demo_viewer &&
+        (python manage.py engine_refresh ||
+         echo '[backend] engine_refresh skipped — no engine/outputs snapshot yet, see engine/README.md') &&
+        python manage.py runserver 0.0.0.0:8000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`backend.localhost`)"
+      - "traefik.http.services.backend.loadbalancer.server.port=8000"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: clausechain-dev-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./frontend:/app
+      # Named volumes so the container's own npm-ci'd node_modules (and its
+      # .next build cache) aren't shadowed by the ./frontend bind mount above.
+      - dev_frontend_node_modules:/app/node_modules
+      - dev_frontend_next:/app/.next
+    environment:
+      BACKEND_URL: http://backend:8000
+      NEXT_PUBLIC_API_URL: /api
+      # Docker Desktop bind mounts don't always deliver inotify events
+      # reliably (esp. macOS/Windows) — polling guarantees hot reload works.
+      WATCHPACK_POLLING: "true"
+      CHOKIDAR_USEPOLLING: "true"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`frontend.localhost`)"
+      - "traefik.http.services.frontend.loadbalancer.server.port=3000"
+
+  # Optional: lets you reach the two services via backend.localhost /
+  # frontend.localhost instead of separate ports. Not required for dev —
+  # both services already publish directly to localhost:8000 / localhost:3000
+  # above, which is what the frontend/backend READMEs describe.
+  #
+  # KNOWN ISSUE (verified 24 Sep 2026): on a recent Docker Desktop
+  # (4.91.0 / Engine 29.8.0 tested here), Traefik's Docker-provider client
+  # fails to complete its handshake over the mounted socket — reproduces
+  # identically on both v2.9 and v3.2, and plain curl over the same socket
+  # works fine, so this is an environment/client-library incompatibility,
+  # not something fixable from this file. Routers never register and
+  # backend.localhost/frontend.localhost 404. Harmless — direct
+  # localhost:8000/localhost:3000 access above is unaffected — but don't
+  # rely on this service until upstream addresses it.
+  traefik:
+    image: traefik:v2.9
+    container_name: clausechain-dev-traefik
+    restart: unless-stopped
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "8090:80"    # moved off 8000 — backend already owns that host port
+      - "8080:8080"  # Traefik dashboard
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+volumes:
+  dev_postgres_data:
+  dev_frontend_node_modules:
+  dev_frontend_next:

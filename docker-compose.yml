@@ -1,0 +1,280 @@
+# ClauseChain — containerized deployment path.
+#
+# The production server (deploy/SERVER_EXECUTION_PLAN.md) runs bare-metal —
+# systemd + nginx + native Postgres/Redis, no Docker (App Dev Plan D0; the
+# old Docker/Dokploy stack there was deliberately torn down). This compose
+# file is a separate, self-contained deploy path for hosts where that isn't
+# the case. Same six services either way: nginx, frontend, backend (api),
+# engine-worker, postgres, redis.
+#
+# Quick start: ./start.sh (copies .env.example -> .env, generates secrets,
+# brings the stack up). Manual: cp .env.example .env && edit it, then
+# `docker compose up -d --build`.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-clausechain}
+      POSTGRES_USER: ${POSTGRES_USER:-clausechain}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-clausechain} -d ${POSTGRES_DB:-clausechain}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  # Local LLM server for CLAUSECHAIN_PROVIDER_PROFILE=local_fallback (the
+  # "key-free" engine path — see engine/configs/models.yaml). First start
+  # pulls qwen2.5:7b (~4-5GB, needs internet egress to the Ollama registry);
+  # cached in ollama_data after that.
+  ollama:
+    image: ollama/ollama:latest
+    restart: unless-stopped
+    volumes:
+      - ollama_data:/root/.ollama
+    healthcheck:
+      test: ["CMD-SHELL", "ollama list >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 10s
+      retries: 30
+      start_period: 20s
+
+  # One-shot: pulls the model onto the `ollama` server above. engine-worker/
+  # pipeline-seed just point OLLAMA_BASE_URL at that server — this container
+  # doesn't run one itself, it's the `ollama` CLI acting as a client.
+  ollama-pull:
+    image: ollama/ollama:latest
+    restart: "no"
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      OLLAMA_HOST: ollama:11434
+    entrypoint: ["ollama"]
+    command: ["pull", "${OLLAMA_MODEL:-qwen2.5:7b}"]
+
+  # One-shot: migrate, collect static, seed the public demo viewer, import
+  # the engine snapshot. `backend`/`engine-worker` wait for it to exit 0.
+  # engine_refresh is best-effort here — it fails on a fresh host before
+  # engine/data has been populated (see "Loading engine data" in the repo
+  # root README this compose file assumes, or deploy/DEPLOY.md section 2 for the
+  # bare-metal equivalent of that data-transfer step).
+  migrate:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment: &backend_env
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?set DJANGO_SECRET_KEY in .env}
+      JWT_SIGNING_KEY: ${JWT_SIGNING_KEY:?set JWT_SIGNING_KEY in .env}
+      DEBUG: ${DEBUG:-False}
+      ENVIRONMENT: ${ENVIRONMENT:-production}
+      APP_ORIGIN: ${APP_ORIGIN:-http://localhost}
+      PUBLIC_APP_URL: ${PUBLIC_APP_URL:-http://localhost}
+      TRUST_X_FORWARDED_PROTO: ${TRUST_X_FORWARDED_PROTO:-1}
+      # Django defaults this to True in production, which 301s every request
+      # to https:// — nothing in this compose file terminates TLS. Flip to
+      # true once a real cert sits in front of nginx (see .env.example).
+      SECURE_SSL_REDIRECT: ${SECURE_SSL_REDIRECT:-False}
+      DB_NAME: ${POSTGRES_DB:-clausechain}
+      DB_USER: ${POSTGRES_USER:-clausechain}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      USE_REDIS: "1"
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      CLAUSECHAIN_PROVIDER_PROFILE: ${CLAUSECHAIN_PROVIDER_PROFILE:-local_fallback}
+      OLLAMA_BASE_URL: http://ollama:11434
+      HF_HOME: /root/.cache/huggingface
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      GRAPH_BACKEND: ${GRAPH_BACKEND:-sqlite}
+      EMBEDDING_PROVIDER: ${EMBEDDING_PROVIDER:-openai}
+      OCR_PROVIDER: ${OCR_PROVIDER:-local}
+      OCR_ENDPOINT: ${OCR_ENDPOINT:-}
+      OCR_API_KEY: ${OCR_API_KEY:-}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_PUBLISHABLE_KEY: ${STRIPE_PUBLISHABLE_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      BKASH_APP_KEY: ${BKASH_APP_KEY:-}
+      BKASH_APP_SECRET: ${BKASH_APP_SECRET:-}
+      BKASH_USERNAME: ${BKASH_USERNAME:-}
+      BKASH_PASSWORD: ${BKASH_PASSWORD:-}
+      BKASH_BASE_URL: ${BKASH_BASE_URL:-https://tokenized.sandbox.bka.sh/v1.2.0-beta}
+      GOOGLE_OAUTH_CLIENT_ID: ${GOOGLE_OAUTH_CLIENT_ID:-}
+      GOOGLE_OAUTH_CLIENT_SECRET: ${GOOGLE_OAUTH_CLIENT_SECRET:-}
+      FACEBOOK_OAUTH_CLIENT_ID: ${FACEBOOK_OAUTH_CLIENT_ID:-}
+      FACEBOOK_OAUTH_CLIENT_SECRET: ${FACEBOOK_OAUTH_CLIENT_SECRET:-}
+      GITHUB_OAUTH_CLIENT_ID: ${GITHUB_OAUTH_CLIENT_ID:-}
+      GITHUB_OAUTH_CLIENT_SECRET: ${GITHUB_OAUTH_CLIENT_SECRET:-}
+    volumes: &engine_data_volumes
+      - backend_static:/srv/clausechain/backend/staticfiles
+      - backend_media:/srv/clausechain/backend/media
+      - backend_locks:/srv/clausechain/backend/var/locks
+      - hf_cache:/root/.cache/huggingface
+      - ./engine/data:/srv/clausechain/engine/data
+      - ./engine/outputs:/srv/clausechain/engine/outputs
+      - ./engine/logs:/srv/clausechain/engine/logs
+      - ./engine/submission:/srv/clausechain/engine/submission
+      - ./engine/reports:/srv/clausechain/engine/reports
+    command:
+      - sh
+      - -c
+      - >
+        python manage.py migrate &&
+        python manage.py collectstatic --noinput &&
+        python manage.py ensure_demo_viewer &&
+        (python manage.py engine_refresh || echo 'engine_refresh skipped — engine/data not populated yet, see deploy/DEPLOY.md section 2')
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    environment: *backend_env
+    volumes: *engine_data_volumes
+    healthcheck:
+      # 401 is the expected/healthy response here (no auth wall bypass) —
+      # same check deploy/DEPLOY.md section 6 uses to confirm the API is up.
+      test: ["CMD-SHELL", "test \"$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8001/api/auth/user/)\" = 401"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  engine-worker:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    environment: *backend_env
+    volumes: *engine_data_volumes
+    command: ["python", "manage.py", "run_engine_worker"]
+
+  # Non-blocking: backend/frontend/nginx do NOT depend on this, so the app is
+  # reachable immediately. Runs the engine pipeline for any of the 12
+  # economy/pillar combos engine_refresh needs that aren't already in
+  # engine/outputs/, then imports them — self-healing "no snapshot" without a
+  # manual command. Each run can be slow and, depending on
+  # CLAUSECHAIN_PROVIDER_PROFILE, call real LLM APIs; set AUTO_SEED_PIPELINE=false
+  # in .env to disable and do it yourself (see the docker compose exec
+  # instructions start.sh prints).
+  pipeline-seed:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      ollama-pull:
+        condition: service_completed_successfully
+    environment:
+      <<: *backend_env
+      AUTO_SEED_PIPELINE: ${AUTO_SEED_PIPELINE:-true}
+    volumes: *engine_data_volumes
+    command:
+      - sh
+      - -c
+      - >
+        if [ "$$AUTO_SEED_PIPELINE" = "false" ]; then
+          echo '[pipeline-seed] AUTO_SEED_PIPELINE=false, skipping.'; exit 0;
+        fi;
+        set -e;
+        cd /srv/clausechain/engine;
+        run_if_missing() {
+          out="outputs/$$1";
+          if [ -f "$$out/output.json" ]; then
+            echo "[pipeline-seed] $$out already present, skipping";
+            return 0;
+          fi;
+          echo "[pipeline-seed] running economy=$$2 pillar=$$3 -> $$out";
+          .venv/bin/python run.py --economy "$$2" --pillar "$$3" --out "$$out";
+        };
+        run_if_missing final_si_p6 SG 6;
+        run_if_missing final_si_p7 SG 7;
+        run_if_missing final_ma_p6 MY 6;
+        run_if_missing final_ma_p7 MY 7;
+        run_if_missing final_au_p6 AU 6;
+        run_if_missing final_au_p7 AU 7;
+        run_if_missing final_r2_th_p6 TH 6;
+        run_if_missing final_r2_th_p7 TH 7;
+        run_if_missing final_r2_in_p6 IN 6;
+        run_if_missing final_r2_in_p7 IN 7;
+        run_if_missing final_r2_id_p6 ID 6;
+        run_if_missing final_r2_id_p7 ID 7;
+        cd /srv/clausechain/backend;
+        python manage.py engine_refresh
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        BACKEND_URL: http://backend:8001
+        NEXT_PUBLIC_API_URL: /api
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      BACKEND_URL: http://backend:8001
+      NEXT_PUBLIC_API_URL: /api
+
+  nginx:
+    build:
+      context: ./deploy
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - backend
+      - frontend
+    ports:
+      - "8080:80"
+    volumes:
+      - backend_static:/srv/clausechain/backend/staticfiles:ro
+      - backend_media:/srv/clausechain/backend/media:ro
+      - ./engine/submission:/srv/clausechain/engine/submission:ro
+
+volumes:
+  postgres_data:
+  redis_data:
+  backend_static:
+  backend_media:
+  backend_locks:
+  ollama_data:
+  hf_cache:
