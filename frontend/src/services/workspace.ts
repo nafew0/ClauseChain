@@ -204,6 +204,20 @@ export async function getEngineActions(): Promise<EngineActionResponse> {
   return data
 }
 
+export async function cancelEngineAction(actionId: string): Promise<EngineAction> {
+  if (WORKSPACE_FIXTURE_MODE) return rejectFixtureWrite()
+  const { data } = await api.post<EngineAction>(`/workspace/engine/actions/${actionId}/cancel/`)
+  return data
+}
+
+export async function cancelAllEngineActions(
+  mode: RunMode
+): Promise<{ mode: RunMode; cancelled: number; stopping: number; cleared: number }> {
+  if (WORKSPACE_FIXTURE_MODE) return rejectFixtureWrite()
+  const { data } = await api.post('/workspace/engine/actions/cancel-all/', { mode })
+  return data
+}
+
 export async function launchEngineAction(
   kind: 'replay' | 'refresh' | 'run',
   payload: { economy?: string; pillar?: 6 | 7; mode?: RunMode } = {}

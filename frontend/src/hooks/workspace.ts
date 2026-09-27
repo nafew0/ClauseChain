@@ -21,6 +21,8 @@ import {
   getRuns,
   getSubmission,
   getEngineActions,
+  cancelAllEngineActions,
+  cancelEngineAction,
   launchEngineAction,
   getSourceMatch,
   getSummary,
@@ -198,6 +200,40 @@ export function useEngineActions() {
       query.state.data?.results.some((action) => ['queued', 'running'].includes(action.status))
         ? 3_000
         : false,
+  })
+}
+
+/** Cancel one action, or (actionId omitted) cancel & clear everything in a run mode. */
+export function useCancelEngineActions() {
+  const queryClient = useQueryClient()
+  const { toast } = useToast()
+  return useMutation({
+    mutationFn: async ({ actionId, mode }: { actionId?: string; mode: RunMode }) =>
+      actionId ? { one: await cancelEngineAction(actionId) } : { all: await cancelAllEngineActions(mode) },
+    onSuccess: async (result) => {
+      if (result.one) {
+        toast({
+          title: result.one.status === 'cancelled' ? 'Action cancelled' : 'Stopping the run…',
+          description: result.one.status === 'cancelled'
+            ? `${result.one.kind} · ${result.one.id.slice(0, 8)} will not run.`
+            : 'The worker is stopping the pipeline process; this takes a few seconds.',
+          variant: 'success',
+          duration: 5_000,
+        })
+      } else if (result.all) {
+        const { cancelled, stopping, cleared } = result.all
+        toast({
+          title: 'Cancelled and cleared',
+          description: `${cancelled} cancelled${stopping ? `, ${stopping} stopping` : ''}, ${cleared} cleared from the list (kept in the audit log).`,
+          variant: 'success',
+          duration: 6_000,
+        })
+      }
+      await queryClient.invalidateQueries({ queryKey: workspaceKeys.all })
+    },
+    onError: (error) => {
+      toast({ title: 'Cancel failed', description: errorMessage(error), variant: 'error', duration: 7_000 })
+    },
   })
 }
 

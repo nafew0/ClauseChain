@@ -4,6 +4,7 @@ import { useState } from 'react'
 import {
   Activity,
   AlertTriangle,
+  Ban,
   CheckCircle2,
   ChevronDown,
   ChevronUp,
@@ -22,7 +23,7 @@ import { LazyMotion, MotionConfig, domAnimation, m } from 'motion/react'
 import { useAuth } from '@/contexts/AuthContext'
 import { RunModeTabs, useRunMode } from '@/components/workspace/RunModeTabs'
 import { SnapshotBanner } from '@/components/workspace/SnapshotBanner'
-import { useLaunchEngineAction, useRuns } from '@/hooks/workspace'
+import { useCancelEngineActions, useLaunchEngineAction, useRuns } from '@/hooks/workspace'
 import { cn } from '@/lib/utils'
 import type { EngineAction, EngineWorkerStatus, JsonValue, RunRecord } from '@/types/workspace'
 
@@ -54,13 +55,20 @@ function WorkerPill({ worker }: { worker: EngineWorkerStatus | undefined }) {
   return <span className={cn('run-worker-pill', worker.alive ? 'is-online' : worker.autostart ? 'is-standby' : 'is-offline')} title={title}><i />{label}</span>
 }
 
-function ActionState({ action }: { action: EngineAction }) {
-  const Icon = action.status === 'succeeded' ? CheckCircle2 : action.status === 'failed' ? XCircle : action.status === 'running' ? LoaderCircle : Clock3
+function actionTitle(action: EngineAction) {
+  const args = action.arguments as Record<string, unknown>
+  return action.kind === 'run' && args.economy ? `run · ${String(args.economy)} P${String(args.pillar)}` : action.kind
+}
+
+function ActionState({ action, onCancel, cancelling }: { action: EngineAction; onCancel?: () => void; cancelling?: boolean }) {
+  const stopping = action.status === 'running' && Boolean(action.cancel_requested_at)
+  const Icon = action.status === 'succeeded' ? CheckCircle2 : action.status === 'failed' ? XCircle : action.status === 'cancelled' ? Ban : action.status === 'running' ? LoaderCircle : Clock3
+  const active = action.status === 'queued' || action.status === 'running'
   return (
     <article className={cn('run-action', `state-${action.status}`)}>
       <Icon size={17} />
-      <div><strong>{action.kind}</strong><span>{action.requested_by} · {new Date(action.requested_at).toLocaleString()}</span></div>
-      <em>{action.status}</em>
+      <div><strong>{actionTitle(action)}</strong><span>{action.requested_by} · {new Date(action.requested_at).toLocaleString()}{action.cancelled_by ? ` · cancelled by ${action.cancelled_by}` : ''}</span></div>
+      <em>{stopping ? 'stopping…' : action.status}{onCancel && active && !stopping ? <button type="button" className="run-cancel" onClick={onCancel} disabled={cancelling}><Ban size={12} /> Cancel</button> : null}</em>
       {action.stdout || action.error ? <pre>{action.error || action.stdout}</pre> : null}
     </article>
   )
@@ -113,10 +121,20 @@ export default function RunsWorkbench() {
   const [mode, setMode] = useRunMode()
   const query = useRuns(mode)
   const launch = useLaunchEngineAction()
+  const cancel = useCancelEngineActions()
   const { user } = useAuth()
   const [economy, setEconomy] = useState('Singapore')
   const [pillar, setPillar] = useState<6 | 7>(6)
   const copy = MODE_COPY[mode]
+
+  const cancelOne = (action: EngineAction) => {
+    if (!window.confirm(`Cancel ${actionTitle(action)}? ${action.status === 'running' ? 'The running pipeline process will be stopped.' : 'It will not run.'}`)) return
+    cancel.mutate({ actionId: action.id, mode })
+  }
+  const cancelAll = () => {
+    if (!window.confirm(`Cancel every queued or running ${mode} action and clear finished ${mode} actions from this list? Finished runs stay in run history and the matrix; the records are kept in the audit log.`)) return
+    cancel.mutate({ mode })
+  }
 
   const queueRun = () => {
     if (!window.confirm(`Queue a real ${economy} Pillar ${pillar} ${mode} engine run? ${copy.confirm}`)) return
@@ -137,7 +155,7 @@ export default function RunsWorkbench() {
           {query.data.results.length
             ? <section className="run-grid">{query.data.results.map((run, index) => <RunCard key={run.run_name} run={run} index={index} />)}</section>
             : <section className="run-empty-state"><Server size={22} /><strong>No {mode} runs yet</strong><p>{mode === 'local' ? 'Launch a run above to process an economy and pillar on the open-weights model. Finished runs appear here and on the RDTII Matrix Local tab.' : 'No run envelopes in the active snapshot.'}</p></section>}
-          <section className="run-actions"><header><div><TerminalSquare size={18} /><span><strong>Engine worker actions</strong><small>Authoritative queued/running/done states with captured output{mode === 'local' ? ' · local runs only' : ''}.</small></span></div>{user?.is_superuser && mode === 'hybrid' ? <button onClick={() => launch.mutate({ kind: 'refresh' })} disabled={launch.isPending}><RotateCcw size={14} /> Refresh snapshot</button> : null}</header>{query.data.actions.length ? query.data.actions.map((action) => <ActionState action={action} key={action.id} />) : <p className="run-empty">No {mode} engine actions have been queued from the app.</p>}</section>
+          <section className="run-actions"><header><div><TerminalSquare size={18} /><span><strong>Engine worker actions</strong><small>Authoritative queued/running/done states with captured output{mode === 'local' ? ' · local runs only' : ''}.</small></span></div><div className="run-actions-buttons">{user?.is_superuser && query.data.actions.length ? <button className="run-cancel-all" onClick={cancelAll} disabled={cancel.isPending}><Ban size={14} /> Cancel &amp; clear all</button> : null}{user?.is_superuser && mode === 'hybrid' ? <button onClick={() => launch.mutate({ kind: 'refresh' })} disabled={launch.isPending}><RotateCcw size={14} /> Refresh snapshot</button> : null}</div></header>{query.data.actions.length ? query.data.actions.map((action) => <ActionState action={action} key={action.id} onCancel={user?.is_superuser ? () => cancelOne(action) : undefined} cancelling={cancel.isPending} />) : <p className="run-empty">No {mode} engine actions in the list.</p>}</section>
         </div>
       </MotionConfig>
     </LazyMotion>

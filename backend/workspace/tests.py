@@ -503,8 +503,8 @@ class WorkspaceApiTests(TestCase):
                 requested_by=admin,
             )
             with override_settings(ENGINE_ROOT=root, ENGINE_ALLOWLIST=allowlist), patch(
-                "workspace.engine_worker.subprocess.run",
-                return_value=SimpleNamespace(returncode=0, stdout="submission replay: 1", stderr=""),
+                "workspace.engine_worker.run_allowlisted",
+                return_value=(0, "submission replay: 1"),
             ), patch(
                 "workspace.engine_worker.import_snapshot",
                 return_value=(self.snapshot, False),
@@ -527,8 +527,8 @@ class WorkspaceApiTests(TestCase):
                 requested_by=admin,
             )
             with override_settings(ENGINE_ROOT=root, ENGINE_ALLOWLIST=allowlist), patch(
-                "workspace.engine_worker.subprocess.run",
-                return_value=SimpleNamespace(returncode=0, stdout="wrote outputs", stderr=""),
+                "workspace.engine_worker.run_allowlisted",
+                return_value=(0, "wrote outputs"),
             ), patch("workspace.engine_worker.import_snapshot") as auto_import:
                 execute_action(run_action)
                 run_action.refresh_from_db()
@@ -807,6 +807,72 @@ class WorkspaceApiTests(TestCase):
         ]
         self.assertTrue(review_state["correction_pending"])
 
+    def test_cancel_one_and_cancel_and_clear_all(self):
+        from .engine_worker import EngineActionCancelled
+
+        admin = self.make_user("cancel-admin", "Cancel Admin", "admin")
+        admin.is_superuser = True
+        admin.is_staff = True
+        admin.save(update_fields=("is_superuser", "is_staff"))
+        self.authenticate(self.citation)
+        queued = EngineAction.objects.create(
+            kind=EngineAction.Kind.RUN, requested_by=admin,
+            arguments_json={"action": "run_pipeline", "economy": "Singapore", "pillar": "6",
+                            "cc": "si", "mode": "local", "provider_profile": "local_openweights",
+                            "out_prefix": "local"},
+        )
+        self.assertEqual(
+            self.client.post(f"/api/workspace/engine/actions/{queued.pk}/cancel/").status_code, 403
+        )
+        self.authenticate(admin)
+
+        # Queued -> cancelled immediately, and it is no longer claimable.
+        response = self.client.post(f"/api/workspace/engine/actions/{queued.pk}/cancel/")
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual((response.data["status"], response.data["cancelled_by"]), ("cancelled", "Cancel Admin"))
+        self.assertEqual(self.client.post(f"/api/workspace/engine/actions/{queued.pk}/cancel/").status_code, 409)
+
+        # Running with a live worker -> stop request; the worker stops the process group.
+        running = EngineAction.objects.create(
+            kind=EngineAction.Kind.RUN, requested_by=admin, status=EngineAction.Status.RUNNING,
+            started_at=timezone.now(), arguments_json=queued.arguments_json,
+        )
+        with patch("workspace.views.worker_status",
+                   return_value={"alive": True, "current_action_id": str(running.pk)}):
+            response = self.client.post(f"/api/workspace/engine/actions/{running.pk}/cancel/")
+        self.assertEqual(response.data["status"], "running")
+        self.assertTrue(response.data["cancel_requested_at"])
+        with patch("workspace.engine_worker.run_allowlisted",
+                   side_effect=EngineActionCancelled("partial output")):
+            execute_action(running)
+        running.refresh_from_db()
+        self.assertEqual(running.status, EngineAction.Status.CANCELLED)
+        self.assertIn("Cancel Admin", running.error)
+
+        # Cancel & clear all (local tab): cancels active local work, hides finished
+        # local rows, leaves hybrid actions alone, keeps every row.
+        orphan = EngineAction.objects.create(
+            kind=EngineAction.Kind.RUN, requested_by=admin, status=EngineAction.Status.RUNNING,
+            started_at=timezone.now(), arguments_json=queued.arguments_json,
+        )
+        hybrid = EngineAction.objects.create(
+            kind=EngineAction.Kind.REPLAY, requested_by=admin, arguments_json={"action": "replay"},
+        )
+        # A live worker busy with something else is not running the orphan: close it directly.
+        with patch("workspace.views.worker_status",
+                   return_value={"alive": True, "current_action_id": None}):
+            response = self.client.post(
+                "/api/workspace/engine/actions/cancel-all/", {"mode": "local"}, format="json"
+            )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual((response.data["cancelled"], response.data["cleared"]), (1, 3))
+        orphan.refresh_from_db()
+        self.assertEqual(orphan.status, EngineAction.Status.CANCELLED)  # nobody running it: closed directly
+        self.assertEqual(self.client.get("/api/workspace/runs/?mode=local").data["actions"], [])
+        hybrid.refresh_from_db()
+        self.assertEqual(hybrid.status, EngineAction.Status.QUEUED)
+        self.assertEqual(EngineAction.objects.filter(pk__in=[queued.pk, running.pk, orphan.pk]).count(), 3)
+
     def test_queueing_starts_a_worker_only_when_none_is_alive(self):
         from datetime import timedelta
         from .models import EngineWorkerHeartbeat
@@ -924,8 +990,8 @@ class WorkspaceApiTests(TestCase):
             output.parent.mkdir(parents=True)
             output.write_text(json.dumps(envelope), encoding="utf-8")
             with override_settings(ENGINE_ROOT=root), patch(
-                "workspace.engine_worker.subprocess.run",
-                return_value=SimpleNamespace(returncode=0, stdout="wrote outputs", stderr=""),
+                "workspace.engine_worker.run_allowlisted",
+                return_value=(0, "wrote outputs"),
             ), patch("workspace.engine_worker.import_snapshot") as auto_import:
                 execute_action(action)
                 auto_import.assert_not_called()

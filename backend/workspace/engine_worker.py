@@ -1,8 +1,11 @@
 import hashlib
 import json
+import os
 import re
+import signal
 import socket
 import subprocess
+import time
 from datetime import timedelta
 from pathlib import Path
 
@@ -17,6 +20,56 @@ from .models import EngineAction
 
 class EngineWorkerError(RuntimeError):
     pass
+
+
+class EngineActionCancelled(RuntimeError):
+    pass
+
+
+CANCEL_POLL_SECONDS = 2.0
+
+
+def _stop_process_group(process):
+    """SIGTERM the whole group (the pipeline may have children), then SIGKILL."""
+    for sig, grace in ((signal.SIGTERM, 10), (signal.SIGKILL, 5)):
+        try:
+            os.killpg(process.pid, sig)
+        except ProcessLookupError:
+            return
+        try:
+            process.wait(timeout=grace)
+            return
+        except subprocess.TimeoutExpired:
+            continue
+
+
+def run_allowlisted(argv, timeout, should_cancel):
+    """Run the allowlisted command, polling for cancellation. Returns
+    (returncode, combined output); raises EngineActionCancelled or
+    subprocess.TimeoutExpired."""
+    process = subprocess.Popen(
+        argv,
+        cwd=settings.ENGINE_ROOT,
+        shell=False,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        start_new_session=True,  # own process group, so cancel stops all of it
+    )
+    deadline = time.monotonic() + timeout
+    while True:
+        try:
+            stdout, stderr = process.communicate(timeout=CANCEL_POLL_SECONDS)
+            return process.returncode, "\n".join(part for part in (stdout, stderr) if part)
+        except subprocess.TimeoutExpired:
+            cancelled = should_cancel()
+            if cancelled or time.monotonic() > deadline:
+                _stop_process_group(process)
+                stdout, stderr = process.communicate()
+                output = "\n".join(part for part in (stdout, stderr) if part)
+                if cancelled:
+                    raise EngineActionCancelled(output)
+                raise subprocess.TimeoutExpired(argv, timeout, output=output)
 
 
 ACTION_ARTIFACTS = {
@@ -157,20 +210,17 @@ def claim_next_action(worker_id=None):
 def execute_action(action):
     action_name, argv, timeout = build_allowlisted_command(action.arguments_json)
     try:
-        completed = subprocess.run(
+        returncode, output = run_allowlisted(
             argv,
-            cwd=settings.ENGINE_ROOT,
-            shell=False,
-            capture_output=True,
-            text=True,
-            timeout=timeout,
-            check=False,
+            timeout,
+            lambda: EngineAction.objects.filter(
+                pk=action.pk, cancel_requested_at__isnull=False
+            ).exists(),
         )
-        output = "\n".join(part for part in (completed.stdout, completed.stderr) if part)
         output = output[-100_000:]
-        if completed.returncode:
+        if returncode:
             raise EngineWorkerError(
-                f"Allowlisted command exited {completed.returncode}.\n{output}".strip()
+                f"Allowlisted command exited {returncode}.\n{output}".strip()
             )
         hashes = artifact_hashes(action_name, action.arguments_json)
         if action_name == "run_pipeline":
@@ -196,6 +246,11 @@ def execute_action(action):
         action.stdout = output
         action.result_hashes_json = hashes
         action.error = ""
+    except EngineActionCancelled as exc:
+        action.refresh_from_db(fields=("cancelled_by",))
+        action.status = EngineAction.Status.CANCELLED
+        action.stdout = str(exc)[-100_000:]
+        action.error = f"Cancelled by {action.cancelled_by or 'a user'} while running."
     except (OSError, subprocess.SubprocessError, EngineWorkerError, SnapshotImportError) as exc:
         action.status = EngineAction.Status.FAILED
         action.error = str(exc)[-20_000:]

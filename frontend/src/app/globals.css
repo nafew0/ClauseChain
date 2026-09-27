@@ -2421,3 +2421,10 @@
 .run-worker-pill.is-standby{border-color:#fbe6ad;background:#fffbeb;color:#92400e}
 .run-worker-pill.is-offline{border-color:#fecaca;background:#fef2f2;color:#b91c1c}
 .run-launch .run-worker-pill{flex-direction:row}
+.run-actions-buttons{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.run-actions button.run-cancel-all{background:white;border-color:#fecaca;color:#b91c1c}
+.run-actions button.run-cancel-all:hover{background:#fef2f2}
+.run-action em{display:inline-flex;align-items:center;gap:8px}
+.run-actions .run-action button.run-cancel{min-height:26px;padding:0 8px;border-radius:7px;background:white;border:1px solid #fecaca;color:#b91c1c;font:700 9px var(--cc-font-mono);text-transform:uppercase;letter-spacing:.04em}
+.run-actions .run-action button.run-cancel:hover{background:#fef2f2}
+.run-action.state-cancelled > svg{color:var(--cc-ink-500)}

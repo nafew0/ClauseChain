@@ -562,6 +562,7 @@ class EngineAction(models.Model):
         RUNNING = "running", "Running"
         SUCCEEDED = "succeeded", "Succeeded"
         FAILED = "failed", "Failed"
+        CANCELLED = "cancelled", "Cancelled"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     kind = models.CharField(max_length=16, choices=Kind.choices)
@@ -582,6 +583,13 @@ class EngineAction(models.Model):
     # something to show and compare. Never feeds the reviewed snapshot.
     result_json = models.JSONField(default=dict, blank=True)
     error = models.TextField(blank=True, default="")
+    # Cancellation: queued actions are cancelled directly; for a running one the
+    # worker sees cancel_requested_at and stops the process group.
+    cancel_requested_at = models.DateTimeField(null=True, blank=True)
+    cancelled_by = models.CharField(max_length=255, blank=True, default="")
+    # "Clear" hides a finished action from the worker-action list; the row is
+    # kept as the audit record (and any run results stay visible).
+    cleared_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         ordering = ["-requested_at"]

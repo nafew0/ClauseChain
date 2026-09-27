@@ -12,6 +12,8 @@ from .views import (
     EngineReplayView,
     EngineRunView,
     EngineWorkerStatusView,
+    EngineActionCancelView,
+    EngineActionCancelAllView,
     ProofAssetView,
     DecisionHistoryView,
     FindingBulkDecisionView,
@@ -88,6 +90,8 @@ urlpatterns = [
     path("engine/replay/", EngineReplayView.as_view(), name="engine_replay"),
     path("engine/run/", EngineRunView.as_view(), name="engine_run"),
     path("engine/worker/", EngineWorkerStatusView.as_view(), name="engine_worker"),
+    path("engine/actions/cancel-all/", EngineActionCancelAllView.as_view(), name="engine_cancel_all"),
+    path("engine/actions/<uuid:action_id>/cancel/", EngineActionCancelView.as_view(), name="engine_cancel"),
     path("decisions/findings/", FindingDecisionView.as_view(), name="finding_decision"),
     path(
         "decisions/findings/bulk/",

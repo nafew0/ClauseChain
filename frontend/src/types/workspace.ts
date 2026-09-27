@@ -396,7 +396,7 @@ export interface EngineWorkerStatus {
 export interface EngineAction {
   id: string
   kind: 'refresh' | 'replay' | 'run'
-  status: 'queued' | 'running' | 'succeeded' | 'failed'
+  status: 'queued' | 'running' | 'succeeded' | 'failed' | 'cancelled'
   arguments: JsonObject
   mode: RunMode
   requested_by: string
@@ -406,6 +406,9 @@ export interface EngineAction {
   stdout: string
   result_hashes: JsonObject
   error: string
+  /** set while a running action is being stopped */
+  cancel_requested_at: string | null
+  cancelled_by: string
   /** present on the queue response: worker status after ensuring one runs */
   worker?: EngineWorkerStatus
 }

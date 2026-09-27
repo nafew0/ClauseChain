@@ -1054,7 +1054,7 @@ class RunsView(APIView):
                 "champion": champion,
                 "actions": [
                     serialize_engine_action(action)
-                    for action in actions_for_mode(mode)[:20]
+                    for action in actions_for_mode(mode).filter(cleared_at__isnull=True)[:20]
                 ],
                 "worker": worker_status(),
                 "can_launch": request.user.is_superuser,
@@ -1286,6 +1286,10 @@ def serialize_engine_action(action):
         "stdout": action.stdout,
         "result_hashes": action.result_hashes_json,
         "error": action.error,
+        "cancel_requested_at": (
+            action.cancel_requested_at.isoformat() if action.cancel_requested_at else None
+        ),
+        "cancelled_by": action.cancelled_by,
     }
 
 
@@ -1326,6 +1330,76 @@ class EngineActionCreateView(APIView):
             serialize_engine_action(action) | {"worker": worker},
             status=status.HTTP_202_ACCEPTED,
         )
+
+
+ACTIVE_STATUSES = (EngineAction.Status.QUEUED, EngineAction.Status.RUNNING)
+
+
+def worker_is_running(action, status):
+    """True only when a live worker reports THIS action as its current one."""
+    return bool(status.get("alive")) and status.get("current_action_id") == str(action.pk)
+
+
+def cancel_action(action, user, *, worker_running_it):
+    """Cancel one queued/running action (caller holds the row lock).
+
+    Queued -> cancelled now. Running -> a stop request the worker executing it
+    acts on within seconds. If no live worker is executing it (worker restarted
+    or crashed mid-run), nothing will ever act on a request, so it is closed
+    here instead of waiting for the lease to expire and the action to re-run."""
+    now = timezone.now()
+    action.cancelled_by = user.full_name or user.email
+    if action.status == EngineAction.Status.QUEUED or not worker_running_it:
+        action.status = EngineAction.Status.CANCELLED
+        action.finished_at = now
+        action.lease_expires_at = None
+        action.error = f"Cancelled by {action.cancelled_by} before it ran." if not action.started_at \
+            else f"Cancelled by {action.cancelled_by}; no worker was running it."
+        action.save(update_fields=("status", "finished_at", "lease_expires_at", "error", "cancelled_by"))
+    else:
+        action.cancel_requested_at = now
+        action.save(update_fields=("cancel_requested_at", "cancelled_by"))
+    return action
+
+
+class EngineActionCancelView(APIView):
+    permission_classes = [IsSuperuserPermission]
+
+    def post(self, request, action_id):
+        status_now = worker_status()
+        with transaction.atomic():
+            action = get_object_or_404(EngineAction.objects.select_for_update(), pk=action_id)
+            if action.status not in ACTIVE_STATUSES:
+                raise DecisionConflict(f"This action already {action.status}.")
+            cancel_action(action, request.user,
+                          worker_running_it=worker_is_running(action, status_now))
+        return Response(serialize_engine_action(action))
+
+
+class EngineActionCancelAllView(APIView):
+    """Cancel everything queued/running in one run mode and clear that mode's
+    finished actions from the list (rows are kept; results stay visible)."""
+
+    permission_classes = [IsSuperuserPermission]
+
+    def post(self, request):
+        mode = request_mode(request, request.data)
+        status_now = worker_status()
+        now = timezone.now()
+        with transaction.atomic():
+            active = list(actions_for_mode(mode).select_for_update().filter(status__in=ACTIVE_STATUSES))
+            for action in active:
+                cancel_action(action, request.user,
+                              worker_running_it=worker_is_running(action, status_now))
+            cleared = actions_for_mode(mode).filter(cleared_at__isnull=True).exclude(
+                status__in=ACTIVE_STATUSES
+            ).update(cleared_at=now)
+        return Response({
+            "mode": mode,
+            "cancelled": sum(1 for action in active if action.status == EngineAction.Status.CANCELLED),
+            "stopping": sum(1 for action in active if action.status == EngineAction.Status.RUNNING),
+            "cleared": cleared,
+        })
 
 
 class EngineWorkerStatusView(APIView):
