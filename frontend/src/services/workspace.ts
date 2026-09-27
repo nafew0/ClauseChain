@@ -31,6 +31,7 @@ import type {
   ReviewQueueParams,
   ReviewQueueResponse,
   ReviewContext,
+  EngineActionEventsPage,
   RunMode,
   RunModeInfo,
   RunsResponse,
@@ -201,6 +202,13 @@ export async function getSubmission(
 export async function getEngineActions(): Promise<EngineActionResponse> {
   if (WORKSPACE_FIXTURE_MODE) return { results: [] }
   const { data } = await api.get<EngineActionResponse>('/workspace/engine/actions/')
+  return data
+}
+
+export async function getEngineActionEvents(actionId: string, after = 0): Promise<EngineActionEventsPage> {
+  const { data } = await api.get<EngineActionEventsPage>(`/workspace/engine/actions/${actionId}/events/`, {
+    params: { after },
+  })
   return data
 }
 

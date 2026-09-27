@@ -1402,6 +1402,30 @@ class EngineActionCancelAllView(APIView):
         })
 
 
+class EngineActionEventsView(APIView):
+    """Live run console: events after ``?after=<seq>`` (max 500 per poll)."""
+
+    def get(self, request, action_id):
+        action = get_object_or_404(EngineAction, pk=action_id)
+        try:
+            after = int(request.query_params.get("after") or 0)
+        except ValueError:
+            raise ValidationError({"after": "Must be an integer sequence number."})
+        rows = list(action.events.filter(seq__gt=after).order_by("seq")[:500])
+        return Response({
+            "action_id": str(action.pk),
+            "status": action.status,
+            "cancel_requested_at": action.cancel_requested_at.isoformat() if action.cancel_requested_at else None,
+            "events": [
+                {"seq": row.seq, "ts": row.ts.isoformat(), "stage": row.stage, "label": row.label,
+                 "level": row.level, "message": row.message, "detail": row.detail}
+                for row in rows
+            ],
+            "last_seq": rows[-1].seq if rows else after,
+            "more": len(rows) == 500,
+        })
+
+
 class EngineWorkerStatusView(APIView):
     def get(self, request):
         return Response(worker_status())

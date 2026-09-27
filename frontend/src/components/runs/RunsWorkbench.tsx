@@ -21,6 +21,7 @@ import {
 import { LazyMotion, MotionConfig, domAnimation, m } from 'motion/react'
 
 import { useAuth } from '@/contexts/AuthContext'
+import { LiveConsole } from '@/components/runs/LiveConsole'
 import { RunModeTabs, useRunMode } from '@/components/workspace/RunModeTabs'
 import { SnapshotBanner } from '@/components/workspace/SnapshotBanner'
 import { useCancelEngineActions, useLaunchEngineAction, useRuns } from '@/hooks/workspace'
@@ -64,12 +65,15 @@ function ActionState({ action, onCancel, cancelling }: { action: EngineAction; o
   const stopping = action.status === 'running' && Boolean(action.cancel_requested_at)
   const Icon = action.status === 'succeeded' ? CheckCircle2 : action.status === 'failed' ? XCircle : action.status === 'cancelled' ? Ban : action.status === 'running' ? LoaderCircle : Clock3
   const active = action.status === 'queued' || action.status === 'running'
+  const [logOpen, setLogOpen] = useState(false)
+  const showLog = action.kind === 'run' && (active || logOpen)
   return (
     <article className={cn('run-action', `state-${action.status}`)}>
       <Icon size={17} />
       <div><strong>{actionTitle(action)}</strong><span>{action.requested_by} · {new Date(action.requested_at).toLocaleString()}{action.cancelled_by ? ` · cancelled by ${action.cancelled_by}` : ''}</span></div>
-      <em>{stopping ? 'stopping…' : action.status}{onCancel && active && !stopping ? <button type="button" className="run-cancel" onClick={onCancel} disabled={cancelling}><Ban size={12} /> Cancel</button> : null}</em>
-      {action.stdout || action.error ? <pre>{action.error || action.stdout}</pre> : null}
+      <em>{stopping ? 'stopping…' : action.status}{action.kind === 'run' && !active ? <button type="button" className="run-log-toggle" onClick={() => setLogOpen((open) => !open)}>{logOpen ? 'Hide log' : 'Show log'}</button> : null}{onCancel && active && !stopping ? <button type="button" className="run-cancel" onClick={onCancel} disabled={cancelling}><Ban size={12} /> Cancel</button> : null}</em>
+      {showLog ? <LiveConsole actionId={action.id} live={active} /> : null}
+      {(action.stdout || action.error) && !active ? <pre>{action.error || action.stdout}</pre> : null}
     </article>
   )
 }

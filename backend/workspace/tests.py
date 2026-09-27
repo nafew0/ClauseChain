@@ -807,6 +807,41 @@ class WorkspaceApiTests(TestCase):
         ]
         self.assertTrue(review_state["correction_pending"])
 
+    def test_run_events_stream_from_engine_log_to_console_endpoint(self):
+        admin = self.make_user("events-admin", "Events Admin", "admin")
+        self.authenticate(self.citation)
+        action = EngineAction.objects.create(
+            kind=EngineAction.Kind.RUN, requested_by=admin,
+            arguments_json={"action": "run_pipeline", "economy": "Singapore", "pillar": "6", "cc": "si",
+                            "mode": "local", "provider_profile": "local_openweights", "out_prefix": "local"},
+        )
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+
+            def fake_run(argv, timeout, should_cancel, env=None, on_poll=None):
+                log = Path(env["CLAUSECHAIN_EVENT_LOG"])
+                lines = [json.dumps({"seq": i, "ts": 1790000000 + i, "stage": stage, "label": "P6-I4",
+                                     "message": msg, "detail": "prompt text" if stage == "llm" else ""})
+                         for i, (stage, msg) in enumerate([("start", "Singapore P6"), ("llm", "-> model"),
+                                                           ("done", "finished")], start=1)]
+                log.write_text("\n".join(lines[:2]) + "\n" + lines[2][:10])  # last line half-written
+                on_poll()
+                self.assertEqual(action.events.count(), 2)
+                log.write_text("\n".join(lines) + "\n")
+                return 0, "ok"
+
+            with override_settings(ENGINE_ROOT=root), patch(
+                "workspace.engine_worker.run_allowlisted", side_effect=fake_run
+            ):
+                execute_action(action)
+        page = self.client.get(f"/api/workspace/engine/actions/{action.pk}/events/").data
+        self.assertEqual([e["stage"] for e in page["events"]], ["start", "llm", "done"])
+        self.assertEqual(page["events"][1]["detail"], "prompt text")
+        self.assertEqual(page["last_seq"], 3)
+        later = self.client.get(f"/api/workspace/engine/actions/{action.pk}/events/?after=2").data
+        self.assertEqual([e["seq"] for e in later["events"]], [3])
+        self.assertEqual(self.client.get(f"/api/workspace/engine/actions/{action.pk}/events/?after=x").status_code, 400)
+
     def test_cancel_one_and_cancel_and_clear_all(self):
         from .engine_worker import EngineActionCancelled
 

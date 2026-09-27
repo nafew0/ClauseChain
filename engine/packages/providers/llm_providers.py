@@ -50,9 +50,13 @@ class OpenAIChatProvider:
     def _call(self, prompt: str, prompt_cache_key: str | None = None) -> str:
         import time as _time
 
+        from packages.core import progress
+
         api_key = os.getenv(self.api_key_env)
         if not api_key:
             raise RuntimeError(f"{self.api_key_env} is not set")
+        progress.emit("llm", f"→ {self.model} · prompt {len(prompt):,} chars", detail=prompt)
+        started = _time.time()
         last_error: Exception | None = None
         for attempt in range(1 + len(self.RETRY_BACKOFFS_S)):
             try:
@@ -96,11 +100,22 @@ class OpenAIChatProvider:
                         self.last_usage.get("completion_tokens", 0),
                         cached_input_tokens=details.get("cached_tokens", 0),
                     )
-                return payload["choices"][0]["message"]["content"]
+                content = payload["choices"][0]["message"]["content"]
+                usage = self.last_usage or {}
+                progress.emit(
+                    "llm",
+                    f"← {self.model} · {_time.time() - started:.1f}s · "
+                    f"{usage.get('prompt_tokens', '?')} in / {usage.get('completion_tokens', '?')} out tokens",
+                    detail=content,
+                )
+                return content
             except (httpx.HTTPStatusError, httpx.TransportError) as error:
                 last_error = error
                 if attempt < len(self.RETRY_BACKOFFS_S):
+                    progress.emit("llm", f"retry {attempt + 1} after {type(error).__name__}: "
+                                         f"{str(error)[:120]}", level="warn")
                     _time.sleep(self.RETRY_BACKOFFS_S[attempt])
+        progress.emit("llm", f"FAILED {self.model}: {str(last_error)[:200]}", level="error")
         raise last_error  # type: ignore[misc]
 
     def complete(self, prompt: str, schema: type[BaseModel], *,
@@ -130,12 +145,23 @@ class OpenAIChatProvider:
                         for p, k in zip(prompts, keys, strict=True)]
             from concurrent.futures import ThreadPoolExecutor
 
-            def invoke(item):
-                prompt, key = item
+            import contextvars
+
+            from packages.core import progress
+
+            base_label = progress.current_label()
+            total = len(prompts)
+
+            def invoke(index, prompt, key):
+                # Each task runs in its own copy of the caller's context, so the
+                # indicator/stage label survives the thread hop.
+                progress.set_label(f"{base_label} {index + 1}/{total}".strip())
                 return self.complete(prompt, schema, prompt_cache_key=key)
 
             with ThreadPoolExecutor(max_workers=min(workers, len(prompts))) as pool:
-                return list(pool.map(invoke, zip(prompts, keys, strict=True)))
+                futures = [pool.submit(contextvars.copy_context().run, invoke, index, prompt, key)
+                           for index, (prompt, key) in enumerate(zip(prompts, keys, strict=True))]
+                return [future.result() for future in futures]
 
         if (os.getenv("CLAUSECHAIN_OPENAI_BATCH") != "1" or len(prompts) < 2
                 or self._batch_available is False):

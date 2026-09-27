@@ -186,10 +186,15 @@ Return one decision per candidate, using each candidate's index number."""
                                          prompt_cache_keys=[cache_key] * len(prompts))
     else:
         results = [_complete(llm_bulk, prompt, ScreenBatch, cache_key) for prompt in prompts]
-    for batch, result in zip(batches, results, strict=True):
-        for decision in result.decisions:
-            if decision.relevant and 0 <= decision.candidate_index < len(batch):
-                survivors.append(batch[decision.candidate_index])
+    from packages.core import progress
+
+    for number, (batch, result) in enumerate(zip(batches, results, strict=True), start=1):
+        kept = [batch[d.candidate_index] for d in result.decisions
+                if d.relevant and 0 <= d.candidate_index < len(batch)]
+        survivors.extend(kept)
+        progress.emit("screen", f"batch {number}/{len(batches)}: {len(kept)} of {len(batch)} kept",
+                      detail="\n".join(f"{c.props.get('law_name', '')[:60]} {c.props.get('article_section', '')}"
+                                       for c in kept))
     return survivors
 
 

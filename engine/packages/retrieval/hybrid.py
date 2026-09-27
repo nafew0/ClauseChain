@@ -88,11 +88,18 @@ class EmbeddingCache:
 
     def ensure(self, items: list[tuple[str, str]]) -> None:
         """items = [(provision_id, text)]; embeds only the missing ones, in chunked batches."""
+        from packages.core import progress
+
         missing = [(pid, text) for pid, text in items if self._key(pid, text) not in self._cache]
         if not missing:
+            progress.emit("embed", f"{len(items):,} provision vectors already cached")
             return
+        batches = (len(missing) + self.BATCH - 1) // self.BATCH
+        progress.emit("embed", f"embedding {len(missing):,} new provisions with "
+                               f"{getattr(self._embedder, 'model', '?')} ({batches} batches)")
         for start in range(0, len(missing), self.BATCH):
             chunk = missing[start:start + self.BATCH]
+            progress.emit("embed", f"batch {start // self.BATCH + 1}/{batches} ({len(chunk)} texts)")
             vectors = self._embedder.embed([self._sanitize(text) for _, text in chunk])
             for (pid, text), vec in zip(chunk, vectors):
                 self._cache[self._key(pid, text)] = vec
@@ -114,7 +121,11 @@ class EmbeddingCache:
         every economy/pillar run.
         """
         unique = list(dict.fromkeys(q.strip() for q in queries if q.strip()))
+        from packages.core import progress
+
         missing = [query for query in unique if self._query_key(query) not in self._cache]
+        progress.emit("embed", f"{len(unique)} search queries for this pillar "
+                               f"({len(missing)} new to embed)", detail="\n".join(unique))
         if not missing:
             return
         vectors = self._embedder.embed([self._sanitize(query) for query in missing])

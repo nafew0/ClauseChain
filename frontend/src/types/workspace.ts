@@ -381,6 +381,25 @@ export interface RunModeInfo {
   models: string
 }
 
+export interface EngineActionEvent {
+  seq: number
+  ts: string
+  stage: string
+  label: string
+  level: 'info' | 'warn' | 'error' | string
+  message: string
+  detail: string
+}
+
+export interface EngineActionEventsPage {
+  action_id: string
+  status: EngineAction['status']
+  cancel_requested_at: string | null
+  events: EngineActionEvent[]
+  last_seq: number
+  more: boolean
+}
+
 export interface EngineWorkerStatus {
   alive: boolean
   autostart: boolean

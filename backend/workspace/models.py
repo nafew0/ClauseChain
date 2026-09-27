@@ -535,6 +535,26 @@ class Release(models.Model):
         ordering = ["-created_at"]
 
 
+class EngineActionEvent(models.Model):
+    """One live progress line of an engine action (run console), copied by the
+    worker from the engine's CLAUSECHAIN_EVENT_LOG while the action runs."""
+
+    action = models.ForeignKey("EngineAction", on_delete=models.CASCADE, related_name="events")
+    seq = models.PositiveIntegerField()
+    ts = models.DateTimeField()
+    stage = models.CharField(max_length=32)
+    label = models.CharField(max_length=160, blank=True, default="")
+    level = models.CharField(max_length=8, default="info")
+    message = models.TextField()
+    detail = models.TextField(blank=True, default="")
+
+    class Meta:
+        ordering = ["action", "seq"]
+        constraints = [
+            models.UniqueConstraint(fields=["action", "seq"], name="workspace_action_event_seq_uniq")
+        ]
+
+
 class EngineWorkerHeartbeat(models.Model):
     """Liveness signal written by run_engine_worker every few seconds (also
     while an action executes), read by the API to show worker status and to

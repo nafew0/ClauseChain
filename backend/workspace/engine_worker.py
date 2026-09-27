@@ -15,7 +15,7 @@ from django.db.models import Q
 from django.utils import timezone
 
 from .importer import SnapshotImportError, import_snapshot
-from .models import EngineAction
+from .models import EngineAction, EngineActionEvent
 
 
 class EngineWorkerError(RuntimeError):
@@ -43,7 +43,47 @@ def _stop_process_group(process):
             continue
 
 
-def run_allowlisted(argv, timeout, should_cancel):
+def event_log_path(action):
+    return settings.ENGINE_ROOT / "logs" / "events" / f"{action.pk}.jsonl"
+
+
+class EventTail:
+    """Copies new JSON lines from the engine's event log into EngineActionEvent."""
+
+    def __init__(self, action, path):
+        self.action, self.path, self.offset = action, path, 0
+
+    def pump(self):
+        from datetime import datetime, timezone as dt_timezone
+
+        try:
+            with self.path.open("rb") as handle:
+                handle.seek(self.offset)
+                chunk = handle.read()
+        except OSError:
+            return 0
+        if not chunk:
+            return 0
+        complete = chunk[: chunk.rfind(b"\n") + 1]  # never ingest a half-written line
+        self.offset += len(complete)
+        rows = []
+        for raw in complete.decode("utf-8", errors="replace").splitlines():
+            try:
+                event = json.loads(raw)
+            except json.JSONDecodeError:
+                continue
+            rows.append(EngineActionEvent(
+                action=self.action, seq=int(event.get("seq") or 0),
+                ts=datetime.fromtimestamp(float(event.get("ts") or 0), tz=dt_timezone.utc),
+                stage=str(event.get("stage") or "")[:32], label=str(event.get("label") or "")[:160],
+                level=str(event.get("level") or "info")[:8], message=str(event.get("message") or ""),
+                detail=str(event.get("detail") or ""),
+            ))
+        EngineActionEvent.objects.bulk_create(rows, ignore_conflicts=True)
+        return len(rows)
+
+
+def run_allowlisted(argv, timeout, should_cancel, env=None, on_poll=None):
     """Run the allowlisted command, polling for cancellation. Returns
     (returncode, combined output); raises EngineActionCancelled or
     subprocess.TimeoutExpired."""
@@ -55,6 +95,7 @@ def run_allowlisted(argv, timeout, should_cancel):
         stderr=subprocess.PIPE,
         text=True,
         start_new_session=True,  # own process group, so cancel stops all of it
+        env=env,
     )
     deadline = time.monotonic() + timeout
     while True:
@@ -62,6 +103,8 @@ def run_allowlisted(argv, timeout, should_cancel):
             stdout, stderr = process.communicate(timeout=CANCEL_POLL_SECONDS)
             return process.returncode, "\n".join(part for part in (stdout, stderr) if part)
         except subprocess.TimeoutExpired:
+            if on_poll:
+                on_poll()
             cancelled = should_cancel()
             if cancelled or time.monotonic() > deadline:
                 _stop_process_group(process)
@@ -210,13 +253,22 @@ def claim_next_action(worker_id=None):
 def execute_action(action):
     action_name, argv, timeout = build_allowlisted_command(action.arguments_json)
     try:
-        returncode, output = run_allowlisted(
-            argv,
-            timeout,
-            lambda: EngineAction.objects.filter(
-                pk=action.pk, cancel_requested_at__isnull=False
-            ).exists(),
-        )
+        events_path = event_log_path(action)
+        events_path.parent.mkdir(parents=True, exist_ok=True)
+        tail = EventTail(action, events_path)
+        try:
+            returncode, output = run_allowlisted(
+                argv,
+                timeout,
+                lambda: EngineAction.objects.filter(
+                    pk=action.pk, cancel_requested_at__isnull=False
+                ).exists(),
+                env={**os.environ, "CLAUSECHAIN_EVENT_LOG": str(events_path),
+                     "PYTHONUNBUFFERED": "1"},
+                on_poll=tail.pump,
+            )
+        finally:
+            tail.pump()
         output = output[-100_000:]
         if returncode:
             raise EngineWorkerError(
