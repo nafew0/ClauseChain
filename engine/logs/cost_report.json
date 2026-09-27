@@ -2844,5 +2844,32 @@
   "economy": "Malaysia",
   "pillar": 6,
   "elapsed_seconds": 769.5
+ },
+ {
+  "run_id": "run-sg-p6-1790528026",
+  "at": "2026-09-27T17:09:45.256674+00:00",
+  "models": {
+   "bge-m3": {
+    "input_tokens": 1310405,
+    "cached_input_tokens": 0,
+    "output_tokens": 0,
+    "calls": 112,
+    "usd": 0.0,
+    "priced": false
+   },
+   "unsloth/Qwen3.8-27B-NVFP4": {
+    "input_tokens": 275987,
+    "cached_input_tokens": 0,
+    "output_tokens": 66892,
+    "calls": 146,
+    "usd": 0.0,
+    "priced": false
+   }
+  },
+  "total_usd": 0.0,
+  "note": "measured from real API usage objects; prices per 1M tokens (PRICES)",
+  "economy": "Singapore",
+  "pillar": 6,
+  "elapsed_seconds": 958.7
  }
 ]
