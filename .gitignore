@@ -77,3 +77,16 @@ Frontend prototype design request/
 Frontend prototype design request.zip
 
 /graphify-out
+
+# Private: the repo is public. Strategy, pitch prep, participant details,
+# organizer materials, local tool config and generated run/bench outputs stay local.
+/.claude/
+/ClauseChain_Final_Round_Plan.md
+/ClauseChain_*Pitch_QA*.md
+/ClauseChain_Zone3_Override_Defense.md
+/Hackthon_Knowledge/
+/Team*Participant*Information*.docx
+/docs/pitch/
+/engine/logs/events/
+/engine/reports/ocr_bench_unlimited/
+/engine/ui_export.zip
