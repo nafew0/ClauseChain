@@ -16,6 +16,7 @@ import {
   Table2,
   Wifi,
   GitBranch,
+  GitCompareArrows,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -39,6 +40,7 @@ export const WORKSPACE_NAV_ITEMS: WorkspaceNavItem[] = [
   { href: '/source-status', icon: Network, label: 'Source Status', state: 'prototype', section: 'workspace' },
   { href: '/benchmark', icon: Gauge, label: 'Benchmark', state: 'prototype', section: 'workspace' },
   { href: '/matrix', icon: Table2, label: 'RDTII Matrix', state: 'live', section: 'workspace' },
+  { href: '/comparison', icon: GitCompareArrows, label: 'Model Comparison', state: 'live', section: 'workspace' },
   { href: '/ledger', icon: BookOpen, label: 'Ledger', state: 'live', section: 'workspace' },
   { href: '/raw-data', icon: Braces, label: 'Raw Data', state: 'live', section: 'workspace' },
   { href: '/knowledge-graph', icon: Share2, label: 'Knowledge Graph', state: 'readonly', section: 'workspace' },

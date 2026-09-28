@@ -120,7 +120,11 @@ ACTION_ARTIFACTS = {
         "submission/consolidated_final.csv",
         "submission/consolidated_final.json",
     ),
-    "refresh_payload": ("ui_export.zip",),
+    "refresh_payload": (
+        "ui_export.zip",
+        "submission/consolidated.json",
+        "submission/review/decisions.template.json",
+    ),
 }
 
 
@@ -189,12 +193,11 @@ def run_output_path(arguments):
     return f"outputs/{prefix}_{arguments['cc']}_p{arguments['pillar']}/output.json"
 
 
-# Heavy proof/debug fields dropped from the stored copy; the full envelope stays
-# on disk as the immutable artifact whose hash is recorded.
-ENVELOPE_DROP_FIELDS = (
-    "raw_context", "citation_proof", "search_coverage_manifest", "graph_path",
-    "status_evidence_record", "review",
-)
+# Debug fields dropped from the stored copy; the full envelope stays on disk as
+# the immutable artifact whose hash is recorded. Proof, status record and search
+# coverage are kept: Local mode reviews straight from this copy, and the next run
+# of the same economy/pillar overwrites the file on disk.
+ENVELOPE_DROP_FIELDS = ("raw_context", "graph_path", "review")
 
 
 def compact_envelope(envelope):

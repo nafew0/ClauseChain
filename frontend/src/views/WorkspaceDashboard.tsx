@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import WorkspaceShell from '@/components/clausechain/WorkspaceShell'
 import { PageUnavailable, SnapshotBanner, TruthBadge } from '@/components/clausechain/TruthState'
+import { PageModeTabs } from '@/components/workspace/RunModeTabs'
 import { useSummary } from '@/hooks/workspace'
 import { friendlyFailure } from '@/lib/readiness'
 import type { WorkspaceQueue } from '@/types/workspace'
@@ -39,6 +40,7 @@ export default function WorkspaceDashboard() {
   const toggleStatus = (panel: 'update' | 'integrity') => setOpenStatus((current) => current === panel ? null : panel)
 
   return <WorkspaceShell breadcrumbs={[{ label: 'Dashboard' }]}><div className="cc-page live-dashboard">
+    <PageModeTabs />
     <div className="cc-page-header"><div><div className="truth-chiprow"><TruthBadge state="live" />{data ? <><SnapshotBanner snapshot={data.snapshot} />{update ? <button type="button" className={`dashboard-status-chip update ${update.state}`} aria-expanded={openStatus === 'update'} onClick={() => toggleStatus('update')} title="Latest evidence update"><RefreshCw size={15} /><span>Evidence update</span><b>{update.state.toUpperCase()}</b></button> : null}<button type="button" className={`dashboard-status-chip integrity ${integrityPass ? 'pass' : 'fail'}`} aria-expanded={openStatus === 'integrity'} onClick={() => toggleStatus('integrity')} title="Automated evidence integrity">{integrityPass ? <CheckCircle2 size={15} /> : <ShieldAlert size={15} />}<span>Evidence integrity</span><b>{integrityPass ? 'PASS' : integrityItems.length || '!'}</b></button></> : null}</div><h1 className="cc-page-title text-[36px] mt-3">ESCAP legal evidence registry</h1><p className="text-cc-ink-500 mt-1.5">Current legal evidence, controlled updates and attributable review history.</p></div><div className="cc-actions"><Link className="truth-primary-link" href="/review">Open legal review <ArrowRight size={15} /></Link></div></div>
     {query.isError || !data ? <PageUnavailable title={query.isPending ? 'Loading the authoritative registry…' : 'Registry data is unavailable'} /> : <>
       <section className="registry-overview" data-data-card>

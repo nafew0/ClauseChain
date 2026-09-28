@@ -617,3 +617,53 @@ class EngineAction(models.Model):
     class State(models.TextChoices):
         DRAFT = "draft", "Draft"
         PUBLISHED = "published", "Published"
+
+
+class LocalReviewDecision(ImmutableAuditModel):
+    """A reviewer's verdict on a Local (open-weights) finding.
+
+    Local mode is a separate workspace: these rows never reach the signed
+    decisions.json or the hybrid registry. Latest row per finding wins; it
+    applies only while the finding's review subject is unchanged.
+    """
+
+    class Queue(models.TextChoices):
+        NEW = "new", "NEW"
+        KNOWN = "known", "KNOWN"
+        ABSENCE = "absence", "Absence"
+
+    class Verdict(models.TextChoices):
+        APPROVED = "approved", "Approved"
+        REJECTED = "rejected", "Rejected"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    finding_key = models.CharField(max_length=64)
+    review_subject_hash = models.CharField(max_length=64)
+    queue = models.CharField(max_length=16, choices=Queue.choices)
+    decision = models.CharField(max_length=16, choices=Verdict.choices)
+    citation_checked = models.BooleanField(default=False)
+    mapping_checked = models.BooleanField(default=False)
+    status_checked = models.BooleanField(default=False)
+    note = models.TextField(blank=True, default="")
+    economy = models.CharField(max_length=64, blank=True, default="")
+    indicator_id = models.CharField(max_length=32, blank=True, default="")
+    law_name = models.CharField(max_length=512, blank=True, default="")
+    article = models.CharField(max_length=255, blank=True, default="")
+    action = models.ForeignKey(
+        "EngineAction", null=True, blank=True, on_delete=models.SET_NULL, related_name="+"
+    )
+    engine_run_id = models.CharField(max_length=128, blank=True, default="")
+    reviewer_name = models.CharField(max_length=255)
+    reviewer_role = models.CharField(max_length=32)
+    reviewed_at = models.DateTimeField()
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="+"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    supersedes = models.ForeignKey(
+        "self", null=True, blank=True, on_delete=models.PROTECT, related_name="superseded_by"
+    )
+
+    class Meta:
+        ordering = ["created_at"]
+        indexes = [models.Index(fields=["finding_key", "-created_at"])]

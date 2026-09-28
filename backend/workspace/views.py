@@ -26,6 +26,7 @@ from .decision_writer import (
     decision_domain_lock,
 )
 from .engine_worker import EngineWorkerError, load_allowlist
+from .importer import RUN_NAMES
 from .worker_supervisor import ensure_worker, worker_status
 from .models import (
     CorrectionRequest,
@@ -1458,7 +1459,7 @@ class EngineRunView(EngineActionCreateView):
         params = spec.get("params") or {}
         economies = {str(value) for value in (params.get("economy") or {}).get("enum", [])}
         run_codes = {str(value) for value in (params.get("cc") or {}).get("enum", [])}
-        run_code = re.sub(r"[^a-z]", "", economy.casefold())[:2]
+        run_code = RUN_CODES.get(economy)
         if economy not in economies or run_code not in run_codes:
             raise ValidationError(
                 {"economy": "Choose an economy configured in the engine action allowlist."}
@@ -1473,8 +1474,27 @@ class EngineRunView(EngineActionCreateView):
             "cc": run_code,
             "mode": mode,
             "provider_profile": RUN_MODES[mode]["provider_profile"],
-            "out_prefix": RUN_MODES[mode]["out_prefix"],
+            "out_prefix": run_out_prefix(mode, run_code, pillar),
         }
+
+
+# Output-folder codes. Not derived from the name: "Indonesia"[:2] == "India"[:2].
+RUN_CODES = {
+    "Singapore": "si",
+    "Malaysia": "ma",
+    "Australia": "au",
+    "Thailand": "th",
+    "India": "in",
+    "Indonesia": "id",
+}
+
+
+def run_out_prefix(mode, run_code, pillar):
+    """Hybrid runs write where the snapshot import reads them (final_r2_* for round 2)."""
+    prefix = RUN_MODES[mode]["out_prefix"]
+    if mode == "hybrid" and f"final_r2_{run_code}_p{pillar}" in RUN_NAMES:
+        return "final_r2"
+    return prefix
 
 
 class DecisionHistoryView(APIView):

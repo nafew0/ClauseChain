@@ -2,14 +2,16 @@
   "_doc": "Engine-action allowlist (App Dev Plan Rev B #4). The worker executes ONLY these actions, argv built from the template with validated params, shell=False, cwd=ENGINE_ROOT, stdout/stderr captured to the EngineAction row with a SHA-256 of each produced artifact. Anything not listed is refused.",
   "actions": {
     "refresh_payload": {
+      "_doc": "Refresh snapshot: rebuilds review inputs (refuter, consolidation, zone-3, review bundle, champion report) for hybrid runs whose output is newer than submission/consolidated.json, then exports ui_export.zip; the worker imports the snapshot afterwards.",
       "argv": [
         ".venv/bin/python",
-        "scripts/export_ui_bundle.py",
+        "scripts/prepare_review_inputs.py",
         "--out",
         "ui_export.zip"
       ],
       "params": {},
-      "timeout_s": 600
+      "timeout_s": 3600,
+      "exclusive": true
     },
     "apply_decisions": {
       "argv": [
@@ -80,7 +82,7 @@
       "timeout_s": 900
     },
     "run_pipeline": {
-      "_doc": "superuser-only at the API layer (G4); spend cap is the backstop. provider_profile/out_prefix come from the app's run mode: hybrid -> hybrid_accuracy/final, local -> local_openweights/local",
+      "_doc": "superuser-only at the API layer (G4); spend cap is the backstop. provider_profile/out_prefix come from the app's run mode: hybrid -> hybrid_accuracy/final (final_r2 for the round-2 economies the snapshot imports as final_r2_*), local -> local_openweights/local",
       "argv": [
         ".venv/bin/python",
         "run.py",
@@ -129,6 +131,7 @@
         "out_prefix": {
           "enum": [
             "final",
+            "final_r2",
             "local"
           ]
         }

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { AlertTriangle, ArrowRight, CheckCircle2, GitCompareArrows, History, ShieldAlert } from 'lucide-react'
 import WorkspaceShell from '@/components/clausechain/WorkspaceShell'
 import { PageUnavailable, SnapshotBanner, TruthBadge } from '@/components/clausechain/TruthState'
+import { PageModeTabs } from '@/components/workspace/RunModeTabs'
 import { useAuth } from '@/contexts/AuthContext'
 import { useEvidenceChangeDecision, useEvidenceChanges, usePublishEvidenceChanges } from '@/hooks/workspace'
 
@@ -41,6 +42,7 @@ export default function EvidenceUpdates() {
   }
 
   return <WorkspaceShell breadcrumbs={[{ label: 'Evidence Updates' }]}><div className="cc-page evidence-updates">
+    <PageModeTabs />
     <div className="cc-page-header"><div><div className="truth-chiprow"><TruthBadge state="live" />{query.data ? <SnapshotBanner snapshot={query.data.snapshot} /> : null}</div><h1 className="cc-page-title text-[34px] mt-3">Evidence updates</h1><p className="text-cc-ink-500 mt-1.5">Compare each engine rerun with the current ESCAP registry. Nothing historical is overwritten.</p></div>{user?.is_superuser && query.data?.change_set.state === 'draft' ? <button className="truth-primary-link" disabled={publish.isPending} onClick={() => void publishRegistry()}>{publish.isPending ? 'Publishing…' : 'Publish reviewed update'}</button> : null}</div>
     {query.isError || !query.data ? <PageUnavailable title={query.isPending ? 'Reconciling evidence history…' : 'Evidence reconciliation is unavailable'} /> : <>
       <section className={`registry-update ${query.data.change_set.state}`} data-data-card><header><div><GitCompareArrows /><span><small>Registry reconciliation</small><strong>{query.data.change_set.state === 'draft' ? 'Candidate update' : 'Published registry version'}</strong></span></div><b>{query.data.change_set.state.toUpperCase()}</b></header><div className="registry-update-grid">{Object.entries(query.data.change_set.counts).map(([kind, count]) => <span key={kind}><strong>{count}</strong>{kind.replace('_', ' ')}</span>)}</div><footer><History size={14} />{query.data.change_set.attention.decided} of {query.data.change_set.attention.total} changed records have a final disposition.</footer></section>

@@ -881,6 +881,7 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
         for finding in findings:
             store.upsert_finding(finding_key(finding), run_id, finding)
     cost_entry = cost.append_log(run_id, {"economy": economy, "pillar": pillar,
+                                          "provider_profile": provider_profile,
                                           "elapsed_seconds": round(time.time() - started, 1)})
     report = cost.report()
     progress.emit("done",

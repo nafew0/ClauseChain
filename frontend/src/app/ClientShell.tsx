@@ -13,6 +13,7 @@ const NO_NAVBAR_PATHS = [
   '/evidence-updates',
   '/benchmark',
   '/matrix',
+  '/comparison',
   '/ledger',
   '/source-status',
   '/jurisdictions',

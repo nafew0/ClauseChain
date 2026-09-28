@@ -348,11 +348,14 @@ def _cost_for_run(costs, envelope):
     }
     economy = economy_alias.get(country, country)
     pillar = str(envelope.get("pillar") or "")
+    # The log is shared by both model backends; only hybrid spend belongs to a
+    # snapshot run (entries before the tag existed are all hybrid or re-tagged).
     matches = [
         item
         for item in costs
         if str(item.get("economy") or "").casefold() == economy.casefold()
         and str(item.get("pillar") or "") == pillar
+        and (item.get("provider_profile") or "hybrid_accuracy") == "hybrid_accuracy"
     ]
     return matches[-1] if matches else {}
 

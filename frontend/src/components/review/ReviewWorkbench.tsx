@@ -37,6 +37,7 @@ import {
 
 import { useAuth } from '@/contexts/AuthContext'
 import { SnapshotBanner } from '@/components/workspace/SnapshotBanner'
+import { PageModeTabs } from '@/components/workspace/RunModeTabs'
 import {
   useDecide,
   useDecisionHistory,
@@ -656,6 +657,7 @@ export default function ReviewWorkbench() {
     <LazyMotion features={domAnimation}>
       <MotionConfig reducedMotion="user">
         <div className="review-workbench">
+          <PageModeTabs />
           <header className="review-page-header">
             <div>
               <div className="truth-chiprow"><span className="review-eyebrow"><ShieldCheck size={14} /> Authoritative legal review</span><SnapshotBanner /></div>
