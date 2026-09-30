@@ -232,7 +232,7 @@ status_assertions:
   "Government Resolution No. 1875 of 23.12.2024 On measures to provide national treatment in procurement of goods, works and services for state and municipal needs and procurement by certain types of legal entities":
     status: "in_force"
     fact_url: "http://pravo.gov.ru/proxy/ips/?docbody=&nd=608103683"
-    fact_text: "ИПС consolidated as of 29.09.2026 (rdk=18); para 12: in force from 01.01.2025; repealed Res. 616/617/925/2014/878 para 3 and 1236 ban"
+    fact_text: "ИПС consolidated as of 29.09.2026 (rdk=18); para 12: in force from 01.01.2025; replaces Res. 616/617/925/2014/878 para 3 and the 1236 ban"
     effective_date: "2025-01-01"
   "Federal Law No. 223-FZ of 18.07.2011 On Procurement of Goods, Works and Services by Certain Types of Legal Entities (consolidated)":
     status: "in_force"
