@@ -29,6 +29,8 @@ official_sources:
   - { name: SEC Thailand, domain: sec.or.th, source_type: sectoral_regulator, authority_rank: 55 }
   - { name: DFAT AANZFTA texts, domain: dfat.gov.au, source_type: official_treaty_or_state_register, authority_rank: 90 }
   - { name: MFAT RCEP texts, domain: mfat.govt.nz, source_type: official_treaty_or_state_register, authority_rank: 90 }
+  - { name: Pillar 2 procurement source (CGD e-GP), domain: gprocurement.go.th, source_type: official_statute_database, authority_rank: 90 }
+  - { name: Department of Intellectual Property, domain: ipthailand.go.th, source_type: ministry, authority_rank: 60 }
 
 portal_search:
   engine: searchlaw.ocs.go.th (OCS full-text) + ratchakitcha.soc.go.th documents + regulator sites above
@@ -58,7 +60,7 @@ open_verification:   # from deep-research §5 — treat these as UNVERIFIED unti
 ocr: { provider: hybrid_script, route: vision-first, language_hints: [th], expect_script: thai }
 known_index: data/known_index_round2.json
 seeds: data/seeds_r2.json
-rdtii_bindings: { pillars: [6, 7] }
+rdtii_bindings: { pillars: [2, 6, 7] }
 
 anchor_instruments:
   - "Personal Data Protection Act B.E. 2562 (2019) — horizontal DP law (P7-I1 score-0 evidence); s.28/s.29 = cross-border conditional flow (P6-I4); s.41 DPO (P7-I4)"
@@ -307,3 +309,46 @@ status_assertions:
     fact_url: "https://www.mfat.govt.nz/assets/Trade-agreements/RCEP/RECP-Agreement-112020/Chapter-12.pdf"
     fact_text: "MFAT official chapter text; RCEP in force for Thailand 1 January 2022. Ch.12 excluded from dispute settlement (Art. 12.17.3)."
     effective_date: "2022-01-01"
+  # Pillar 2 (public procurement), 29 Sep 2026 — engine/docs/Pillar-2-deep-research-Thailand.md.
+  # Order matters: the builder takes the first key with the best token overlap, and
+  # each key below is a token subset of the instruments listed after it.
+  "Notification of the Public Procurement and Supplies Administration Policy Committee on Standard Contract Forms B.E. 2561":
+    status: in_force
+    fact_url: "https://ratchakitcha.soc.go.th/documents/2133647.pdf"
+    fact_text: "Royal Gazette vol. 135 special pt. 37 Ngor, 19 Feb 2018 (notice dated 7 Feb 2018); 14 standard forms. No replacement notice verified as of Sep 2026."
+  "Regulation of the Ministry of Finance regarding Public Procurement and Supplies Administration B.E. 2560":
+    status: in_force
+    fact_url: "http://www.gprocurement.go.th/wps/portal/egp/Regulation/ministerial_regulations/"
+    fact_text: "Royal Gazette vol. 134 special pt. 210 Ngor, 23 Aug 2017; amended only by MoF Regulation No. 2 B.E. 2564 (e-meetings, cl. 27). CGD-hosted texts, checked Sep 2026."
+  "Public Procurement and Supplies Administration Act B.E. 2560":
+    status: in_force
+    fact_url: "https://www.gprocurement.go.th/wps/portal/egp/Regulation/ministerial_regulations/"
+    fact_text: "Royal Gazette vol. 134 pt. 24 Kor, 24 Feb 2017; no amendment listed by CGD as of Sep 2026 (still cited as B.E. 2560 in the 2569 MR preamble)."
+  "Ministerial Regulation Prescribing Criteria, Procedures and Conditions for Registration as Consultants B.E. 2560":
+    status: in_force
+    fact_url: "https://www.gprocurement.go.th/wps/portal/egp/Regulation/ministerial_regulations/"
+    fact_text: "Royal Gazette vol. 134 pt. 86 Kor, 23 Aug 2017; no amendment listed on the CGD Ministerial Regulations page as of Sep 2026."
+  "Ministerial Regulation Prescribing Supplies and Procurement Methods for Supplies that the State Must Promote or Support (No.4) B.E. 2566":
+    status: in_force
+    fact_url: "https://ratchakitcha.soc.go.th/documents/140A054N0000000000100.pdf"
+    fact_text: "Royal Gazette vol. 140 pt. 54 Kor, 6 Sep 2023; inserts Ch. 7/3 Digital Promotion Supplies (cl. 27/7-27/9). Latest promoted-supplies MR on the CGD listing (Sep 2026)."
+  "Ministerial Regulation Prescribing Supplies and Procurement Methods for Supplies that the State Must Promote or Support (No.3) B.E. 2564":
+    status: in_force
+    fact_url: "https://www.gprocurement.go.th/wps/portal/egp/Regulation/ministerial_regulations/"
+    fact_text: "Royal Gazette vol. 138 pt. 68 Kor, 14 Oct 2021; amends cl. 5-7, 9(7), 10(5) of the principal MR B.E. 2563."
+  # One key for the principal MR B.E. 2563 and its No. 2 amendment: both are B.E. 2563
+  # and their names reduce to the same tokens, so a separate key could not tell them apart.
+  "Ministerial Regulation Prescribing Supplies and Procurement Methods for Supplies that the State Must Promote or Support B.E. 2563":
+    status: in_force
+    fact_url: "https://www.gprocurement.go.th/wps/portal/egp/Regulation/ministerial_regulations/"
+    fact_text: "Principal MR: Royal Gazette vol. 137 pt. 8 Kor, 29 Jan 2020. No. 2 (Made in Thailand, Ch. 7/1; SME Ch. 2): vol. 137 pt. 104 Kor, 22 Dec 2020. Both in force per the CGD listing (Sep 2026), as amended by No. 3 (2564) and No. 4 (2566)."
+  "Procurement of Computer Programs Guidelines: Software and the use of licensed software by the Governmental Agencies issued by the Department of Intellectual Property":
+    status: in_force
+    fact_url: "https://www.ipthailand.go.th/images/3534/2564/Copyright/software_program_20201027.pdf"
+    fact_text: "Held ESCAP gold reference (DIP, 2020). Not re-verified 29 Sep 2026: ipthailand.go.th blocks scripted access (Incapsula)."
+  "Protection of Layout Designs of Integrated Circuits Act B.E. 2543":
+    status: in_force
+    fact_url: "https://www.ipthailand.go.th/images/781/id_032.pdf"
+    fact_text: "Held ESCAP gold reference (s. 6). IP law, not a procurement instrument; kept so the gold row can be matched. ipthailand.go.th blocks scripted access (Incapsula)."
+
+research_scores: { P2-I1: 1, P2-I2: 0, P2-I3: 1, P2-I4: 1 }

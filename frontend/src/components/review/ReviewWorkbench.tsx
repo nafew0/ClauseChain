@@ -37,7 +37,7 @@ import {
 
 import { useAuth } from '@/contexts/AuthContext'
 import { SnapshotBanner } from '@/components/workspace/SnapshotBanner'
-import { PageModeTabs } from '@/components/workspace/RunModeTabs'
+import { ModePageHeader } from '@/components/workspace/ModePageHeader'
 import {
   useDecide,
   useDecisionHistory,
@@ -57,6 +57,7 @@ import type {
   Zone3Score,
 } from '@/types/workspace'
 import { rowRecord } from '@/types/workspace'
+import { currentRunMode, modeHref } from '@/lib/runMode'
 
 const QUEUES: { key: WorkspaceQueue; label: string; short: string; description: string }[] = [
   { key: 'new', label: 'NEW evidence', short: 'NEW', description: 'Newly discovered legal evidence' },
@@ -319,7 +320,7 @@ function ReferenceDrawer({ open, onClose, record, context, loading }: {
                       <strong>{text(row.row['Law Name'])} · {text(row.row['Article / Section'])}</strong>
                       <p>{text(row.row['Verbatim Snippet']).slice(0, 240)}</p>
                       <span>{row.same_law ? 'Same law' : 'Same indicator'}</span>
-                      <Link href={`/match/${row.finding_key}?economy=${encodeURIComponent(text(row.row['Economy'], ''))}&indicator=${encodeURIComponent(text(row.row['Indicator ID'], ''))}`}>Open Source Match <ExternalLink size={12} /></Link>
+                      <Link href={modeHref(`/match/${row.finding_key}?economy=${encodeURIComponent(text(row.row['Economy'], ''))}&indicator=${encodeURIComponent(text(row.row['Indicator ID'], ''))}`)}>Open Source Match <ExternalLink size={12} /></Link>
                     </article>
                   )) : <p className="review-muted">No related evidence rows in this snapshot.</p>}
                 </section>
@@ -573,6 +574,7 @@ export default function ReviewWorkbench() {
   const setUrl = useCallback((nextQueue: WorkspaceQueue, stableKey?: string, nextFilters = activeFilters) => {
     const params = new URLSearchParams()
     params.set('queue', nextQueue)
+    if (currentRunMode() === 'local') params.set('mode', 'local')
     if (stableKey) params.set('item', stableKey)
     if (nextFilters.filter.trim()) params.set('filter', nextFilters.filter.trim())
     if (nextFilters.economies.length) params.set('economy', nextFilters.economies.join(','))
@@ -646,6 +648,7 @@ export default function ReviewWorkbench() {
 
   const sourceMatchHref = (findingKey: string) => {
     const params = new URLSearchParams({ queue })
+    if (currentRunMode() === 'local') params.set('mode', 'local')
     if (economies.length) params.set('economy', economies.join(','))
     if (pillars.length) params.set('pillar', pillars.join(','))
     if (indicators.length) params.set('indicator', indicators.join(','))
@@ -657,15 +660,14 @@ export default function ReviewWorkbench() {
     <LazyMotion features={domAnimation}>
       <MotionConfig reducedMotion="user">
         <div className="review-workbench">
-          <PageModeTabs />
-          <header className="review-page-header">
-            <div>
-              <div className="truth-chiprow"><span className="review-eyebrow"><ShieldCheck size={14} /> Authoritative legal review</span><SnapshotBanner /></div>
-              <h1>Review & approve</h1>
-              <p>Every decision is staged, attributed and written through the engine&apos;s authoritative audit path.</p>
-            </div>
-            <div className="review-shortcuts" aria-label="Keyboard shortcuts"><kbd>J</kbd><kbd>K</kbd><span>navigate</span><kbd>A</kbd><span>approve</span></div>
-          </header>
+          <div className="cc-page review-page-top">
+            <ModePageHeader
+              eyebrow={<><span className="review-eyebrow"><ShieldCheck size={14} /> Authoritative legal review</span><SnapshotBanner /></>}
+              title="Review & approve"
+              description="Every decision is staged, attributed and written through the engine's authoritative audit path."
+              actions={<div className="review-shortcuts" aria-label="Keyboard shortcuts"><kbd>J</kbd><kbd>K</kbd><span>navigate</span><kbd>A</kbd><span>approve</span></div>}
+            />
+          </div>
 
           <nav className="review-queue-tabs" aria-label="Review queues">
             {QUEUES.map((entry) => {

@@ -5,9 +5,10 @@ import Link from 'next/link'
 import { AlertTriangle, ArrowRight, CheckCircle2, GitCompareArrows, History, ShieldAlert } from 'lucide-react'
 import WorkspaceShell from '@/components/clausechain/WorkspaceShell'
 import { PageUnavailable, SnapshotBanner, TruthBadge } from '@/components/clausechain/TruthState'
-import { PageModeTabs } from '@/components/workspace/RunModeTabs'
+import { ModePageHeader } from '@/components/workspace/ModePageHeader'
 import { useAuth } from '@/contexts/AuthContext'
 import { useEvidenceChangeDecision, useEvidenceChanges, usePublishEvidenceChanges } from '@/hooks/workspace'
+import { modeHref } from '@/lib/runMode'
 
 type Filter = 'attention' | 'new' | 'revised' | 'not_reproduced' | 'unchanged'
 
@@ -42,8 +43,12 @@ export default function EvidenceUpdates() {
   }
 
   return <WorkspaceShell breadcrumbs={[{ label: 'Evidence Updates' }]}><div className="cc-page evidence-updates">
-    <PageModeTabs />
-    <div className="cc-page-header"><div><div className="truth-chiprow"><TruthBadge state="live" />{query.data ? <SnapshotBanner snapshot={query.data.snapshot} /> : null}</div><h1 className="cc-page-title text-[34px] mt-3">Evidence updates</h1><p className="text-cc-ink-500 mt-1.5">Compare each engine rerun with the current ESCAP registry. Nothing historical is overwritten.</p></div>{user?.is_superuser && query.data?.change_set.state === 'draft' ? <button className="truth-primary-link" disabled={publish.isPending} onClick={() => void publishRegistry()}>{publish.isPending ? 'Publishing…' : 'Publish reviewed update'}</button> : null}</div>
+    <ModePageHeader
+      eyebrow={<><TruthBadge state="live" />{query.data ? <SnapshotBanner snapshot={query.data.snapshot} /> : null}</>}
+      title="Evidence updates"
+      description="Compare each engine rerun with the current ESCAP registry. Nothing historical is overwritten."
+      actions={user?.is_superuser && query.data?.change_set.state === 'draft' ? <button className="truth-primary-link" disabled={publish.isPending} onClick={() => void publishRegistry()}>{publish.isPending ? 'Publishing…' : 'Publish reviewed update'}</button> : null}
+    />
     {query.isError || !query.data ? <PageUnavailable title={query.isPending ? 'Reconciling evidence history…' : 'Evidence reconciliation is unavailable'} /> : <>
       <section className={`registry-update ${query.data.change_set.state}`} data-data-card><header><div><GitCompareArrows /><span><small>Registry reconciliation</small><strong>{query.data.change_set.state === 'draft' ? 'Candidate update' : 'Published registry version'}</strong></span></div><b>{query.data.change_set.state.toUpperCase()}</b></header><div className="registry-update-grid">{Object.entries(query.data.change_set.counts).map(([kind, count]) => <span key={kind}><strong>{count}</strong>{kind.replace('_', ' ')}</span>)}</div><footer><History size={14} />{query.data.change_set.attention.decided} of {query.data.change_set.attention.total} changed records have a final disposition.</footer></section>
       {error ? <div className="review-block"><ShieldAlert size={17} /><span>{error}</span></div> : null}
@@ -51,7 +56,7 @@ export default function EvidenceUpdates() {
       <section className="evidence-update-list">{changes.map(change => <article className={`evidence-update-card ${change.kind}`} key={change.id} data-data-card>
         <header><div><span>{change.identity.economy} · {change.identity.indicator_id}</span><h2>{change.identity.law_name}</h2><p>{change.identity.citation}</p></div><b>{change.kind.replace('_', ' ')}</b></header>
         {change.invalidated_stages.length ? <p className="evidence-update-impact"><AlertTriangle size={15} /> Re-review required: {change.invalidated_stages.join(', ')}</p> : <p className="evidence-update-impact retained"><CheckCircle2 size={15} /> Evidence-equivalent review stages remain valid.</p>}
-        {change.current_finding_key && change.review_queue ? <Link href={`/review?queue=${change.review_queue}&item=${change.current_finding_key}`}>Open legal evidence <ArrowRight size={14} /></Link> : null}
+        {change.current_finding_key && change.review_queue ? <Link href={modeHref(`/review?queue=${change.review_queue}&item=${change.current_finding_key}`)}>Open legal evidence <ArrowRight size={14} /></Link> : null}
         {change.kind === 'not_reproduced' && query.data.change_set.state === 'draft' ? <div className="evidence-update-disposition"><textarea value={notes[change.id] ?? ''} onChange={event => setNotes(current => ({ ...current, [change.id]: event.target.value }))} placeholder="Required reason based on the rerun and current legal source…" /><div><button disabled={decide.isPending} onClick={() => void disposition(change.id, 'retain', change.latest_decision?.id ?? null)}>Retain current</button><button disabled={decide.isPending} onClick={() => void disposition(change.id, 'investigate', change.latest_decision?.id ?? null)}>Investigate</button><button className="danger" disabled={decide.isPending} onClick={() => void disposition(change.id, 'retire', change.latest_decision?.id ?? null)}>Retire evidence</button></div></div> : null}
         {change.latest_decision ? <footer>{change.latest_decision.verdict} · {change.latest_decision.reviewer_name} · {change.latest_decision.comment}</footer> : null}
       </article>)}</section>

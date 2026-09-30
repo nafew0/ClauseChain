@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import base64
 import os
+import time
 from pathlib import Path
 from typing import Iterator
 
@@ -397,6 +398,25 @@ class GoogleVisionOCR:
         self._hints = [h for h in (language_hints or []) if h]
         self._timeout = timeout
 
+    RETRY_DELAYS_S = (3.0, 10.0)
+
+    def _post_with_retry(self, body: dict) -> httpx.Response:
+        """Transient failures (timeout, transport error, 429/5xx) are retried twice
+        with backoff; one 502 must not drop an 89-page scanned code from the corpus
+        (TL CPP, 29 Sep). Other errors — and the last failed attempt — still raise."""
+        for delay in (*self.RETRY_DELAYS_S, None):
+            try:
+                response = httpx.post(f"{self.ENDPOINT}?key={self._key}", json=body,
+                                      timeout=self._timeout)
+            except (httpx.TimeoutException, httpx.TransportError):
+                if delay is None:
+                    raise
+            else:
+                if response.status_code != 429 and response.status_code < 500 or delay is None:
+                    return response
+            time.sleep(delay)
+        raise AssertionError("unreachable")
+
     def ocr_image(self, image_bytes: bytes, page_number: int = 1,
                   document_id: str = "image") -> ExtractedPage:
         request: dict = {
@@ -405,8 +425,7 @@ class GoogleVisionOCR:
         }
         if self._hints:
             request["imageContext"] = {"languageHints": self._hints}
-        response = httpx.post(f"{self.ENDPOINT}?key={self._key}",
-                              json={"requests": [request]}, timeout=self._timeout)
+        response = self._post_with_retry({"requests": [request]})
         response.raise_for_status()
         payload = (response.json().get("responses") or [{}])[0]
         if payload.get("error"):
@@ -454,7 +473,8 @@ class GoogleVisionOCR:
 
 
 def _script_chars(text: str, script: str) -> int:
-    ranges = {"thai": ("฀", "๿"), "devanagari": ("ऀ", "ॿ")}
+    ranges = {"thai": ("฀", "๿"), "devanagari": ("ऀ", "ॿ"),
+              "lao": ("຀", "໿"), "cyrillic": ("Ѐ", "ӿ")}
     lo, hi = ranges.get(script, ("", ""))
     return sum(1 for ch in text if lo <= ch <= hi) if lo else 0
 

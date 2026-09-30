@@ -48,7 +48,17 @@ def finding_type(row: dict) -> str:
     )
 
 
-def identity_payload(row: dict) -> dict:
+def technically_blocked(blocked: bool, row: dict) -> bool:
+    """Is this evidence blocked by a technical fault (e.g. an unaligned citation)?
+
+    Engine key maps exported before 30 Sep 2026 also flag every absence placeholder
+    ("no evidence found") as blocked, because it has no citable snippet. That is not
+    a fault: an absence conclusion is gated by its search-coverage manifest instead.
+    """
+    return bool(blocked) and finding_type(row) != "absence"
+
+
+def identity_payload(row: dict, mode: str = "hybrid") -> dict:
     law_name = _text(row.get("Law Name") or row.get("Law/instrument"))
     instrument = _text(
         row.get("instrument_identity")
@@ -66,11 +76,11 @@ def identity_payload(row: dict) -> dict:
             row.get("Article / Section") or row.get("Article/section")
         ),
         "finding_type": finding_type(row),
-    }
+    } | ({"mode": mode} if mode != "hybrid" else {})  # hybrid hashes stay as they were
 
 
-def evidence_identity_hash(row: dict) -> str:
-    return content_hash(identity_payload(row))
+def evidence_identity_hash(row: dict, mode: str = "hybrid") -> str:
+    return content_hash(identity_payload(row, mode))
 
 
 def component_hashes(row: dict) -> dict[str, str]:
@@ -111,8 +121,8 @@ def component_hashes(row: dict) -> dict[str, str]:
     }
 
 
-def _identity_defaults(row: dict) -> dict:
-    payload = identity_payload(row)
+def _identity_defaults(row: dict, mode: str = "hybrid") -> dict:
+    payload = identity_payload(row, mode)
     return {
         "economy": _text(row.get("Economy")),
         "indicator_id": _text(row.get("Indicator ID") or row.get("Indicator")),
@@ -120,17 +130,21 @@ def _identity_defaults(row: dict) -> dict:
         "law_name": _text(row.get("Law Name") or row.get("Law/instrument")),
         "citation_key": payload["citation_key"],
         "finding_type": payload["finding_type"],
+        "mode": mode,
     }
 
 
 def reconcile_snapshot(snapshot: EngineSnapshot, previous_snapshot=None):
     """Create immutable revisions and a scoped old/new reconciliation report."""
 
+    # Each model backend keeps its own registry: a Local import never marks
+    # Hybrid evidence "not reproduced", and vice versa.
+    mode = snapshot.mode
     existing = {
         entry.identity_id: entry
         for entry in EvidenceRegistryEntry.objects.select_related(
             "identity", "active_revision"
-        )
+        ).filter(identity__mode=mode)
     }
     bootstrap = not existing
     declared_scope = snapshot.manifest_json.get("evaluated_scopes") or []
@@ -151,9 +165,9 @@ def reconcile_snapshot(snapshot: EngineSnapshot, previous_snapshot=None):
 
     for evidence in snapshot.evidence_rows.order_by("position"):
         row = evidence.row_json
-        identity_hash = evidence_identity_hash(row)
+        identity_hash = evidence_identity_hash(row, mode)
         identity, _ = EvidenceIdentity.objects.get_or_create(
-            identity_hash=identity_hash, defaults=_identity_defaults(row)
+            identity_hash=identity_hash, defaults=_identity_defaults(row, mode)
         )
         if identity.pk in seen_identities:
             raise ValueError(
@@ -285,7 +299,7 @@ def publish_change_set(change_set: EvidenceChangeSet, user):
             continue
         if change.kind in (EvidenceChange.Kind.NEW, EvidenceChange.Kind.REVISED):
             revision = change.current_revision
-            if revision is None or revision.blocked:
+            if revision is None or technically_blocked(revision.blocked, revision.row_json):
                 unresolved.append(f"{change.identity.identity_hash[:12]} is blocked")
                 continue
             review = effective_finding_review(

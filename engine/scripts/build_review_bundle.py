@@ -32,8 +32,11 @@ def _box_scale(conn: sqlite3.Connection, span_ids: list[str]) -> float:
 
 
 def main() -> int:
-    p = argparse.ArgumentParser(); p.add_argument("--candidates", default="submission/consolidated.json")
-    p.add_argument("--graph", default="data/graph_v2.db"); p.add_argument("--out", default="submission/review")
+    from packages.core import review_layout
+
+    layout = review_layout.current()
+    p = argparse.ArgumentParser(); p.add_argument("--candidates", default=str(layout.consolidated))
+    p.add_argument("--graph", default="data/graph_v2.db"); p.add_argument("--out", default=str(layout.bundle_dir))
     args = p.parse_args(); out = Path(args.out); assets = out / "assets"
     assets.mkdir(parents=True, exist_ok=True)
     findings = [MappedFinding.model_validate(r) for r in json.loads(Path(args.candidates).read_text())["rows"]]

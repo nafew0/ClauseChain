@@ -1,6 +1,6 @@
 from django.urls import path
 
-from . import local_views
+from . import comparison_views
 from .views import (
     CorrectionRequestView,
     EvidenceDetailView,
@@ -15,7 +15,9 @@ from .views import (
     EngineWorkerStatusView,
     EngineActionCancelView,
     EngineActionCancelAllView,
+    EngineActionDocumentsView,
     EngineActionEventsView,
+    EngineSourcesView,
     ProofAssetView,
     DecisionHistoryView,
     FindingBulkDecisionView,
@@ -95,6 +97,8 @@ urlpatterns = [
     path("engine/actions/cancel-all/", EngineActionCancelAllView.as_view(), name="engine_cancel_all"),
     path("engine/actions/<uuid:action_id>/cancel/", EngineActionCancelView.as_view(), name="engine_cancel"),
     path("engine/actions/<uuid:action_id>/events/", EngineActionEventsView.as_view(), name="engine_events"),
+    path("engine/actions/<uuid:action_id>/documents/", EngineActionDocumentsView.as_view(), name="engine_documents"),
+    path("engine/sources/", EngineSourcesView.as_view(), name="engine_sources"),
     path("decisions/findings/", FindingDecisionView.as_view(), name="finding_decision"),
     path(
         "decisions/findings/bulk/",
@@ -110,27 +114,7 @@ urlpatterns = [
     path("decisions/zone3/", Zone3DecisionView.as_view(), name="zone3_decision"),
     path("zone3-matrix/", Zone3MatrixView.as_view(), name="zone3_matrix"),
     path("corrections/", CorrectionRequestView.as_view(), name="correction_request"),
-    # Local (open-weights) workspace — separate from the hybrid snapshot.
-    path("local/overview/", local_views.LocalOverviewView.as_view(), name="local_overview"),
-    path("local/items/", local_views.LocalItemsView.as_view(), name="local_items"),
-    path("local/items/<str:finding_key>/", local_views.LocalItemDetailView.as_view(), name="local_item"),
-    path("local/decisions/", local_views.LocalDecisionView.as_view(), name="local_decision"),
-    path("local/decisions/bulk/", local_views.LocalBulkDecisionView.as_view(), name="local_bulk_decision"),
-    path(
-        "local/decisions/<str:finding_key>/history/",
-        local_views.LocalDecisionHistoryView.as_view(),
-        name="local_decision_history",
-    ),
-    path("local/changes/", local_views.LocalChangesView.as_view(), name="local_changes"),
-    path("local/dataset/export/", local_views.LocalDatasetExportView.as_view(), name="local_dataset_export"),
-    path("local/ledger/", local_views.LocalLedgerView.as_view(), name="local_ledger"),
-    path("local/raw/", local_views.LocalRawListView.as_view(), name="local_raw"),
-    path(
-        "local/raw/<uuid:action_id>/<str:name>/",
-        local_views.LocalRawFileView.as_view(),
-        name="local_raw_file",
-    ),
     # Model A (hybrid) vs Model B (local): template "Engine Comparison" sheet.
-    path("comparison/", local_views.ComparisonView.as_view(), name="comparison"),
-    path("comparison/export/", local_views.ComparisonExportView.as_view(), name="comparison_export"),
+    path("comparison/", comparison_views.ComparisonView.as_view(), name="comparison"),
+    path("comparison/export/", comparison_views.ComparisonExportView.as_view(), name="comparison_export"),
 ]

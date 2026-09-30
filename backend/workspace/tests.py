@@ -1044,15 +1044,9 @@ class WorkspaceApiTests(TestCase):
         self.assertNotIn(str(action.pk), [row["id"] for row in hybrid_runs["actions"]])
         self.assertNotIn("local_openweights", [run["provider_profile"] for run in hybrid_runs["results"]])
 
+        # A finished run reaches the Local matrix only through a Local snapshot refresh.
         matrix = self.client.get("/api/workspace/zone3-matrix/?mode=local").data
-        cells = {cell["indicator"]: cell for cell in matrix["cells"]}
-        self.assertEqual(matrix["economies"], ["Singapore"])
-        self.assertEqual(cells["P6-I2"]["state"], "evidence")
-        self.assertEqual(cells["P6-I2"]["evidence"][0]["article"], "s. 26")
-        self.assertIsNone(cells["P6-I2"]["deterministic"])
-        self.assertEqual(cells["P6-I1"]["state"], "absence")
-        self.assertEqual(cells["P6-I1"]["evidence"], [])
-        self.assertEqual(matrix["counts"]["with_evidence"], 1)
+        self.assertEqual((matrix["snapshot"], matrix["cells"]), (None, []))
 
     def test_run_output_folders_match_what_the_snapshot_imports(self):
         admin = self.make_user("folder-admin", "Folder Admin", "admin")
@@ -1083,104 +1077,129 @@ class WorkspaceApiTests(TestCase):
                 status=EngineAction.Status.SUCCEEDED
             )
 
-    def make_run(self, mode, findings, *, run_id, when):
-        """A succeeded engine run whose stored envelope carries these findings."""
-        action = EngineAction.objects.create(
-            kind=EngineAction.Kind.RUN,
-            status=EngineAction.Status.SUCCEEDED,
-            requested_by=self.citation,
-            arguments_json={"action": "run_pipeline", "economy": "Singapore", "pillar": "6",
-                            "cc": "si", "mode": mode,
-                            "out_prefix": "local" if mode == "local" else "final"},
-            started_at=when,
-            finished_at=when,
-            result_json={"run_id": run_id, "country": "SG", "pillar": 6,
-                         "generated_at": when.isoformat(), "findings": findings,
-                         "metadata": {"corpus_fingerprint": "corpus-1", "elapsed_seconds": 60,
-                                      "cost_report": {"total_usd": 0.0, "models": {
-                                          "qwen" if mode == "local" else "gpt": {"calls": 3}}}}},
+    @patch("workspace.views.apply_authoritative_decision")
+    def test_local_snapshot_mirrors_hybrid_and_stays_separate(self, writer):
+        from .mode import current_mode
+
+        # The engine's Local layout namespaces every key; the fixture mirrors that.
+        text = json.dumps(minimal_artifacts())
+        for digit in "123":
+            text = text.replace(digit * 64, "a" + digit * 63)
+        local, created = import_snapshot(json.loads(text), mode="local")
+        self.assertTrue(created)
+        self.assertEqual(EngineSnapshot.objects.get(active=True, mode="hybrid").pk, self.snapshot.pk)
+        self.assertEqual(local.mode, "local")
+        # Its own registry: bootstrapped, and no hybrid evidence marked "not reproduced".
+        self.assertEqual(local.evidence_change_set.counts_json["not_reproduced"], 0)
+        self.assertEqual(EvidenceIdentity.objects.filter(mode="local").count(), 3)
+        self.assertEqual(EvidenceIdentity.objects.filter(mode="hybrid").count(), 3)
+
+        self.authenticate(self.citation)
+        self.assertEqual(self.client.get("/api/workspace/summary/?mode=local").data["snapshot"]["id"], str(local.pk))
+        self.assertEqual(self.client.get("/api/workspace/summary/").data["snapshot"]["id"], str(self.snapshot.pk))
+        local_new = self.client.get("/api/workspace/review/new/?mode=local").data["results"]
+        self.assertEqual([item["finding_key"] for item in local_new], ["a" + "1" * 63])
+
+        # A Local decision goes through the writer in Local mode and is recorded as Local.
+        seen = []
+        writer.side_effect = lambda *args, **kwargs: seen.append(current_mode()) or RECEIPT
+        response = self.client.post(
+            "/api/workspace/decisions/findings/?mode=local",
+            {"finding_key": "a" + "1" * 63, "queue": "new", "review_stage": "citation",
+             "decision": "approved", "citation_checked": True, "status_checked": True,
+             "expected_latest_decision_id": None},
+            format="json",
         )
-        return action
+        self.assertEqual(response.status_code, 201, response.data)
+        self.assertEqual(seen, ["local"])
+        self.assertEqual(FindingDecision.objects.get().mode, "local")
+        self.assertEqual(self.client.get("/api/workspace/ledger/?mode=local").data["count"], 1)
+        self.assertEqual(self.client.get("/api/workspace/ledger/").data["count"], 0)
+        # A Local key does not exist in the Hybrid workspace.
+        self.assertEqual(self.client.post(
+            "/api/workspace/decisions/findings/",
+            {"finding_key": "a" + "1" * 63, "queue": "new", "review_stage": "citation",
+             "decision": "approved", "citation_checked": True, "status_checked": True,
+             "expected_latest_decision_id": None},
+            format="json",
+        ).status_code, 404)
 
-    @staticmethod
-    def finding(indicator, article, snippet, tag="KNOWN", **extra):
-        proof = {"alignment_status": "exact", "page_number": 4,
-                 "gate_results": [{"gate_id": "G1", "status": "PASS", "reason": "ok"}]}
-        return {"Economy": "Singapore", "Indicator ID": indicator, "Law Name": "PDPA 2012",
-                "Law Number / Ref": "PDPA2012", "Article / Section": article,
-                "Discovery Tag": tag, "Verbatim Snippet": snippet,
-                "Mapping Rationale": "Restricts transfer.", "Source URL": "https://sso.agc.gov.sg/Act/PDPA2012",
-                "Status": "in_force", "citation_proof": proof, **extra}
+        # Each matrix is its own snapshot's; the comparison sets their scores side by side.
+        hybrid_cell = self.client.get("/api/workspace/zone3-matrix/").data["cells"][0]
+        local_cell = self.client.get("/api/workspace/zone3-matrix/?mode=local").data["cells"][0]
+        self.assertNotEqual(hybrid_cell["score_key"], local_cell["score_key"])
+        comparison = self.client.get("/api/workspace/comparison/?economy=Singapore&pillar=7").data
+        scores = {entry["indicator"]: entry for entry in comparison["selected"]["scores"]}
+        self.assertIn("model_a", scores["P7-I3"])
+        self.assertIn("model_b", scores["P7-I3"])
+        export = self.client.get("/api/workspace/comparison/export/?economy=Singapore&pillar=7")
+        self.assertIn("3 · Indicator scores (Zone-3)", export.content.decode("utf-8-sig"))
 
-    def test_local_workspace_is_separate_reviewable_and_compared(self):
-        admin = self.make_user("local-admin", "Local Admin", "admin")
+    def test_several_runs_can_wait_in_the_queue_but_not_duplicates(self):
+        admin = self.make_user("queue-admin", "Queue Admin", "admin")
+        admin.is_superuser = True
+        admin.save(update_fields=("is_superuser",))
         self.authenticate(admin)
-        start = timezone.now()
-        first = [self.finding("P6-I4", "s. 26(1)", "shall not transfer"),
-                 self.finding("P6-I5", "Art. 4.4", "cross-border transfer", tag="NEW")]
-        self.make_run("local", first, run_id="local-1", when=start - timezone.timedelta(hours=2))
-        second = [self.finding("P6-I4", "s. 26(1)", "shall not transfer"),
-                  self.finding("P6-I2", "s. 26(2)", "a new obligation", tag="NEW"),
-                  {**self.finding("P6-I1", "n/a", "NO_EVIDENCE_FOUND_PENDING_REVIEW"),
-                   "citation_proof": None}]
-        current = self.make_run("local", second, run_id="local-2", when=start - timezone.timedelta(hours=1))
-        hybrid = [self.finding("P6-I4", "s. 26", "shall not transfer personal data"),
-                  self.finding("P6-I3", "s. 24", "protection obligation")]
-        self.make_run("hybrid", hybrid, run_id="hybrid-1", when=start)
 
-        # Only the latest Local run is the workspace; hybrid findings never appear.
-        items = self.client.get("/api/workspace/local/items/").data
-        self.assertEqual({item["run"]["run_id"] for item in items["results"]}, {"local-2"})
-        self.assertEqual(sorted(item["queue"] for item in items["results"]), ["absence", "known", "new"])
-        self.assertEqual(items["progress"]["known"]["total"], 1)
-        known = next(item for item in items["results"] if item["queue"] == "known")
+        def queue(economy, pillar, mode):
+            return self.client.post("/api/workspace/engine/run/",
+                                    {"economy": economy, "pillar": pillar, "mode": mode}, format="json")
 
-        # Review rules: approval needs all checks, rejection needs a reason, stale ids conflict.
-        url = "/api/workspace/local/decisions/"
-        bad = self.client.post(url, {"finding_key": known["key"], "decision": "approved",
-                                     "citation_checked": True}, format="json")
-        self.assertEqual(bad.status_code, 400)
-        self.assertEqual(self.client.post(url, {"finding_key": known["key"], "decision": "rejected"},
-                                          format="json").status_code, 400)
-        ok = self.client.post(url, {"finding_key": known["key"], "decision": "approved",
-                                    "citation_checked": True, "mapping_checked": True,
-                                    "status_checked": True}, format="json")
-        self.assertEqual(ok.status_code, 201, ok.data)
-        self.assertEqual(ok.data["item"]["review"]["state"], "approved")
-        conflict = self.client.post(url, {"finding_key": known["key"], "decision": "rejected",
-                                          "note": "wrong provision"}, format="json")
-        self.assertEqual(conflict.status_code, 409)
-        self.assertFalse(FindingDecision.objects.exists())  # never the hybrid decision path
-        detail = self.client.get(f"/api/workspace/local/items/{known['key']}/").data
-        self.assertEqual(len(detail["history"]), 1)
-        self.assertEqual(detail["item"]["proof"]["gates"][0]["gate_id"], "G1")
+        with patch("workspace.views.ensure_worker", return_value={"alive": True}):
+            self.assertEqual(queue("Russian Federation", 6, "local").status_code, 202)
+            self.assertEqual(queue("Mongolia", 7, "local").status_code, 202)
+            self.assertEqual(queue("Russian Federation", 6, "hybrid").status_code, 202)
+            # The same run twice would write the same output folder.
+            self.assertEqual(queue("Russian Federation", 6, "local").status_code, 409)
+        self.assertEqual(EngineAction.objects.filter(status=EngineAction.Status.QUEUED).count(), 3)
 
-        # A rerun that changes what was attested sends the finding back to review.
-        changed = [{**second[0], "Mapping Rationale": "A different reading."}, *second[1:]]
-        EngineAction.objects.filter(pk=current.pk).update(result_json={**current.result_json, "findings": changed})
-        restated = next(item for item in self.client.get("/api/workspace/local/items/").data["results"]
-                        if item["key"] == known["key"])
-        self.assertEqual(restated["review"]["state"], "stale")
+    def test_sources_are_built_and_cleared_from_the_app_with_a_download_record(self):
+        from .models import EngineActionEvent
 
-        # Evidence updates compare the latest Local run with the previous Local run.
-        changes = self.client.get("/api/workspace/local/changes/").data
-        self.assertEqual(changes["counts"], {"revised": 1, "new": 2, "not_reproduced": 1})
+        admin = self.make_user("sources-admin", "Sources Admin", "admin")
+        admin.is_superuser = True
+        admin.save(update_fields=("is_superuser",))
+        self.authenticate(admin)
+        with patch("workspace.views.ensure_worker", return_value={"alive": True}):
+            clear = self.client.post("/api/workspace/engine/sources/",
+                                     {"economy": "Lao PDR", "operation": "clear"}, format="json")
+            build = self.client.post("/api/workspace/engine/sources/",
+                                     {"economy": "Lao PDR", "operation": "build", "pillar": 6}, format="json")
+            again = self.client.post("/api/workspace/engine/sources/",
+                                     {"economy": "Lao PDR", "operation": "build", "pillar": 7}, format="json")
+            bad = self.client.post("/api/workspace/engine/sources/",
+                                   {"economy": "Atlantis", "operation": "build", "pillar": 6}, format="json")
+        self.assertEqual((clear.status_code, build.status_code, again.status_code, bad.status_code),
+                         (202, 202, 409, 400))
+        _, argv, _ = build_allowlisted_command(build.data["arguments"])
+        self.assertIn("--pillars", argv)
+        self.assertEqual(argv[argv.index("--pillars") + 1], "P6")
+        _, clear_argv, _ = build_allowlisted_command(clear.data["arguments"])
+        self.assertIn("scripts/archive_sources.py", clear_argv)
+        # Source work serves both models, so both tabs list it.
+        local_actions = self.client.get("/api/workspace/runs/?mode=local").data["actions"]
+        self.assertEqual({row["kind"] for row in local_actions}, {"corpus"})
+        hybrid_actions = self.client.get("/api/workspace/runs/").data["actions"]
+        self.assertEqual({row["kind"] for row in hybrid_actions}, {"corpus"})
 
-        # The comparison pairs provisions across the two backends, template-style.
-        comparison = self.client.get("/api/workspace/comparison/?economy=Singapore&pillar=6").data
-        selected = comparison["selected"]
-        rows = {(row["found_by"], row["indicator"]): row for row in selected["rows"]}
-        both = rows[("Both", "P6-I4")]
-        self.assertTrue(both["citation_differs"])  # s. 26 vs s. 26(1)
-        self.assertTrue(both["quote_differs"])
-        self.assertIn(("Model A only", "P6-I3"), rows)
-        self.assertIn(("Model B only", "P6-I2"), rows)
-        self.assertTrue(selected["same_corpus"])
-        self.assertEqual(selected["model_b"]["documents_fetched"], 0)
-        export = self.client.get("/api/workspace/comparison/export/?economy=Singapore&pillar=6")
-        text = export.content.decode("utf-8-sig")
-        self.assertIn("Found by,Indicator differs?,Citation differs?,Quoted words differ?", text)
-        self.assertIn("Engine B only", text)
+        action = EngineAction.objects.get(pk=build.data["id"])
+        EngineActionEvent.objects.create(
+            action=action, seq=1, ts=timezone.now(), stage="fetch", label="", level="info",
+            message="downloaded · Law on Electronic Transactions · 820 KB PDF",
+            detail=json.dumps({"kind": "download", "url": "https://bol.gov.la/et.pdf",
+                               "final_url": "https://bol.gov.la/et.pdf", "act": "Law on Electronic Transactions",
+                               "bytes": 839680, "file_type": "PDF", "sha256": "ab" * 32,
+                               "fetched_at": "2026-10-15T03:12:00+00:00"}))
+        EngineActionEvent.objects.create(
+            action=action, seq=2, ts=timezone.now(), stage="fetch", label="", level="info",
+            message="already archived · Old law", detail=json.dumps({"kind": "cached", "url": "https://x"}))
+        documents = self.client.get(f"/api/workspace/engine/actions/{action.pk}/documents/").data
+        self.assertEqual(documents["count"], 1)
+        self.assertEqual((documents["documents"][0]["size_kb"], documents["documents"][0]["file_type"]), (820.0, "PDF"))
+        csv_text = self.client.get(
+            f"/api/workspace/engine/actions/{action.pk}/documents/?export=csv").content.decode("utf-8-sig")
+        self.assertIn("Source URL,Fetched during,Time (hh:mm),Size (KB),File type", csv_text)
+        self.assertIn("https://bol.gov.la/et.pdf,Sources · Lao PDR", csv_text)
 
     def test_local_spend_is_never_attached_to_a_hybrid_run(self):
         from .importer import _cost_for_run
@@ -1250,6 +1269,68 @@ class WorkspaceApiTests(TestCase):
             format="json",
         )
         self.assertEqual(response.status_code, 400)
+        writer.assert_not_called()
+
+    def absence_approval(self):
+        return self.client.post(
+            "/api/workspace/decisions/findings/",
+            {
+                "finding_key": "3" * 64,
+                "queue": "absence",
+                "review_stage": "citation",
+                "decision": "approved",
+                "citation_checked": True,
+                "expected_latest_decision_id": None,
+            },
+            format="json",
+        )
+
+    @patch("workspace.views.apply_authoritative_decision", return_value=RECEIPT)
+    def test_absence_conclusion_is_approvable_despite_placeholder_flag(self, writer):
+        # Older engine key maps flag every absence placeholder as blocked. The
+        # search-coverage manifest, not that flag, decides whether it can be approved.
+        self.assertTrue(EvidenceRow.objects.get(finding_key="3" * 64).blocked)
+        self.authenticate(self.citation)
+        response = self.absence_approval()
+        self.assertEqual(response.status_code, 201, response.data)
+
+    @patch(
+        "workspace.views.apply_authoritative_decision",
+        side_effect=RuntimeError("should not be called"),
+    )
+    def test_absence_with_unresolved_search_failures_cannot_be_approved(self, writer):
+        evidence = EvidenceRow.objects.get(finding_key="3" * 64)
+        manifest = dict(evidence.row_json["search_coverage_manifest"])
+        manifest["unresolved_failures"] = ["Official register timed out"]
+        evidence.row_json = {**evidence.row_json, "search_coverage_manifest": manifest}
+        evidence.save(update_fields=["row_json"])
+        self.authenticate(self.citation)
+        response = self.absence_approval()
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("unresolved acquisition failures", str(response.data))
+        writer.assert_not_called()
+
+    @patch(
+        "workspace.views.apply_authoritative_decision",
+        side_effect=RuntimeError("should not be called"),
+    )
+    def test_blocked_provision_evidence_still_cannot_be_approved(self, writer):
+        EvidenceRow.objects.filter(finding_key="1" * 64).update(blocked=True)
+        self.authenticate(self.citation)
+        response = self.client.post(
+            "/api/workspace/decisions/findings/",
+            {
+                "finding_key": "1" * 64,
+                "queue": "new",
+                "review_stage": "citation",
+                "decision": "approved",
+                "citation_checked": True,
+                "expected_latest_decision_id": None,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("technically blocked", str(response.data))
         writer.assert_not_called()
 
     @patch("workspace.views.apply_authoritative_decision", return_value=RECEIPT)

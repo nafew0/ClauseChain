@@ -50,7 +50,7 @@ def _sheet(wb, title, headers, widths):
 
 def _indicator_questions() -> dict[str, dict]:
     out = {}
-    for p in ("6", "7"):
+    for p in ("2", "6", "7"):
         cfg = yaml.safe_load(Path(f"configs/rdtii/pillar_{p}.yaml").read_text())
         for ind_id, ind in (cfg.get("indicators") or {}).items():
             out[ind_id] = ind if isinstance(ind, dict) else {}

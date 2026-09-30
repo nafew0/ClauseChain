@@ -6,11 +6,13 @@ import { AlertTriangle, ArrowUpRight, CheckCircle2, CircleDashed, FileText, Gave
 
 import WorkspaceShell from '@/components/clausechain/WorkspaceShell'
 import { TruthBadge } from '@/components/clausechain/TruthState'
-import { RunModeTabs, useRunMode } from '@/components/workspace/RunModeTabs'
+import { ModePageHeader } from '@/components/workspace/ModePageHeader'
+import { useRunMode } from '@/components/workspace/RunModeTabs'
 import { SnapshotBanner } from '@/components/workspace/SnapshotBanner'
 import { useDecide, useSummary, useZone3Matrix } from '@/hooks/workspace'
 import type { Zone3MatrixCell } from '@/services/workspace'
 import { cn } from '@/lib/utils'
+import { modeHref } from '@/lib/runMode'
 
 type Zone3Score = 0 | 0.5 | 1
 
@@ -33,7 +35,7 @@ const STATE_ICON = {
 } as const
 
 export default function RDTIIMatrix() {
-  const [mode, setMode] = useRunMode()
+  const [mode] = useRunMode()
   const local = mode === 'local'
   const matrix = useZone3Matrix(mode)
   const summary = useSummary()
@@ -71,15 +73,21 @@ export default function RDTIIMatrix() {
     setOverride(false)
   }
 
-  const changeMode = (next: typeof mode) => { setSelectedKey(null); setMode(next) }
-  const tabs = <div className="z3-mode-tabs"><RunModeTabs mode={mode} onChange={changeMode} modes={matrix.data?.modes} /></div>
-  if (matrix.isPending) return <WorkspaceShell breadcrumbs={[{ label: 'RDTII Matrix' }]}>{tabs}<div className="run-page-state"><LoaderCircle size={28} /> Loading indicator scores…</div></WorkspaceShell>
-  if (matrix.isError || !matrix.data) return <WorkspaceShell breadcrumbs={[{ label: 'RDTII Matrix' }]}>{tabs}<div className="run-page-state error"><XCircle size={28} /> The score matrix API is unavailable.</div></WorkspaceShell>
+  const header = <ModePageHeader
+    modes={matrix.data?.modes}
+    onModeChange={() => setSelectedKey(null)}
+    eyebrow={<>{local ? <span className="z3-local-chip"><Server size={13} /> Local · open weights</span> : <TruthBadge state="live" />}{matrix.data?.snapshot ? <SnapshotBanner /> : null}</>}
+    title={`RDTII indicator matrix${local ? ' · local' : ''}`}
+    description={local ? 'The open-weights model’s own matrix: its Zone-3 proposals and your Local review decisions, from the Local snapshot. Scores are 0 / 0.5 / 1 at indicator level; Model comparison sets them beside the hybrid scores.' : 'Economies × indicators · engine-proposed, reviewer-decided, evidence-anchored. Scores are 0 / 0.5 / 1 at indicator level.'}
+  />
+  if (matrix.isPending) return <WorkspaceShell breadcrumbs={[{ label: 'RDTII Matrix' }]}><div className="cc-page z3-page">{header}<div className="run-page-state"><LoaderCircle size={28} /> Loading indicator scores…</div></div></WorkspaceShell>
+  if (matrix.isError || !matrix.data) return <WorkspaceShell breadcrumbs={[{ label: 'RDTII Matrix' }]}><div className="cc-page z3-page">{header}<div className="run-page-state error"><XCircle size={28} /> The score matrix API is unavailable.</div></div></WorkspaceShell>
   const data = matrix.data
 
+  const pillar2 = data.indicators.filter((indicator) => indicator.toUpperCase().startsWith('P2'))
   const pillar6 = data.indicators.filter((indicator) => indicator.toUpperCase().startsWith('P6'))
   const pillar7 = data.indicators.filter((indicator) => indicator.toUpperCase().startsWith('P7'))
-  const orderedIndicators = [...pillar6, ...pillar7]
+  const orderedIndicators = [...pillar2, ...pillar6, ...pillar7]
   const cellFor = (economy: string, indicator: string) => data.cells.find((entry) => entry.economy === economy && entry.indicator === indicator)
   const questionFor = (indicator: string) => data.cells.find((entry) => entry.indicator === indicator)?.question
   const overrides = data.cells.filter((cell) => cell.state === 'overridden').length
@@ -89,34 +97,24 @@ export default function RDTIIMatrix() {
   return (
     <WorkspaceShell breadcrumbs={[{ label: 'RDTII Matrix' }]}>
       <div className="cc-page z3-page">
-        {tabs}
-        <div className="cc-page-header"><div><div className="truth-chiprow">{local ? <span className="z3-local-chip"><Server size={13} /> Local · open weights · unreviewed</span> : <><TruthBadge state="live" /><SnapshotBanner /></>}</div><h1 className="cc-page-title text-[32px] mt-3">RDTII indicator matrix{local ? ' · local' : ''}</h1><p className="text-cc-ink-500 mt-1.5">{local ? 'Economies × indicators from the latest local run per economy and pillar: the evidence the open-weights model found, for comparison with the hybrid matrix. Not scored or reviewed.' : 'Economies × indicators · engine-proposed, reviewer-decided, evidence-anchored. Scores are 0 / 0.5 / 1 at indicator level.'}</p></div></div>
+        {header}
 
-        {local ? (
-          <div className="z3-kpis">
-            <article data-data-card><span>Local runs</span><strong className="info">{data.runs?.length ?? 0}</strong><p>latest run per economy × pillar</p></article>
-            <article data-data-card><span>Indicators with evidence</span><strong className="ok">{data.counts.with_evidence ?? 0}<small> of {data.counts.total}</small></strong><p>at least one mapped provision</p></article>
-            <article data-data-card><span>Absence conclusions</span><strong className="warn">{data.counts.absence ?? 0}</strong><p>no qualifying provision found</p></article>
-            <article data-data-card><span>Evidence rows</span><strong className="info">{data.counts.evidence_rows ?? 0}</strong><p>unreviewed engine findings</p></article>
-          </div>
+        {local && !data.snapshot ? (
+          <section className="run-empty-state"><Server size={22} /><strong>No Local snapshot yet</strong><p>Finish a Local run, then click <b>Refresh snapshot</b> on the <Link href="/runs?mode=local">Runs page (Local tab)</Link>. The open-weights model then scores every indicator, exactly like the hybrid matrix.</p></section>
         ) : null}
 
-        {local && !data.cells.length ? (
-          <section className="run-empty-state"><Server size={22} /><strong>No local runs yet</strong><p>Start a Local run on the <Link href="/runs?mode=local">Runs page</Link>. Its findings appear here, laid out like the hybrid matrix, so the two model backends can be compared side by side.</p></section>
-        ) : null}
-
-        <div className="z3-kpis" style={local ? { display: 'none' } : undefined}>
+        <div className="z3-kpis" style={local && !data.snapshot ? { display: 'none' } : undefined}>
           <article data-data-card><span>Decided</span><strong className="ok">{data.counts.decided}<small> of {data.counts.total}</small></strong><p>named reviewer approvals & overrides</p></article>
           <article data-data-card><span>Awaiting reviewer</span><strong className="warn">{data.counts.pending}</strong><p>engine proposals — not effective yet</p></article>
           <article data-data-card><span>Overrides</span><strong className="info">{overrides}</strong><p>reviewer changed the engine&apos;s score</p></article>
           <article data-data-card><span>Gold divergences</span><strong className="alert">{divergences}</strong><p>flagged for human adjudication</p></article>
         </div>
 
-        <div className="z3-layout" style={local && !data.cells.length ? { display: 'none' } : undefined}>
+        <div className="z3-layout" style={local && !data.snapshot ? { display: 'none' } : undefined}>
           <div className="z3-table-wrap" data-data-card>
             <table className="z3-table">
               <thead>
-                <tr className="z3-pillar-row"><th />{pillar6.length ? <th colSpan={pillar6.length}>Pillar 6 · Cross-border data policies</th> : null}{pillar7.length ? <th colSpan={pillar7.length}>Pillar 7 · Personal data protection</th> : null}</tr>
+                <tr className="z3-pillar-row"><th />{pillar2.length ? <th colSpan={pillar2.length}>Pillar 2 · Public procurement</th> : null}{pillar6.length ? <th colSpan={pillar6.length}>Pillar 6 · Cross-border data policies</th> : null}{pillar7.length ? <th colSpan={pillar7.length}>Pillar 7 · Personal data protection</th> : null}</tr>
                 <tr>
                   <th>Economy</th>
                   {orderedIndicators.map((indicator) => <th key={indicator} title={questionFor(indicator) || indicator}><b>{indicator}</b><i>{indicatorShort(questionFor(indicator))}</i></th>)}
@@ -135,9 +133,9 @@ export default function RDTIIMatrix() {
                             type="button"
                             onClick={() => openCell(cell)}
                             className={cn('z3-cell', `is-${cell.state}`, selected?.score_key === cell.score_key && 'is-selected', cell.blocked && 'is-blocked')}
-                            title={`${economy} · ${indicator} — ${local ? (cell.state === 'evidence' ? 'evidence found by the local model' : 'local model concluded absence') : cell.state === 'pending' ? 'engine proposal awaiting reviewer decision' : `${cell.state} by ${cell.reviewer_name}`}`}
+                            title={`${economy} · ${indicator} — ${cell.state === 'pending' ? 'engine proposal awaiting reviewer decision' : `${cell.state} by ${cell.reviewer_name}`}`}
                           >
-                            <span className="z3-cell-top">{STATE_ICON[cell.state]}<strong>{local ? (cell.state === 'evidence' ? 'found' : 'none') : scoreLabel(cell.state === 'pending' ? cell.deterministic : cell.effective)}</strong></span>
+                            <span className="z3-cell-top">{STATE_ICON[cell.state]}<strong>{scoreLabel(cell.state === 'pending' ? cell.deterministic : cell.effective)}</strong></span>
                             <em>{cell.evidence.length} evidence</em>
                             {cell.flagged || cell.gold_divergence ? <AlertTriangle size={11} className="z3-flag" /> : null}
                           </button>
@@ -148,47 +146,16 @@ export default function RDTIIMatrix() {
                 ))}
               </tbody>
             </table>
-            {local ? (
-              <footer className="z3-legend">
-                <span className="is-evidence">evidence found</span>
-                <span className="is-absence">absence concluded</span>
-                <em>Unreviewed local-model output. Click a cell to see the provisions it found.</em>
-              </footer>
-            ) : <footer className="z3-legend">
+            <footer className="z3-legend">
               <span className="is-approved">approved</span>
               <span className="is-overridden">override</span>
               <span className="is-pending">proposed — awaiting named reviewer</span>
               <span><AlertTriangle size={11} /> low agreement or gold divergence</span>
               <em>Click any cell to see the engine proposal, judge panel, reviewer decision and evidence.</em>
-            </footer>}
+            </footer>
           </div>
 
-          {selected && local ? (
-            <aside className="z3-drawer" data-data-card aria-label={`${selected.economy} ${selected.indicator} local details`}>
-              <header>
-                <div><span>{selected.economy} · {selected.indicator} · local</span><strong>{selected.question || selected.indicator}</strong></div>
-                <button type="button" onClick={() => setSelectedKey(null)} aria-label="Close details"><X size={16} /></button>
-              </header>
-              <section>
-                <h3><Server size={13} /> Local model result</h3>
-                <p className="z3-pending-note">{selected.state === 'evidence' ? `Found ${selected.evidence.length} provision${selected.evidence.length === 1 ? '' : 's'} for this indicator.` : 'Concluded no qualifying provision after a full-corpus search.'} Unreviewed: no score is proposed in local mode.</p>
-              </section>
-              <section>
-                <h3>Provisions found ({selected.evidence.length})</h3>
-                {selected.evidence.length ? (
-                  <ul className="z3-evidence">
-                    {selected.evidence.map((row) => (
-                      <li key={row.stable_key}>
-                        <div><strong>{row.law || 'Instrument unavailable'}</strong><span>{row.article || '—'}{row.tag ? ` · ${row.tag}` : ''}{row.confidence ? ` · conf ${String(row.confidence)}` : ''}</span></div>
-                        {row.snippet ? <p className="z3-snippet">{row.snippet}</p> : null}
-                        {row.source_url ? <div className="z3-evidence-links"><a href={row.source_url} target="_blank" rel="noreferrer">Official source <ArrowUpRight size={11} /></a></div> : null}
-                      </li>
-                    ))}
-                  </ul>
-                ) : <p className="z3-pending-note">No provisions: the local run recorded an absence conclusion for this indicator.</p>}
-              </section>
-            </aside>
-          ) : selected ? (
+          {selected ? (
             <aside className="z3-drawer" data-data-card aria-label={`${selected.economy} ${selected.indicator} details`}>
               <header>
                 <div><span>{selected.economy} · {selected.indicator}</span><strong>{selected.question || 'Indicator question unavailable'}</strong></div>
@@ -218,8 +185,8 @@ export default function RDTIIMatrix() {
                       <li key={row.stable_key}>
                         <div><strong>{row.law || 'Instrument unavailable'}</strong><span>{row.article || '—'}{row.tag ? ` · ${row.tag}` : ''}</span></div>
                         <div className="z3-evidence-links">
-                          {row.finding_key ? <Link href={`/match/${row.finding_key}?queue=${row.queue}`}>Source Match <ArrowUpRight size={11} /></Link> : null}
-                          <Link href={`/review?queue=${row.queue}&item=${row.stable_key}`}>Review <ArrowUpRight size={11} /></Link>
+                          {row.finding_key ? <Link href={modeHref(`/match/${row.finding_key}?queue=${row.queue}`)}>Source Match <ArrowUpRight size={11} /></Link> : null}
+                          <Link href={modeHref(`/review?queue=${row.queue}&item=${row.stable_key}`)}>Review <ArrowUpRight size={11} /></Link>
                         </div>
                       </li>
                     ))}
@@ -244,7 +211,7 @@ export default function RDTIIMatrix() {
               ) : <p className="z3-pending-note">Read-only access — scoring requires a mapping reviewer or admin role.</p>}
             </aside>
           ) : (
-            <aside className="z3-drawer z3-drawer-empty" data-data-card><Scale size={20} /><p>{local ? 'Select a cell to see the provisions the local open-weights model found for that indicator.' : 'Select a cell to see the engine proposal, the judge panel, the gold reference, the reviewer decision and the exact evidence rows behind it.'}</p></aside>
+            <aside className="z3-drawer z3-drawer-empty" data-data-card><Scale size={20} /><p>Select a cell to see the engine proposal, the judge panel, the gold reference, the reviewer decision and the exact evidence rows behind it.</p></aside>
           )}
         </div>
       </div>

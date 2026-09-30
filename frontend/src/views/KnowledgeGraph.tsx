@@ -50,7 +50,7 @@ export default function KnowledgeGraph() {
             ) : (
               <>
                 <div className="graph-toolbar">
-                  <label>Economy<select value={economy} onChange={event => setEconomy(event.target.value)}><option value="">All</option><option>Singapore</option><option>Malaysia</option><option>Australia</option><option>Thailand</option><option>India</option><option>Indonesia</option></select></label>
+                  <label>Economy<select value={economy} onChange={event => setEconomy(event.target.value)}><option value="">All</option><option>Singapore</option><option>Malaysia</option><option>Australia</option><option>Thailand</option><option>India</option><option>Indonesia</option><option>Russian Federation</option><option>Mongolia</option><option>Lao PDR</option><option>Timor-Leste</option></select></label>
                   <label>Indicator<input value={indicator} onChange={event => setIndicator(event.target.value)} placeholder="e.g. P6-I4" /></label>
                   <label>Instrument<input value={law} onChange={event => setLaw(event.target.value)} placeholder="Law title" /></label>
                   <label>Finding<input value={findingKey} onChange={event => setFindingKey(event.target.value)} placeholder="Finding key" /></label>

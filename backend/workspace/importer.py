@@ -1,5 +1,6 @@
 import json
 import hashlib
+import os
 import subprocess
 import tempfile
 from datetime import datetime, timezone as datetime_timezone
@@ -12,6 +13,7 @@ from django.utils.dateparse import parse_datetime
 import yaml
 
 from .keys import content_hash, recall_key, zone3_key
+from .mode import MODE_ENV
 from .models import EngineSnapshot, EvidenceRow, ReviewItem, RunRecord, SnapshotArtifact
 from .registry import reconcile_snapshot
 
@@ -32,6 +34,20 @@ RUN_NAMES = (
     "final_r2_id_p6",
     "final_r2_id_p7",
 )
+# Later round-2 economies (RU/MN/LA/TL) join the hybrid snapshot once their run
+# has an output, so adding an economy never breaks the signed snapshot (engine
+# review_layout.OPTIONAL_HYBRID_CODES, same order).
+OPTIONAL_RUN_CODES = ("ru", "mn", "la", "tl")
+# Pillar 2 (public procurement) runs, any economy (engine review_layout.OPTIONAL_PILLARS).
+OPTIONAL_PILLARS = (2,)
+OPTIONAL_RUN_NAMES = tuple(
+    f"final_r2_{code}_p{pillar}" for code in OPTIONAL_RUN_CODES for pillar in (6, 7)
+) + tuple(
+    f"final_r2_{code}_p{pillar}"
+    for code in ("si", "ma", "au", "th", "in", "id", "ru", "mn", "la", "tl")
+    for pillar in OPTIONAL_PILLARS
+)
+ALL_HYBRID_RUN_NAMES = RUN_NAMES + OPTIONAL_RUN_NAMES
 SHEETS = {
     ReviewItem.Queue.NEW: "NEW Findings",
     ReviewItem.Queue.ABSENCE: "Absence Review",
@@ -108,11 +124,12 @@ def _serialized_document(key, category, source_path, value):
     )
 
 
-def _run_json(command, *, cwd):
+def _run_json(command, *, cwd, env=None):
     try:
         result = subprocess.run(
             command,
             cwd=cwd,
+            env=env,
             check=True,
             capture_output=True,
             text=True,
@@ -126,9 +143,33 @@ def _run_json(command, *, cwd):
         ) from exc
 
 
-def load_engine_artifacts(engine_root=None):
+LOCAL_RUN_CODES = ("si", "ma", "au", "th", "in", "id", "ru", "mn", "la", "tl")
+
+
+def _has_output(base, name):
+    output = base / name / "output.json"
+    return output.is_file() and output.stat().st_size > 0
+
+
+def run_names(mode, root=None):
+    """The runs a mode's snapshot imports (engine review_layout.py, same order)."""
+    base = Path(root or settings.ENGINE_ROOT) / "outputs"
+    if mode != "local":
+        return RUN_NAMES + tuple(name for name in OPTIONAL_RUN_NAMES if _has_output(base, name))
+    return tuple(
+        f"local_{code}_p{pillar}"
+        for code in LOCAL_RUN_CODES for pillar in (6, 7, *OPTIONAL_PILLARS)
+        if _has_output(base, f"local_{code}_p{pillar}")
+    )
+
+
+def load_engine_artifacts(engine_root=None, mode="hybrid"):
     root = Path(engine_root or settings.ENGINE_ROOT).resolve()
     python = str(settings.ENGINE_PYTHON)
+    # Every engine export below reads the same model backend's review files.
+    env = {**os.environ, MODE_ENV: mode}
+    submission = Path("submission/local" if mode == "local" else "submission")
+    reports = Path("reports/local" if mode == "local" else "reports")
     payload = _run_json(
         [
             python,
@@ -140,6 +181,7 @@ def load_engine_artifacts(engine_root=None):
             ),
         ],
         cwd=root,
+        env=env,
     )
 
     with tempfile.TemporaryDirectory(prefix="clausechain-map-") as temp_dir:
@@ -148,6 +190,7 @@ def load_engine_artifacts(engine_root=None):
             subprocess.run(
                 [python, "scripts/export_finding_key_map.py", "--out", str(map_path)],
                 cwd=root,
+                env=env,
                 check=True,
                 capture_output=True,
                 text=True,
@@ -167,12 +210,12 @@ def load_engine_artifacts(engine_root=None):
         key_map_doc,
     ]
 
-    consolidated_doc = _json_document(root / "submission" / "consolidated.json", key="consolidated", category="evidence", source_path="submission/consolidated.json")
-    champion_doc = _json_document(root / "reports" / "champion_validation.json", key="champion-validation", category="validation", source_path="reports/champion_validation.json")
+    consolidated_doc = _json_document(root / submission / "consolidated.json", key="consolidated", category="evidence", source_path=f"{submission}/consolidated.json")
+    champion_doc = _json_document(root / reports / "champion_validation.json", key="champion-validation", category="validation", source_path=f"{reports}/champion_validation.json")
     costs_doc = _json_document(root / "logs" / "cost_report.json", key="cost-report", category="runs", source_path="logs/cost_report.json")
     documents.extend((consolidated_doc, champion_doc, costs_doc))
     runs = {}
-    for name in RUN_NAMES:
+    for name in run_names(mode, root):
         document = _json_document(root / "outputs" / name / "output.json", key=f"run-{name}", category="runs", source_path=f"outputs/{name}/output.json")
         documents.append(document)
         runs[name] = document["parsed_json"]
@@ -336,15 +379,23 @@ def _block_reason(row, headers, key_item, queue):
     return ""
 
 
-def _cost_for_run(costs, envelope):
+def _cost_for_run(costs, envelope, mode="hybrid"):
     if not isinstance(costs, list):
         return {}
     country = str(envelope.get("country") or "").upper()
+    profile = "local_openweights" if mode == "local" else "hybrid_accuracy"
     economy_alias = {
         "SG": "Singapore",
         "MY": "Malaysia",
         "MA": "Malaysia",
         "AU": "Australia",
+        "TH": "Thailand",
+        "IN": "India",
+        "ID": "Indonesia",
+        "RU": "Russian Federation",
+        "MN": "Mongolia",
+        "LA": "Lao PDR",
+        "TL": "Timor-Leste",
     }
     economy = economy_alias.get(country, country)
     pillar = str(envelope.get("pillar") or "")
@@ -355,7 +406,7 @@ def _cost_for_run(costs, envelope):
         for item in costs
         if str(item.get("economy") or "").casefold() == economy.casefold()
         and str(item.get("pillar") or "") == pillar
-        and (item.get("provider_profile") or "hybrid_accuracy") == "hybrid_accuracy"
+        and (item.get("provider_profile") or "hybrid_accuracy") == profile
     ]
     return matches[-1] if matches else {}
 
@@ -400,8 +451,8 @@ def _validate_ops_stats(payload):
             raise SnapshotImportError(f"ops_stats.json field {key!r} must be an array")
 
 
-def import_snapshot(artifacts=None, *, keep=5):
-    artifacts = artifacts or load_engine_artifacts()
+def import_snapshot(artifacts=None, *, keep=5, mode="hybrid"):
+    artifacts = artifacts or load_engine_artifacts(mode=mode)
     payload = artifacts["payload"]
     sheets = payload.get("sheets") or {}
     required_sheets = [*SHEETS.values(), *REFERENCE_SHEETS.values()]
@@ -444,12 +495,14 @@ def import_snapshot(artifacts=None, *, keep=5):
     # A contract salt prevents a pre-D3 snapshot (whose source artifacts are
     # identical but whose reference sheets were not stored) from being reused.
     fingerprint_artifacts["workspace_contract"] = "escap-evidence-registry-v1"
+    if mode != "hybrid":  # hybrid fingerprints stay as they were
+        fingerprint_artifacts["workspace_mode"] = mode
     source_hash = content_hash(fingerprint_artifacts)
     existing = EngineSnapshot.objects.filter(source_hash=source_hash).first()
     if existing:
         if not existing.active:
             with transaction.atomic():
-                EngineSnapshot.objects.filter(active=True).update(
+                EngineSnapshot.objects.filter(active=True, mode=mode).update(
                     active=False, stale=True
                 )
                 EngineSnapshot.objects.filter(pk=existing.pk).update(
@@ -474,10 +527,11 @@ def import_snapshot(artifacts=None, *, keep=5):
         payload.get("generated_at") or payload.get("manifest", {}).get("generated_at")
     )
 
-    previous_snapshot = EngineSnapshot.objects.filter(active=True).first()
+    previous_snapshot = EngineSnapshot.objects.filter(active=True, mode=mode).first()
     with transaction.atomic():
-        EngineSnapshot.objects.filter(active=True).update(active=False, stale=True)
+        EngineSnapshot.objects.filter(active=True, mode=mode).update(active=False, stale=True)
         snapshot = EngineSnapshot.objects.create(
+            mode=mode,
             schema_version=str(payload.get("schema_version") or "1"),
             generated_at=generated_at,
             source_hash=source_hash,
@@ -563,11 +617,13 @@ def import_snapshot(artifacts=None, *, keep=5):
                                 _cell(row, indexes, "Indicator"),
                                 _cell(row, indexes, "Master act/instrument"),
                                 _cell(row, indexes, "Master citation"),
+                                mode,
                             )
                     else:
                         stable_key = zone3_key(
                             _cell(row, indexes, "Economy"),
                             _cell(row, indexes, "Indicator"),
+                            mode,
                         )
                 reason = _block_reason(row, headers, key_item, queue)
                 review_items.append(
@@ -626,7 +682,7 @@ def import_snapshot(artifacts=None, *, keep=5):
                     snapshot=snapshot,
                     run_name=name,
                     envelope_json=envelope,
-                    cost_json=_cost_for_run(artifacts["costs"], envelope),
+                    cost_json=_cost_for_run(artifacts["costs"], envelope, mode),
                     source_hash=content_hash(envelope),
                 )
                 for name, envelope in artifacts["runs"].items()

@@ -1,6 +1,7 @@
 from decimal import Decimal
 import csv
 import hashlib
+import io
 import json
 import re
 from urllib.parse import urlparse
@@ -8,9 +9,11 @@ from urllib.parse import urlparse
 from django.conf import settings
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
+from django.db.models import Q
 from django.http import FileResponse, Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from django.utils.dateparse import parse_datetime
 from rest_framework import status
 from rest_framework.exceptions import APIException, PermissionDenied, ValidationError
 from rest_framework.response import Response
@@ -26,7 +29,8 @@ from .decision_writer import (
     decision_domain_lock,
 )
 from .engine_worker import EngineWorkerError, load_allowlist
-from .importer import RUN_NAMES
+from .importer import ALL_HYBRID_RUN_NAMES
+from .mode import bundle_dir, current_mode, submission_dir
 from .worker_supervisor import ensure_worker, worker_status
 from .models import (
     CorrectionRequest,
@@ -53,7 +57,7 @@ from .roles import (
     reviewer_identity,
     reviewer_roles,
 )
-from .registry import publish_change_set
+from .registry import publish_change_set, technically_blocked
 from .serializers import (
     CorrectionRequestWriteSerializer,
     EvidenceChangeDecisionWriteSerializer,
@@ -81,11 +85,15 @@ class IsSuperuserPermission(BasePermission):
         )
 
 
-def active_snapshot():
-    snapshot = EngineSnapshot.objects.filter(active=True).first()
+def active_snapshot(mode=None):
+    """The active snapshot of the request's model backend (?mode=, default hybrid)."""
+    mode = mode or current_mode()
+    snapshot = EngineSnapshot.objects.filter(active=True, mode=mode).first()
     if snapshot is None:
         raise APIException(
-            "No engine snapshot has been imported.", code="snapshot_unavailable"
+            "No Local snapshot yet: open Runs (Local tab) and click Refresh snapshot."
+            if mode == "local" else "No engine snapshot has been imported.",
+            code="snapshot_unavailable",
         )
     return snapshot
 
@@ -100,6 +108,7 @@ def snapshot_identity(snapshot):
         "bundle_hash": snapshot.bundle_hash,
         "engine_git_sha": snapshot.engine_git_sha,
         "stale": snapshot.stale,
+        "mode": snapshot.mode,
     }
 
 
@@ -227,6 +236,7 @@ def item_is_decided(item):
 def registry_summary(snapshot):
     entries = list(
         EvidenceRegistryEntry.objects.select_related("identity", "active_revision")
+        .filter(identity__mode=snapshot.mode)
     )
     current_revisions = [
         entry.active_revision
@@ -244,7 +254,7 @@ def registry_summary(snapshot):
         if entry.state != EvidenceRegistryEntry.State.CURRENT:
             continue
         revision = entry.active_revision
-        if revision.blocked:
+        if technically_blocked(revision.blocked, revision.row_json):
             states["blocked"] += 1
             continue
         decision = verdicts.get((revision.finding_key, revision.review_subject_hash))
@@ -596,7 +606,8 @@ class LedgerView(APIView):
     pagination_class = WorkspacePagination
 
     def get(self, request):
-        rows = [*FindingDecision.objects.all(), *RecallDecision.objects.all(), *Zone3Decision.objects.all(), *CorrectionRequest.objects.all(), *Release.objects.all()]
+        mode = current_mode()
+        rows = [*FindingDecision.objects.filter(mode=mode), *RecallDecision.objects.filter(mode=mode), *Zone3Decision.objects.filter(mode=mode), *CorrectionRequest.objects.filter(mode=mode), *Release.objects.filter(snapshot__mode=mode)]
         rows.sort(key=lambda row: getattr(row, "reviewed_at", None) or getattr(row, "requested_at", None) or row.created_at, reverse=True)
         paginator = self.pagination_class()
         page = paginator.paginate_queryset(rows, request, view=self)
@@ -747,7 +758,7 @@ class EvidenceListView(APIView):
                     {
                         "finding_key": row.finding_key,
                         "row": row.row_json,
-                        "blocked": row.blocked,
+                        "blocked": technically_blocked(row.blocked, row.row_json),
                         "proof_asset_url": proof_url(row.proof_asset),
                         "source_hash": row.source_hash,
                     }
@@ -870,7 +881,7 @@ def serialize_source_match(evidence, *, navigation, review_item):
         "proof_asset_url": asset_url,
         "proof_asset_available": bool(
             asset_url
-            and (settings.ENGINE_ROOT / "submission" / "review" / evidence.proof_asset).is_file()
+            and (bundle_dir() / evidence.proof_asset).is_file()
         ),
         "source_hash": evidence.source_hash,
         "source_sha256": source_sha256(row, evidence.source_hash),
@@ -937,7 +948,7 @@ class EvidenceDetailView(APIView):
             {
                 "finding_key": row.finding_key,
                 "row": row.row_json,
-                "blocked": row.blocked,
+                "blocked": technically_blocked(row.blocked, row.row_json),
                 "proof_asset_url": proof_url(row.proof_asset),
                 "source_hash": row.source_hash,
                 "review_state": effective_finding_review(
@@ -990,7 +1001,7 @@ class ProofAssetView(APIView):
     def get(self, request, filename):
         if not PROOF_ASSET_PATTERN.fullmatch(filename):
             raise Http404
-        path = settings.ENGINE_ROOT / "submission" / "review" / "assets" / filename
+        path = bundle_dir() / "assets" / filename
         if not path.is_file():
             raise Http404
         return FileResponse(path.open("rb"), content_type="image/png")
@@ -1023,11 +1034,19 @@ def request_mode(request, source=None):
     return value
 
 
+def action_mode(request):
+    """Mode of an engine action: the body's "mode", else ?mode=, else hybrid."""
+    return request_mode(request, {"mode": request.data.get("mode") or request.query_params.get("mode")})
+
+
 def actions_for_mode(mode):
+    """A mode's actions; source downloads (corpus) serve both models, so both tabs show them."""
     queryset = EngineAction.objects.all()
     if mode == "hybrid":
-        return queryset.exclude(arguments_json__mode="local")
-    return queryset.filter(arguments_json__mode=mode)
+        # A missing "mode" key (source downloads, older actions) must not read as
+        # "local": in SQL the comparison is NULL, and exclude() would drop the row.
+        return queryset.filter(~Q(arguments_json__mode="local") | Q(arguments_json__mode__isnull=True))
+    return queryset.filter(Q(arguments_json__mode=mode) | Q(kind=EngineAction.Kind.CORPUS))
 
 
 def serialize_modes():
@@ -1191,7 +1210,7 @@ def file_sha256(path):
 
 
 def final_artifact_summary():
-    root = settings.ENGINE_ROOT / "submission"
+    root = submission_dir()
     csv_path = root / "consolidated_final.csv"
     json_path = root / "consolidated_final.json"
     if not csv_path.is_file() or not json_path.is_file():
@@ -1268,7 +1287,7 @@ class SubmissionView(APIView):
                     "stale": snapshot.stale,
                 },
                 final_artifacts=final_artifact_summary(),
-                release=serialize_release(Release.objects.first()),
+                release=serialize_release(Release.objects.filter(snapshot__mode=current_mode()).first()),
             )
         )
 
@@ -1315,8 +1334,27 @@ class EngineActionCreateView(APIView):
                 kind=self.kind,
                 status__in=(EngineAction.Status.QUEUED, EngineAction.Status.RUNNING),
             )
+            # The worker runs actions one at a time, in order, so several can wait
+            # in the queue. Only a true duplicate is refused: the same run (it would
+            # write the same output folder) or a second refresh/replay of one mode.
+            if self.kind == EngineAction.Kind.RUN:
+                active = active.filter(
+                    arguments_json__economy=arguments["economy"],
+                    arguments_json__pillar=arguments["pillar"],
+                    arguments_json__mode=arguments["mode"],
+                )
+                conflict = "This economy and pillar is already queued or running in this mode."
+            elif self.kind == EngineAction.Kind.CORPUS:
+                active = active.filter(
+                    arguments_json__economy=arguments["economy"],
+                    arguments_json__action=arguments["action"],
+                )
+                conflict = "This is already queued or running for this economy."
+            else:
+                active = active.filter(arguments_json__mode=arguments.get("mode", "hybrid"))
+                conflict = "This action is already queued or running for this mode."
             if active.exists():
-                raise DecisionConflict("An action of this type is already queued or running.")
+                raise DecisionConflict(conflict)
             action = EngineAction.objects.create(
                 kind=self.kind,
                 arguments_json=arguments,
@@ -1427,6 +1465,84 @@ class EngineActionEventsView(APIView):
         })
 
 
+SOURCE_PILLARS = ("2", "6", "7")
+
+
+class EngineSourcesView(EngineActionCreateView):
+    """Build sources (download + read + index) or Clear downloads for one economy."""
+
+    kind = EngineAction.Kind.CORPUS
+
+    def action_arguments(self, request):
+        economy = str(request.data.get("economy") or "")
+        operation = str(request.data.get("operation") or "build")
+        if operation not in ("build", "clear"):
+            raise ValidationError({"operation": "Choose build or clear."})
+        action = "build_r2_corpus" if operation == "build" else "archive_sources"
+        try:
+            spec = load_allowlist().get(action) or {}
+        except EngineWorkerError as exc:
+            raise APIException(str(exc), code="engine_allowlist_unavailable") from exc
+        economies = {str(value) for value in ((spec.get("params") or {}).get("economy") or {}).get("enum", [])}
+        if economy not in economies:
+            raise ValidationError({"economy": "Choose an economy configured in the engine action allowlist."})
+        arguments = {"action": action, "economy": economy, "operation": operation}
+        if operation == "build":
+            pillar = str(request.data.get("pillar") or "")
+            if pillar not in SOURCE_PILLARS:
+                raise ValidationError({"pillar": f"Choose pillar {', '.join(SOURCE_PILLARS)}."})
+            arguments["pillars"] = f"P{pillar}"
+            arguments["pillar"] = pillar
+        return arguments
+
+
+def fetch_documents(action):
+    """Documents an action downloaded: one entry per "fetch" event of kind download."""
+    documents = []
+    for event in action.events.filter(stage="fetch").order_by("seq"):
+        try:
+            detail = json.loads(event.detail or "{}")
+        except json.JSONDecodeError:
+            continue
+        if detail.get("kind") != "download":
+            continue
+        documents.append({
+            "url": detail.get("final_url") or detail.get("url"),
+            "seed_url": detail.get("url"),
+            "act": detail.get("act"),
+            "fetched_at": detail.get("fetched_at") or event.ts.isoformat(),
+            "size_kb": round((detail.get("bytes") or 0) / 1024, 1),
+            "file_type": detail.get("file_type"),
+            "sha256": detail.get("sha256"),
+        })
+    return documents
+
+
+class EngineActionDocumentsView(APIView):
+    """Every document an action downloaded (Run Record: URL, time, size, file type)."""
+
+    def get(self, request, action_id):
+        action = get_object_or_404(EngineAction, pk=action_id)
+        documents = fetch_documents(action)
+        if request.query_params.get("export") == "csv":
+            buffer = io.StringIO()
+            writer = csv.writer(buffer)
+            writer.writerow(["#", "Source URL", "Fetched during", "Time (hh:mm)", "Size (KB)",
+                             "File type", "Law", "SHA-256"])
+            pass_label = f"Sources · {(action.arguments_json or {}).get('economy', '')}"
+            for number, doc in enumerate(documents, 1):
+                fetched = parse_datetime(str(doc["fetched_at"]))
+                writer.writerow([number, doc["url"], pass_label,
+                                 timezone.localtime(fetched).strftime("%H:%M") if fetched else "",
+                                 doc["size_kb"], doc["file_type"], doc["act"] or "", doc["sha256"] or ""])
+            response = HttpResponse(("\ufeff" + buffer.getvalue()).encode("utf-8"),
+                                    content_type="text/csv; charset=utf-8")
+            response["Content-Disposition"] = f'attachment; filename="documents_downloaded_{action.pk}.csv"'
+            return response
+        return Response({"action_id": str(action.pk), "status": action.status,
+                         "count": len(documents), "documents": documents})
+
+
 class EngineWorkerStatusView(APIView):
     def get(self, request):
         return Response(worker_status())
@@ -1436,14 +1552,14 @@ class EngineReplayView(EngineActionCreateView):
     kind = EngineAction.Kind.REPLAY
 
     def action_arguments(self, request):
-        return {"action": "replay"}
+        return {"action": "replay", "mode": action_mode(request)}
 
 
 class EngineRefreshView(EngineActionCreateView):
     kind = EngineAction.Kind.REFRESH
 
     def action_arguments(self, request):
-        return {"action": "refresh_payload"}
+        return {"action": "refresh_payload", "mode": action_mode(request)}
 
 
 class EngineRunView(EngineActionCreateView):
@@ -1464,8 +1580,8 @@ class EngineRunView(EngineActionCreateView):
             raise ValidationError(
                 {"economy": "Choose an economy configured in the engine action allowlist."}
             )
-        if pillar not in {"6", "7"}:
-            raise ValidationError({"pillar": "Choose pillar 6 or 7."})
+        if pillar not in {"2", "6", "7"}:
+            raise ValidationError({"pillar": "Choose pillar 2, 6 or 7."})
         mode = request_mode(request, request.data)
         return {
             "action": "run_pipeline",
@@ -1486,13 +1602,17 @@ RUN_CODES = {
     "Thailand": "th",
     "India": "in",
     "Indonesia": "id",
+    "Russian Federation": "ru",
+    "Mongolia": "mn",
+    "Lao PDR": "la",
+    "Timor-Leste": "tl",
 }
 
 
 def run_out_prefix(mode, run_code, pillar):
     """Hybrid runs write where the snapshot import reads them (final_r2_* for round 2)."""
     prefix = RUN_MODES[mode]["out_prefix"]
-    if mode == "hybrid" and f"final_r2_{run_code}_p{pillar}" in RUN_NAMES:
+    if mode == "hybrid" and f"final_r2_{run_code}_p{pillar}" in ALL_HYBRID_RUN_NAMES:
         return "final_r2"
     return prefix
 
@@ -1670,7 +1790,7 @@ def finding_ineligibility(item, snapshot):
     ).first()
     if not evidence:
         return "The finding has no consolidated evidence row."
-    if evidence.blocked:
+    if technically_blocked(evidence.blocked, evidence.row_json):
         return "The consolidated evidence row is technically blocked."
     row = evidence.row_json
     if str(row.get("Status") or "").strip() != "in_force":
@@ -1763,7 +1883,7 @@ class ReviewContextView(APIView):
                     {
                         "finding_key": evidence.finding_key,
                         "row": row,
-                        "blocked": evidence.blocked,
+                        "blocked": technically_blocked(evidence.blocked, evidence.row_json),
                         "proof_asset_url": proof_url(evidence.proof_asset),
                         "same_law": same_law,
                         "same_indicator": same_indicator,
@@ -1893,6 +2013,7 @@ class FindingDecisionView(APIView):
                 engine_decisions,
             )
             row = FindingDecision.objects.create(
+                mode=current_mode(),
                 **data,
                 review_subject_hash=item.review_subject_hash,
                 reviewer_name=reviewer_name,
@@ -2057,6 +2178,7 @@ class FindingBulkDecisionView(APIView):
             )
             rows = [
                 FindingDecision.objects.create(
+                mode=current_mode(),
                     finding_key=key,
                     review_subject_hash=items_by_key[key].review_subject_hash,
                     queue=ReviewItem.Queue.KNOWN,
@@ -2133,6 +2255,7 @@ class RecallDecisionView(APIView):
                 ],
             )
             row = RecallDecision.objects.create(
+                mode=current_mode(),
                 **data,
                 reviewer_name=reviewer_name,
                 reviewer_role="mapping",
@@ -2197,6 +2320,7 @@ class Zone3DecisionView(APIView):
                 [event],
             )
             row = Zone3Decision.objects.create(
+                mode=current_mode(),
                 **data,
                 reviewer_name=reviewer_name,
                 reviewer_role="mapping",
@@ -2216,210 +2340,113 @@ class Zone3DecisionView(APIView):
         )
 
 
-MATRIX_ECONOMY_ORDER = ["Singapore", "Malaysia", "Australia", "Thailand", "India", "Indonesia"]
+MATRIX_ECONOMY_ORDER = ["Singapore", "Malaysia", "Australia", "Thailand", "India", "Indonesia",
+                        "Russian Federation", "Mongolia", "Lao PDR", "Timor-Leste"]
 
 
-class Zone3MatrixView(APIView):
-    """Real indicator-score matrix: engine Zone-3 proposals overlaid with the
-    attributable reviewer decisions, plus the evidence rows each score rests on."""
+def zone3_matrix_payload(snapshot):
+    """Indicator-score matrix of one snapshot: engine Zone-3 proposals overlaid with
+    the attributable reviewer decisions of the same model backend, plus the
+    evidence rows each score rests on."""
+    mode = snapshot.mode
 
-    def get(self, request):
-        mode = request_mode(request)
-        if mode != "hybrid":
-            return Response(local_matrix(mode))
-        snapshot = active_snapshot()
+    latest_decisions = {}
+    for decision in Zone3Decision.objects.filter(mode=mode).order_by("created_at"):
+        latest_decisions[decision.score_key] = decision
 
-        latest_decisions = {}
-        for decision in Zone3Decision.objects.order_by("created_at"):
-            latest_decisions[decision.score_key] = decision
-
-        evidence_index = {}
-        evidence_queues = (ReviewItem.Queue.NEW, ReviewItem.Queue.KNOWN, ReviewItem.Queue.ABSENCE)
-        for item in ReviewItem.objects.filter(snapshot=snapshot, queue__in=evidence_queues).order_by("position"):
-            record = sheet_record({"headers": snapshot.headers_json.get(item.queue) or []}, item.row_json)
-            economy = str(record.get("Economy") or "").strip()
-            indicator = str(record.get("Indicator") or record.get("Indicator ID") or "").strip()
-            if not economy or not indicator:
-                continue
-            evidence_index.setdefault((economy.casefold(), indicator.casefold()), []).append({
-                "finding_key": item.finding_key,
-                "stable_key": item.stable_key,
-                "queue": item.queue,
-                "law": str(record.get("Law/instrument") or record.get("Law Name")
-                           or record.get("Configured governing instrument") or ""),
-                "article": str(record.get("Article/section") or record.get("Article / Section")
-                               or record.get("Master citation") or ""),
-                "tag": str(record.get("Discovery Tag") or ("ABSENCE" if item.queue == ReviewItem.Queue.ABSENCE else "")),
-                "blocked": item.blocked,
-            })
-
-        cells = []
-        economies, indicators = [], []
-        decided = 0
-        for item in ReviewItem.objects.filter(snapshot=snapshot, queue=ReviewItem.Queue.ZONE3).order_by("position"):
-            record = sheet_record({"headers": snapshot.headers_json.get(ReviewItem.Queue.ZONE3) or []}, item.row_json)
-            economy = str(record.get("Economy") or "").strip()
-            indicator = str(record.get("Indicator") or "").strip()
-            if economy not in economies:
-                economies.append(economy)
-            if indicator not in indicators:
-                indicators.append(indicator)
-            deterministic = record.get("Deterministic score")
-            decision = latest_decisions.get(item.stable_key)
-            state = "pending"
-            effective = None
-            if decision is not None:
-                # The engine ledger stores writer-style actions (approve/override);
-                # app-written rows store the model verdicts (approved/overridden).
-                state = "overridden" if str(decision.verdict) in ("override", "overridden") else "approved"
-                effective = float(decision.score) if decision.score is not None else deterministic
-                decided += 1
-            cells.append({
-                "economy": economy,
-                "indicator": indicator,
-                "score_key": item.stable_key,
-                "question": record.get("Indicator question"),
-                "deterministic": deterministic,
-                "deterministic_reason": record.get("Deterministic reason"),
-                "master_gold": record.get("Master gold score"),
-                "gold_divergence": (lambda value: value if value and value.casefold() not in ("agrees", "none", "n/a", "—") else None)(str(record.get("Gold divergence") or "").strip()),
-                "judge_scores": record.get("Judge scores"),
-                "judge_reasoning": record.get("Judge reasoning"),
-                "agreement_alpha": record.get("Agreement alpha"),
-                "score_band": record.get("Score band"),
-                "flagged": bool(record.get("Flagged for review")),
-                "state": state,
-                "effective": effective,
-                "reviewer_name": decision.reviewer_name if decision else "",
-                "reviewed_at": decision.reviewed_at.isoformat() if decision else None,
-                "reasoning": (decision.reasoning if decision and hasattr(decision, "reasoning") else "") or "",
-                "latest_decision_id": str(decision.pk) if decision else None,
-                "blocked": item.blocked,
-                "evidence": evidence_index.get((economy.casefold(), indicator.casefold()), []),
-            })
-
-        economies.sort(key=lambda name: (MATRIX_ECONOMY_ORDER.index(name) if name in MATRIX_ECONOMY_ORDER else 99, name))
-        indicators.sort()
-        return Response({
-            "mode": mode,
-            "modes": serialize_modes(),
-            "snapshot": snapshot_identity(snapshot),
-            "economies": economies,
-            "indicators": indicators,
-            "counts": {"total": len(cells), "decided": decided, "pending": len(cells) - decided},
-            "score_semantics": {
-                "explanation": "A cell is an indicator-level decision. The engine proposes a deterministic score with judge-panel context; only a named reviewer approval or override makes it effective.",
-                "allowed_scores": [0, 0.5, 1],
-            },
-            "cells": cells,
+    evidence_index = {}
+    evidence_queues = (ReviewItem.Queue.NEW, ReviewItem.Queue.KNOWN, ReviewItem.Queue.ABSENCE)
+    for item in ReviewItem.objects.filter(snapshot=snapshot, queue__in=evidence_queues).order_by("position"):
+        record = sheet_record({"headers": snapshot.headers_json.get(item.queue) or []}, item.row_json)
+        economy = str(record.get("Economy") or "").strip()
+        indicator = str(record.get("Indicator") or record.get("Indicator ID") or "").strip()
+        if not economy or not indicator:
+            continue
+        evidence_index.setdefault((economy.casefold(), indicator.casefold()), []).append({
+            "finding_key": item.finding_key,
+            "stable_key": item.stable_key,
+            "queue": item.queue,
+            "law": str(record.get("Law/instrument") or record.get("Law Name")
+                       or record.get("Configured governing instrument") or ""),
+            "article": str(record.get("Article/section") or record.get("Article / Section")
+                           or record.get("Master citation") or ""),
+            "tag": str(record.get("Discovery Tag") or ("ABSENCE" if item.queue == ReviewItem.Queue.ABSENCE else "")),
+            "blocked": item.blocked,
         })
-
-
-ABSENCE_SNIPPET = "NO_EVIDENCE_FOUND_PENDING_REVIEW"
-
-
-def local_matrix(mode):
-    """Evidence-only matrix from a mode's latest run per economy x pillar.
-
-    Local runs are unreviewed engine output: cells show what evidence the model
-    found (and where it concluded absence) so it can be compared with the hybrid
-    matrix, but carry no proposed or effective score.
-    """
-    latest = {}
-    for action in local_run_actions(mode):  # newest first
-        envelope = action.result_json
-        latest.setdefault((str(envelope.get("country")), str(envelope.get("pillar"))), action)
-
-    questions = {}
-    snapshot = EngineSnapshot.objects.filter(active=True).first()
-    if snapshot is not None:
-        for item in ReviewItem.objects.filter(snapshot=snapshot, queue=ReviewItem.Queue.ZONE3):
-            record = sheet_record({"headers": snapshot.headers_json.get(ReviewItem.Queue.ZONE3) or []}, item.row_json)
-            questions.setdefault(str(record.get("Indicator") or "").strip(), record.get("Indicator question"))
-
-    grouped = {}
-    runs = []
-    for action in latest.values():
-        envelope = action.result_json
-        runs.append({
-            "run_id": envelope.get("run_id"),
-            "country": envelope.get("country"),
-            "pillar": envelope.get("pillar"),
-            "generated_at": envelope.get("generated_at"),
-            "action_id": str(action.pk),
-        })
-        for index, finding in enumerate(envelope.get("findings") or []):
-            economy = str(finding.get("Economy") or "").strip()
-            indicator = str(finding.get("Indicator ID") or "").strip()
-            if not economy or not indicator:
-                continue
-            absence = str(finding.get("Verbatim Snippet") or "") == ABSENCE_SNIPPET
-            grouped.setdefault((economy, indicator), []).append({
-                "finding_key": None,
-                "stable_key": f"{envelope.get('run_id')}:{index}",
-                "queue": None,
-                "law": str(finding.get("Law Name") or ""),
-                "article": str(finding.get("Article / Section") or ""),
-                "tag": "ABSENCE" if absence else str(finding.get("Discovery Tag") or ""),
-                "blocked": False,
-                "absence": absence,
-                "snippet": "" if absence else str(finding.get("Verbatim Snippet") or "")[:600],
-                "source_url": finding.get("Source URL"),
-                "confidence": finding.get("Confidence"),
-                "run_id": envelope.get("run_id"),
-            })
 
     cells = []
-    for (economy, indicator), rows in grouped.items():
-        evidence = [row for row in rows if not row["absence"]]
+    economies, indicators = [], []
+    decided = 0
+    for item in ReviewItem.objects.filter(snapshot=snapshot, queue=ReviewItem.Queue.ZONE3).order_by("position"):
+        record = sheet_record({"headers": snapshot.headers_json.get(ReviewItem.Queue.ZONE3) or []}, item.row_json)
+        economy = str(record.get("Economy") or "").strip()
+        indicator = str(record.get("Indicator") or "").strip()
+        if economy not in economies:
+            economies.append(economy)
+        if indicator not in indicators:
+            indicators.append(indicator)
+        deterministic = record.get("Deterministic score")
+        decision = latest_decisions.get(item.stable_key)
+        state = "pending"
+        effective = None
+        if decision is not None:
+            # The engine ledger stores writer-style actions (approve/override);
+            # app-written rows store the model verdicts (approved/overridden).
+            state = "overridden" if str(decision.verdict) in ("override", "overridden") else "approved"
+            effective = float(decision.score) if decision.score is not None else deterministic
+            decided += 1
         cells.append({
             "economy": economy,
             "indicator": indicator,
-            "score_key": f"{mode}:{economy}:{indicator}",
-            "question": questions.get(indicator),
-            "deterministic": None,
-            "deterministic_reason": "",
-            "master_gold": None,
-            "gold_divergence": None,
-            "judge_scores": None,
-            "judge_reasoning": None,
-            "agreement_alpha": None,
-            "score_band": None,
-            "flagged": False,
-            "state": "evidence" if evidence else "absence",
-            "effective": None,
-            "reviewer_name": "",
-            "reviewed_at": None,
-            "reasoning": "",
-            "latest_decision_id": None,
-            "blocked": False,
-            "evidence": evidence,
-            "absence_rows": [row for row in rows if row["absence"]],
+            "score_key": item.stable_key,
+            "question": record.get("Indicator question"),
+            "deterministic": deterministic,
+            "deterministic_reason": record.get("Deterministic reason"),
+            "master_gold": record.get("Master gold score"),
+            "gold_divergence": (lambda value: value if value and value.casefold() not in ("agrees", "none", "n/a", "—") else None)(str(record.get("Gold divergence") or "").strip()),
+            "judge_scores": record.get("Judge scores"),
+            "judge_reasoning": record.get("Judge reasoning"),
+            "agreement_alpha": record.get("Agreement alpha"),
+            "score_band": record.get("Score band"),
+            "flagged": bool(record.get("Flagged for review")),
+            "state": state,
+            "effective": effective,
+            "reviewer_name": decision.reviewer_name if decision else "",
+            "reviewed_at": decision.reviewed_at.isoformat() if decision else None,
+            "reasoning": (decision.reasoning if decision and hasattr(decision, "reasoning") else "") or "",
+            "latest_decision_id": str(decision.pk) if decision else None,
+            "blocked": item.blocked,
+            "evidence": evidence_index.get((economy.casefold(), indicator.casefold()), []),
         })
-    economies = sorted({cell["economy"] for cell in cells},
-                       key=lambda name: (MATRIX_ECONOMY_ORDER.index(name) if name in MATRIX_ECONOMY_ORDER else 99, name))
-    with_evidence = sum(1 for cell in cells if cell["state"] == "evidence")
+
+    economies.sort(key=lambda name: (MATRIX_ECONOMY_ORDER.index(name) if name in MATRIX_ECONOMY_ORDER else 99, name))
+    indicators.sort()
     return {
         "mode": mode,
         "modes": serialize_modes(),
-        "snapshot": None,
-        "runs": sorted(runs, key=lambda run: (str(run["country"]), str(run["pillar"]))),
+        "snapshot": snapshot_identity(snapshot),
         "economies": economies,
-        "indicators": sorted({cell["indicator"] for cell in cells}),
-        "counts": {
-            "total": len(cells),
-            "decided": 0,
-            "pending": 0,
-            "with_evidence": with_evidence,
-            "absence": len(cells) - with_evidence,
-            "evidence_rows": sum(len(cell["evidence"]) for cell in cells),
-        },
+        "indicators": indicators,
+        "counts": {"total": len(cells), "decided": decided, "pending": len(cells) - decided},
         "score_semantics": {
-            "explanation": "Local-mode cells are unreviewed engine output: the evidence the open-weights model found per indicator. They carry no proposed or effective score.",
+            "explanation": "A cell is an indicator-level decision. The engine proposes a deterministic score with judge-panel context; only a named reviewer approval or override makes it effective.",
             "allowed_scores": [0, 0.5, 1],
         },
         "cells": cells,
     }
+
+
+class Zone3MatrixView(APIView):
+    def get(self, request):
+        mode = request_mode(request)
+        snapshot = EngineSnapshot.objects.filter(active=True, mode=mode).first()
+        if snapshot is None:
+            return Response({
+                "mode": mode, "modes": serialize_modes(), "snapshot": None, "economies": [],
+                "indicators": [], "counts": {"total": 0, "decided": 0, "pending": 0},
+                "score_semantics": {"explanation": "", "allowed_scores": [0, 0.5, 1]}, "cells": [],
+            })
+        return Response(zone3_matrix_payload(snapshot))
 
 
 class CorrectionRequestView(APIView):
@@ -2476,6 +2503,7 @@ class CorrectionRequestView(APIView):
                 ],
             )
             row = CorrectionRequest.objects.create(
+                mode=current_mode(),
                 **data,
                 review_subject_hash=item.review_subject_hash,
                 requested_by=request.user,

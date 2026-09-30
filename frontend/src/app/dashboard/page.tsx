@@ -4,13 +4,12 @@ import ProtectedRoute from '@/components/ProtectedRoute'
 import WorkspaceShell from '@/components/clausechain/WorkspaceShell'
 import { ModeRoute } from '@/components/workspace/RunModeTabs'
 import WorkspaceDashboard from '@/views/WorkspaceDashboard'
-import LocalDashboard from '@/views/local/LocalDashboard'
 
 export default function DashboardPage() {
   return (
     <ProtectedRoute>
       <Suspense fallback={<WorkspaceShell breadcrumbs={[{ label: 'Dashboard' }]}><div className="run-page-state">Loading…</div></WorkspaceShell>}>
-        <ModeRoute hybrid={<WorkspaceDashboard />} local={<LocalDashboard />} />
+        <ModeRoute><WorkspaceDashboard /></ModeRoute>
       </Suspense>
     </ProtectedRoute>
   )

@@ -25,6 +25,12 @@ GOLDEN_RULES = """LEGAL RULES (ESCAP RDTII methodology — binding):
 - If the legal test is not met, say applies=false — never force a mapping."""
 
 
+
+def golden_rules(cfg: dict) -> str:
+    """The pillar's binding rules: a rubric may carry its own (Pillar 2 has no
+    transfer/storage semantics); P6/P7 rubrics fall back to GOLDEN_RULES."""
+    return str(cfg.get("golden_rules") or GOLDEN_RULES).strip()
+
 class ScreenDecision(BaseModel):
     candidate_index: int
     relevant: bool
@@ -166,7 +172,7 @@ def screen_candidates(llm_bulk, indicator_id: str, cfg: dict, candidates: list) 
 
 {_indicator_brief(indicator_id, cfg)}
 
-{GOLDEN_RULES}
+{golden_rules(cfg)}
 
 For EACH numbered candidate below, decide if it PLAUSIBLY satisfies the indicator's legal test
 (err on the side of relevant=true when unsure — a later stage decides precisely; but apply the
@@ -207,7 +213,7 @@ def _mapping_prompt(indicator_id: str, cfg: dict, candidate,
 
 {_indicator_brief(indicator_id, cfg)}
 
-{GOLDEN_RULES}
+{golden_rules(cfg)}
 
 {"GOLD ANCHOR: ESCAP's master dataset records THIS provision under THIS indicator (KNOWN baseline). Reproducing it proves recall — unless the text PLAINLY contradicts the legal test, set applies=true and extract the operative quote." if gold_anchor else ""}
 {"VERIFIED RESEARCH EXPECTATION: an official-source research report expects this provision to be assessed under this indicator. Do not assume it qualifies; make the legal-test decision explicitly and preserve a diagnostic reason if it does not." if expected_anchor and not gold_anchor else ""}

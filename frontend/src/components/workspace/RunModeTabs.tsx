@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useState, type ReactNode } from 'react'
+import { Fragment, useCallback, useEffect, useState, type ReactNode } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { Cloud, Server } from 'lucide-react'
 
@@ -54,16 +54,15 @@ export function useUrlMode(): RunMode {
   return mode
 }
 
-/** Keep the Local tab when following a workspace link. */
-export function withMode(href: string, mode: RunMode) {
-  if (mode !== 'local' || href.startsWith('http')) return href
-  return `${href}${href.includes('?') ? '&' : '?'}mode=local`
-}
+export { withMode } from '@/lib/runMode'
 
-/** Render the Hybrid or the Local version of a page; each is a separate workspace. */
-export function ModeRoute({ hybrid, local }: { hybrid: ReactNode; local: ReactNode }) {
+/**
+ * The same page for either workspace. Keyed by mode, so switching tabs remounts
+ * it: every query refetches from the other workspace and no state carries over.
+ */
+export function ModeRoute({ children }: { children: ReactNode }) {
   const [mode] = useRunMode()
-  return <>{mode === 'local' ? local : hybrid}</>
+  return <Fragment key={mode}>{children}</Fragment>
 }
 
 /** The Hybrid | Local tab bar at the top of a mode-aware page. */

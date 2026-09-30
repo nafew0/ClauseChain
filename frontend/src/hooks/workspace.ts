@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 
 import { useToast } from '@/hooks/useToast'
+import { currentRunMode } from '@/lib/runMode'
 import {
   decideFinding,
   decideEvidenceChange,
@@ -22,6 +23,8 @@ import {
   getSubmission,
   getEngineActions,
   cancelAllEngineActions,
+  getActionDocuments,
+  launchSourcesAction,
   cancelEngineAction,
   launchEngineAction,
   getSourceMatch,
@@ -48,7 +51,8 @@ import type {
 } from '@/types/workspace'
 
 export const workspaceKeys = {
-  all: ['workspace'] as const,
+  // Every workspace query is cached per model backend (Hybrid / Local tab).
+  get all() { return ['workspace', currentRunMode()] as const },
   summary: () => [...workspaceKeys.all, 'summary'] as const,
   changes: (params: { kind?: string; economy?: string }) => [...workspaceKeys.all, 'changes', params] as const,
   ops: () => [...workspaceKeys.all, 'ops'] as const,
@@ -243,7 +247,7 @@ export function useLaunchEngineAction() {
   return useMutation({
     mutationFn: ({ kind, payload }: {
       kind: 'replay' | 'refresh' | 'run'
-      payload?: { economy?: string; pillar?: 6 | 7; mode?: RunMode }
+      payload?: { economy?: string; pillar?: 2 | 6 | 7; mode?: RunMode }
     }) => launchEngineAction(kind, payload),
     onMutate: ({ kind }) => ({
       toastId: toast({
@@ -384,5 +388,35 @@ export function useDecide() {
         duration: 7_000,
       })
     },
+  })
+}
+
+/** Runs → Sources: queue a Build sources or Clear downloads action. */
+export function useLaunchSources() {
+  const queryClient = useQueryClient()
+  const { toast } = useToast()
+  return useMutation({
+    mutationFn: launchSourcesAction,
+    onSuccess: async (_action, variables) => {
+      toast({
+        title: variables.operation === 'clear' ? 'Clear downloads queued' : 'Build sources queued',
+        description: variables.operation === 'clear'
+          ? `${variables.economy}: downloads and caches will be archived (nothing is deleted).`
+          : `${variables.economy} Pillar ${variables.pillar}: documents will be downloaded, read and indexed.`,
+        variant: 'success',
+        duration: 5_000,
+      })
+      await queryClient.invalidateQueries({ queryKey: workspaceKeys.all })
+    },
+    onError: (error) => toast({ title: 'Not queued', description: errorMessage(error), variant: 'error' }),
+  })
+}
+
+/** Documents an action downloaded; polls while the action is running. */
+export function useActionDocuments(actionId: string, live: boolean) {
+  return useQuery({
+    queryKey: [...workspaceKeys.all, 'action-documents', actionId],
+    queryFn: () => getActionDocuments(actionId),
+    refetchInterval: live ? 3_000 : false,
   })
 }

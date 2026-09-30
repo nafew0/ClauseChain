@@ -56,6 +56,7 @@ function retainedQuery(search: URLSearchParams) {
   }
   const textFilter = search.get('filter')
   if (textFilter) params.set('filter', textFilter)
+  if (search.get('mode') === 'local') params.set('mode', 'local')
   const query = params.toString()
   return query ? `?${query}` : ''
 }
@@ -160,6 +161,7 @@ export default function SourceMatchWorkbench({ findingKey }: { findingKey: strin
     const value = search.get(key)
     if (value) backParams.set(key, value)
   }
+  if (search.get('mode') === 'local') backParams.set('mode', 'local')
   const backHref = `/review?${backParams.toString()}`
   const linkFor = (key: string | null) => key ? `/match/${key}${suffix}` : '#'
   const sourceApprovalEligibility = proofMissing || anchorProofMissing

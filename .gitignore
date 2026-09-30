@@ -90,3 +90,6 @@ Frontend prototype design request.zip
 /engine/logs/events/
 /engine/reports/ocr_bench_unlimited/
 /engine/ui_export.zip
+# Office lock files and archived source downloads (Runs → Sources → Clear downloads)
+~$*
+/engine/data/archive/
