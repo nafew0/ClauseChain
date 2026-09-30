@@ -22,7 +22,7 @@ profiles:
       endpoint: ${OCR_ENDPOINT:-http://localhost:8089}
       vl_endpoint: ${OCR_VL_ENDPOINT:-}
       api_key: ${OCR_API_KEY:-}
-      model: ${LOCAL_OCR_MODEL:-local-ocr-placeholder}
+      model: ${OCR_MODEL:-local-ocr-placeholder}
     graph:
       provider: ${GRAPH_BACKEND:-sqlite}   # Path B: export GRAPH_BACKEND=neo4j (self-hosted)
       sqlite_path: data/graph.db
@@ -45,7 +45,7 @@ profiles:
       provider: ${OCR_PROVIDER:-local}
       endpoint: ${OCR_ENDPOINT:-http://localhost:8089}
       api_key: ${OCR_API_KEY:-}
-      model: ${LOCAL_OCR_MODEL:-local-ocr-placeholder}
+      model: ${OCR_MODEL:-local-ocr-placeholder}
     graph:
       provider: ${GRAPH_BACKEND:-sqlite}
       sqlite_path: data/graph.db
@@ -63,7 +63,7 @@ profiles:
       dimensions: 1024
     ocr:
       provider: local
-      model: ${LOCAL_OCR_MODEL:-local-ocr-placeholder}
+      model: ${OCR_MODEL:-local-ocr-placeholder}
     graph:
       provider: sqlite        # key-free, zero extra services
       sqlite_path: data/graph.db
