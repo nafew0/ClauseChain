@@ -7,6 +7,8 @@
 # inside the images, so the result is the same on every machine.
 #
 #   ./deploy.sh                          download the data bundle, build, start
+#   ./deploy.sh --data full              full data, 3.3 GB (asked interactively if omitted)
+#   ./deploy.sh --data partial           partial data, 1.3 GB (no embedding caches or run logs)
 #   ./deploy.sh --env-file keys.env      also install the provided engine keys
 #   ./deploy.sh --data-file bundle.tgz   use a bundle you already downloaded
 #   ./deploy.sh --port 9090              serve on another port (default 8080)
@@ -25,13 +27,15 @@ ENV_FILE=""
 DATA_FILE=""
 DATA_URL=""
 DATA_SHA256=""
+DATA_CHOICE=""
 SKIP_DATA=0
 NO_BUILD=0
 
-usage() { sed -n '2,15p' "$0" | sed 's/^# \{0,1\}//'; exit 0; }
+usage() { sed -n '2,17p' "$0" | sed 's/^# \{0,1\}//'; exit 0; }
 while [ $# -gt 0 ]; do
   case "$1" in
     --port) PORT="$2"; shift 2 ;;
+    --data) DATA_CHOICE="$2"; shift 2 ;;
     --env-file) ENV_FILE="$2"; shift 2 ;;
     --data-file) DATA_FILE="$2"; shift 2 ;;
     --data-url) DATA_URL="$2"; shift 2 ;;
@@ -48,8 +52,6 @@ if [ -f deploy/data_bundle.cfg ]; then
   # shellcheck disable=SC1091
   . deploy/data_bundle.cfg
 fi
-DATA_URL="${DATA_URL:-${CLAUSECHAIN_DATA_URL:-}}"
-DATA_SHA256="${DATA_SHA256:-${CLAUSECHAIN_DATA_SHA256:-}}"
 
 # ---------------------------------------------------------------- output
 if [ -t 1 ]; then B=$'\033[1m'; G=$'\033[32m'; Y=$'\033[33m'; R=$'\033[31m'; N=$'\033[0m'; else B=; G=; Y=; R=; N=; fi
@@ -149,11 +151,29 @@ if [ "$SKIP_DATA" = 1 ]; then
 elif [ -f engine/data/graph_v2.db ] && [ -d engine/outputs ] && [ -z "$DATA_FILE" ]; then
   ok "Already in place (engine/data/graph_v2.db)"
 else
+  if [ -z "$DATA_FILE" ] && [ -z "$DATA_URL" ]; then
+    if [ -z "$DATA_CHOICE" ] && [ -t 0 ]; then
+      echo "  Which data bundle?"
+      echo "    1) full     3.3 GB  corpus, source downloads, run outputs, embedding caches, run logs"
+      echo "                        (re-runs need no re-embedding)"
+      echo "    2) partial  1.3 GB  corpus, source downloads, run outputs"
+      printf "  Choose 1 or 2 [1]: "
+      read -r answer
+      case "$answer" in 2|p|partial) DATA_CHOICE=partial ;; *) DATA_CHOICE=full ;; esac
+    fi
+    DATA_CHOICE="${DATA_CHOICE:-full}"
+    case "$DATA_CHOICE" in
+      full) DATA_URL="${CLAUSECHAIN_DATA_FULL_URL:-}"; DATA_SHA256="${DATA_SHA256:-${CLAUSECHAIN_DATA_FULL_SHA256:-}}" ;;
+      partial) DATA_URL="${CLAUSECHAIN_DATA_PARTIAL_URL:-}"; DATA_SHA256="${DATA_SHA256:-${CLAUSECHAIN_DATA_PARTIAL_SHA256:-}}" ;;
+      *) die "--data must be 'full' or 'partial'" ;;
+    esac
+    echo "  Data bundle: $DATA_CHOICE"
+  fi
   if [ -z "$DATA_FILE" ]; then
     [ -n "$DATA_URL" ] || die "No data bundle location. Pass --data-url <link> or --data-file <bundle.tar.gz>."
     [ -n "$FETCH" ] || die "'curl' or 'wget' is required to download the data bundle."
     mkdir -p .deploy-cache
-    DATA_FILE=".deploy-cache/clausechain-data.tar.gz"
+    DATA_FILE=".deploy-cache/clausechain-data-${DATA_CHOICE:-custom}.tar.gz"
     echo "  Downloading $DATA_URL"
     if [ "$FETCH" = curl ]; then
       curl -fL --retry 5 --retry-delay 5 -C - -o "$DATA_FILE" "$DATA_URL" || die "Download failed. Check the link, then run ./deploy.sh again (it resumes)."

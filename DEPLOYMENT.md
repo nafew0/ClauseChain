@@ -22,7 +22,7 @@ that, starting and stopping take seconds.
 | | |
 | :--- | :--- |
 | **Docker** | macOS / Windows: [Docker Desktop](https://docs.docker.com/desktop/). Linux: [Docker Engine](https://docs.docker.com/engine/install/) with the compose plugin. Start it before you begin. |
-| **Disk** | **30 GB free**: the data download (3.3 GB), the unpacked data (15.5 GB), the images (about 5 GB) and Docker's build cache (about 6 GB, reclaimable afterwards). |
+| **Disk** | **30 GB free** with the full data: the download (3.3 GB), the unpacked data (15.5 GB), the images (about 5 GB) and Docker's build cache (about 6 GB, reclaimable afterwards). The partial data needs about 8 GB less. |
 | **Memory for Docker** | **8 GB** or more. Docker Desktop gives itself half of the computer's memory by default, so a 16 GB machine is fine as it is; on an 8 GB machine raise it in Docker Desktop → Settings → Resources → Memory. Re-running Australia loads a 4 GB embedding cache. |
 | **Internet** | For the first run only (images and the data bundle). |
 | **API keys** | Only for starting new runs. Browsing, review and every result work without them. See [section 3](#3-api-keys). |
@@ -58,7 +58,7 @@ later ([section 3](#3-api-keys)).
 | :--- | :--- |
 | 1. Prerequisites | Finds Docker (even if this terminal was opened before Docker was installed), checks that it is running, checks disk space. |
 | 2. Settings | Creates `.env` with fresh random secrets, and `engine/.env` from your keys file. |
-| 3. Data | Downloads the data bundle, verifies its SHA-256 and unpacks it: the built corpus, every downloaded source document, the embedding caches for both models, every run and its logs. An interrupted download resumes when you run the script again. |
+| 3. Data | Asks for the full (3.3 GB) or partial (1.3 GB) data bundle, downloads it, verifies its SHA-256 and unpacks it: the built corpus, every downloaded source document and every run (full also has the embedding caches for both models and the run logs). An interrupted download resumes when you run the script again. |
 | 4. Build and start | Builds the images, prepares the database and starts the app. |
 | 5. Wait | Waits until the website and the API answer. |
 | 6. Import | Loads the Hybrid and Local results and the signed review decisions into the database. |
@@ -80,6 +80,8 @@ nothing you did in the app is overwritten.
 
 | macOS / Linux | Windows | Use |
 | :--- | :--- | :--- |
+| `--data full` | `-Data full` | Full data bundle, 3.3 GB: corpus, source downloads, run outputs, embedding caches and run logs. Re-runs need no re-embedding. The script asks if you leave this out. |
+| `--data partial` | `-Data partial` | Partial data bundle, 1.3 GB: corpus, source downloads and run outputs. A re-run first re-embeds the corpus (needs the keys). |
 | `--env-file FILE` | `-EnvFile FILE` | Install the engine keys from FILE. |
 | `--port 9090` | `-Port 9090` | Serve on another port (default 8080). |
 | `--data-file FILE` | `-DataFile FILE` | Use a data bundle you already downloaded. |
@@ -152,7 +154,7 @@ Run these in the `clausechain-escap` folder.
 | `docker: command not found` in your own terminal | Open a new terminal window. Docker Desktop adds itself to the PATH only for terminals opened after it was installed. The deploy scripts find it either way. |
 | `port is already allocated` | Another program uses port 8080: `./deploy.sh --port 9090`. |
 | The download stopped | Run the script again; it resumes. |
-| `Checksum mismatch` | Delete `.deploy-cache/clausechain-data.tar.gz` and run the script again. |
+| `Checksum mismatch` | Delete the file in `.deploy-cache/` and run the script again. |
 | `snapshot import failed` | Read `.deploy-import-hybrid.log` or `.deploy-import-local.log`, then run the script again. |
 | Review queues show 0 decided | Run the script again; step 6 loads the signed decisions (log: `.deploy-import-decisions.log`). |
 | A run fails with `OPENAI_API_KEY is not set` (or `LOCALAI_ENDPOINT is not set`) | Add the key to `engine/.env`, then `docker compose restart engine-worker backend`. |
@@ -184,7 +186,9 @@ deploy/make_data_bundle.sh
 It snapshots the corpus safely while the app runs, refuses to pack if an API
 key appears in the logs, outputs or corpus, and prints the SHA-256 (about 6
 minutes). Upload `dist/clausechain-data-YYYYMMDD.tar.gz`, then put the direct
-download link and the SHA-256 into `deploy/data_bundle.cfg` and commit it.
+download link and the SHA-256 into `deploy/data_bundle.cfg`
+(`CLAUSECHAIN_DATA_FULL_*`, or `CLAUSECHAIN_DATA_PARTIAL_*` for the smaller
+bundle) and commit it.
 
 ### Testing a fresh install
 

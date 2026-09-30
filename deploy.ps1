@@ -4,6 +4,8 @@
 # Needs only Docker Desktop. Every other dependency is pinned inside the images.
 #
 #   .\deploy.ps1
+#   .\deploy.ps1 -Data full                 full data, 3.3 GB (asked interactively if omitted)
+#   .\deploy.ps1 -Data partial              partial data, 1.3 GB (no embedding caches or run logs)
 #   .\deploy.ps1 -EnvFile keys.env          also install the provided engine keys
 #   .\deploy.ps1 -DataFile bundle.tar.gz    use a bundle you already downloaded
 #   .\deploy.ps1 -Port 9090                 serve on another port (default 8080)
@@ -17,6 +19,7 @@ param(
     [string]$DataFile = "",
     [string]$DataUrl = "",
     [string]$DataSha256 = "",
+    [ValidateSet("full", "partial")][string]$Data = "",
     [switch]$SkipData,
     [switch]$NoBuild
 )
@@ -58,11 +61,11 @@ function Get-HttpCode($url) {
     return $code
 }
 
-# Published bundle location (deploy\data_bundle.cfg); parameters override it.
+# Published bundle locations (deploy\data_bundle.cfg); parameters override them.
+$Bundle = @{}
 if (Test-Path "deploy\data_bundle.cfg") {
     foreach ($line in Read-Lines "deploy\data_bundle.cfg") {
-        if ($line -match '^CLAUSECHAIN_DATA_URL=(.*)$' -and -not $DataUrl) { $DataUrl = $Matches[1].Trim() }
-        if ($line -match '^CLAUSECHAIN_DATA_SHA256=(.*)$' -and -not $DataSha256) { $DataSha256 = $Matches[1].Trim() }
+        if ($line -match '^(CLAUSECHAIN_DATA_[A-Z0-9_]+)=(.*)$') { $Bundle[$Matches[1]] = $Matches[2].Trim() }
     }
 }
 
@@ -127,10 +130,25 @@ if ($SkipData) {
 } elseif ((Test-Path "engine\data\graph_v2.db") -and (Test-Path "engine\outputs") -and -not $DataFile) {
     Ok "Already in place (engine\data\graph_v2.db)"
 } else {
+    if (-not $DataFile -and -not $DataUrl) {
+        if (-not $Data) {
+            Write-Host "  Which data bundle?"
+            Write-Host "    1) full     3.3 GB  corpus, source downloads, run outputs, embedding caches, run logs"
+            Write-Host "                        (re-runs need no re-embedding)"
+            Write-Host "    2) partial  1.3 GB  corpus, source downloads, run outputs"
+            $answer = Read-Host "  Choose 1 or 2 [1]"
+            if ($answer -in @("2", "p", "partial")) { $Data = "partial" } else { $Data = "full" }
+        }
+        $key = $Data.ToUpper()
+        $DataUrl = $Bundle["CLAUSECHAIN_DATA_$($key)_URL"]
+        if (-not $DataSha256) { $DataSha256 = $Bundle["CLAUSECHAIN_DATA_$($key)_SHA256"] }
+        Write-Host "  Data bundle: $Data"
+    }
     if (-not $DataFile) {
         if (-not $DataUrl) { Die "No data bundle location. Pass -DataUrl <link> or -DataFile <bundle.tar.gz>." }
         New-Item -ItemType Directory -Force -Path ".deploy-cache" | Out-Null
-        $DataFile = ".deploy-cache\clausechain-data.tar.gz"
+        $name = if ($Data) { $Data } else { "custom" }
+        $DataFile = ".deploy-cache\clausechain-data-$name.tar.gz"
         Write-Host "  Downloading $DataUrl"
         & curl.exe -fL --retry 5 --retry-delay 5 -C - -o $DataFile $DataUrl
         if ($LASTEXITCODE -ne 0) { Die "Download failed. Check the link, then run .\deploy.ps1 again (it resumes)." }
