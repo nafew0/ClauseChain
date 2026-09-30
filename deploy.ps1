@@ -78,7 +78,7 @@ if (-not (Get-Command tar.exe -ErrorAction SilentlyContinue)) { Die "tar.exe is 
 Ok ("Docker " + (& docker version --format '{{.Server.Version}}'))
 $drive = (Get-Item $Root).PSDrive
 $freeGb = [math]::Floor($drive.Free / 1GB)
-if ($freeGb -lt 20) { Warn "Only $freeGb GB free on $($drive.Name):. The data and images need about 15 GB." } else { Ok "Disk: $freeGb GB free" }
+if ($freeGb -lt 30) { Warn "Only $freeGb GB free on $($drive.Name):. The data and images need about 25 GB." } else { Ok "Disk: $freeGb GB free" }
 
 # ---------------------------------------------------------------- 2. settings
 Step "2/7  Settings"
@@ -130,7 +130,7 @@ if ($SkipData) {
         if ($actual -ne $DataSha256.ToLower()) { Die "Checksum mismatch (got $actual). Delete $DataFile and run again." }
         Ok "Checksum verified"
     } else { Warn "No checksum given; skipping verification" }
-    Write-Host "  Unpacking (a few minutes) ..."
+    Write-Host "  Unpacking about 15 GB (several minutes) ..."
     & tar.exe -xzf $DataFile -C $Root
     if ($LASTEXITCODE -ne 0) { Die "Could not unpack $DataFile" }
     if (-not (Test-Path "engine\data\graph_v2.db")) { Die "The bundle did not contain engine\data\graph_v2.db" }

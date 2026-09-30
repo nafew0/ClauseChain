@@ -86,10 +86,10 @@ random_secret() {
   else LC_ALL=C tr -dc 'a-f0-9' < /dev/urandom | head -c 64; fi
 }
 
-# Docker's own disk (images ~5 GB) plus the data (~8 GB unpacked).
+# Docker's own disk (images ~5 GB), the download (~4 GB) and the data (~15 GB unpacked).
 free_kb=$(df -Pk "$ROOT" | awk 'NR==2 {print $4}')
-if [ "${free_kb:-0}" -lt 20000000 ]; then
-  warn "Less than 20 GB free on this disk ($((free_kb / 1048576)) GB). The data and images need about 15 GB."
+if [ "${free_kb:-0}" -lt 30000000 ]; then
+  warn "Less than 30 GB free on this disk ($((free_kb / 1048576)) GB). The data and images need about 25 GB."
 else
   ok "Disk: $((free_kb / 1048576)) GB free"
 fi
@@ -156,7 +156,7 @@ else
   else
     warn "No checksum given; skipping verification"
   fi
-  echo "  Unpacking (a few minutes) …"
+  echo "  Unpacking about 15 GB (several minutes) …"
   tar -xzf "$DATA_FILE" -C "$ROOT" || die "Could not unpack $DATA_FILE"
   [ -f engine/data/graph_v2.db ] || die "The bundle did not contain engine/data/graph_v2.db"
   ok "Data in place ($(du -sh engine/data/graph_v2.db | awk '{print $1}') corpus database)"
