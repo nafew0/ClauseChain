@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+import time
 
 import httpx
 from pydantic import BaseModel, ValidationError
@@ -357,33 +358,69 @@ class FallbackLLM:
 class OllamaProvider:
     """Local LLM via Ollama's REST API — key-free (Path A). No network in __init__."""
 
-    def __init__(self, model: str, base_url: str | None = None, timeout: float = 180.0) -> None:
+    def __init__(self, model: str, base_url: str | None = None, timeout: float = 300.0) -> None:
         self.model = model
         self.base_url = base_url or os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
         self.timeout = timeout
         self.last_usage: dict | None = None
 
     def _call(self, prompt: str) -> str:
-        response = httpx.post(
-            f"{self.base_url}/api/generate",
-            json={"model": self.model, "prompt": prompt, "stream": False, "format": "json"},
-            timeout=self.timeout,
-        )
-        response.raise_for_status()
-        return response.json()["response"]
+        # qwen3 (and other "thinking" models) default to generating an
+        # internal chain-of-thought before the actual response — verified
+        # 28 Sep 2026: a trivial prompt ("Say OK") took 51s with thinking on
+        # vs 2.1s with think=False, a ~24x difference, and was the real cause
+        # of repeated 180-300s timeouts on batch prompts (not a network or
+        # host-load issue as first suspected). Ollama ignores unknown fields
+        # for models that don't support "think", so this is safe to always
+        # send. We want the structured decision, not the reasoning trace.
+        #
+        # CPU-only local inference under host load can still genuinely
+        # exceed a generous timeout on a large batch prompt even with
+        # thinking off, so retry the exact same request on a timeout rather
+        # than treating it like a bad response (that's the JSON-validation
+        # case handled separately in complete() below).
+        last_error: httpx.TransportError | None = None
+        for attempt in range(3):
+            if attempt:
+                time.sleep(2 * attempt)
+            try:
+                response = httpx.post(
+                    f"{self.base_url}/api/generate",
+                    json={"model": self.model, "prompt": prompt, "stream": False,
+                          "format": "json", "think": False},
+                    timeout=self.timeout,
+                )
+                response.raise_for_status()
+                return response.json()["response"]
+            except httpx.TransportError as exc:
+                last_error = exc
+                print(f"[ollama] request failed ({exc!r}), attempt {attempt + 1}/3",
+                      file=sys.stderr, flush=True)
+        raise last_error
 
     def complete(self, prompt: str, schema: type[BaseModel], *,
                  prompt_cache_key: str | None = None) -> BaseModel:
         full_prompt = prompt + _schema_instruction(schema)
         text = self._call(full_prompt)
-        try:
-            return schema.model_validate_json(text)
-        except ValidationError as error:
-            retry_prompt = (
-                f"{full_prompt}\n\nYour previous answer was invalid: {error}\n"
-                f"Previous answer: {text}\nFix it and return only valid JSON."
-            )
-            return schema.model_validate_json(self._call(retry_prompt))
+        # A single retry (the previous behavior) still crashes the whole run on
+        # a second bad response — verified 28 Sep 2026: qwen3:8b truncated a
+        # ScreenBatch response ("EOF while parsing a string") on both the
+        # first AND retry attempt, taking down a run ~1h into indicator 4/5.
+        # Local models occasionally need more than one nudge; a few extra
+        # attempts (each shown the LATEST failure, not just the first) costs
+        # little against a bad response but saves the run. 3 retries here ->
+        # 4 total attempts; the last one is allowed to raise normally rather
+        # than silently fabricating a decision the model never reached.
+        for _ in range(3):
+            try:
+                return schema.model_validate_json(text)
+            except ValidationError as exc:
+                retry_prompt = (
+                    f"{full_prompt}\n\nYour previous answer was invalid: {exc}\n"
+                    f"Previous answer: {text}\nFix it and return only valid JSON."
+                )
+                text = self._call(retry_prompt)
+        return schema.model_validate_json(text)
 
 
 def build_llm(spec: str):

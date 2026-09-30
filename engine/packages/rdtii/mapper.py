@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import re
 
-from pydantic import BaseModel, Field, PrivateAttr
+from pydantic import BaseModel, Field, PrivateAttr, model_validator
 
 SCREEN_BATCH_SIZE = 12
 import os as _os
@@ -23,6 +23,22 @@ GOLDEN_RULES = """LEGAL RULES (ESCAP RDTII methodology — binding):
 - Only current, in-force, official domestic law counts. Drafts/bills/repealed text never count.
 - One provision can satisfy several indicators; judge THIS indicator's legal test only.
 - If the legal test is not met, say applies=false — never force a mapping."""
+
+
+def _null_to_default(*string_fields: str):
+    """A local model occasionally emits an explicit `null` for a field that has
+    a string default (verified 28 Sep 2026: qwen3:8b returned coverage=null and
+    crashed the run — pydantic only applies a field default when the key is
+    ABSENT, not when it's present and null). Treat null the same as absent for
+    these fields rather than failing validation outright; every field named
+    here already has a real default in the class body below."""
+    def _coerce(cls, data):
+        if isinstance(data, dict):
+            for field in string_fields:
+                if data.get(field) is None:
+                    data.pop(field, None)
+        return data
+    return model_validator(mode="before")(classmethod(_coerce))
 
 
 
@@ -55,6 +71,8 @@ class MapDecision(BaseModel):
     exceptions: list[str] = Field(default_factory=list)
     _model_route: str = PrivateAttr(default="nano")
     _escalation_reasons: list[str] = PrivateAttr(default_factory=list)
+
+    _coerce_nulls = _null_to_default("verbatim_snippet", "rationale", "coverage")
 
 
 def _complete(llm, prompt: str, schema: type[BaseModel], cache_key: str):
