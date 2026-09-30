@@ -8,3 +8,5 @@ out
 .env.local
 npm-debug.log*
 .git
+.env*
+!.env.example

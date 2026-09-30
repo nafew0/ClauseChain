@@ -29,10 +29,13 @@ frontend/node_modules
 frontend/.next
 frontend/out
 
-# env / secrets
-.env
-*.env
-!*.env.example
+# env / secrets — in every folder (a backend/.env or engine/.env must never be
+# baked into an image; engine/.env is mounted at runtime instead)
+**/.env
+**/*.env
+**/.env.*
+!**/.env.example
+!**/*.env.example
 
 # misc
 *.log

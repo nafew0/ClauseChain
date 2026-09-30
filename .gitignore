@@ -93,3 +93,8 @@ Frontend prototype design request.zip
 # Office lock files and archived source downloads (Runs → Sources → Clear downloads)
 ~$*
 /engine/data/archive/
+# deploy.sh local state (downloaded bundle, generated admin login, import logs)
+/.deploy-cache/
+/.deploy-credentials.txt
+/.deploy-import-*.log
+/dist/

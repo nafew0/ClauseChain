@@ -4,51 +4,53 @@
 # checkout with separate venvs. Build context is the repo root (needs
 # engine/ and deploy/ alongside backend/), e.g.:
 #   docker build -f backend/Dockerfile -t clausechain-backend .
-FROM python:3.12-slim AS runtime
+#
+# Reproducible by construction: the backend installs requirements.txt under
+# constraints.txt (the exact tested versions) and the engine venv is built with
+# `uv sync --frozen` from engine/uv.lock, so every build on every OS/CPU resolves
+# to the same packages as the tested environment.
+FROM python:3.12-slim-bookworm AS runtime
 
-# psycopg2-binary/Pillow ship manylinux wheels; gcc/libpq-dev cover any
-# package here that needs to compile from source.
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    UV_LINK_MODE=copy \
+    UV_PYTHON_DOWNLOADS=never
+
+# gcc/libpq-dev cover any package that must compile; curl is the healthcheck.
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends gcc libpq-dev curl \
+    && apt-get install -y --no-install-recommends gcc libpq-dev curl ca-certificates \
     && rm -rf /var/lib/apt/lists/*
+
+# uv, pinned, from its official image.
+COPY --from=ghcr.io/astral-sh/uv:0.11.14 /uv /usr/local/bin/uv
 
 # Mirrors the production layout (App Dev Plan D0): backend, engine and
 # deploy/ all live under /srv/clausechain so ENGINE_ROOT / ENGINE_ALLOWLIST
 # defaults in clausechain/settings.py resolve without extra env vars.
 WORKDIR /srv/clausechain
 
-COPY backend/requirements.txt backend/requirements.txt
-# gunicorn isn't in requirements.txt — bootstrap.sh installs it ad hoc onto
-# the production venv the same way.
-RUN pip install --no-cache-dir -U pip \
-    && pip install --no-cache-dir -r backend/requirements.txt gunicorn
+COPY backend/requirements.txt backend/constraints.txt backend/
+RUN pip install --no-cache-dir -r backend/requirements.txt -c backend/constraints.txt gunicorn==23.0.0
 
-COPY engine/requirements.txt engine/requirements.txt
-COPY engine/pyproject.toml engine/pyproject.toml
+# Engine venv from the lockfile (engine/.venv, the path ENGINE_PYTHON and the
+# decision writer expect). Groups: crawl (Playwright for sites that need a real
+# browser), graph (optional Neo4j mirror), dev (pytest, for the acceptance check).
+# Not installed: embed (PyTorch/sentence-transformers — Model B embeds through its
+# OpenAI-compatible endpoint) and pdf-advanced (docling, opt-in only).
+COPY engine/pyproject.toml engine/uv.lock engine/
+RUN cd engine \
+    && UV_PROJECT_ENVIRONMENT=/srv/clausechain/engine/.venv \
+       uv sync --frozen --no-install-project --python /usr/local/bin/python3.12 \
+               --group crawl --group graph --group dev \
+    && .venv/bin/playwright install --with-deps chromium \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY engine/packages engine/packages
 COPY engine/scripts engine/scripts
 COPY engine/configs engine/configs
 COPY engine/tests engine/tests
 COPY engine/run.py engine/run.py
-# Isolated engine venv, exactly as bootstrap.sh creates on the bare-metal
-# host (ENGINE_PYTHON / WORKSPACE_DECISION_WRITER point at .venv/bin/python).
-# No editable install: engine scripts/tests are always invoked with
-# cwd=ENGINE_ROOT (see engine_worker.py, pyproject's pytest pythonpath=["."]),
-# which is how they resolve `packages.*` imports — not a pip-installed package.
-#
-# engine/requirements.txt now includes sentence-transformers (Path A / BGE-M3
-# embeddings, required by CLAUSECHAIN_PROVIDER_PROFILE=local_fallback in
-# engine/configs/models.yaml). Install CPU-only torch FIRST, via the official
-# CPU wheel index, so pip finds it already satisfied instead of pulling the
-# ~2GB CUDA build as sentence-transformers' transitive dependency. The
-# BAAI/bge-m3 model itself (~2GB) downloads from HuggingFace on first use,
-# cached in the hf_cache volume (see docker-compose.yml) so it isn't
-# re-fetched on every rebuild.
-RUN python -m venv engine/.venv \
-    && engine/.venv/bin/pip install --no-cache-dir -U pip \
-    && engine/.venv/bin/pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu torch \
-    && engine/.venv/bin/pip install --no-cache-dir -r engine/requirements.txt
-
 COPY deploy/engine_allowlist.json deploy/engine_allowlist.json
 COPY backend backend
 
