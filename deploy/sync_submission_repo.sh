@@ -1,63 +1,74 @@
 #!/usr/bin/env bash
-# Sync the curated submission repo (clausechain-escap) from this dev repo.
+# Publish this repo's committed state to the submission repo (nafew0/clausechain-escap).
 #
-#   bash deploy/sync_submission_repo.sh                # sync + show diff (NO commit)
-#   bash deploy/sync_submission_repo.sh "msg"          # sync + commit
-#   bash deploy/sync_submission_repo.sh "msg" --push   # sync + commit + push
+#   deploy/sync_submission_repo.sh                    prepare and show the changes (no commit)
+#   deploy/sync_submission_repo.sh "message"          prepare and commit
+#   deploy/sync_submission_repo.sh "message" --push   prepare, commit and push
 #
-# The submission repo is a curated snapshot, not a fork: this script re-copies
-# the allowed paths, prunes internal files, runs a secret/IP scan (aborts on
-# hits), and leaves git to you unless a message is given.
+# Only committed files are published (git archive HEAD): uncommitted work, ignored
+# files, keys and local data never leave this machine. The work happens in its own
+# clone (dist/clausechain-escap), never in a checkout you edit by hand. Internal
+# planning files stay here (EXCLUDE); the submission repo's own pitch decks are kept
+# as they are (KEEP). A secret and server-address scan aborts before any commit.
 set -euo pipefail
 SRC="$(cd "$(dirname "$0")/.." && pwd)"
-DST="$(dirname "$SRC")/clausechain-escap"
+REMOTE="${SUBMISSION_REMOTE:-https://github.com/nafew0/clausechain-escap.git}"
+WORK="${SUBMISSION_WORKDIR:-$SRC/dist/clausechain-escap}"
 MSG="${1:-}"
 PUSH="${2:-}"
 
-[ -d "$DST/.git" ] || { echo "submission repo not found at $DST"; exit 1; }
+EXCLUDE=(
+  ':!docs'
+  ':!docker-compose.dev.yml'
+  ':!deploy/SERVER_EXECUTION_PLAN.md'
+  ':!deploy/night_chain.sh'
+  ':!deploy/sync_submission_repo.sh'
+  ':!engine/DECISIONS.md'
+)
+KEEP=('ClauseChain Pitch Deck.pdf' 'ClauseChain Pitch Deck.pptx' 'ClauseChain_Pitch_Deck.pptx')
 
-rsync -a --delete --delete-excluded \
-  --exclude='.git' --exclude='.venv' --exclude='venv' --exclude='__pycache__' \
-  --exclude='.pytest_cache' --exclude='data/raw' --exclude='data/cache' \
-  --exclude='outputs' \
-  --exclude='data/tmp' --exclude='*.db' --exclude='*.db-wal' --exclude='*.db-shm' \
-  --exclude='.env' --exclude='DECISIONS.md' \
-  --exclude='docs/Pillar-6-deep-research-report*' \
-  --exclude='docs/Pillar-7-deep-research-report*' \
-  "$SRC/engine/" "$DST/engine/"
-rsync -a --delete \
-  --exclude='.git' --exclude='venv' --exclude='node_modules' --exclude='.env' \
-  --exclude='db.sqlite3' --exclude='staticfiles' --exclude='__pycache__' \
-  "$SRC/backend/" "$DST/backend/"
-rsync -a --delete \
-  --exclude='.git' --exclude='node_modules' --exclude='.next' --exclude='.env*' \
-  "$SRC/frontend/" "$DST/frontend/"
-cp "$SRC/README_SUBMISSION.md" "$DST/README.md"
-cp "$SRC/ClauseChain_Pitch_Deck.pptx" "$DST/"
-cp "$SRC/README_WEB.md" "$DST/" 2>/dev/null || true
-
-# Sanitary scan: server IPs, private keys, real-looking API keys, .env files.
-HITS=$(grep -rlE "103\.157\.13[0-9]|BEGIN (RSA|OPENSSH) PRIVATE|sk-[A-Za-z0-9]{30,}|clausechain_deploy" \
-        "$DST" --exclude-dir=.git 2>/dev/null || true)
-ENVS=$(find "$DST" -name ".env" -not -path "*/.git/*" | head -5)
-if [ -n "$HITS$ENVS" ]; then
-  echo "❌ SANITARY SCAN FAILED — fix before committing:"; echo "$HITS"; echo "$ENVS"; exit 2
+if [ -n "$(git -C "$SRC" status --porcelain --untracked-files=no)" ]; then
+  echo "note: uncommitted changes in $SRC are not published (only HEAD $(git -C "$SRC" rev-parse --short HEAD) is)"
 fi
-echo "✓ sanitary scan clean"
 
-cd "$DST"
+if [ -d "$WORK/.git" ]; then
+  git -C "$WORK" fetch -q origin
+  git -C "$WORK" checkout -q main
+  git -C "$WORK" reset -q --hard origin/main
+else
+  mkdir -p "$(dirname "$WORK")"
+  git clone -q "$REMOTE" "$WORK"
+fi
+
+cd "$WORK"
+git rm -r -q --ignore-unmatch -- .
+for file in "${KEEP[@]}"; do git checkout -q HEAD -- "$file" 2>/dev/null || true; done
+git -C "$SRC" archive --format=tar HEAD -- . "${EXCLUDE[@]}" | tar -xf - -C "$WORK"
 git add -A
-git status --short | head -30
-echo "---"
+
+# Secret and server-address scan over every text file about to be published.
+HITS=$(git grep --cached -I -lE \
+  '103\.157\.|203\.96\.|BEGIN (RSA|OPENSSH|EC) PRIVATE KEY|sk-proj-[A-Za-z0-9_-]{20}|sk-or-v1-[a-f0-9]{20}|AIza[0-9A-Za-z_-]{30}' || true)
+ENVS=$(git ls-files | grep -E '(^|/)\.env$' || true)
+if [ -n "$HITS$ENVS" ]; then
+  echo "SCAN FAILED: fix these in $SRC, commit, and run again:"
+  printf '%s\n' $HITS $ENVS
+  exit 2
+fi
+echo "scan clean"
+
+git status --short | awk '{print $1}' | sort | uniq -c | awk '{printf "  %s %s", $2, $1} END {print ""}'
 if [ -z "$MSG" ]; then
-  echo "dry sync complete (staged, not committed). Commit with: bash deploy/sync_submission_repo.sh \"message\" [--push]"
+  echo "prepared in $WORK (not committed)"
   exit 0
 fi
 if git diff --cached --quiet; then
-  echo "nothing to commit — submission repo already up to date"
+  echo "nothing to commit: the submission repo already matches"
 else
   git commit -q -m "$MSG"
   git log --oneline -1
 fi
-[ "$PUSH" = "--push" ] && git push -q origin main && echo "PUSHED to github.com/nafew0/clausechain-escap"
-exit 0
+if [ "$PUSH" = "--push" ]; then
+  git push -q origin main
+  echo "pushed to $REMOTE"
+fi
