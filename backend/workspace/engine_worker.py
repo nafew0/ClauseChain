@@ -120,7 +120,11 @@ ACTION_ARTIFACTS = {
         "submission/consolidated_final.csv",
         "submission/consolidated_final.json",
     ),
-    "refresh_payload": ("ui_export.zip",),
+    "refresh_payload": (
+        "ui_export.zip",
+        "submission/consolidated.json",
+        "submission/review/decisions.template.json",
+    ),
 }
 
 
@@ -184,17 +188,24 @@ def _sha256(path):
     return digest.hexdigest()
 
 
+def review_mode_env(action_name, arguments):
+    """Review actions work on one model backend's files; runs are never namespaced."""
+    mode = (arguments or {}).get("mode")
+    if action_name in {"refresh_payload", "replay"} and mode in ("hybrid", "local"):
+        return {"CLAUSECHAIN_REVIEW_MODE": mode}
+    return {}
+
+
 def run_output_path(arguments):
     prefix = arguments.get("out_prefix") or "final"
     return f"outputs/{prefix}_{arguments['cc']}_p{arguments['pillar']}/output.json"
 
 
-# Heavy proof/debug fields dropped from the stored copy; the full envelope stays
-# on disk as the immutable artifact whose hash is recorded.
-ENVELOPE_DROP_FIELDS = (
-    "raw_context", "citation_proof", "search_coverage_manifest", "graph_path",
-    "status_evidence_record", "review",
-)
+# Debug fields dropped from the stored copy; the full envelope stays on disk as
+# the immutable artifact whose hash is recorded. Proof, status record and search
+# coverage are kept: Local mode reviews straight from this copy, and the next run
+# of the same economy/pillar overwrites the file on disk.
+ENVELOPE_DROP_FIELDS = ("raw_context", "graph_path", "review")
 
 
 def compact_envelope(envelope):
@@ -211,6 +222,9 @@ def compact_envelope(envelope):
 
 def artifact_hashes(action_name, arguments):
     paths = list(ACTION_ARTIFACTS.get(action_name, ()))
+    if (arguments or {}).get("mode") == "local":  # the Local workspace's own files
+        paths = [path.replace("submission/", "submission/local/", 1) for path in paths
+                 if path.startswith("submission/")]
     if action_name == "run_pipeline":
         paths.append(run_output_path(arguments))
     result = {}
@@ -264,7 +278,7 @@ def execute_action(action):
                     pk=action.pk, cancel_requested_at__isnull=False
                 ).exists(),
                 env={**os.environ, "CLAUSECHAIN_EVENT_LOG": str(events_path),
-                     "PYTHONUNBUFFERED": "1"},
+                     "PYTHONUNBUFFERED": "1", **review_mode_env(action_name, action.arguments_json)},
                 on_poll=tail.pump,
             )
         finally:
@@ -289,7 +303,7 @@ def execute_action(action):
         # whenever fresh run outputs diverge from the consolidated candidate set,
         # which marked otherwise-successful runs as failed.)
         if action_name in {"replay", "refresh_payload"}:
-            snapshot, _ = import_snapshot()
+            snapshot, _ = import_snapshot(mode=(action.arguments_json or {}).get("mode") or "hybrid")
             hashes["snapshot"] = {
                 "id": str(snapshot.pk),
                 "source_hash": snapshot.source_hash,

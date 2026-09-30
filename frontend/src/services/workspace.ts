@@ -12,6 +12,7 @@ import {
   rejectFixtureWrite,
 } from '@/lib/workspace/fixture'
 import type {
+  ActionDocumentsResponse,
   BulkFindingDecisionInput,
   BulkFindingDecisionResponse,
   CorrectionRequestInput,
@@ -212,6 +213,34 @@ export async function getEngineActionEvents(actionId: string, after = 0): Promis
   return data
 }
 
+/** Runs → Sources: download + read + index an economy's documents, or clear its downloads. */
+export async function launchSourcesAction(
+  payload: { economy: string; operation: 'build' | 'clear'; pillar?: 2 | 6 | 7 }
+): Promise<EngineAction> {
+  if (WORKSPACE_FIXTURE_MODE) return rejectFixtureWrite()
+  const { data } = await api.post<EngineAction>('/workspace/engine/sources/', payload)
+  return data
+}
+
+export async function getActionDocuments(actionId: string): Promise<ActionDocumentsResponse> {
+  const { data } = await api.get<ActionDocumentsResponse>(`/workspace/engine/actions/${actionId}/documents/`)
+  return data
+}
+
+/** The Run Record's "every document downloaded" list, as CSV. */
+export async function downloadActionDocuments(actionId: string): Promise<void> {
+  const response = await api.get<Blob>(`/workspace/engine/actions/${actionId}/documents/`, {
+    params: { export: 'csv' },
+    responseType: 'blob',
+  })
+  const href = URL.createObjectURL(response.data)
+  const anchor = document.createElement('a')
+  anchor.href = href
+  anchor.download = `documents_downloaded_${actionId.slice(0, 8)}.csv`
+  anchor.click()
+  URL.revokeObjectURL(href)
+}
+
 export async function cancelEngineAction(actionId: string): Promise<EngineAction> {
   if (WORKSPACE_FIXTURE_MODE) return rejectFixtureWrite()
   const { data } = await api.post<EngineAction>(`/workspace/engine/actions/${actionId}/cancel/`)
@@ -228,7 +257,7 @@ export async function cancelAllEngineActions(
 
 export async function launchEngineAction(
   kind: 'replay' | 'refresh' | 'run',
-  payload: { economy?: string; pillar?: 6 | 7; mode?: RunMode } = {}
+  payload: { economy?: string; pillar?: 2 | 6 | 7; mode?: RunMode } = {}
 ): Promise<EngineAction> {
   if (WORKSPACE_FIXTURE_MODE) return rejectFixtureWrite()
   const { data } = await api.post<EngineAction>(`/workspace/engine/${kind}/`, payload)

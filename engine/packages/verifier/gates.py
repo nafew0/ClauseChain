@@ -81,9 +81,16 @@ def _is_real_sentence_stop(source: str, index: int) -> bool:
     return not suffix or bool(re.match(r"^[\]\)\}\"'’”]*\s", suffix))
 
 
+# Civil-law list markers that open a line with a lone closing bracket ("1) ...",
+# "а) ...", "б) ...": Russian/Lao/Mongolian statutes). They are labels, not an
+# unbalanced parenthesis; counting them made every Russian list unclosable.
+_HALF_BRACKET_MARKER = re.compile(r"(?m)^[ \t\u00a0]*(?:\d{1,3}(?:\.\d{1,3})*|[a-zа-яё]{1,2})\)")
+
+
 def _balanced_structure(text: str) -> bool:
     pairs = {")": "(", "]": "[", "}": "{"}
     stack: list[str] = []
+    text = _HALF_BRACKET_MARKER.sub("", text)
     for char in text:
         if char in "([{":
             stack.append(char)

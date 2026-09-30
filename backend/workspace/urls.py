@@ -1,5 +1,6 @@
 from django.urls import path
 
+from . import comparison_views
 from .views import (
     CorrectionRequestView,
     EvidenceDetailView,
@@ -14,7 +15,9 @@ from .views import (
     EngineWorkerStatusView,
     EngineActionCancelView,
     EngineActionCancelAllView,
+    EngineActionDocumentsView,
     EngineActionEventsView,
+    EngineSourcesView,
     ProofAssetView,
     DecisionHistoryView,
     FindingBulkDecisionView,
@@ -94,6 +97,8 @@ urlpatterns = [
     path("engine/actions/cancel-all/", EngineActionCancelAllView.as_view(), name="engine_cancel_all"),
     path("engine/actions/<uuid:action_id>/cancel/", EngineActionCancelView.as_view(), name="engine_cancel"),
     path("engine/actions/<uuid:action_id>/events/", EngineActionEventsView.as_view(), name="engine_events"),
+    path("engine/actions/<uuid:action_id>/documents/", EngineActionDocumentsView.as_view(), name="engine_documents"),
+    path("engine/sources/", EngineSourcesView.as_view(), name="engine_sources"),
     path("decisions/findings/", FindingDecisionView.as_view(), name="finding_decision"),
     path(
         "decisions/findings/bulk/",
@@ -109,4 +114,7 @@ urlpatterns = [
     path("decisions/zone3/", Zone3DecisionView.as_view(), name="zone3_decision"),
     path("zone3-matrix/", Zone3MatrixView.as_view(), name="zone3_matrix"),
     path("corrections/", CorrectionRequestView.as_view(), name="correction_request"),
+    # Model A (hybrid) vs Model B (local): template "Engine Comparison" sheet.
+    path("comparison/", comparison_views.ComparisonView.as_view(), name="comparison"),
+    path("comparison/export/", comparison_views.ComparisonExportView.as_view(), name="comparison_export"),
 ]

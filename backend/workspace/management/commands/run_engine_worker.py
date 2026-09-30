@@ -1,8 +1,8 @@
 import fcntl
 import os
+import signal
 import socket
 import threading
-import time
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -69,9 +69,19 @@ class Command(BaseCommand):
             target=self._heartbeat_loop, args=(worker_id, state, stop), daemon=True
         )
         beat.start()
+        # SIGTERM/SIGHUP drain the worker: the running action finishes, nothing
+        # new is claimed, then it exits. A restart for new code never kills a run.
+        draining = threading.Event()
+
+        def drain(signum, frame):
+            draining.set()
+            self.stdout.write("Stop requested: finishing the current action, then exiting.")
+
+        for sig in (signal.SIGTERM, signal.SIGHUP):
+            signal.signal(sig, drain)
         self.stdout.write(f"Engine worker {worker_id} started")
         try:
-            while True:
+            while not draining.is_set():
                 action = claim_next_action()
                 if action is not None:
                     state["action_id"] = action.pk
@@ -81,7 +91,7 @@ class Command(BaseCommand):
                     state["action_id"] = None
                 if options["once"]:
                     return
-                time.sleep(max(0.25, options["poll_seconds"]))
+                draining.wait(max(0.25, options["poll_seconds"]))
         finally:
             stop.set()
             beat.join(timeout=HEARTBEAT_SECONDS + 1)

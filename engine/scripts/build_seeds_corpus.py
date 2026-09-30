@@ -5,7 +5,7 @@ duplicate-register guard, status assertions, evidence/content eligibility,
 fail-closed expected-evidence, structure-coverage floor, span alignment,
 generation pruning. OCR comes from the pack's `ocr:` block (hybrid routing).
 
-Usage: .venv/bin/python scripts/build_seeds_corpus.py --economy Thailand [--only-act X]
+Usage: .venv/bin/python scripts/build_seeds_corpus.py --economy Thailand [--only-act X] [--force]
 """
 from __future__ import annotations
 
@@ -38,8 +38,18 @@ from packages.ingest.seed_profiles import (missing_expectations, seed_fingerprin
                                            seed_parse_profile)
 from packages.providers.ocr_provider import build_ocr  # noqa: E402
 
-CC = {"Thailand": "th", "India": "in", "Indonesia": "id"}
+CC = {"Thailand": "th", "India": "in", "Indonesia": "id",
+      "Russian Federation": "ru", "Mongolia": "mn", "Lao PDR": "la", "Timor-Leste": "tl",
+      # Round-1 economies: only through --pillars (their P6/P7 corpora come from the
+      # dedicated SSO / AGC / Federal Register builders, which this must not prune).
+      "Singapore": "sg", "Malaysia": "my", "Australia": "au"}
+ROUND1_BUILDERS = {"Singapore", "Malaysia", "Australia"}
 THAI_DIGITS = str.maketrans("๐๑๒๓๔๕๖๗๘๙", "0123456789")
+LAO_DIGITS = str.maketrans("໐໑໒໓໔໕໖໗໘໙", "0123456789")
+# Mojibake guard: a native text layer must carry the pack's primary script.
+SCRIPT_RANGES = {"th": ("฀", "๿"), "hi": ("ऀ", "ॿ"),
+                 "lo": ("຀", "໿"), "ru": ("Ѐ", "ӿ"),
+                 "mn": ("Ѐ", "ӿ")}
 
 
 _ENGLISH_FUNCTION_WORDS = frozenset(
@@ -57,13 +67,50 @@ def readable_english(text: str) -> bool:
     return sum(1 for token in tokens if token in _ENGLISH_FUNCTION_WORDS) >= 0.12 * len(tokens)
 
 
+# Everyday Lao function words. Legacy-font text layers (LSC Decision 11: "ມາດຕາ"
+# stored as "ຓາຈຉາ") are Lao-block codepoints but the wrong letters: they score
+# ~2 of these per 1,000 Lao chars, genuine Lao ~40 (measured 29 Sep 2026).
+_LAO_FUNCTION_WORDS = ("ການ", "ແລະ", "ຂອງ", "ທີ່", "ໃນ", "ມາດຕາ")
+
+
+def readable_lao(text: str) -> bool:
+    lao_chars = sum(1 for ch in text if "\u0e80" <= ch <= "\u0eff")
+    if lao_chars < 500:
+        return True  # too little Lao to judge; the script-share guard handles it
+    hits = sum(text.count(word) for word in _LAO_FUNCTION_WORDS)
+    return hits * 1000 / lao_chars >= 10
+
+
 def _normalize_labels(units) -> None:
-    """Thai-numeral section labels -> Arabic in ids/citations (text untouched)."""
+    """Thai/Lao-numeral section labels -> Arabic in ids/citations (text untouched)."""
     for unit in units:
         for attr in ("id", "article_section"):
             value = getattr(unit, attr, None)
-            if value and any("๐" <= ch <= "๙" for ch in str(value)):
-                setattr(unit, attr, str(value).translate(THAI_DIGITS))
+            if value and any("๐" <= ch <= "๙" or "໐" <= ch <= "໙" for ch in str(value)):
+                setattr(unit, attr, str(value).translate(THAI_DIGITS).translate(LAO_DIGITS))
+
+
+def _page_scope(entry: dict) -> tuple[int, int] | None:
+    """A seed's `page_range: [first, last]` (1-based, inclusive): the instrument's
+    pages inside a multi-instrument gazette issue (Jornal da República bundles
+    several laws per PDF). The archived artifact stays the whole official file."""
+    scope = entry.get("page_range")
+    if not scope:
+        return None
+    first, last = int(scope[0]), int(scope[1])
+    if first < 1 or last < first:
+        raise ValueError(f"invalid page_range {scope!r}")
+    return first, last
+
+
+def say(message: str) -> None:
+    """Print for the terminal and stream the same line to the live run console."""
+    from packages.core import progress
+
+    print(message)
+    text = message.strip()
+    level = "warn" if text.startswith(("INELIGIBLE", "FAILED", "DUPLICATE", "ALIGNMENT")) else "info"
+    progress.emit("build", text, level=level)
 
 
 def main() -> int:
@@ -72,10 +119,43 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--economy", required=True, choices=sorted(CC))
     parser.add_argument("--only-act", default=None)
+    parser.add_argument("--force", action="store_true",
+                        help="re-extract every instrument of this economy even when its "
+                             "fingerprint matches (after a parser/grammar fix; the "
+                             "fingerprint does not change until EXTRACTION_VERSION is bumped)")
+    parser.add_argument("--pillars", default=None,
+                        help="additive build of one pillar's seeds, e.g. P2: fetch them from "
+                             "data/seeds_r2.json, extract only those instruments and never "
+                             "prune the economy's other units")
     args = parser.parse_args()
     economy, cc = args.economy, CC[args.economy]
+    pillars = tuple(p.strip().upper() for p in (args.pillars or "").split(",") if p.strip())
+    if economy in ROUND1_BUILDERS and not pillars:
+        parser.error(f"{economy}'s P6/P7 corpus has its own builder; use --pillars P2")
     pack = yaml.safe_load(Path(f"configs/jurisdictions/{cc}.yaml").read_text())
-    manifest = json.loads(Path(f"data/raw/{cc}/seeds_manifest.json").read_text())
+    manifest_path = Path(f"data/raw/{cc}/seeds_manifest.json")
+    if not pillars:
+        # Fresh-clone contract (MY-builder rule): fetch the pack's seeds first. A full
+        # build also fetches any P6/P7 seed its manifest lacks: after "Clear downloads"
+        # and a one-pillar build the manifest holds only that pillar, and the prune at
+        # the end would otherwise drop every instrument missing from it. Archived
+        # successes are never refetched. (A pillar build fetches only that pillar below.)
+        seeds_path = pack.get("seeds") or "data/seeds_r2.json"
+        seed_rows = json.loads(Path(seeds_path).read_text())["economies"].get(economy, [])
+        known = json.loads(manifest_path.read_text()) if manifest_path.is_file() else {}
+        if any(str(r.get("indicator_code", "")).startswith(("P6", "P7"))
+               and (r.get("url") or "").strip().startswith("http")
+               and (r.get("url") or "").strip() not in known for r in seed_rows):
+            from packages.connectors.seeds_fetch import fetch_seeds
+            fetch_seeds(economy, ("P6", "P7"), seeds_path=seeds_path)
+    pillar_urls: set[str] | None = None
+    if pillars:
+        from packages.connectors.seeds_fetch import fetch_seeds
+        fetch_seeds(economy, pillars, seeds_path="data/seeds_r2.json")
+        rows = json.loads(Path("data/seeds_r2.json").read_text())["economies"].get(economy, [])
+        pillar_urls = {r["url"].strip() for r in rows
+                       if str(r.get("indicator_code", "")).startswith(pillars) and r.get("url")}
+    manifest = json.loads(manifest_path.read_text())
     grammars = pack.get("section_grammars") or []
     assertions = pack.get("status_assertions") or {}
     official_domains = {s["domain"] for s in pack.get("official_sources", [])}
@@ -100,6 +180,8 @@ def main() -> int:
         if not act_name:
             continue
         if args.only_act and args.only_act.casefold() not in act_name.casefold():
+            continue
+        if pillar_urls is not None and url not in pillar_urls:
             continue
         file = entry.get("file", "")
         if not file.endswith(".pdf"):
@@ -143,7 +225,7 @@ def main() -> int:
                 continue
         register_key = normalize_law(act_name)
         if register_key in processed:
-            print(f"  DUPLICATE seed skipped for {act_name[:52]}")
+            say(f"  DUPLICATE seed skipped for {act_name[:52]}")
             continue
         def _tokens(s: str) -> set[str]:
             import re as _re
@@ -182,7 +264,7 @@ def main() -> int:
                 if hasattr(st, "add_discovery_lead"):
                     st.add_discovery_lead(f"{cc}:{Path(file).stem}", reason or "INELIGIBLE",
                                           {"name": act_name, "url": url, "file": file})
-            print(f"  INELIGIBLE {act_name[:52]}: {reason}")
+            say(f"  INELIGIBLE {act_name[:52]}: {reason}")
             continue
         raw_access = str(entry.get("access_date") or "")
         try:
@@ -212,7 +294,7 @@ def main() -> int:
                             accessed_at=accessed, official_domains=official_domains,
                             expected_mime="application/pdf")
                         file = str(candidate)
-                        print(f"  repaired trailing bytes: {act_name[:48]}")
+                        say(f"  repaired trailing bytes: {act_name[:48]}")
                     except Exception:  # noqa: BLE001
                         repaired = None
             if repaired is None:
@@ -221,7 +303,7 @@ def main() -> int:
                         st.add_discovery_lead(f"{cc}:{Path(file).stem}", "SOURCE_BYTES_INVALID",
                                               {"name": act_name, "url": url, "file": file,
                                                "error": str(error)[:160]})
-                print(f"  INELIGIBLE {act_name[:52]}: SOURCE_BYTES_INVALID ({str(error)[:60]})")
+                say(f"  INELIGIBLE {act_name[:52]}: SOURCE_BYTES_INVALID ({str(error)[:60]})")
                 build_complete = False
                 continue
             artifact = repaired
@@ -230,12 +312,12 @@ def main() -> int:
                 if hasattr(st, "add_discovery_lead"):
                     st.add_discovery_lead(f"{cc}:{Path(file).stem}", "NON_OFFICIAL_ARCHIVE",
                                           {"name": act_name, "url": url, "file": file})
-            print(f"  INELIGIBLE {act_name[:52]}: NON_OFFICIAL_ARCHIVE")
+            say(f"  INELIGIBLE {act_name[:52]}: NON_OFFICIAL_ARCHIVE")
             continue
         fingerprint = processing_fingerprint(artifact.sha256, profile["source_type"],
                                              grammars, (ocr_tag,),
                                              config=seed_fingerprint_config(entry))
-        if not args.only_act:
+        if not args.only_act and not args.force:
             restamps = [st.restamp_artifact_generation(economy, fingerprint, generation)
                         if hasattr(st, "restamp_artifact_generation") else 0
                         for st in stores]
@@ -243,27 +325,38 @@ def main() -> int:
                 loaded += 1
                 total += restamps[0]
                 processed.add(register_key)
-                print(f"  {act_name[:58]:58s} -> unchanged, {restamps[0]} units restamped")
+                say(f"  {act_name[:58]:58s} -> unchanged, {restamps[0]} units restamped")
                 continue
         try:
             pages = extract_pdf(file, ocr_engine=ocr)
             # Mojibake guard (Thai gazette subset fonts): a "native" text layer
             # without the pack's primary script is garbage — force full OCR.
             primary_lang = ((pack.get("languages") or {}).get("primary") or "en")
-            script_range = {"th": ("฀", "๿"), "hi": ("ऀ", "ॿ")}.get(primary_lang)
+            script_range = SCRIPT_RANGES.get(primary_lang)
             if script_range:
                 lo, hi = script_range
                 joined = "".join(p.text for p in pages)
                 # Official English translations (PDPA EN, PDPC notifications) are
                 # legitimately script-free: only a text layer that is readable in
                 # neither the pack script nor English is font garbage.
-                if (joined.strip()
-                        and sum(1 for ch in joined if lo <= ch <= hi) < len(joined) * 0.05
-                        and not readable_english(joined)):
-                    print(f"  mojibake text layer -> forced OCR: {act_name[:44]}")
+                lacks_script = (joined.strip()
+                                and sum(1 for ch in joined if lo <= ch <= hi) < len(joined) * 0.05
+                                and not readable_english(joined))
+                # Lao legacy fonts keep the script but not the letters.
+                legacy_font = (primary_lang == "lo" and joined.strip()
+                               and not readable_lao(joined) and not readable_english(joined))
+                if lacks_script or legacy_font:
+                    say(f"  mojibake text layer -> forced OCR: {act_name[:44]}")
                     pages = ocr.extract(file)
                     for p in pages:
-                        p.metadata["ocr_forced_reason"] = "native text layer lacks primary script"
+                        p.metadata["ocr_forced_reason"] = (
+                            "native text layer lacks primary script" if lacks_script
+                            else "native text layer is a legacy-font encoding")
+            scope = _page_scope(entry)
+            if scope:
+                pages = [p for p in pages if scope[0] <= p.page_number <= scope[1]]
+                if not pages:
+                    raise ValueError(f"page_range {list(scope)} outside the document")
             content_ok, content_reason = content_eligibility([p.text for p in pages])
             if not content_ok:
                 for st in stores:
@@ -271,22 +364,23 @@ def main() -> int:
                         st.add_discovery_lead(f"{cc}:{Path(file).stem}",
                                               content_reason or "INELIGIBLE_CONTENT",
                                               {"name": act_name, "url": url, "file": file})
-                print(f"  INELIGIBLE {act_name[:52]}: {content_reason}")
+                say(f"  INELIGIBLE {act_name[:52]}: {content_reason}")
                 continue
             page_artifacts, text_spans = materialize_page_evidence(pages, artifact.id)
             units = parse_act_text(pages, economy=economy, act_name=act_name,
                                    act_ref=Path(file).stem.replace("seed_", ""),
                                    source_url=artifact.retrieved_url,
                                    extra_section_patterns=profile["extra_section_patterns"],
-                                   citation_template=citation_template)
+                                   citation_template=(entry.get("citation_template")
+                                                      or citation_template))
             _normalize_labels(units)
         except Exception as error:  # noqa: BLE001 — one bad PDF must not kill the build
-            print(f"  FAILED {act_name[:50]}: {str(error)[:90]}")
+            say(f"  FAILED {act_name[:50]}: {str(error)[:90]}")
             build_complete = False
             continue
         missing = missing_expectations(entry, units)
         if missing:
-            print(f"  FAILED EXPECTED_EVIDENCE {act_name[:45]}: missing {missing}")
+            say(f"  FAILED EXPECTED_EVIDENCE {act_name[:45]}: missing {missing}")
             build_complete = False
             continue
         # Short subordinate notifications (<=3 pages) are legitimately 1-2 clauses.
@@ -301,13 +395,13 @@ def main() -> int:
                 purge = getattr(st, "purge_instrument_provisions", None)
                 if purge:
                     purge(economy, act_name, "STRUCTURE_COVERAGE_LOW")
-            print(f"  INELIGIBLE {act_name[:52]}: STRUCTURE_COVERAGE_LOW "
+            say(f"  INELIGIBLE {act_name[:52]}: STRUCTURE_COVERAGE_LOW "
                   f"({len(units)} units/{len(pages)} pages)")
             build_complete = False
             continue
         aligned, unit_count = align_and_bind_pdf_evidence(units, [file], [text_spans], [pages])
         if aligned != unit_count:
-            print(f"  ALIGNMENT REVIEW {act_name[:45]}: {aligned}/{unit_count} exact")
+            say(f"  ALIGNMENT REVIEW {act_name[:45]}: {aligned}/{unit_count} exact")
         for unit in units:
             unit.metadata.update(
                 archived_copy=file, access_date=entry.get("access_date"),
@@ -340,19 +434,19 @@ def main() -> int:
             escalated = sum(1 for p in pages if p.metadata.get("ocr_escalation_reason"))
             vision_pages = sum(1 for p in pages if p.metadata.get("ocr_engine") == "google_vision")
             note = f" [vision:{vision_pages}p]" if vision_pages else ""
-            print(f"  {act_name[:58]:58s} -> {len(units):4d} units{note}"
+            say(f"  {act_name[:58]:58s} -> {len(units):4d} units{note}"
                   f"{f' esc:{escalated}' if escalated else ''}")
 
-    if not args.only_act:
+    if not args.only_act and not pillars:
         for st in stores:
             if hasattr(st, "prune_economy_generation"):
                 st.prune_economy_generation(economy, generation)
     if not build_complete:
-        print(f"{cc.upper()} build incomplete: unresolved acquisitions recorded; "
+        say(f"{cc.upper()} build incomplete: unresolved acquisitions recorded; "
               "stale generation pruned")
     hits = stores[0].search_provisions("personal data", economy=economy, limit=3)
     top = hits[0]["props"].get("article_section") if hits else None
-    print(f"\n{economy} corpus: {loaded} instruments, {total} rule units "
+    say(f"\n{economy} corpus: {loaded} instruments, {total} rule units "
           f"(html-only seeds: {skipped_html}) | search smoke top: {top}")
     return 0
 

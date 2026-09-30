@@ -4,6 +4,8 @@ import os
 
 import httpx
 
+from packages.providers import http_client
+
 
 class StubEmbeddingProvider:
     """Deterministic P0 embedding stub with no network calls."""
@@ -50,25 +52,29 @@ class OpenAIEmbeddingProvider:
         body: dict = {"model": self.model, "input": texts}
         if self.dimensions:
             body["dimensions"] = self.dimensions
-        last_error: Exception | None = None
-        for attempt in range(1 + len(self.RETRY_BACKOFFS_S)):
+        connect_failures = other_failures = 0
+        while True:
             try:
-                response = httpx.post(
+                response = http_client.client(self.base_url, self.timeout).post(
                     f"{self.base_url}/embeddings",
                     headers=headers,
                     json=body,
-                    timeout=self.timeout,
                 )
                 if response.status_code == 429 or response.status_code >= 500:
                     raise httpx.HTTPStatusError(f"retryable {response.status_code}",
                                                 request=response.request, response=response)
                 break
-            except (httpx.HTTPStatusError, httpx.TransportError) as error:
-                last_error = error
-                if attempt < len(self.RETRY_BACKOFFS_S):
-                    _time.sleep(self.RETRY_BACKOFFS_S[attempt])
-                else:
-                    raise last_error
+            except http_client.CONNECT_ERRORS:
+                # Never reached the server: safe to resend, on the longer schedule.
+                if connect_failures >= len(http_client.CONNECT_BACKOFFS_S):
+                    raise
+                _time.sleep(http_client.CONNECT_BACKOFFS_S[connect_failures])
+                connect_failures += 1
+            except (httpx.HTTPStatusError, httpx.TransportError):
+                if other_failures >= len(self.RETRY_BACKOFFS_S):
+                    raise
+                _time.sleep(self.RETRY_BACKOFFS_S[other_failures])
+                other_failures += 1
         response.raise_for_status()
         payload = response.json()
         self.last_usage = payload.get("usage")

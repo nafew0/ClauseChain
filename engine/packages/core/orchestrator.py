@@ -23,10 +23,14 @@ ECONOMY_NAMES = {
     # Round 1
     "SG": "Singapore", "MY": "Malaysia", "AU": "Australia",
     # Round 2 (finals) — packs shipped so far; remaining economies added as their
-    # jurisdiction YAML + corpus land (CN/RU/LA/MN/TL pending).
+    # jurisdiction YAML + corpus land (CN pending).
     "TH": "Thailand", "IN": "India", "ID": "Indonesia",
+    "RU": "Russian Federation", "MN": "Mongolia", "LA": "Lao PDR", "TL": "Timor-Leste",
 }
 CODE_BY_NAME = {name.upper(): code for code, name in ECONOMY_NAMES.items()}
+# Common spellings of the round-2 names (ESCAP sheets use the UN names above).
+CODE_BY_NAME.update({"RUSSIA": "RU", "LAOS": "LA", "LAO": "LA", "TIMOR LESTE": "TL",
+                     "EAST TIMOR": "TL"})
 ENGINE_ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -97,7 +101,8 @@ def _participating_proof_spans(snippet: str, evidence: list[dict]) -> tuple[list
         # word-level tokens (spaces between every Thai word) while unit text is
         # line-level (no spaces) — window location must ignore spaces entirely.
         # Latin text keeps the space-sensitive path above.
-        thai_in_target = sum(1 for c in target if "ก" <= c <= "๛")
+        # Lao shares the property (no inter-word spaces; Vision tokens add them).
+        thai_in_target = sum(1 for c in target if "ก" <= c <= "๛" or "຀" <= c <= "໿")
         if thai_in_target > len(target) * 0.25:
             squeezed_chars, squeezed_map = [], []
             for char, owner in zip(chars, span_map, strict=True):
@@ -161,24 +166,32 @@ def _ensure_corpus(store, pack: dict, economy: str) -> list[dict]:
     import os
     if os.getenv("CLAUSECHAIN_OFFLINE") == "1":
         raise RuntimeError(f"offline-eval requires a prebuilt v2 corpus for {economy}")
-    # MY/AU: auto-chain the corpus build (fresh-clone contract — one command, no
-    # manual steps). The build scripts fetch seeds themselves when missing.
+    # Auto-chain the corpus build (fresh-clone contract — one command, no manual
+    # steps). Round 1 has per-economy builders; round-2 packs declare `seeds:` and
+    # share the generic seeds builder. The builders fetch seeds when missing.
     import subprocess
     import sys as _sys
 
-    script_code = {"Singapore": "sg", "Malaysia": "my", "Australia": "au"}[economy]
-    script = ENGINE_ROOT / f"scripts/build_{script_code}_corpus.py"
-    if script.is_file():
-        print(f"[corpus] {economy} corpus empty — building via {script.name} (first run only)")
-        result = subprocess.run([_sys.executable, str(script)], cwd=ENGINE_ROOT)
+    script_code = {"Singapore": "sg", "Malaysia": "my", "Australia": "au"}.get(economy)
+    if script_code:
+        command = [_sys.executable, str(ENGINE_ROOT / f"scripts/build_{script_code}_corpus.py")]
+    elif pack.get("seeds"):
+        command = [_sys.executable, str(ENGINE_ROOT / "scripts/build_seeds_corpus.py"),
+                   "--economy", economy]
+    else:
+        command = []
+    if command and Path(command[1]).is_file():
+        print(f"[corpus] {economy} corpus empty — building via {Path(command[1]).name} "
+              f"(first run only)")
+        result = subprocess.run(command, cwd=ENGINE_ROOT)
         if result.returncode == 0:
             corpus = load_corpus(store, economy)
             if corpus:
                 return corpus
-    raise RuntimeError(
-        f"No corpus loaded for {economy}. Build it manually: "
-        f".venv/bin/python scripts/build_{economy[:2].lower()}_corpus.py"
-    )
+    hint = (".venv/bin/python " + " ".join([str(Path(command[1]).relative_to(ENGINE_ROOT)),
+                                           *command[2:]])
+            if command else "add `seeds:` to the jurisdiction pack")
+    raise RuntimeError(f"No corpus loaded for {economy}. Build it manually: {hint}")
 
 
 def _absence_row(economy: str, indicator_id: str, governing_law: str,
@@ -356,7 +369,7 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
         supported = ", ".join(f"{c} ({n})" for c, n in ECONOMY_NAMES.items())
         raise ValueError(
             f"Unknown economy: {country!r}. Supported: {supported}. "
-            "Remaining Round-2 economies (CN/RU/LA/MN/TL) ship as configuration packs — "
+            "Remaining Round-2 economies (CN) ship as configuration packs — "
             "add configs/jurisdictions/<code>.yaml + seeds, no code change required."
         )
 
@@ -396,6 +409,7 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
         ])
     known_index_path = pack.get("known_index") or "data/known_index.json"
     known = KnownIndex(known_index_path)
+    known.register_corpus(economy, [c["props"] for c in corpus])
     from packages.ingest.expected_anchors import load_expected_anchors
 
     expected_anchor_ledger = load_expected_anchors()
@@ -450,8 +464,13 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                          if row.get("economy") == economy
                          and row.get("indicator_id") == indicator_id]
         from packages.ingest.known_index import expected_anchors
+        anchor_roles = set(pack.get("gold_anchor_roles") or [])
         for krow in known_rows:
-            for anchor in expected_anchors(krow):
+            # Default: operative master anchors only. A pack may also inject the
+            # master's supporting refs (still screened, mapped and gated).
+            anchors = ([m for m in krow.get("ref_mentions", []) if m.get("role") in anchor_roles]
+                       if anchor_roles and "ref_mentions" in krow else expected_anchors(krow))
+            for anchor in anchors:
                 ref = anchor["ref"]
                 kbase = _sb(ref)
                 if not kbase:
@@ -459,11 +478,12 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                 scoped_laws = anchor.get("laws_norm") or krow.get("acts_norm", [])
                 acts_resolved = [known._resolve_alias(economy, a)
                                  for a in scoped_laws if a]
-                def _base_hits(ubase: str | None) -> bool:
-                    return _section_matches(kbase, ubase)
+                gold_ref = known.translate_ref(economy, scoped_laws, ref)
                 matches = [c for c in corpus
                            if any(_lm(a, c["props"].get("law_name", "")) for a in acts_resolved)
-                           and _base_hits(_sb(c["props"].get("article_section", "")))]
+                           and known.gold_ref_matches(economy, c["props"].get("law_name", ""),
+                                                      gold_ref,
+                                                      c["props"].get("article_section", ""))]
                 if not matches:
                     hole = (f"RECALL HOLE {indicator_id}: master-known {krow.get('act','')[:40]} "
                             f"{ref} not in the {economy} corpus")
@@ -656,8 +676,16 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
                                                  g8_counter_and_dangling,
                                                  g9_structural_closure)
 
+            fit_context = source_context
+            if pack.get("legal_fit_reads_translation"):
+                # G7's legal-fit patterns are English. For original-language evidence
+                # (RU/MN/LA/TL packs) the gate also reads the mapper's English account
+                # of the same provision; the snippet and proof stay the source text.
+                fit_context = " ".join([
+                    decision.rationale or "", decision.actor or "", decision.modality or "",
+                    decision.action or "", " ".join(decision.conditions), source_context])
             fit = g7_indicator_fit(indicator_id, decision.verbatim_snippet,
-                                   source_context, props.get("law_name", ""))
+                                   fit_context, props.get("law_name", ""))
             from packages.discovery.diff import section_base as _sb2
 
             same_act_sections = set()
@@ -881,6 +909,7 @@ def run(country: str, pillar: int, provider_profile: str = "hybrid_accuracy") ->
         for finding in findings:
             store.upsert_finding(finding_key(finding), run_id, finding)
     cost_entry = cost.append_log(run_id, {"economy": economy, "pillar": pillar,
+                                          "provider_profile": provider_profile,
                                           "elapsed_seconds": round(time.time() - started, 1)})
     report = cost.report()
     progress.emit("done",

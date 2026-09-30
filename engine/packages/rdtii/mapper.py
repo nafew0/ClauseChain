@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import re
 
-from pydantic import BaseModel, Field, PrivateAttr, model_validator
+from pydantic import BaseModel, Field, PrivateAttr
 
 SCREEN_BATCH_SIZE = 12
 import os as _os
@@ -41,12 +41,16 @@ def _null_to_default(*string_fields: str):
     return model_validator(mode="before")(classmethod(_coerce))
 
 
+
+def golden_rules(cfg: dict) -> str:
+    """The pillar's binding rules: a rubric may carry its own (Pillar 2 has no
+    transfer/storage semantics); P6/P7 rubrics fall back to GOLDEN_RULES."""
+    return str(cfg.get("golden_rules") or GOLDEN_RULES).strip()
+
 class ScreenDecision(BaseModel):
     candidate_index: int
     relevant: bool
     reason: str = ""
-
-    _coerce_nulls = _null_to_default("reason")
 
 
 class ScreenBatch(BaseModel):

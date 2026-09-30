@@ -20,12 +20,12 @@ export function SnapshotBanner({ snapshot }: { snapshot: SnapshotIdentity }) {
     <span className="snapshot-chip-wrap">
       <button
         type="button"
-        className={cn('snapshot-chip', stale ? 'is-warning' : 'is-ok')}
+        className={cn('snapshot-chip', stale ? 'is-warning' : 'is-ok', snapshot.mode === 'local' && 'is-local')}
         aria-expanded={open}
         title="Immutable snapshot"
         onClick={() => setOpen(value => !value)}
       >
-        <Database size={15} /><span>Snapshot</span><b>{stale ? 'STALE' : snapshot.source_hash.slice(0, 8)}</b>
+        <Database size={15} /><span>{snapshot.mode === 'local' ? 'Local snapshot' : 'Snapshot'}</span><b>{stale ? 'STALE' : snapshot.source_hash.slice(0, 8)}</b>
       </button>
       {open ? (
         <span role="status" className="snapshot-pop">

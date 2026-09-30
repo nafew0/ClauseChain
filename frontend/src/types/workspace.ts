@@ -28,6 +28,7 @@ export interface SnapshotIdentity {
   bundle_hash: string
   engine_git_sha: string
   stale: boolean
+  mode?: RunMode
 }
 
 export interface ReviewProgress {
@@ -414,7 +415,7 @@ export interface EngineWorkerStatus {
 
 export interface EngineAction {
   id: string
-  kind: 'refresh' | 'replay' | 'run'
+  kind: 'refresh' | 'replay' | 'run' | 'corpus'
   status: 'queued' | 'running' | 'succeeded' | 'failed' | 'cancelled'
   arguments: JsonObject
   mode: RunMode
@@ -651,4 +652,22 @@ export type DecideResponse =
 export function rowRecord(headers: string[], row: JsonValue[] | JsonObject): JsonObject {
   if (!Array.isArray(row)) return row
   return Object.fromEntries(headers.map((header, index) => [header, row[index] ?? null]))
+}
+
+/** A document an engine action downloaded (Runs → Sources; the Run Record list). */
+export interface ActionDocument {
+  url: string
+  seed_url: string
+  act: string | null
+  fetched_at: string
+  size_kb: number
+  file_type: string | null
+  sha256: string | null
+}
+
+export interface ActionDocumentsResponse {
+  action_id: string
+  status: EngineAction['status']
+  count: number
+  documents: ActionDocument[]
 }

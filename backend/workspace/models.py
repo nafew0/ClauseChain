@@ -44,15 +44,18 @@ class EngineSnapshot(models.Model):
     manifest_json = models.JSONField(default=dict)
     stale = models.BooleanField(default=False)
     active = models.BooleanField(default=False)
+    # Model backend: "hybrid" (Model A, the signed registry) or "local"
+    # (Model B, open weights). The two workspaces never share rows.
+    mode = models.CharField(max_length=16, default="hybrid", db_index=True)
 
     class Meta:
         ordering = ["-imported_at"]
         indexes = [models.Index(fields=["active", "-imported_at"])]
         constraints = [
             models.UniqueConstraint(
-                fields=["active"],
+                fields=["mode"],
                 condition=models.Q(active=True),
-                name="workspace_one_active_snapshot",
+                name="workspace_one_active_snapshot_per_mode",
             )
         ]
 
@@ -160,6 +163,9 @@ class EvidenceIdentity(models.Model):
     law_name = models.CharField(max_length=500)
     citation_key = models.CharField(max_length=300)
     finding_type = models.CharField(max_length=32, default="provision")
+    # Model backend: "hybrid" (Model A, the signed registry) or "local"
+    # (Model B, open weights). The two workspaces never share rows.
+    mode = models.CharField(max_length=16, default="hybrid", db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -372,6 +378,9 @@ class SupersedingDecision(ImmutableAuditModel):
     created_at = models.DateTimeField(auto_now_add=True)
     authoritative_file_hash = models.CharField(max_length=64)
     writer_receipt_json = models.JSONField(default=dict)
+    # Model backend: "hybrid" (Model A, the signed registry) or "local"
+    # (Model B, open weights). The two workspaces never share rows.
+    mode = models.CharField(max_length=16, default="hybrid", db_index=True)
 
     class Meta:
         abstract = True
@@ -476,6 +485,10 @@ class CorrectionRequest(ImmutableAuditModel):
     )
     requested_at = models.DateTimeField(auto_now_add=True)
     authoritative_file_hash = models.CharField(max_length=64, blank=True, default="")
+    # Model backend: "hybrid" (Model A, the signed registry) or "local"
+    # (Model B, open weights). The two workspaces never share rows.
+    mode = models.CharField(max_length=16, default="hybrid", db_index=True)
+
     writer_receipt_json = models.JSONField(default=dict)
     supersedes = models.ForeignKey(
         "self",
@@ -576,6 +589,8 @@ class EngineAction(models.Model):
         REFRESH = "refresh", "Refresh"
         REPLAY = "replay", "Replay"
         RUN = "run", "Run"
+        # Download (or clear) an economy's source documents; shared by both models.
+        CORPUS = "corpus", "Sources"
 
     class Status(models.TextChoices):
         QUEUED = "queued", "Queued"
@@ -617,3 +632,4 @@ class EngineAction(models.Model):
     class State(models.TextChoices):
         DRAFT = "draft", "Draft"
         PUBLISHED = "published", "Published"
+

@@ -5,6 +5,7 @@ import json
 
 from packages.core.evidence import verify_artifact
 from packages.core.legal_controls import evidence_eligibility
+from packages.core.review_layout import namespaced
 from packages.core.schemas import MappedFinding, ReviewDecision, SourceArtifact, TextSpan
 
 
@@ -16,7 +17,9 @@ def finding_key(finding: MappedFinding) -> str:
     payload = "\x1f".join((finding.economy, finding.indicator_id, finding.law_name,
                             finding.article_section, finding.source_artifact_id or "",
                             finding.verbatim_snippet))
-    return hashlib.sha256(payload.encode()).hexdigest()
+    # Local-mode review scripts salt the key (hybrid keys are unchanged), so the
+    # same provision found by both model backends is two separately reviewed rows.
+    return hashlib.sha256(namespaced(payload).encode()).hexdigest()
 
 
 def review_subject_payload(finding: MappedFinding) -> dict:

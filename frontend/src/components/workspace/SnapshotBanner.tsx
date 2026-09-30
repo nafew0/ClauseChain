@@ -57,12 +57,12 @@ export function SnapshotBanner({ className, compact: _compact = false }: { class
     <span className={cn('snapshot-chip-wrap', className)}>
       <button
         type="button"
-        className={cn('snapshot-chip', warning ? 'is-warning' : 'is-ok')}
+        className={cn('snapshot-chip', warning ? 'is-warning' : 'is-ok', snapshot.mode === 'local' && 'is-local')}
         aria-expanded={open}
         title="Data snapshot status"
         onClick={() => setOpen(value => !value)}
       >
-        <Database size={15} /><span>Snapshot</span><b>{snapshot.stale ? 'STALE' : snapshot.bundle_hash.slice(0, 8)}</b>
+        <Database size={15} /><span>{snapshot.mode === 'local' ? 'Local snapshot' : 'Snapshot'}</span><b>{snapshot.stale ? 'STALE' : snapshot.bundle_hash.slice(0, 8)}</b>
       </button>
       {open ? (
         <span role={warning ? 'alert' : 'status'} className="snapshot-pop">

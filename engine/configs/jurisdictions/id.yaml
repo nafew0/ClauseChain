@@ -57,7 +57,7 @@ open_verification:   # deep-research §5 — UNVERIFIED items
 ocr: { provider: hybrid_script, route: paddle-first, language_hints: [id], conf_floor: 0.85 }
 known_index: data/known_index_round2.json
 seeds: data/seeds_r2.json
-rdtii_bindings: { pillars: [6, 7] }
+rdtii_bindings: { pillars: [2, 6, 7] }
 
 anchor_instruments:
   - "Law No. 27 of 2022 on Personal Data Protection — horizontal PDP law fully applicable since 17 Oct 2024 (P7-I1 score-0 evidence); Arts. 55-56 transfer conditions (P6-I4); Art. 53-54 trigger-based DPO (P7-I4 0.5)"
@@ -231,3 +231,65 @@ status_assertions:
     status: signed_not_in_force
     fact_url: "https://ustr.gov/sites/default/files/files/Press/Releases/2026/02.19.26%20US-IDN%20ART%20Full%20Agreement%20-%20US%20Final%20for%20Website%20sanitized.pdf"
     fact_text: "Signed February 2026; Art. 7.5 entry-into-force notification exchange NOT evidenced as of 31 Jul 2026 — do not count for 6.5 yet."
+  # Pillar 2 (public procurement), 29 Sep 2026
+  "Presidential Regulation No.16 on Government Procurement of Goods and Services 2018":
+    status: "in_force"
+    fact_url: "https://peraturan.bpk.go.id/Details/73586/perpres-no-16-tahun-2018"
+    fact_text: "BPK status \"Berlaku\"; \"Diubah dengan\" Perpres 12/2021 and Perpres 46/2025; enacted 16 Mar 2018, promulgated and in force 22 Mar 2018."
+    effective_date: "2018-03-22"
+  "Presidential Regulation No. 46 of 2025 on the Second Amendment of the Government Procurement of Goods/Services Regulation":
+    status: "in_force"
+    fact_url: "https://jdih.lkpp.go.id/regulation/peraturan-presiden/peraturan-presiden-nomor-46-tahun-2025"
+    fact_text: "Second amendment of Perpres 16/2018, promulgated 30 Apr 2025 (LN 2025/67), in force on promulgation; replaces Arts. 65-67 and re-enacts Art. 63 (JDIH LKPP \"Berlaku\"; listed on BPK Perpres 16/2018 page)."
+    effective_date: "2025-04-30"
+  "Presidential Instruction No. 2 of 2022 on Accelerating the Increase in the Use of Domestic Products and Products from Micro, Small Enterprises, and Cooperatives (Bangga Buatan Indonesia) in Government Procurement of Goods and Services":
+    status: "in_force"
+    fact_url: "https://peraturan.bpk.go.id/Details/204320/inpres-no-2-tahun-2022"
+    fact_text: "BPK status \"Berlaku\"; issued and effective 30 Mar 2022 (\"mulai berlaku pada tanggal dikeluarkan\")."
+    effective_date: "2022-03-30"
+  "Regulation of the Government of the Republic of Indonesia No.29 on Industrial Empowerment 2018":
+    status: "in_force"
+    fact_url: "https://peraturan.bpk.go.id/Details/89213/pp-no-29-tahun-2018"
+    fact_text: "BPK status \"Berlaku\", \"Diubah dengan PP 28/2021\"; PP 28/2021 Art. 174(b) revoked only Arts. 44, 45, 49, 51-53 - P3DN Arts. 56-69 survive."
+  "Regulation of the Government of the Republic of Indonesia No.28 on the Implementation of the Industrial Sector 2021":
+    status: "in_force"
+    fact_url: "https://peraturan.bpk.go.id/Details/161862/pp-no-28-tahun-2021"
+    fact_text: "BPK status \"Berlaku\", \"Diubah dengan PP 46/2023\" (raw/auxiliary materials only); in force on promulgation 2 Feb 2021."
+    effective_date: "2021-02-02"
+  "Regulation of the Government of the Republic of Indonesia No.71 on the Provision of Electronic System and Transaction 2019":
+    status: "in_force"
+    fact_url: "https://peraturan.bpk.go.id/Details/122030/pp-no-71-tahun-2019"
+    fact_text: "BPK status \"Berlaku\"; revoked PP 82/2012; promulgated 10 Oct 2019."
+    effective_date: "2019-10-10"
+  "Regulation of the Minister of Communication and Informatics of the Republic of Indonesia No.41/PER/M.KOMINFO/10/2009 on Procedures for Assessing the Achievement of Domestic Component Levels in the Implementation of Telecommunications 2009":
+    status: "in_force"
+    fact_url: "https://peraturan.bpk.go.id/Details/159035/permenkominfo-no-41permkominfo102009-tahun-20"
+    fact_text: "BPK status \"Berlaku\" (checked 29 Sep 2026); no revoking instrument listed."
+  "Regulation of the Minister of Finance Regulation No.115/PMK.06/2020 on the Utilization of State-Owned Assets 2020":
+    status: "in_force"
+    fact_url: "https://peraturan.bpk.go.id/Details/144664/pmk-no-115pmk062020"
+    fact_text: "BPK status \"Berlaku\" (research 29 Sep 2026)."
+  "Regulation of the Minister of Industry No. 35 of 2025 on Provisions and Procedures for Certification of Domestic Component Level (TKDN) and Company Benefit Weight (BMP)":
+    status: "in_force"
+    fact_url: "https://peraturan.bpk.go.id/Details/333003/permenperin-no-35-tahun-2025"
+    fact_text: "Enacted 11 Sep 2025; Art. 75 in force 3 months after promulgation (BPK \"Tanggal Berlaku 11 Desember 2025\"); Art. 74 revokes Permenperin 16/2011, 02/2014, 03/2014, 46/2022."
+    effective_date: "2025-12-11"
+  "Law No. 3 of 2014 on Industry":
+    status: "in_force"
+    fact_url: "https://peraturan.bpk.go.id/Download/27824/UU%20Nomor%2003%20Tahun%202014.pdf"
+    fact_text: "Law on Industry, promulgated and in force 15 Jan 2014; Cipta Kerja (UU 6/2023) effect on Arts. 85-88 not verified."
+    effective_date: "2014-01-15"
+  "Regulation of the Government of the Republic of Indonesia No. 7 of 2021 on Ease, Protection and Empowerment of Cooperatives and Micro, Small and Medium Enterprises":
+    status: "in_force"
+    fact_url: "https://peraturan.bpk.go.id/Details/161837/pp-no-7-tahun-2021"
+    fact_text: "BPK status \"Berlaku\", no amending instrument listed; promulgated 2 Feb 2021."
+    effective_date: "2021-02-02"
+
+gold_aliases:
+  # Pillar 2 (public procurement)
+  "President Instruction No. 22/2022 on Accelerating the Increase in the Use of Domestic Products and Products from Micro, Small Enterprises, and Cooperatives to Support the Success of the National Movement \"Proudly Made in Indonesia\" in the Implementation of Government Procurement of Goods and Services 2022": "Presidential Instruction No. 2 of 2022 on Accelerating the Increase in the Use of Domestic Products and Products from Micro, Small Enterprises, and Cooperatives (Bangga Buatan Indonesia) in Government Procurement of Goods and Services"
+  "Regulation of the Government of the Republic of Indonesia No.28 on\nMaintenance of Industrial Fields 2021": "Regulation of the Government of the Republic of Indonesia No.28 on the Implementation of the Industrial Sector 2021"
+  "Regulation of the Government of the Republic of Indonesia No.46 on Amendments to Regulation of the Government of the Republic of Indonesia  No.28 on the Implementation of the Industrial Sector 2023": "Regulation of the Government of the Republic of Indonesia No.28 on the Implementation of the Industrial Sector 2021"
+  "Regulation of the Minister of Industry No.02/M-IND/PER/1/2014 on Guidelines of Increasing Use of Domestic Products 2014": "Regulation of the Minister of Industry No. 35 of 2025 on Provisions and Procedures for Certification of Domestic Component Level (TKDN) and Company Benefit Weight (BMP)"
+
+research_scores: { P2-I1: 1, P2-I2: 1, P2-I3: 1, P2-I4: 1 }

@@ -14,6 +14,8 @@ import time
 import httpx
 from pydantic import BaseModel, ValidationError
 
+from packages.providers import http_client
+
 
 def _schema_instruction(schema: type[BaseModel]) -> str:
     return (
@@ -59,7 +61,8 @@ class OpenAIChatProvider:
         progress.emit("llm", f"→ {self.model} · prompt {len(prompt):,} chars", detail=prompt)
         started = _time.time()
         last_error: Exception | None = None
-        for attempt in range(1 + len(self.RETRY_BACKOFFS_S)):
+        connect_failures = other_failures = 0
+        while True:
             try:
                 body = {
                     "model": self.request_model,
@@ -70,11 +73,10 @@ class OpenAIChatProvider:
                 }
                 if prompt_cache_key and self.base_url == OPENAI_BASE_URL:
                     body["prompt_cache_key"] = prompt_cache_key
-                response = httpx.post(
+                response = http_client.client(self.base_url, self.timeout).post(
                     f"{self.base_url}/chat/completions",
                     headers={"Authorization": f"Bearer {api_key}"},
                     json=body,
-                    timeout=self.timeout,
                 )
                 if response.status_code == 429 or response.status_code >= 500:
                     raise httpx.HTTPStatusError(
@@ -110,12 +112,26 @@ class OpenAIChatProvider:
                     detail=content,
                 )
                 return content
+            except http_client.CONNECT_ERRORS as error:
+                # Never reached the model: always safe to resend, on a longer schedule.
+                last_error = error
+                if connect_failures >= len(http_client.CONNECT_BACKOFFS_S):
+                    break
+                wait = http_client.CONNECT_BACKOFFS_S[connect_failures]
+                connect_failures += 1
+                progress.emit("llm", f"endpoint not accepting connections ({type(error).__name__}); "
+                                     f"retry {connect_failures}/{len(http_client.CONNECT_BACKOFFS_S)} "
+                                     f"in {wait:.0f}s", level="warn")
+                _time.sleep(wait)
             except (httpx.HTTPStatusError, httpx.TransportError) as error:
                 last_error = error
-                if attempt < len(self.RETRY_BACKOFFS_S):
-                    progress.emit("llm", f"retry {attempt + 1} after {type(error).__name__}: "
-                                         f"{str(error)[:120]}", level="warn")
-                    _time.sleep(self.RETRY_BACKOFFS_S[attempt])
+                if other_failures >= len(self.RETRY_BACKOFFS_S):
+                    break
+                wait = self.RETRY_BACKOFFS_S[other_failures]
+                other_failures += 1
+                progress.emit("llm", f"retry {other_failures} after {type(error).__name__}: "
+                                     f"{str(error)[:120]}", level="warn")
+                _time.sleep(wait)
         progress.emit("llm", f"FAILED {self.model}: {str(last_error)[:200]}", level="error")
         raise last_error  # type: ignore[misc]
 
