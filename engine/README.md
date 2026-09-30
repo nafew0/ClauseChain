@@ -40,6 +40,21 @@ Create the locked environment and run the engine:
 cd engine
 uv sync --frozen --group dev
 uv run pytest
+```
+
+Then pick an LLM backend — local Ollama (key-free, slower), a remote
+OpenAI-compatible server you control (vLLM etc., much faster if it has a
+real GPU), or cloud APIs (OpenAI/OpenRouter/Gemini) — by running the
+interactive setup, which writes `.env` for you:
+
+```bash
+uv run python setup.py
+```
+
+(Or copy `.env.example` to `.env` and fill it in by hand — `setup.py` just
+asks the same questions and writes the same file.)
+
+```bash
 uv run python run.py --country SG --pillar 6 --out outputs/demo
 # --economy is an alias (matches the organizer README): 
 uv run python run.py --economy Singapore --pillar 6 --out outputs/demo

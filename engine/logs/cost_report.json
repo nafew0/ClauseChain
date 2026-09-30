@@ -2844,5 +2844,15 @@
   "economy": "Malaysia",
   "pillar": 6,
   "elapsed_seconds": 769.5
+ },
+ {
+  "run_id": "run-au-p6-1790560547",
+  "at": "2026-09-28T05:03:43.086411+00:00",
+  "models": {},
+  "total_usd": 0.0,
+  "note": "measured from real API usage objects; prices per 1M tokens (PRICES)",
+  "economy": "Australia",
+  "pillar": 6,
+  "elapsed_seconds": 11275.4
  }
 ]
