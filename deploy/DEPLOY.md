@@ -24,7 +24,7 @@ rsync -az engine/data engine/outputs engine/logs engine/submission engine/report
 ```
 OPENAI_API_KEY=...
 OCR_PROVIDER=remote_paddle
-OCR_ENDPOINT=http://103.157.134.130:8868/ocr
+OCR_ENDPOINT=http://<ocr-host>:<ocr-port>/ocr
 OCR_API_KEY=...
 GRAPH_BACKEND=sqlite
 # keep the provider spend cap set (same value as local)

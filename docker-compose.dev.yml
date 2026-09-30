@@ -21,38 +21,23 @@
 # .env.example instead.
 #
 # Engine note: engine/ is bind-mounted read-only so ENGINE_ROOT (clausechain/
-# settings.py) resolves. The `engine-venv-init` service then builds a real,
-# LINUX-native engine/.venv (PyYAML + openpyxl + pydantic — the actual set
-# `manage.py engine_refresh` and every allowlisted engine action need; see
-# backend/workspace/importer.py and deploy/engine_allowlist.json, whose argv
-# hardcodes `.venv/bin/python` for every action) into a named volume overlaid
-# at exactly that path — the one place the read-only ../engine mount doesn't
-# reach, since a nested volume mount wins over its parent bind mount for that
-# subpath regardless of the parent's read-only flag. Without this, the
-# engine/.venv on disk is your HOST's (macOS/whatever), which can't exec
-# inside this Linux container at all.
-#
-# `manage.py engine_refresh` (run at backend startup, best-effort — same
-# pattern as docker-compose.yml's pipeline-seed) needs ALL 12 of RUN_NAMES in
-# backend/workspace/importer.py present under engine/outputs/*/output.json,
-# or it fails; an incomplete sweep is a real, common state, not a docker
-# problem. It skips with a logged reason rather than failing the container;
-# run it again by hand once your outputs are complete:
+# settings.py) resolves, and ENGINE_PYTHON points at a small export-only venv
+# baked into backend/Dockerfile.dev (PyYAML + openpyxl only), so
+# `manage.py engine_refresh` can actually run its export scripts and import
+# whatever run outputs already exist on your host (see engine/README.md to
+# produce them — it needs ALL 12 of RUN_NAMES in backend/workspace/
+# importer.py present under engine/outputs/*/output.json, or it fails; an
+# incomplete sweep is a real, common state, not a docker problem). It's
+# still best-effort at container startup (same as docker-compose.yml's
+# pipeline-seed): missing/incomplete outputs make it skip with a logged
+# reason rather than failing the container — run it again by hand once your
+# outputs are complete:
 #   docker compose -f docker-compose.dev.yml exec backend python manage.py engine_refresh
-#
-# The `engine-worker` service (backend/workspace/management/commands/
-# run_engine_worker.py) is what actually executes an engine action launched
-# from the Runs page (frontend/src/components/runs/RunsWorkbench.tsx +
-# LiveConsole.tsx) and streams its progress live — see backend/workspace/
-# engine_worker.py's EventTail / packages/core/progress.py on the engine
-# side. `refresh_payload`, `apply_decisions`, `replay`, `champion_validate`
-# and `export_bundle` all work with the lightweight venv above.
-# `run_pipeline` and the `build_*_corpus` actions need the engine's full ML
-# stack (torch/sentence-transformers/pymupdf/httpx/numpy) and will fail here
-# — same limitation as before, just for a bigger set of actions than
-# engine_refresh alone; run those via engine/ on the host, or use
-# docker-compose.yml's full stack (which builds its own Linux engine venv in
-# backend/Dockerfile).
+# Launching NEW engine runs, or the neo4j graph-snapshot export inside
+# engine_refresh, needs the engine's real .venv (torch/sentence-transformers
+# etc.) — out of scope for this lightweight export-only venv; run those via
+# engine/ on the host, or use docker-compose.yml's full stack (which builds
+# its own Linux engine venv in backend/Dockerfile).
 #
 # `name:` below gives this its own Compose project namespace so it can never
 # collide with docker-compose.yml again — both files previously defaulted to
@@ -93,33 +78,6 @@ services:
       timeout: 5s
       retries: 20
 
-  # One-shot: builds the lightweight, Linux-native engine/.venv described
-  # above into dev_engine_venv, idempotently (skips if already populated —
-  # the volume persists across `up`/`down`, so this is instant after the
-  # first run). backend and engine-worker both wait for it and then mount
-  # the same volume at the same path.
-  engine-venv-init:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.dev
-    container_name: clausechain-dev-engine-venv-init
-    restart: "no"
-    volumes:
-      - dev_engine_venv:/srv/clausechain/engine/.venv
-    command:
-      - sh
-      - -c
-      - >
-        if [ -x /srv/clausechain/engine/.venv/bin/python ] &&
-           /srv/clausechain/engine/.venv/bin/python -c "import pydantic, yaml, openpyxl" 2>/dev/null; then
-          echo '[engine-venv-init] already populated, skipping';
-        else
-          echo '[engine-venv-init] building engine/.venv (pyyaml + openpyxl + pydantic)' &&
-          python -m venv /srv/clausechain/engine/.venv &&
-          /srv/clausechain/engine/.venv/bin/pip install --no-cache-dir -U pip &&
-          /srv/clausechain/engine/.venv/bin/pip install --no-cache-dir "pyyaml>=6.0,<7" "openpyxl>=3.1,<4" "pydantic>=2.7,<3";
-        fi
-
   backend:
     build:
       context: ./backend
@@ -131,14 +89,11 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-      engine-venv-init:
-        condition: service_completed_successfully
     ports:
       - "8000:8000"
     volumes:
       - ./backend:/srv/clausechain/backend
       - ./engine:/srv/clausechain/engine:ro
-      - dev_engine_venv:/srv/clausechain/engine/.venv
     environment:
       DJANGO_SECRET_KEY: dev-secret-key-not-for-production-use-only
       JWT_SIGNING_KEY: dev-jwt-signing-key-not-for-production-use-only
@@ -149,6 +104,11 @@ services:
       API_ORIGIN: http://localhost:8000
       TRUST_X_FORWARDED_PROTO: "False"
       ALLOWED_HOSTS: "localhost,127.0.0.1,backend,backend.localhost"
+      # Points engine_refresh at the small export-only venv baked into
+      # Dockerfile.dev instead of the default engine/.venv/bin/python (which
+      # lives on the read-only ../engine mount and is built for your HOST
+      # os — can't exec inside this Linux container). See Dockerfile.dev.
+      ENGINE_PYTHON: /opt/engine-export-venv/bin/python
       DB_NAME: clausechain_dev
       DB_USER: clausechain
       DB_PASSWORD: dev
@@ -172,49 +132,6 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.backend.rule=Host(`backend.localhost`)"
       - "traefik.http.services.backend.loadbalancer.server.port=8000"
-
-  # Claims and executes allowlisted engine actions launched from the Runs
-  # page (superuser-only) — without this running, "launch" just creates a
-  # QUEUED row that nothing ever picks up. See the engine note above for
-  # which actions actually work against the lightweight dev engine/.venv.
-  engine-worker:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.dev
-    container_name: clausechain-dev-engine-worker
-    restart: unless-stopped
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      engine-venv-init:
-        condition: service_completed_successfully
-    volumes:
-      - ./backend:/srv/clausechain/backend
-      - ./engine:/srv/clausechain/engine:ro
-      - dev_engine_venv:/srv/clausechain/engine/.venv
-    environment:
-      DJANGO_SECRET_KEY: dev-secret-key-not-for-production-use-only
-      JWT_SIGNING_KEY: dev-jwt-signing-key-not-for-production-use-only
-      DEBUG: "True"
-      ENVIRONMENT: development
-      APP_ORIGIN: http://localhost:3000
-      PUBLIC_APP_URL: http://localhost:3000
-      API_ORIGIN: http://localhost:8000
-      TRUST_X_FORWARDED_PROTO: "False"
-      ALLOWED_HOSTS: "localhost,127.0.0.1,backend,backend.localhost"
-      DB_NAME: clausechain_dev
-      DB_USER: clausechain
-      DB_PASSWORD: dev
-      DB_HOST: postgres
-      DB_PORT: "5432"
-      USE_REDIS: "True"
-      REDIS_HOST: redis
-      REDIS_PORT: "6379"
-      CELERY_BROKER_URL: redis://redis:6379/2
-      CELERY_RESULT_BACKEND: redis://redis:6379/2
-    command: ["python", "manage.py", "run_engine_worker"]
 
   frontend:
     build:
@@ -277,4 +194,3 @@ volumes:
   dev_postgres_data:
   dev_frontend_node_modules:
   dev_frontend_next:
-  dev_engine_venv:

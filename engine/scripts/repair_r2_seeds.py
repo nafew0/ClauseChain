@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import subprocess
 import sys
 import time
@@ -23,14 +24,19 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import httpx  # noqa: E402
 
-SSH = ["ssh", "-i", str(Path.home() / ".ssh/clausechain_deploy"), "-p", "2233",
-       "-o", "ConnectTimeout=15", "root@103.157.135.253"]
+# A server whose network the source site accepts (user@host); unset = no proxy.
+PROXY_SSH = os.environ.get("CLAUSECHAIN_PROXY_SSH", "")
+SSH = ["ssh", "-i", str(Path.home() / ".ssh/clausechain_deploy"),
+       "-p", os.environ.get("CLAUSECHAIN_PROXY_SSH_PORT", "22"),
+       "-o", "ConnectTimeout=15", PROXY_SSH]
 UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/125.0 Safari/537.36")
 
 
 def server_proxy_fetch(url: str) -> bytes | None:
     """curl on the deploy server, bytes streamed back over ssh stdout."""
+    if not PROXY_SSH:
+        return None
     cmd = SSH + ["curl", "-sL", "--max-time", "120", "-A", f'"{UA}"',
                  "-H", '"Referer: ' + url.split("/", 3)[0] + "//" + url.split("/", 3)[2] + '/"',
                  f'"{url}"']

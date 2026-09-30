@@ -2,8 +2,6 @@ from __future__ import annotations
 
 import base64
 import os
-import re
-import struct
 import time
 from pathlib import Path
 from typing import Iterator
@@ -379,161 +377,6 @@ class PaddleVLCascade:
             )
             return page
 
-
-# Matches this OCR model's own output convention, one region per line:
-#   <label> [x0, y0, x1, y1]<text...>
-# e.g. "header [47, 82, 238, 103]TOP LEFT MARKER" (verified against
-# baidu/Unlimited-OCR served via vLLM, 29 Sep 2026). `label` (header/footer/
-# text/...) is descriptive, not load-bearing, so any word before the bracket
-# is accepted. A region's text runs to end-of-line — this model doesn't
-# escape newlines within a region.
-_OCR_REGION = re.compile(
-    r"^\s*\S+\s*\[\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*\](.*)$"
-)
-# The coordinate system verified above is a FIXED 1000x1000 canvas regardless
-# of the source image's actual size — confirmed by placing marker text at
-# known pixel positions on a 1000x1000 test image (near-exact 1:1 match) vs.
-# an 834x313 image (returned y-values up to 482, exceeding the real 313px
-# height, until rescaled by height/1000). Verify this against your own
-# server/model before trusting it in production; it is not a documented,
-# guaranteed API contract, just an empirically reverse-engineered one.
-_OCR_MODEL_CANVAS = 1000.0
-
-
-def _png_dimensions(png_bytes: bytes) -> tuple[int, int] | None:
-    """Width/height from a PNG's IHDR chunk — no imaging library needed.
-    `_rasterize()` above always produces PNG, so this covers every real call;
-    returns None (caller skips bbox rescaling) for anything else."""
-    if len(png_bytes) < 24 or png_bytes[:8] != b"\x89PNG\r\n\x1a\n":
-        return None
-    width, height = struct.unpack(">II", png_bytes[16:24])
-    return width, height
-
-
-class OpenAICompatibleVisionOCR:
-    """Self-hosted vision-language OCR model behind an OpenAI-compatible
-    /v1/chat/completions endpoint (vLLM etc.) — image in, structured regions
-    out. This is the "Unlimited-OCR" option .env.example describes
-    (OCR_BASE_URL / OCR_API_KEY / OCR_MODEL); it wasn't wired to any provider
-    until now.
-
-    Unlike a generic vision-chat model, the specific model this was verified
-    against (baidu/Unlimited-OCR) is trained to emit its own structured
-    per-region format (`<label> [x0,y0,x1,y1]<text>`, one region per line —
-    see _OCR_REGION) rather than free prose, so it CAN produce per-token
-    bounding boxes: _OCR_REGION parses them, rescaled from that model's fixed
-    1000x1000 output canvas to the source image's real pixel dimensions (see
-    _png_dimensions/_OCR_MODEL_CANVAS — verified empirically, not a
-    documented API contract). A prompt asking for anything beyond a plain
-    transcription instruction (e.g. "no commentary, no markdown") reliably
-    made this model return empty content in testing — keep prompts minimal.
-
-    A genuinely different, general-purpose vision-chat model behind this same
-    endpoint shape would answer in free prose instead, and this parser would
-    then find zero regions — ocr_image() falls back to tokens=[] (text-only,
-    not citation-proof-capable, matching PaddleVLCascade._proof_capable's
-    bbox-required contract) rather than fabricating boxes in that case.
-    """
-
-    RETRY_BACKOFFS_S = (5.0, 20.0)
-
-    def __init__(self, base_url: str, model: str, api_key: str | None = None,
-                 timeout: float = 120.0, prompt: str | None = None) -> None:
-        self._base_url = base_url.rstrip("/")
-        self._model = model
-        self._api_key = api_key
-        self._timeout = timeout
-        # Kept deliberately minimal — see class docstring on why extra
-        # instructions ("no commentary", "no markdown") broke this model.
-        self._prompt = prompt or (
-            "Transcribe every word of visible text on this page, in reading "
-            "order. Return ONLY the transcribed text."
-        )
-
-    def _headers(self) -> dict[str, str]:
-        return {"Authorization": f"Bearer {self._api_key}"} if self._api_key else {}
-
-    def ocr_image(self, image_bytes: bytes, page_number: int = 1,
-                  document_id: str = "image") -> ExtractedPage:
-        import time as _time
-
-        encoded = base64.b64encode(image_bytes).decode("ascii")
-        body = {
-            "model": self._model,
-            "messages": [{
-                "role": "user",
-                "content": [
-                    {"type": "text", "text": self._prompt},
-                    {"type": "image_url",
-                     "image_url": {"url": f"data:image/png;base64,{encoded}"}},
-                ],
-            }],
-            "temperature": 0,
-        }
-        last_error: Exception | None = None
-        response = None
-        for attempt in range(1 + len(self.RETRY_BACKOFFS_S)):
-            try:
-                response = httpx.post(f"{self._base_url}/chat/completions",
-                                      headers=self._headers(), json=body,
-                                      timeout=self._timeout)
-                if response.status_code == 429 or response.status_code >= 500:
-                    raise httpx.HTTPStatusError(
-                        f"retryable {response.status_code}",
-                        request=response.request, response=response)
-                response.raise_for_status()
-                break
-            except (httpx.HTTPStatusError, httpx.TransportError) as error:
-                last_error = error
-                if attempt < len(self.RETRY_BACKOFFS_S):
-                    _time.sleep(self.RETRY_BACKOFFS_S[attempt])
-                else:
-                    raise last_error
-        payload = response.json()
-        raw = payload["choices"][0]["message"]["content"] or ""
-
-        dims = _png_dimensions(image_bytes)
-        scale_x = (dims[0] / _OCR_MODEL_CANVAS) if dims else 1.0
-        scale_y = (dims[1] / _OCR_MODEL_CANVAS) if dims else 1.0
-        tokens: list[OCRToken] = []
-        text_lines: list[str] = []
-        for line in raw.splitlines():
-            match = _OCR_REGION.match(line)
-            if not match:
-                continue  # preamble/non-region lines (e.g. echoed model chatter)
-            x0, y0, x1, y1, region_text = match.groups()
-            region_text = region_text.strip()
-            if not region_text:
-                continue
-            text_lines.append(region_text)
-            bbox = ([float(x0) * scale_x, float(y0) * scale_y,
-                     float(x1) * scale_x, float(y1) * scale_y] if dims else None)
-            tokens.append(OCRToken(text=region_text, confidence=None,
-                                   bbox=bbox, page_number=page_number))
-        # No parseable regions (e.g. a general prose-answering model behind
-        # this same endpoint shape): fall back to the raw text, no tokens —
-        # see class docstring.
-        text = "\n".join(text_lines) if tokens else raw
-        return ExtractedPage(
-            document_id=document_id, page_number=page_number, text=text,
-            source_url=f"file://{document_id}", location_reference=f"page {page_number}",
-            confidence=None, tokens=tokens if dims else [],
-            metadata={"ocr_engine": "openai_compatible_vision", "model": self._model,
-                      "region_count": len(tokens), "raw_response": raw[:2000]},
-        )
-
-    def extract(self, file_path: str) -> list[ExtractedPage]:
-        return [self.ocr_image(image, page_no, file_path)
-                for page_no, image in _rasterize(file_path)]
-
-    def health(self) -> bool:
-        try:
-            return httpx.get(f"{self._base_url}/models", headers=self._headers(),
-                             timeout=10).status_code < 500
-        except httpx.HTTPError:
-            return False
-
-
 class GoogleVisionOCR:
     """Google Cloud Vision OCR at minimum billable cost.
 
@@ -706,20 +549,6 @@ def build_ocr(config: dict | None):
         return GoogleVisionOCR(
             api_key=config.get("api_key") or os.getenv("GOOGLE_VISION_API_KEY", ""),
             language_hints=hints)
-    if provider in {"openai_compatible", "unlimited", "vllm_vision"}:
-        # "Unlimited-OCR" in .env.example — a self-hosted OpenAI-compatible
-        # vision chat endpoint (vLLM etc). Text-only: see
-        # OpenAICompatibleVisionOCR's docstring for why it can't produce
-        # citation-proof-capable (bbox-anchored) pages.
-        base_url = config.get("base_url") or os.getenv("OCR_BASE_URL", "")
-        if not base_url:
-            raise RuntimeError("OCR_BASE_URL is not set")
-        return OpenAICompatibleVisionOCR(
-            base_url=base_url,
-            model=config.get("model") or os.getenv("OCR_MODEL", "unlimited-ocr"),
-            api_key=config.get("api_key") or os.getenv("OCR_API_KEY") or None,
-            timeout=float(config.get("timeout") or os.getenv("OCR_TIMEOUT_S", "120")),
-        )
     if provider in {"remote_paddle", "paddle_remote", "remote"}:
         endpoint = config.get("endpoint") or os.getenv("OCR_ENDPOINT", "http://localhost:8089")
         api_key = (config.get("api_key") or os.getenv("PADDLE_OCR_API_KEY")

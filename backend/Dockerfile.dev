@@ -14,20 +14,31 @@
 #
 # Unlike backend/Dockerfile (production), this image does NOT build the
 # engine's own FULL .venv — that adds a multi-GB PyTorch/BGE-M3 install to
-# every dev rebuild for a capability (launching NEW engine runs) that isn't
-# needed for backend/frontend development. See docker-compose.dev.yml's top
-# comment and its engine-venv-init service: it builds a small, real
-# engine/.venv (PyYAML + openpyxl + pydantic — no torch/numpy/pymupdf) into a
-# named volume overlaid at that exact path, at startup rather than build
-# time, because a Docker volume can't be populated during `docker build`.
-# That covers `manage.py engine_refresh` AND every allowlisted engine action
-# (backend/workspace/engine_worker.py) EXCEPT run_pipeline/build_*_corpus,
-# which need the full ML stack and stay out of scope here.
+# every dev rebuild for a capability (launching new engine runs from inside
+# this container) that isn't needed for backend/frontend development. See
+# docker-compose.dev.yml's top comment.
+#
+# It DOES build a small separate venv at /opt/engine-export-venv with just
+# what `manage.py engine_refresh` actually shells out to (backend/workspace/
+# importer.py -> engine/scripts/export_legal_review_payload.py,
+# export_finding_key_map.py, export_ops_stats.py, which pull in
+# packages.core.{finalization,evidence,schemas,legal_controls} for
+# finding-key hashing): PyYAML + openpyxl + pydantic, no torch/numpy/pymupdf.
+# docker-compose.dev.yml points ENGINE_PYTHON at it
+# (instead of the default engine/.venv/bin/python, which is on the
+# read-only ../engine mount and built for your HOST os anyway) so
+# engine_refresh can actually import whatever run outputs already exist
+# under engine/outputs/ — it still can't LAUNCH new engine runs, same
+# limitation as before, just documented instead of silently broken.
 FROM python:3.12-slim
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends gcc libpq-dev curl \
     && rm -rf /var/lib/apt/lists/*
+
+RUN python -m venv /opt/engine-export-venv \
+    && /opt/engine-export-venv/bin/pip install --no-cache-dir -U pip \
+    && /opt/engine-export-venv/bin/pip install --no-cache-dir "pyyaml>=6.0,<7" "openpyxl>=3.1,<4" "pydantic>=2.7,<3"
 
 WORKDIR /srv/clausechain/backend
 

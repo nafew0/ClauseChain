@@ -1,10 +1,10 @@
-# Server Execution Plan — 103.157.135.253:2233 (AlmaLinux 8.10)
+# Server Execution Plan — <server-ip>:<ssh-port> (AlmaLinux 8.10)
 
 ## Survey findings (19 Jul)
 - 16 cores · 31 GB RAM · **328 GB free** · SELinux **Disabled** (no boolean/context work needed) · glibc 2.28
 - **DNS: clausechain.zai.bd already resolves to this server** ✅ — TLS can issue immediately
 - **The old Docker deployment is live here**: docker swarm (ports 2377/7946) with containers bound to **80, 443, 3000** via docker-proxy. These block nginx + Next.js.
-- Nothing else running beyond stock services (sshd on 2233, chronyd, firewalld). No panels.
+- Nothing else running beyond stock services (sshd on a non-default port, chronyd, firewalld). No panels.
 
 ## Step 0 — Removals (authorized: "no production-grade apps")
 1. `docker stack ls` / `docker ps` — record what runs (evidence in the log), then:
@@ -18,7 +18,7 @@
 `deploy` (sudo, my key) + `clausechain-engine` (no login) service user. Clone repo → `/srv/clausechain`. Continue as `deploy`, not root.
 
 ## Step 3 — Data (long pole; started first in practice)
-From the Mac: `rsync -az -e "ssh -p 2233" engine/{data,outputs,logs,submission,reports} …:/srv/clausechain/engine/` (~3.1 GB). Free-space check (≥8 GB ✅ 328 G), file-count + 5-hash spot verification per DEPLOY.md.
+From the Mac: `rsync -az -e "ssh -p <ssh-port>" engine/{data,outputs,logs,submission,reports} …:/srv/clausechain/engine/` (~3.1 GB). Free-space check (≥8 GB ✅ 328 G), file-count + 5-hash spot verification per DEPLOY.md.
 
 ## Step 4 — Envs & apps
 Engine venv (python3.12) + engine `.env` (OpenAI, OCR VM, `GRAPH_BACKEND=sqlite`, spend cap; 600). Backend venv + gunicorn; backend `.env` (fresh `DJANGO_SECRET_KEY`/`JWT_SIGNING_KEY` generated ON the server, `DB_ENGINE=postgresql` **only if** Postgres is provisioned tonight — otherwise start on sqlite exactly as D0 locked, Postgres lands with D8), `TRUST_X_FORWARDED_PROTO=1`, `ENGINE_ROOT`, `WORKSPACE_LOCK_DIR`; `migrate` + `createsuperuser` + reviewer accounts + `collectstatic`. Frontend `.env` + `npm ci && npm run build`.
@@ -49,7 +49,7 @@ Stop the three units, `systemctl start docker` — the old stack returns as it w
 ## Updating the server after a git push (run as root, ~1 min)
 
 ```bash
-ssh -p 2233 root@103.157.135.253
+ssh -p <ssh-port> root@<server-ip>
 cd /srv/clausechain && git pull
 
 # Backend changed (backend/**):
@@ -69,9 +69,9 @@ cd /srv/clausechain/backend && sudo -u clausechain venv/bin/python manage.py eng
 
 # Engine DATA changed (rebuilt corpora/outputs on the Mac):
 # run ON the Mac:
-#   rsync -az -e "ssh -i ~/.ssh/clausechain_deploy -p 2233" \
+#   rsync -az -e "ssh -i ~/.ssh/clausechain_deploy -p <ssh-port>" \
 #     engine/data engine/outputs engine/logs engine/submission engine/reports \
-#     root@103.157.135.253:/srv/clausechain/engine/
+#     root@<server-ip>:/srv/clausechain/engine/
 # then chown + engine_refresh as above.
 
 # deploy/ units or nginx changed:
