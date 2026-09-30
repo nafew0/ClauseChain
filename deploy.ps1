@@ -68,6 +68,18 @@ if (Test-Path "deploy\data_bundle.cfg") {
 
 # ---------------------------------------------------------------- 1. prerequisites
 Step "1/7  Checking prerequisites"
+# A window opened before Docker Desktop was installed still has the old PATH:
+# reload it from the registry, then try Docker's standard install folder.
+if (-not (Get-Command docker -ErrorAction SilentlyContinue)) {
+    $env:Path = [Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [Environment]::GetEnvironmentVariable("Path", "User")
+    $dockerBin = Join-Path $env:ProgramFiles "Docker\Docker\resources\bin"
+    if (-not (Get-Command docker -ErrorAction SilentlyContinue) -and (Test-Path (Join-Path $dockerBin "docker.exe"))) {
+        $env:Path = "$dockerBin;$env:Path"
+    }
+    if (Get-Command docker -ErrorAction SilentlyContinue) {
+        Warn "docker was not on this window's PATH; found it (opening a new window also fixes this)"
+    }
+}
 if (-not (Get-Command docker -ErrorAction SilentlyContinue)) {
     Die "Docker is not installed. Install Docker Desktop: https://docs.docker.com/desktop/setup/install/windows-install/"
 }

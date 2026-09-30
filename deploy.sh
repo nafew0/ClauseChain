@@ -60,6 +60,20 @@ die()  { printf '\n%s✘ %s%s\n' "$R" "$1" "$N" >&2; exit 1; }
 
 # ---------------------------------------------------------------- 1. prerequisites
 step "1/7  Checking prerequisites"
+# A terminal opened before Docker Desktop was installed does not have it on PATH yet;
+# look in Docker's standard install locations before giving up.
+if ! command -v docker >/dev/null 2>&1; then
+  for dir in "$HOME/.docker/bin" /usr/local/bin /opt/homebrew/bin \
+             /Applications/Docker.app/Contents/Resources/bin \
+             "/c/Program Files/Docker/Docker/resources/bin" \
+             "/mnt/c/Program Files/Docker/Docker/resources/bin"; do
+    if [ -x "$dir/docker" ] || [ -x "$dir/docker.exe" ]; then
+      PATH="$dir:$PATH"; export PATH
+      warn "docker was not on this terminal's PATH; using $dir (opening a new terminal also fixes this)"
+      break
+    fi
+  done
+fi
 command -v docker >/dev/null 2>&1 || die "Docker is not installed.
    macOS / Windows: install Docker Desktop  https://docs.docker.com/desktop/
    Linux: install Docker Engine + compose    https://docs.docker.com/engine/install/"
