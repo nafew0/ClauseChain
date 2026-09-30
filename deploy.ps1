@@ -41,6 +41,17 @@ function New-Secret {
 function Set-EnvValue($lines, $name, $value) {
     return $lines | ForEach-Object { if ($_ -match "^$name=") { "$name=$value" } else { $_ } }
 }
+# Runs a native command with all output sent to $log (or discarded) and returns its exit code.
+# Windows PowerShell 5.1 turns redirected stderr into a terminating error under "Stop", so relax it here.
+function Invoke-Quiet($log, [string[]]$command) {
+    $previous = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    try {
+        $rest = @(); if ($command.Length -gt 1) { $rest = $command[1..($command.Length - 1)] }
+        if ($log) { & $command[0] @rest *> $log } else { & $command[0] @rest *> $null }
+        return $LASTEXITCODE
+    } finally { $ErrorActionPreference = $previous }
+}
 function Get-HttpCode($url) {
     $code = & curl.exe -s -o NUL -w "%{http_code}" $url 2>$null
     if (-not $code) { return "000" }
@@ -60,10 +71,8 @@ Step "1/7  Checking prerequisites"
 if (-not (Get-Command docker -ErrorAction SilentlyContinue)) {
     Die "Docker is not installed. Install Docker Desktop: https://docs.docker.com/desktop/setup/install/windows-install/"
 }
-& docker compose version *> $null
-if ($LASTEXITCODE -ne 0) { Die "Docker Compose v2 is missing ('docker compose'). Update Docker Desktop." }
-& docker info *> $null
-if ($LASTEXITCODE -ne 0) { Die "Docker Desktop is installed but not running. Start it, wait until it says 'running', and run this again." }
+if ((Invoke-Quiet $null @("docker", "compose", "version")) -ne 0) { Die "Docker Compose v2 is missing ('docker compose'). Update Docker Desktop." }
+if ((Invoke-Quiet $null @("docker", "info")) -ne 0) { Die "Docker Desktop is installed but not running. Start it, wait until it says 'running', and run this again." }
 if (-not (Get-Command curl.exe -ErrorAction SilentlyContinue)) { Die "curl.exe is missing (it ships with Windows 10 1803 and later)." }
 if (-not (Get-Command tar.exe -ErrorAction SilentlyContinue)) { Die "tar.exe is missing (it ships with Windows 10 1803 and later)." }
 Ok ("Docker " + (& docker version --format '{{.Server.Version}}'))
@@ -148,10 +157,12 @@ Ok "API and web app are up"
 # ---------------------------------------------------------------- 6. snapshots
 Step "6/7  Importing the reviewed evidence (Hybrid, then Local)"
 foreach ($mode in "hybrid", "local") {
-    & docker compose exec -T backend python manage.py engine_refresh --mode $mode *> ".deploy-import-$mode.log"
-    if ($LASTEXITCODE -eq 0) { Ok "$mode snapshot imported" }
+    if ((Invoke-Quiet ".deploy-import-$mode.log" @("docker", "compose", "exec", "-T", "backend", "python", "manage.py", "engine_refresh", "--mode", $mode)) -eq 0) { Ok "$mode snapshot imported" }
     else { Warn "$mode snapshot import failed - details in .deploy-import-$mode.log (the app still runs; re-run .\deploy.ps1 to retry)" }
 }
+# The signed decisions (engine\data\review\*.json) become the review state the queues show.
+if ((Invoke-Quiet ".deploy-import-decisions.log" @("docker", "compose", "exec", "-T", "backend", "python", "manage.py", "import_decisions")) -eq 0) { Ok "signed review decisions loaded" }
+else { Warn "loading the signed decisions failed - details in .deploy-import-decisions.log (re-run .\deploy.ps1 to retry)" }
 
 # ---------------------------------------------------------------- 7. admin
 Step "7/7  Admin account"

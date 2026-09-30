@@ -1598,3 +1598,63 @@ class EngineWriterContractTests(TestCase):
                 apply_authoritative_decision(
                     "recall", [decision], expected_file_hash="0" * 64
                 )
+
+
+class ImportDecisionsCommandTests(TestCase):
+    def test_signed_ledger_becomes_decision_rows_once(self):
+        from io import StringIO
+
+        from django.core.management import call_command
+
+        import_snapshot(minimal_artifacts())
+        signed = {
+            "reviewer_name": "Citation Reviewer",
+            "reviewer_role": "Team Lead",
+            "reviewed_at": "2026-07-20T16:46:48+00:00",
+            "citation_checked": True,
+            "mapping_checked": True,
+            "status_checked": True,
+            "citation_reviewer_name": "Citation Reviewer",
+            "mapping_reviewer_name": "Mapping Reviewer",
+            "status_reviewer_name": "Citation Reviewer",
+            "decision": "approved",
+            "correction_note": "Supported.",
+        }
+        findings = [
+            {"finding_key": "1" * 64, "review_subject_hash": "4" * 64, "review": signed},
+            {"finding_key": "2" * 64, "review_subject_hash": "5" * 64,
+             "review": {**signed, "decision": "rejected"}},
+            {"finding_key": "9" * 64, "review_subject_hash": "9" * 64, "review": signed},
+            {"finding_key": "2" * 64, "review_subject_hash": "5" * 64,
+             "review": {**signed, "reviewer_name": "", "decision": "rejected"}},
+        ]
+        zone3 = [{"economy": "Singapore", "indicator": "P7-I3", "action": "override",
+                  "score": 0.5, "reasoning": "Narrow measure.", "reviewer_name": "Citation Reviewer",
+                  "reviewed_at": "2026-07-20T16:46:48+00:00"}]
+        recall = [{"recall_key": recall_key("Singapore", "P7-I3", "Employment Act", "s. 95"),
+                   "verdict": "REAL_MISS", "note": "Engine gap.", "reviewer_name": "Citation Reviewer",
+                   "reviewed_at": "2026-07-19T12:50:04+00:00"}]
+        with tempfile.TemporaryDirectory() as temp_dir, override_settings(ENGINE_ROOT=temp_dir):
+            folder = Path(temp_dir) / "data" / "review"
+            folder.mkdir(parents=True)
+            (folder / "decisions.json").write_text(json.dumps(findings))
+            (folder / "zone3_decisions.json").write_text(json.dumps(zone3))
+            (folder / "recall_decisions.json").write_text(json.dumps(recall))
+            out = StringIO()
+            call_command("import_decisions", "--mode", "hybrid", stdout=out)
+            summary = json.loads(out.getvalue())["hybrid"]
+            call_command("import_decisions", "--mode", "hybrid", stdout=StringIO())
+
+        self.assertEqual(summary["findings"], {"created": 2, "kept": 0, "unsigned": 1, "not_in_snapshot": 1})
+        self.assertEqual(FindingDecision.objects.count(), 4)
+        approved = effective_finding_review("1" * 64, review_subject_hash="4" * 64)
+        self.assertEqual(approved["decision"], "approved")
+        self.assertEqual(approved["mapping_reviewer_name"], "Mapping Reviewer")
+        self.assertEqual(
+            effective_finding_review("2" * 64, review_subject_hash="5" * 64)["decision"], "rejected"
+        )
+        score = Zone3Decision.objects.get()
+        self.assertEqual((score.verdict, str(score.score)), ("overridden", "0.5"))
+        self.assertEqual(score.score_key, zone3_key("Singapore", "P7-I3"))
+        self.assertEqual(RecallDecision.objects.get().verdict, "REAL_MISS")
+        self.assertFalse(User.objects.get(username="ledger-import").has_usable_password())

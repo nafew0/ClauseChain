@@ -198,6 +198,12 @@ for mode in hybrid local; do
     warn "$mode snapshot import failed — details in .deploy-import-$mode.log (the app still runs; re-run ./deploy.sh to retry)"
   fi
 done
+# The signed decisions (engine/data/review/*.json) become the review state the queues show.
+if $COMPOSE exec -T backend python manage.py import_decisions > .deploy-import-decisions.log 2>&1; then
+  ok "signed review decisions loaded"
+else
+  warn "loading the signed decisions failed — details in .deploy-import-decisions.log (re-run ./deploy.sh to retry)"
+fi
 
 # ---------------------------------------------------------------- 7. admin
 step "7/7  Admin account"
