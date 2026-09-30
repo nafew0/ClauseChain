@@ -186,10 +186,14 @@ def build_hybrid_accuracy_env() -> dict[str, str]:
     env = {"CLAUSECHAIN_PROVIDER_PROFILE": "hybrid_accuracy"}
     if ask_yes_no("Do you have an OpenAI API key?", True):
         env["OPENAI_API_KEY"] = ask_secret("OPENAI_API_KEY")
-    if ask_yes_no("Do you have an OpenRouter API key? (used for bulk/reasoning tiers)", False):
+    if ask_yes_no("Do you have an OpenRouter API key? (alternative route to the same model)", False):
         env["OPENROUTER_API_KEY"] = ask_secret("OPENROUTER_API_KEY")
     if ask_yes_no("Do you have a Gemini API key? (fallback tier)", False):
         env["GEMINI_API_KEY"] = ask_secret("GEMINI_API_KEY")
+    if "OPENROUTER_API_KEY" in env and "OPENAI_API_KEY" not in env:
+        # Engine A calls OpenAI directly by default; route it through OpenRouter instead.
+        env["HYBRID_LLM_PROVIDER"] = "openrouter"
+        env["HYBRID_LLM_MODEL"] = "openai/gpt-6-luna"
     if not any(k.endswith("_API_KEY") for k in env):
         print(
             "\nWarning: no API key entered — hybrid_accuracy will fail at "

@@ -4,14 +4,17 @@
 # Graph backend is the single switch GRAPH_BACKEND (get_graph_store): export GRAPH_BACKEND=neo4j for Path B.
 profiles:
   hybrid_accuracy:            # PATH B — DEFAULT (accuracy-first; our runs, submitted output, live demo)
+    # Engine A (commercial hosted). HYBRID_LLM_PROVIDER / HYBRID_LLM_MODEL in engine/.env
+    # choose it: openai + gpt-6-luna (OpenAI API, OPENAI_API_KEY) by default, or
+    # openrouter + openai/gpt-6-luna (OPENROUTER_API_KEY). Runs before 30 Sep went through OpenRouter.
     bulk:                     # query expansion / rerank / cheap classification
-      primary: openrouter:${OPENROUTER_BULK_MODEL:-openai/gpt-6-luna}
+      primary: ${HYBRID_LLM_PROVIDER:-openai}:${HYBRID_LLM_MODEL:-gpt-6-luna}
       fallback: google:${GEMINI_BULK_MODEL:-gemini-3-flash-preview}
     high_reasoning:           # default legal mapping/refutation
-      primary: openrouter:${OPENROUTER_REASONING_MODEL:-openai/gpt-6-luna}
+      primary: ${HYBRID_LLM_PROVIDER:-openai}:${HYBRID_LLM_MODEL:-gpt-6-luna}
       fallback: google:${GEMINI_BULK_MODEL:-gemini-3-flash-preview}
     legal_escalation:         # deterministic ambiguity/failure cases only
-      primary: openrouter:${OPENROUTER_ESCALATION_MODEL:-openai/gpt-6-luna}
+      primary: ${HYBRID_LLM_PROVIDER:-openai}:${HYBRID_LLM_MODEL:-gpt-6-luna}
       fallback: google:${GEMINI_HIGH_REASONING_MODEL:-gemini-3-flash-preview}
     embedding:
       provider: ${EMBEDDING_PROVIDER:-openai}   # cloud OpenAI (decided 4 Jul); bge_m3 stays the Path A/multilingual option

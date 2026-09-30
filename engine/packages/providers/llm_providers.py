@@ -27,6 +27,17 @@ def _schema_instruction(schema: type[BaseModel]) -> str:
 OPENAI_BASE_URL = "https://api.openai.com/v1"
 
 
+def _rejects_temperature(response: httpx.Response) -> bool:
+    """True for the 400 an endpoint returns when the model allows no temperature setting."""
+    if response.status_code != 400:
+        return False
+    try:
+        error = response.json().get("error") or {}
+    except ValueError:
+        return False
+    return error.get("param") == "temperature" or "temperature" in str(error.get("message", ""))
+
+
 class OpenAIChatProvider:
     def __init__(self, model: str, api_key_env: str = "OPENAI_API_KEY", timeout: float = 90.0,
                  base_url: str = OPENAI_BASE_URL, request_model: str | None = None,
@@ -47,6 +58,10 @@ class OpenAIChatProvider:
         # The Files/Batches endpoints are OpenAI-proper only; any compatible
         # gateway (OpenRouter etc.) goes through the live chat path.
         self._batch_available: bool | None = None if self.base_url == OPENAI_BASE_URL else False
+        # temperature 0 keeps decisions repeatable; reasoning models on OpenAI proper
+        # (gpt-5.x / gpt-6.x) accept only the default and answer 400. OpenRouter
+        # drops the field silently. Sent until an endpoint rejects it, then omitted.
+        self._send_temperature = True
 
     RETRY_BACKOFFS_S = (5.0, 20.0)   # transient 429/5xx/network retries before giving up
 
@@ -68,7 +83,7 @@ class OpenAIChatProvider:
                     "model": self.request_model,
                     "messages": [{"role": "user", "content": prompt}],
                     "response_format": {"type": "json_object"},
-                    "temperature": 0,
+                    **({"temperature": 0} if self._send_temperature else {}),
                     **self.extra_body,
                 }
                 if prompt_cache_key and self.base_url == OPENAI_BASE_URL:
@@ -83,6 +98,11 @@ class OpenAIChatProvider:
                         f"retryable {response.status_code}", request=response.request,
                         response=response,
                     )
+                if self._send_temperature and _rejects_temperature(response):
+                    self._send_temperature = False
+                    progress.emit("llm", f"{self.model} accepts only its default temperature; "
+                                         "resending without it")
+                    continue
                 response.raise_for_status()
                 payload = response.json()
                 if "choices" not in payload:
@@ -196,7 +216,7 @@ class OpenAIChatProvider:
                 "model": self.model,
                 "messages": [{"role": "user", "content": prompt + _schema_instruction(schema)}],
                 "response_format": {"type": "json_object"},
-                "temperature": 0,
+                **({"temperature": 0} if self._send_temperature else {}),
             }
             if key:
                 body["prompt_cache_key"] = key

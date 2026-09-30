@@ -297,7 +297,7 @@ ENGINE_WORKER_LOG = Path(
 ENGINE_MODE_LABELS = {
     "hybrid": os.environ.get(
         "ENGINE_MODE_LABEL_HYBRID",
-        "Commercial hosted: OpenRouter GPT-6 luna (earlier runs GPT-5.6 luna/terra) + text-embedding-3-small",
+        "Commercial hosted: OpenAI GPT-6 luna (runs before 30 Sep via OpenRouter; earlier GPT-5.6 luna/terra) + text-embedding-3-small",
     ),
     "local": os.environ.get(
         "ENGINE_MODE_LABEL_LOCAL",

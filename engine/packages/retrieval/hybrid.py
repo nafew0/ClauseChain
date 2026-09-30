@@ -53,15 +53,29 @@ def _cosine(a: list[float], b: list[float]) -> float:
 LEGACY_EMBEDDING_MODEL = "text-embedding-3-small"
 
 
-def embedding_cache_path(code: str, embedder) -> str:
-    """One cache file per economy AND embedding model: vectors from different
-    models live in different spaces and must never be mixed. The original
-    OpenAI caches keep their legacy name so existing corpora stay valid."""
-    model = str(getattr(embedder, "model", "") or "")
+def _cache_file(code: str, model: str) -> str:
     if not model or model == LEGACY_EMBEDDING_MODEL:
         return f"data/cache/embeddings_{code.lower()}.json"
     slug = re.sub(r"[^a-z0-9]+", "-", model.lower()).strip("-")
     return f"data/cache/embeddings_{code.lower()}__{slug}.json"
+
+
+def embedding_cache_path(code: str, embedder) -> str:
+    """One cache file per economy AND embedding model: vectors from different
+    models live in different spaces and must never be mixed. The original
+    OpenAI caches keep their legacy name so existing corpora stay valid.
+
+    text-embedding-3-small called directly and through OpenRouter
+    ("openai/text-embedding-3-small") is one model with the same vectors, so
+    both names share whichever of its cache files is newest."""
+    model = str(getattr(embedder, "model", "") or "")
+    if model.removeprefix("openai/") == LEGACY_EMBEDDING_MODEL:
+        candidates = [Path(_cache_file(code, name)) for name in
+                      (LEGACY_EMBEDDING_MODEL, f"openai/{LEGACY_EMBEDDING_MODEL}")]
+        existing = [path for path in candidates if path.is_file()]
+        if existing:
+            return str(max(existing, key=lambda path: path.stat().st_mtime))
+    return _cache_file(code, model)
 
 
 class EmbeddingCache:

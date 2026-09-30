@@ -17,6 +17,8 @@ PRICES = {  # standard per 1M tokens: (input, cached input, output), Jul 2026
     "openai/gpt-5.6-luna": (0.10, 0.10, 0.60),
     # 29 Sep 2026, /api/v1/models: hybrid screen/map tiers moved to gpt-6-luna.
     "openai/gpt-6-luna": (0.10, 0.10, 0.50),
+    # OpenAI API direct (30 Sep 2026, developers.openai.com/api/docs/pricing, standard, short context).
+    "gpt-6-luna": (0.10, 0.01, 0.50),
     "openai/text-embedding-3-small": (0.02, 0.02, 0.0),   # OpenRouter route for embeddings
     "openai/gpt-5.6-terra": (1.00, 1.00, 6.00),
     "gpt-5.4-nano": (0.20, 0.02, 1.25),
